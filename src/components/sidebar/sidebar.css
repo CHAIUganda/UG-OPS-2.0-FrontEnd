@@ -1,0 +1,46 @@
+.setSideBarInline {
+  display: inline-block;
+  height: 100vh;
+  width: 23em;
+  margin-top: -0.6em;
+}
+
+.sidebgColor {
+  background-color: darkblue;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+  text-align: left;
+  color: white;
+  padding-top: 3em;
+}
+
+.fixeSidebar {
+  position: fixed;
+  left: 0;
+}
+
+.navContainer {
+  margin: 1.5em 1.5em 1.5em 0em;
+  font-size: 108%;
+}
+
+.sidebTopNav {
+  cursor: pointer;
+}
+
+.sidebarDropdownContent {
+  margin-left: 0.5em;
+  margin-top: -0.7em;
+}
+
+.showContent {
+  display: static;
+  cursor: pointer;
+}
+
+.dntShowContent {
+  display: none;
+}
+
+.referencePoint {
+  background-color: green;
+}

@@ -1,0 +1,18 @@
+.headerLeft {
+  margin-left: 1.5em;
+  color: darkblue;
+  background-color: white;
+}
+
+.headerLeft:hover {
+  margin-left: 1.5em;
+  color: white;
+  background-color: darkblue;
+  cursor: pointer;
+}
+
+.inlineLogo {
+  display: inline-block;
+  vertical-align: top;
+  padding-bottom: 0.9em;
+}

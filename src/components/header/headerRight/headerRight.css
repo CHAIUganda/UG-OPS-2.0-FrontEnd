@@ -1,0 +1,19 @@
+.headerRight {
+  /* margin-left: 3em; */
+  text-align: right;
+  /* width: 30em; */
+}
+
+.userIcon {
+  cursor: pointer;
+}
+
+.name {
+  color: darkblue;
+  padding-right: 0.8em;
+}
+
+.customDropdown {
+  margin-top: -1.8em;
+  margin-right: -2em;
+}

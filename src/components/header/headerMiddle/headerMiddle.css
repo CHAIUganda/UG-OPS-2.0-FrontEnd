@@ -1,0 +1,18 @@
+.middleHeader {
+  margin-left: 14em;
+  width: 24em;
+  text-align: justify;
+}
+
+.item {
+  margin-left: 0.8em;
+  color: darkblue;
+  background-color: white;
+  padding: 0.95em;
+}
+
+.item:hover {
+  color: white;
+  background-color: darkblue;
+  cursor: pointer;
+}

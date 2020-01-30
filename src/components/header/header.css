@@ -1,0 +1,17 @@
+.headerDiv {
+  border-bottom: 3px solid darkblue;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background-color: white;
+  height: 3.6em;
+}
+
+.inlineHeader {
+  display: inline-block;
+  vertical-align: top;
+  padding-top: 0.6em;
+  font-size: 115%;
+  /* background-color: green; */
+}

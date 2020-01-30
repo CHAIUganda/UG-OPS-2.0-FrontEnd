@@ -1,0 +1,18 @@
+.setContentInline {
+  display: inline-block;
+  width: 70em;
+  position: absolute;
+  right: 0;
+  z-index: -1;
+  margin-top: 1em;
+  margin-right: 1em;
+  min-height: 100vh;
+}
+
+.contentbgColor {
+  background-color: white;
+  /* box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2); */
+  /* box-shadow: 0 6px 25px rgba(5, 5, 5, 0.3); */
+  box-shadow: 0 6px 18px rgba(5, 5, 5, 0.3);
+  text-align: center;
+}
