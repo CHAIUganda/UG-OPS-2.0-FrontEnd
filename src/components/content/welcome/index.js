@@ -1,5 +1,5 @@
 import React from 'react';
-import chai from '../../../assets/img/chai.png';
+import chai from '../../../assets/img/chai.svg';
 
 import './welcome.css';
 
