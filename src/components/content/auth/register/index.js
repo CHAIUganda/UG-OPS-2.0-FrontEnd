@@ -14,14 +14,17 @@ import Calendar from 'react-calendar';
 import './register.css';
 
 export default function Register() {
-  const [email, setEmail] = useState('a@a');
-  const [firstName, setFirstName] = useState('a');
-  const [lastName, setLastName] = useState('a');
-  const [otherNames, setOtherNames] = useState('a');
+  const [email, setEmail] = useState('');
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [otherNames, setOtherNames] = useState('');
   const [internationalStaff, setInternationalStaff] = useState(false);
   const [contractType, setContractType] = useState('Full-Time');
   const [contractStartDate, setContractStartDate] = useState(new Date());
   const [contractEndDate, setContractEndDate] = useState(new Date());
+  const [programeManager, setProgrameManager] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPass, setConfirmPass] = useState('');
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -87,7 +90,6 @@ export default function Register() {
               type="text"
               value={otherNames}
               onChange={(e) => setOtherNames(e.target.value)}
-              required
             />
           </InputGroup>
         </FormGroup>
@@ -148,6 +150,51 @@ export default function Register() {
             <Calendar
               value={contractEndDate}
               onChange={(date) => setContractEndDate(date)}
+            />
+          </InputGroup>
+        </FormGroup>
+
+        <FormGroup>
+          <InputGroup>
+            <InputGroupAddon addonType="prepend">
+              <InputGroupText>P.M or Supervisor&apos;s Email @</InputGroupText>
+            </InputGroupAddon>
+            <Input
+              placeholder="email@clintonhealthaccess.org"
+              type="email"
+              value={programeManager}
+              onChange={(e) => setProgrameManager(e.target.value)}
+              required
+            />
+          </InputGroup>
+        </FormGroup>
+
+        <FormGroup>
+          <InputGroup>
+            <InputGroupAddon addonType="prepend">
+              <InputGroupText>***</InputGroupText>
+            </InputGroupAddon>
+            <Input
+              placeholder="password"
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+          </InputGroup>
+        </FormGroup>
+
+        <FormGroup>
+          <InputGroup>
+            <InputGroupAddon addonType="prepend">
+              <InputGroupText>***</InputGroupText>
+            </InputGroupAddon>
+            <Input
+              placeholder="Confirm Password"
+              type="password"
+              value={confirmPass}
+              onChange={(e) => setConfirmPass(e.target.value)}
+              required
             />
           </InputGroup>
         </FormGroup>
