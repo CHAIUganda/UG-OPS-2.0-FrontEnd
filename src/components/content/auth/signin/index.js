@@ -57,6 +57,7 @@ export default function SignIn() {
           Submit
         </button>
       </Form>
+      <p className="forgotPassword">Forgot passwordd?</p>
     </div>
   );
 }
