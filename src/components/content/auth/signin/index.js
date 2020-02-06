@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 // prettier-ignore
 import {
   Form,
@@ -12,16 +12,31 @@ import {
 import './signin.css';
 
 export default function SignIn() {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+
+    /** hit the API at this point */
+  };
+
   return (
     <div className="SigninFormStyle">
-      <Form>
+      <Form onSubmit={handleSubmit}>
         <h3 className="signInHeading">Sign In</h3>
         <FormGroup>
           <InputGroup>
             <InputGroupAddon addonType="prepend">
               <InputGroupText>@ </InputGroupText>
             </InputGroupAddon>
-            <Input placeholder="email@clintonhealthaccess.org" />
+            <Input
+              placeholder="email@clintonhealthaccess.org"
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
           </InputGroup>
         </FormGroup>
         <FormGroup>
@@ -29,10 +44,18 @@ export default function SignIn() {
             <InputGroupAddon addonType="prepend">
               <InputGroupText>****</InputGroupText>
             </InputGroupAddon>
-            <Input placeholder="password" />
+            <Input
+              placeholder="password"
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
           </InputGroup>
         </FormGroup>
-        <button className="submitButton">Submit</button>
+        <button className="submitButton" type="submit">
+          Submit
+        </button>
       </Form>
     </div>
   );
