@@ -1,6 +1,6 @@
-.SigninFormStyle {
-  width: 45%;
-  margin: 7em auto 0em auto;
+.registerFormStyle {
+  width: 61%;
+  margin: 0.4em auto 0em auto;
   border: 0.1em solid darkblue;
   padding: 5em 5em 1em 5em;
   border-radius: 0.3em;
@@ -20,16 +20,13 @@
   border: 0.1em solid darkblue;
 }
 
-.signInHeading {
+.registerHeading {
   margin-top: -2em;
   margin-bottom: 1em;
 }
 
-.forgotPassword {
-  margin-top: 3em;
-}
-
-.cursorClass {
-  cursor: pointer;
-  color: darkblue;
+.intSwitch {
+  /* background-color: green; */
+  padding-top: 0.5em;
+  padding-left: 0.6em;
 }

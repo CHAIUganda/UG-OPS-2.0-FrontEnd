@@ -7,6 +7,7 @@ import {
   DropdownMenu,
   DropdownItem
 } from 'reactstrap';
+import { Link } from 'react-router-dom';
 
 import './headerRight.css';
 
@@ -39,9 +40,11 @@ export default function HeaderRight() {
           <DropdownToggle tag={'span'}>{returnIcon()}</DropdownToggle>
           <DropdownMenu>
             <DropdownItem>Reset Password</DropdownItem>
-            <DropdownItem>another option</DropdownItem>
+            <DropdownItem>Edit My Details</DropdownItem>
             <DropdownItem divider />
-            <DropdownItem>Log Out</DropdownItem>
+            <Link to="/auth/SignIn">
+              <DropdownItem>Log Out</DropdownItem>
+            </Link>
           </DropdownMenu>
         </Dropdown>
       </div>

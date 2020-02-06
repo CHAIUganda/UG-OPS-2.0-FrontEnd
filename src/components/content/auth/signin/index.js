@@ -8,6 +8,7 @@ import {
   InputGroupAddon,
   InputGroupText
 } from 'reactstrap';
+import { Link } from 'react-router-dom';
 
 import './signin.css';
 
@@ -42,7 +43,7 @@ export default function SignIn() {
         <FormGroup>
           <InputGroup>
             <InputGroupAddon addonType="prepend">
-              <InputGroupText>****</InputGroupText>
+              <InputGroupText>***</InputGroupText>
             </InputGroupAddon>
             <Input
               placeholder="password"
@@ -57,7 +58,12 @@ export default function SignIn() {
           Submit
         </button>
       </Form>
-      <p className="forgotPassword">Forgot passwordd?</p>
+      <div className="forgotPassword">
+        <p className="cursorClass">Forgot password?</p>
+        <Link to="/auth/Register">
+          <p className="cursorClass">Register</p>
+        </Link>
+      </div>
     </div>
   );
 }
