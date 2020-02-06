@@ -25,19 +25,19 @@ export default function HR(props) {
         <SubItem
           link="/hr/LeaveApplication"
           IcontoSet={FaPlaneDeparture}
-          textToSet="Leave Application"
+          textToSet="Leave Management"
         />
 
         <SubItem
           link="/hr/ContractRenewal"
           IcontoSet={FaFileContract}
-          textToSet="Contract Renewal"
+          textToSet="Contract Management"
         />
 
         <SubItem
           link="/hr/WorkPermitRenewal"
           IcontoSet={FaTractor}
-          textToSet="Work Permit Renewal"
+          textToSet="Work Permit Management"
         />
       </div>
     </div>
