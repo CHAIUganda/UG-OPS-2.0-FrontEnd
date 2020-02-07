@@ -4,6 +4,10 @@ export default {
     token: '',
     gender: '',
     internationalStaff: undefined,
-    department: ''
-  }
+    department: '',
+    firstName: '',
+    lastName: '',
+    Position: ''
+  },
+  courses: []
 };
