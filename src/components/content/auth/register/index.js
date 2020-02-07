@@ -27,6 +27,7 @@ export default function Register() {
   const [confirmPass, setConfirmPass] = useState('');
   const [gender, setGender] = useState('female');
   const [position, setPosition] = useState('');
+  const [department, setDepartment] = useState('Human-Resource');
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -126,6 +127,39 @@ export default function Register() {
               onChange={(e) => setPosition(e.target.value)}
               required
             />
+          </InputGroup>
+        </FormGroup>
+
+        <FormGroup>
+          <InputGroup>
+            <InputGroupAddon addonType="prepend">
+              <InputGroupText>Department</InputGroupText>
+            </InputGroupAddon>
+            <CustomInput
+              type="select"
+              id="exampleCustomSelect"
+              name="customSelect"
+              value={department}
+              onChange={(e) => setDepartment(e.target.value)}
+            >
+              <option value="Human-Resource">Human-Resource</option>
+              <option value="Finance">Finance</option>
+              <option value="Country-Leadership-Team">
+                Country-Leadership-Team
+              </option>
+              <option value="Procurement">Procurement</option>
+              <option value="Transport">Transport</option>
+              <option value="Vaccines">Vaccines</option>
+              <option value="Infectious-and-Non-Communicable-Diseases">
+                Infectious-and-Non-Communicable-Diseases
+              </option>
+              <option value="Integrated-Child-Health">
+                Integrated-Child-Health
+              </option>
+              <option value="Sexual-Reproductive-Maternal-and-New-born-Health">
+                Sexual-Reproductive-Maternal-and-New-born-Health
+              </option>
+            </CustomInput>
           </InputGroup>
         </FormGroup>
 
