@@ -2,13 +2,11 @@
   margin-left: 1.5em;
   color: darkblue;
   background-color: white;
+  cursor: pointer;
 }
 
 .headerLeft:hover {
-  margin-left: 1.5em;
-  color: white;
-  background-color: darkblue;
-  cursor: pointer;
+  border: 0.09em solid darkblue;
 }
 
 .inlineLogo {
@@ -16,3 +14,8 @@
   vertical-align: top;
   padding-bottom: 0.9em;
 }
+
+/* .hoverStyle:hover {
+  color: white;
+  background-color: darkblue;
+} */
