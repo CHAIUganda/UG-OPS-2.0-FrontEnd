@@ -25,6 +25,8 @@ export default function Register() {
   const [programeManager, setProgrameManager] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPass, setConfirmPass] = useState('');
+  const [gender, setGender] = useState('female');
+  const [position, setPosition] = useState('');
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -90,6 +92,39 @@ export default function Register() {
               type="text"
               value={otherNames}
               onChange={(e) => setOtherNames(e.target.value)}
+            />
+          </InputGroup>
+        </FormGroup>
+
+        <FormGroup>
+          <InputGroup>
+            <InputGroupAddon addonType="prepend">
+              <InputGroupText>Gender</InputGroupText>
+            </InputGroupAddon>
+            <CustomInput
+              type="select"
+              id="exampleCustomSelect"
+              name="customSelect"
+              value={gender}
+              onChange={(e) => setGender(e.target.value)}
+            >
+              <option value="female">Female</option>
+              <option value="male">Male</option>
+            </CustomInput>
+          </InputGroup>
+        </FormGroup>
+
+        <FormGroup>
+          <InputGroup>
+            <InputGroupAddon addonType="prepend">
+              <InputGroupText>Position</InputGroupText>
+            </InputGroupAddon>
+            <Input
+              placeholder="Assistant Programme Officer"
+              type="text"
+              value={position}
+              onChange={(e) => setPosition(e.target.value)}
+              required
             />
           </InputGroup>
         </FormGroup>
@@ -198,6 +233,10 @@ export default function Register() {
             />
           </InputGroup>
         </FormGroup>
+
+        <p className="readThru alert alert-info">
+          Please read through and confirm the details provided before submitting
+        </p>
 
         <button className="submitButton" type="submit">
           Submit
