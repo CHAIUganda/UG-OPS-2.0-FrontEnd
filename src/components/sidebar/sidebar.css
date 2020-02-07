@@ -44,3 +44,7 @@
 .referencePoint {
   background-color: green;
 }
+
+.sidebarContainer {
+  visibility: hidden;
+}

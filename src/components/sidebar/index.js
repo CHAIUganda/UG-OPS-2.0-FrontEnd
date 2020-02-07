@@ -1,11 +1,18 @@
 import React, { useState } from 'react';
+import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
 
 import HR from './hr';
 import Procurement from './procurement';
 import Finance from './finance';
 import './sidebar.css';
 
-export default function Sidebar() {
+const mapStateToProps = (state) => ({
+  token: state.auth.token
+});
+
+function Sidebar(props) {
+  const { token } = props;
   const [hrToggle, setHrToggle] = useState(false);
   const [procurementToggle, setProcurementToggle] = useState(false);
   const [financeToggle, setFinanceToggle] = useState(false);
@@ -33,18 +40,26 @@ export default function Sidebar() {
 
   return (
     <div className="setSideBarInline sidebgColor fixeSidebar">
-      <div className="navContainer">
-        <HR toggle={hrToggle} onClick={handleHrToggle} />
-      </div>
-      <div className="navContainer">
-        <Procurement
-          toggle={procurementToggle}
-          onClick={handleProcurementToggle}
-        />
-      </div>
-      <div className="navContainer">
-        <Finance toggle={financeToggle} onClick={handleFinanceToggle} />
+      <div className={`${token ? '' : 'sidebarContainer'}`}>
+        <div className="navContainer">
+          <HR toggle={hrToggle} onClick={handleHrToggle} />
+        </div>
+        <div className="navContainer">
+          <Procurement
+            toggle={procurementToggle}
+            onClick={handleProcurementToggle}
+          />
+        </div>
+        <div className="navContainer">
+          <Finance toggle={financeToggle} onClick={handleFinanceToggle} />
+        </div>
       </div>
     </div>
   );
 }
+
+Sidebar.propTypes = {
+  token: PropTypes.string
+};
+
+export default connect(mapStateToProps)(Sidebar);
