@@ -1,20 +1,34 @@
 import React, { useState } from 'react';
 import { FaUserCircle } from 'react-icons/fa';
 import { IconContext } from 'react-icons';
+import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
+
 import {
   Dropdown,
   DropdownToggle,
   DropdownMenu,
   DropdownItem
 } from 'reactstrap';
-import { Link } from 'react-router-dom';
 
+import * as authActions from '../../../redux/actions/authActions';
 import './headerRight.css';
 
-export default function HeaderRight() {
+const matchDispatchToProps = {
+  logUserOut: authActions.logUserOut
+};
+
+const mapStateToProps = () => ({ });
+
+function HeaderRight({ logUserOut }) {
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
   const toggle = () => setDropdownOpen((prevState) => !prevState);
+
+  const logOut = (event) => {
+    event.preventDefault();
+    logUserOut();
+  };
 
   const returnIcon = () => (
     <IconContext.Provider
@@ -42,12 +56,16 @@ export default function HeaderRight() {
             <DropdownItem>Reset Password</DropdownItem>
             <DropdownItem>Edit My Details</DropdownItem>
             <DropdownItem divider />
-            <Link to="/auth/SignIn">
-              <DropdownItem>Log Out</DropdownItem>
-            </Link>
+            <DropdownItem onClick={logOut}>Log Out</DropdownItem>
           </DropdownMenu>
         </Dropdown>
       </div>
     </div>
   );
 }
+
+HeaderRight.propTypes = {
+  logUserOut: PropTypes.func
+};
+
+export default connect(mapStateToProps, matchDispatchToProps)(HeaderRight);

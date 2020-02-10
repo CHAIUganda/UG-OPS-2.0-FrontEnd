@@ -8,3 +8,7 @@ export const logout = () => ({ type: types.LOGOUT });
 export const logUserIn = (userObject) => (dispatch, /* getState */) => {
   dispatch(login(userObject));
 };
+
+export const logUserOut = () => (dispatch, /* getState */) => {
+  dispatch(logout());
+};
