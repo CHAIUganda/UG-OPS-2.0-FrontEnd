@@ -5,9 +5,9 @@
   cursor: pointer;
 }
 
-.headerLeft:hover {
+/* .headerLeft:hover {
   border: 0.09em solid darkblue;
-}
+} */
 
 .inlineLogo {
   display: inline-block;
@@ -15,7 +15,3 @@
   padding-bottom: 0.9em;
 }
 
-/* .hoverStyle:hover {
-  color: white;
-  background-color: darkblue;
-} */

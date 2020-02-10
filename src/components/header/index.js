@@ -11,12 +11,18 @@ const mapStateToProps = (state) => ({
   token: state.auth.token
 });
 
-function Header(props) {
-  const { token } = props;
+function Header({ token }) {
+  if (token) {
+    return (<div className="headerDiv">
+      <HeaderLeft />
+      <HeaderMiddle />
+      <HeaderRight />
+    </div>);
+  }
   return (
     <div className="headerDiv">
       <HeaderLeft />
-      <div className={`${token ? '' : 'MiddleAndRightHeaderContainer'}`}>
+      <div className='MiddleAndRightHeaderContainer'>
         <HeaderMiddle />
         <HeaderRight />
       </div>

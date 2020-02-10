@@ -6,6 +6,7 @@ import Register from './register';
 
 export default function Auth(props) {
   let componentToRender;
+
   const ComponentsObject = {
     SignIn,
     Register
@@ -26,5 +27,6 @@ export default function Auth(props) {
 }
 
 Auth.propTypes = {
-  match: PropTypes.object.isRequired
+  match: PropTypes.object.isRequired,
+  location: PropTypes.object
 };

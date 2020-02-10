@@ -4,3 +4,7 @@ import * as types from './actionTypes';
 export const login = (user) => ({ type: types.LOGIN, user });
 
 export const logout = () => ({ type: types.LOGOUT });
+
+export const logUserIn = (userObject) => (dispatch, /* getState */) => {
+  dispatch(login(userObject));
+};

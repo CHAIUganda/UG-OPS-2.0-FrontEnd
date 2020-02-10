@@ -36,3 +36,12 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+.errorFeedback {
+  /* background-color: rgba(206, 17, 38, 0.05); */
+  background-color: #fc7d74;
+  color: black;
+  padding: 1em;
+  margin: 1em;
+  border-radius: 0.4em;
+}
