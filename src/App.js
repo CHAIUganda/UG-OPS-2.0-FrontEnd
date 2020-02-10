@@ -1,5 +1,13 @@
 import React from 'react';
-import { HashRouter, Route, Switch } from 'react-router-dom';
+import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
+// prettier-ignore
+import {
+  HashRouter,
+  Route,
+  Switch,
+  // Redirect
+} from 'react-router-dom';
 
 import Header from './components/header';
 import Sidebar from './components/sidebar';
@@ -10,12 +18,23 @@ import Auth from './components/content/auth/index';
 
 import './App.css';
 
-function App() {
+const mapStateToProps = (state) => ({
+  token: state.auth.token
+});
+
+function App(props) {
+  const { token } = props;
   return (
     <HashRouter>
       <Header />
       <Sidebar />
       <Switch>
+        {!token && (
+          <Route
+            path="/"
+            render={(Routerprops) => <Auth {...Routerprops} isAuthed={false} />}
+          />
+        )}
         <Route exact path="/" component={Welcome} />
         <Route path="/hr/:componentToRender" component={HR} />
         <Route path="/auth/:componentToRender" component={Auth} />
@@ -26,4 +45,8 @@ function App() {
   );
 }
 
-export default App;
+App.propTypes = {
+  token: PropTypes.string
+};
+
+export default connect(mapStateToProps)(App);

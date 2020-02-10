@@ -5,12 +5,17 @@ import SignIn from './signin';
 import Register from './register';
 
 export default function Auth(props) {
-  const { componentToRender } = props.match.params;
-
+  let componentToRender;
   const ComponentsObject = {
     SignIn,
     Register
   };
+
+  if (props.match.params.componentToRender) {
+    componentToRender = props.match.params.componentToRender;
+  } else {
+    componentToRender = 'SignIn';
+  }
 
   const Tag = ComponentsObject[componentToRender];
   return (
