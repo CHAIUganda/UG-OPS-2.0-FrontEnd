@@ -5,8 +5,7 @@ import PropTypes from 'prop-types';
 import {
   HashRouter,
   Route,
-  Switch,
-  // Redirect
+  Switch
 } from 'react-router-dom';
 
 import Header from './components/header';

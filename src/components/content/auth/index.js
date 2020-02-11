@@ -3,17 +3,21 @@ import PropTypes from 'prop-types';
 
 import SignIn from './signin';
 import Register from './register';
+import ResetPassword from './resetPassword';
 
 export default function Auth(props) {
   let componentToRender;
 
   const ComponentsObject = {
     SignIn,
-    Register
+    Register,
+    ResetPassword
   };
 
   if (props.match.params.componentToRender) {
     componentToRender = props.match.params.componentToRender;
+  } else if (props.location.pathname.includes('ResetPassword')) {
+    componentToRender = 'ResetPassword';
   } else {
     componentToRender = 'SignIn';
   }
