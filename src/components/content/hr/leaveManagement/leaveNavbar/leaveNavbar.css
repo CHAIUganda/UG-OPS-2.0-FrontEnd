@@ -1,0 +1,22 @@
+.leaveNavContainer {
+  margin-top: -2em;
+  padding: 0.8em;
+}
+
+.left {
+  padding: 0.7em;
+  text-align: left;
+}
+
+.navItems {
+  padding: 0.7em;
+  border: 0.1em solid darkblue;
+  margin: 1em;
+  border-radius: 0.3em;
+}
+
+.navItems:hover {
+  background-color: darkblue;
+  color: white;
+  cursor: pointer;
+}

@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import LeaveApplication from './leaveApplication';
+import LeaveManagement from './leaveManagement';
 import ContractRenewal from './contractRenewal';
 import WorkPermitRenewal from './workPermitRenewal';
 
@@ -9,7 +9,7 @@ export default function HR(props) {
   const { componentToRender } = props.match.params;
 
   const ComponentsObject = {
-    LeaveApplication,
+    LeaveManagement,
     ContractRenewal,
     WorkPermitRenewal
   };

@@ -23,7 +23,7 @@ export default function HR(props) {
         }`}
       >
         <SubItem
-          link="/hr/LeaveApplication"
+          link="/hr/LeaveManagement"
           IcontoSet={FaPlaneDeparture}
           textToSet="Leave Management"
         />
