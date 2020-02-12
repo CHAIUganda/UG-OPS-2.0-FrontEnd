@@ -73,6 +73,23 @@ function ResetPassword({ logUserIn, props2Pass }) {
     event.preventDefault();
     setSpinner(true);
     setError('');
+
+    if (password.length < 6) {
+      setError('New Password should be atleast 6 characters long');
+      setSpinner(false);
+      return;
+    }
+
+    if (password !== confirmPass) {
+      setError('The passwords dont match');
+      setSpinner(false);
+      return;
+    }
+
+    axios.defaults.headers.common = {
+      token: props2Pass.token
+    };
+
     const url = 'auth/reset';
     axios.post(`${BASE_URL}${url}`, {
       email,

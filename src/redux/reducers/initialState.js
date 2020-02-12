@@ -1,7 +1,7 @@
 export default {
   user: {
     email: '',
-    token: 'poioiukjli',
+    token: '',
     gender: '',
     internationalStaff: undefined,
     department: '',
