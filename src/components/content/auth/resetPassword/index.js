@@ -22,9 +22,11 @@ const matchDispatchToProps = {
 
 const mapStateToProps = () => ({ });
 
-function ResetPassword(props) {
-  const { logUserIn } = props;
-  const [email, setEmail] = useState('aoboth@clintonhealthaccess.org');
+function ResetPassword({ logUserIn, props2Pass }) {
+  if (!props2Pass && !props2Pass.email && !props2Pass.token) {
+    return <h1>Reset Password ::: Womething Went Wrong</h1>;
+  }
+  const [email, setEmail] = useState(props2Pass.email);
   const [password, setPassword] = useState('123456');
   const [confirmPass, setConfirmPass] = useState('');
   const [spinner, setSpinner] = useState(false);
@@ -55,6 +57,7 @@ function ResetPassword(props) {
           Position: position
         };
         logUserIn(userObject);
+        setSpinner(false);
       })
       .catch((err) => {
         setSpinner(false);
@@ -70,15 +73,16 @@ function ResetPassword(props) {
     event.preventDefault();
     setSpinner(true);
     setError('');
-    axios.post(`${BASE_URL}auth/login`, {
+    const url = 'auth/reset';
+    axios.post(`${BASE_URL}${url}`, {
       email,
       password
     })
       .then((res) => {
-        setSpinner(false);
         if (res && res.data && res.data.token) {
           loginSuccess(res.data.token);
         } else {
+          setSpinner(false);
           setError('Sorry! Error in response');
         }
       })
@@ -160,7 +164,7 @@ function ResetPassword(props) {
               value={confirmPass}
               onChange={handleChange}
               required
-              name="password"
+              name="confirmPass"
             />
           </InputGroup>
         </FormGroup>
@@ -173,7 +177,8 @@ function ResetPassword(props) {
 }
 
 ResetPassword.propTypes = {
-  logUserIn: PropTypes.func
+  logUserIn: PropTypes.func,
+  props2Pass: PropTypes.object.isRequired
 };
 
 export default connect(mapStateToProps, matchDispatchToProps)(ResetPassword);

@@ -20,3 +20,13 @@
   color: white;
   cursor: pointer;
 }
+
+.leaveHomeButton {
+  border: 0.1em solid white;
+  border-radius: 0.3em;
+}
+
+.leaveHomeButton:hover {
+  border: 0.1em solid darkblue;
+  border-radius: 0.3em;
+}

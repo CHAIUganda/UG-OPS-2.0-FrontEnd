@@ -7,6 +7,7 @@ import ResetPassword from './resetPassword';
 
 export default function Auth(props) {
   let componentToRender;
+  const props2Pass = {};
 
   const ComponentsObject = {
     SignIn,
@@ -14,10 +15,15 @@ export default function Auth(props) {
     ResetPassword
   };
 
-  if (props.match.params.componentToRender) {
-    componentToRender = props.match.params.componentToRender;
-  } else if (props.location.pathname.includes('ResetPassword')) {
+  if (props.location.pathname.includes('ResetPassword')) {
     componentToRender = 'ResetPassword';
+    const path = props.location.pathname.split('/');
+    const token = path[path.length - 1];
+    const email = path[path.length - 2];
+    props2Pass.email = email;
+    props2Pass.token = token;
+  } else if (props.match.params.componentToRender) {
+    componentToRender = props.match.params.componentToRender;
   } else {
     componentToRender = 'SignIn';
   }
@@ -25,7 +31,7 @@ export default function Auth(props) {
   const Tag = ComponentsObject[componentToRender];
   return (
     <div className="setContentInline contentbgColor welcome">
-      <Tag />
+      <Tag props2Pass={props2Pass} />
     </div>
   );
 }

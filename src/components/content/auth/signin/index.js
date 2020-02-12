@@ -56,6 +56,7 @@ function SignIn(props) {
           Position: position
         };
         logUserIn(userObject);
+        setSpinner(false);
       })
       .catch((err) => {
         setSpinner(false);
@@ -76,10 +77,10 @@ function SignIn(props) {
       password
     })
       .then((res) => {
-        setSpinner(false);
         if (res && res.data && res.data.token) {
           loginSuccess(res.data.token);
         } else {
+          setSpinner(false);
           setLoginError('Sorry! Error in response');
         }
       })

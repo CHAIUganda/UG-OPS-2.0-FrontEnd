@@ -8,7 +8,10 @@ import './leaveNavbar.css';
 export default function LeaveNavbar({ changer }) {
   return (
     <div className="row leaveNavContainer">
-      <span className="col left">
+      <span
+        className="col left pointerCursor leaveHomeButton"
+        onClick={() => changer('LeaveHome')}
+      >
         Leave Management{' '}
         <IconContext.Provider
           value={{
@@ -23,8 +26,14 @@ export default function LeaveNavbar({ changer }) {
       <span className="col navItems" onClick={() => changer('Plan4Leave')}>
         Plan For Leave
       </span>
+      <span className="col navItems" onClick={() => changer('PlannedLeaves')}>
+        Planned Leaves
+      </span>
       <span className="col navItems" onClick={() => changer('Apply4Leave')}>
         Apply For Leave
+      </span>
+      <span className="col navItems" onClick={() => changer('LeavesTaken')}>
+        Leaves taken
       </span>
     </div>
   );
