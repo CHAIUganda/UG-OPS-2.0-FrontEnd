@@ -31,7 +31,6 @@ export default function Register() {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    console.log(contractType);
   };
 
   return (

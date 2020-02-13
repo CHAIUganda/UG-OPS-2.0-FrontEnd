@@ -36,8 +36,9 @@ function App(props) {
         )}
         <Route exact path="/" component={Welcome} />
         <Route path="/hr/:componentToRender" component={HR} />
-        <Route path="/auth/:componentToRender" component={Auth} />
+        <Route exact path="/auth/:componentToRender" component={Auth} />
 
+        <Route component={Welcome} />
         <Route component={PageNotFound} />
       </Switch>
     </HashRouter>

@@ -15,18 +15,19 @@
   border-radius: 0.3em;
 }
 
-.navItems:hover {
+.dropdownTop {
+  border: 0.1em solid darkblue;
+  margin: 1em;
+  border-radius: 0.3em;
+  width: 20.1em;
+}
+
+/* .navItems:hover {
   background-color: darkblue;
   color: white;
   cursor: pointer;
-}
+} */
 
-.leaveHomeButton {
-  border: 0.1em solid white;
-  border-radius: 0.3em;
-}
-
-.leaveHomeButton:hover {
-  border: 0.1em solid darkblue;
-  border-radius: 0.3em;
+.menuSizing {
+  width: 20em;
 }

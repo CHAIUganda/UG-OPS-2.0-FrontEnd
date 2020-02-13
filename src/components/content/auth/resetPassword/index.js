@@ -20,7 +20,9 @@ const matchDispatchToProps = {
   logUserIn: authActions.logUserIn
 };
 
-const mapStateToProps = () => ({ });
+const mapStateToProps = (state) => ({
+  token: state.auth.token
+});
 
 function ResetPassword({ logUserIn, props2Pass }) {
   if (!props2Pass && !props2Pass.email && !props2Pass.token) {
@@ -195,7 +197,8 @@ function ResetPassword({ logUserIn, props2Pass }) {
 
 ResetPassword.propTypes = {
   logUserIn: PropTypes.func,
-  props2Pass: PropTypes.object.isRequired
+  props2Pass: PropTypes.object.isRequired,
+  token: PropTypes.token,
 };
 
 export default connect(mapStateToProps, matchDispatchToProps)(ResetPassword);

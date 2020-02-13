@@ -1,5 +1,91 @@
-import React from 'react';
+import React, { useState } from 'react';
+// prettier-ignore
+import {
+  Form,
+  FormGroup,
+  /* Input, */
+  CustomInput,
+  InputGroup,
+  InputGroupAddon,
+  InputGroupText,
+  Spinner
+} from 'reactstrap';
+import Calendar from 'react-calendar';
+
+import './planForLeave.css';
 
 export default function Plan4Leave() {
-  return <div>Plan for leave</div>;
+  const [error] = useState('');
+  const [spinner, setSpinner] = useState(false);
+  const [category, setCategory] = useState('Annual');
+  // const [status] = useState('Planned');
+  const [startDate, setStartDate] = useState(new Date());
+  const [endDate, setEndDate] = useState(new Date());
+
+  const handleSubmit = () => {
+    setSpinner(true);
+  };
+
+  const buttonText = () => {
+    if (spinner) {
+      return (
+        <Spinner color="primary" style={{ width: '3rem', height: '3rem' }} />
+      );
+    }
+    return 'Submit';
+  };
+
+  return (
+    <div className="hrFormStyle">
+      <Form onSubmit={handleSubmit}>
+        <h5 className="hrHeading">Plan For Your Leave</h5>
+        {error && <div className="errorFeedback"> {error} </div>}
+        {/* Category */}
+        <FormGroup>
+          <InputGroup>
+            <InputGroupAddon addonType="prepend">
+              <InputGroupText>Category</InputGroupText>
+            </InputGroupAddon>
+            <CustomInput
+              type="select"
+              id="exampleCustomSelect"
+              name="customSelect"
+              value={category}
+              onChange={(e) => setCategory(e.target.value)}
+            >
+              <option value="Annual">Annual Leave</option>
+              <option value="Maternatiy">Maternity Leave</option>
+            </CustomInput>
+          </InputGroup>
+        </FormGroup>
+        {/*  Start Date */}
+        <FormGroup>
+          <InputGroup>
+            <InputGroupAddon addonType="prepend">
+              <InputGroupText>Start Date</InputGroupText>
+            </InputGroupAddon>
+            <Calendar
+              value={startDate}
+              onChange={(date) => setStartDate(date)}
+            />
+          </InputGroup>
+        </FormGroup>
+        {/*  End Date */}
+        <FormGroup>
+          <InputGroup>
+            <InputGroupAddon addonType="prepend">
+              <InputGroupText>End Date</InputGroupText>
+            </InputGroupAddon>
+            <Calendar value={endDate} onChange={(date) => setEndDate(date)} />
+          </InputGroup>
+        </FormGroup>
+        <div className="alert alert-info" role="alert">
+          You have chosen 4 days of leave
+        </div>
+        <button className="submitButton" type="submit">
+          {buttonText()}
+        </button>
+      </Form>
+    </div>
+  );
 }
