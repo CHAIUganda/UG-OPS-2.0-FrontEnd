@@ -2,12 +2,13 @@ export default {
   user: {
     email: '',
     token: 'iuiuiu',
-    gender: '',
+    gender: 'Male',
     internationalStaff: undefined,
     department: '',
     firstName: '',
     lastName: '',
-    Position: ''
+    Position: '',
+    supervisor: 'Mr xyz abc'
   },
   courses: []
 };

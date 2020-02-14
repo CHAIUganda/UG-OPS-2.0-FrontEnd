@@ -11,10 +11,16 @@ import {
   Spinner
 } from 'reactstrap';
 import Calendar from 'react-calendar';
+import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
 
 import './planForLeave.css';
 
-export default function Plan4Leave() {
+const mapStateToProps = (state) => ({
+  supervisor: state.auth.supervisor
+});
+
+function Plan4Leave({ supervisor }) {
   const [error] = useState('');
   const [spinner, setSpinner] = useState(false);
   const [category, setCategory] = useState('Annual');
@@ -22,7 +28,7 @@ export default function Plan4Leave() {
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
   const [comment, setComment] = useState('');
-  const [supervisor] = useState('Your supervisor');
+  const [supervisorName] = useState(supervisor);
 
   const handleSubmit = () => {
     setSpinner(true);
@@ -50,7 +56,7 @@ export default function Plan4Leave() {
             </InputGroupAddon>
             <Input
               type="text"
-              value={supervisor}
+              value={supervisorName}
               disabled
             />
           </InputGroup>
@@ -118,3 +124,9 @@ export default function Plan4Leave() {
     </div>
   );
 }
+
+Plan4Leave.propTypes = {
+  supervisor: PropTypes.string
+};
+
+export default connect(mapStateToProps)(Plan4Leave);
