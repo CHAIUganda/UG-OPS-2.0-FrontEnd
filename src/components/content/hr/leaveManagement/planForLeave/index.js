@@ -17,10 +17,11 @@ import PropTypes from 'prop-types';
 import './planForLeave.css';
 
 const mapStateToProps = (state) => ({
-  supervisor: state.auth.supervisor
+  supervisor: state.auth.supervisor,
+  gender: state.auth.gender
 });
 
-function Plan4Leave({ supervisor }) {
+function Plan4Leave({ supervisor, gender }) {
   const [error] = useState('');
   const [spinner, setSpinner] = useState(false);
   const [category, setCategory] = useState('Annual');
@@ -75,7 +76,9 @@ function Plan4Leave({ supervisor }) {
               onChange={(e) => setCategory(e.target.value)}
             >
               <option value="Annual">Annual Leave</option>
-              <option value="Maternatiy">Maternity Leave</option>
+              {gender === 'Female'
+              && <option value="Maternatiy">Maternity Leave</option>
+              }
             </CustomInput>
           </InputGroup>
         </FormGroup>
@@ -126,7 +129,8 @@ function Plan4Leave({ supervisor }) {
 }
 
 Plan4Leave.propTypes = {
-  supervisor: PropTypes.string
+  supervisor: PropTypes.string,
+  gender: PropTypes.string
 };
 
 export default connect(mapStateToProps)(Plan4Leave);
