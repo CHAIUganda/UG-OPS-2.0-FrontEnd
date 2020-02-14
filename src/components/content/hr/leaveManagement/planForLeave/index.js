@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import {
   Form,
   FormGroup,
-  /* Input, */
+  Input,
   CustomInput,
   InputGroup,
   InputGroupAddon,
@@ -21,6 +21,8 @@ export default function Plan4Leave() {
   // const [status] = useState('Planned');
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
+  const [comment, setComment] = useState('');
+  const [supervisor] = useState('Your supervisor');
 
   const handleSubmit = () => {
     setSpinner(true);
@@ -40,6 +42,19 @@ export default function Plan4Leave() {
       <Form onSubmit={handleSubmit}>
         <h5 className="hrHeading">Plan For Your Leave</h5>
         {error && <div className="errorFeedback"> {error} </div>}
+        {/* suoervisor */}
+        <FormGroup>
+          <InputGroup>
+            <InputGroupAddon addonType="prepend">
+              <InputGroupText>Supervisor</InputGroupText>
+            </InputGroupAddon>
+            <Input
+              type="text"
+              value={supervisor}
+              disabled
+            />
+          </InputGroup>
+        </FormGroup>
         {/* Category */}
         <FormGroup>
           <InputGroup>
@@ -56,6 +71,20 @@ export default function Plan4Leave() {
               <option value="Annual">Annual Leave</option>
               <option value="Maternatiy">Maternity Leave</option>
             </CustomInput>
+          </InputGroup>
+        </FormGroup>
+        {/* Comment */}
+        <FormGroup>
+          <InputGroup>
+            <InputGroupAddon addonType="prepend">
+              <InputGroupText>Comment</InputGroupText>
+            </InputGroupAddon>
+            <Input
+              placeholder="Optional"
+              type="text"
+              value={comment}
+              onChange={(e) => setComment(e.target.value)}
+            />
           </InputGroup>
         </FormGroup>
         {/*  Start Date */}
