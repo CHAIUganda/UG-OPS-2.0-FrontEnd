@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 // prettier-ignore
 import {
   Form,
@@ -26,12 +26,14 @@ function Plan4Leave({ supervisor, gender }) {
   const [spinner, setSpinner] = useState(false);
   const [category, setCategory] = useState('Annual');
   // const [status] = useState('Planned');
-  const [startDate, setStartDate] = useState(new Date());
-  const [endDate, setEndDate] = useState(new Date());
+  const [leaveDates, setLeaveDate] = useState();
   const [comment, setComment] = useState('');
   const [supervisorName] = useState(supervisor);
+  const [arrayOfLeaveDays, setArrayOfLeaveDays] = useState([]);
+  const [arrayOfWeekends, setArrayOfWeekends] = useState([]);
 
-  const handleSubmit = () => {
+  const handleSubmit = (event) => {
+    event.preventDefault();
     setSpinner(true);
   };
 
@@ -43,6 +45,59 @@ function Plan4Leave({ supervisor, gender }) {
     }
     return 'Submit';
   };
+
+  const arrayOfDays2Str = (arr) => {
+    if (arr.length === 0) {
+      return '';
+    }
+    return arr.map((arrDay, index) => (
+      <p key={index}> {arrDay.toDateString()} </p>
+    ));
+  };
+
+  const filterLeaveDays = (selectedDays) => {
+    const leaveDays = [];
+    const weekendDays = [];
+
+    selectedDays.forEach((day) => {
+      if (day.getDay() === 0 || day.getDay() === 6) {
+        weekendDays.push(day);
+      } else {
+        leaveDays.push(day);
+      }
+    });
+
+    return {
+      leaveDays,
+      weekendDays
+    };
+  };
+
+  const getLeaveDays = () => {
+    const arrayOfDays = [];
+    if (leaveDates) {
+      arrayOfDays.push(leaveDates[0]);
+      let start = leaveDates[0];
+      const end = leaveDates[1];
+      const firstDate = start.setDate(start.getDate());
+      /* wierd but works */
+      leaveDates[0] = new Date(firstDate);
+      start = new Date(firstDate);
+      while (start < end) {
+        arrayOfDays.push(start);
+        const newDate = start.setDate(start.getDate() + 1);
+        start = new Date(newDate);
+      }
+      arrayOfDays.pop();
+      const daysDetails = filterLeaveDays(arrayOfDays);
+      setArrayOfLeaveDays(daysDetails.leaveDays);
+      setArrayOfWeekends(daysDetails.weekendDays);
+    }
+  };
+
+  useEffect(() => {
+    getLeaveDays();
+  }, [leaveDates]);
 
   return (
     <div className="hrFormStyle">
@@ -96,29 +151,26 @@ function Plan4Leave({ supervisor, gender }) {
             />
           </InputGroup>
         </FormGroup>
-        {/*  Start Date */}
+        {/*  leave Date */}
         <FormGroup>
           <InputGroup>
             <InputGroupAddon addonType="prepend">
-              <InputGroupText>Start Date</InputGroupText>
+              <InputGroupText>Select Range of Leave</InputGroupText>
             </InputGroupAddon>
             <Calendar
-              value={startDate}
-              onChange={(date) => setStartDate(date)}
-            />
-          </InputGroup>
-        </FormGroup>
-        {/*  End Date */}
-        <FormGroup>
-          <InputGroup>
-            <InputGroupAddon addonType="prepend">
-              <InputGroupText>End Date</InputGroupText>
-            </InputGroupAddon>
-            <Calendar value={endDate} onChange={(date) => setEndDate(date)} />
+              value={leaveDates}
+              selectRange={true}
+              onChange={(date) => setLeaveDate(date)} />
           </InputGroup>
         </FormGroup>
         <div className="alert alert-info" role="alert">
-          You have chosen 4 days of leave
+          { arrayOfLeaveDays.length > 1
+          && <h5>You have selected {arrayOfLeaveDays.length} leave days</h5> }
+          {arrayOfDays2Str(arrayOfLeaveDays)}
+
+          {arrayOfWeekends.length > 1
+          && <h5>You have selected {arrayOfWeekends.length} Weekend days</h5> }
+          {arrayOfDays2Str(arrayOfWeekends)}
         </div>
         <button className="submitButton" type="submit">
           {buttonText()}
