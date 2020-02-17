@@ -8,7 +8,8 @@ export default {
     firstName: '',
     lastName: '',
     Position: '',
-    supervisor: 'Mr xyz abc'
+    supervisor: 'Mr xyz abc',
+    Admin: true
   },
   courses: []
 };

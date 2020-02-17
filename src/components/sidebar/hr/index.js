@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import { IoIosPeople } from 'react-icons/io';
+import { MdPerson } from 'react-icons/md';
 import { FaPlaneDeparture, FaFileContract, FaTractor } from 'react-icons/fa';
 
 import Arrow from '../arrow';
@@ -38,6 +39,12 @@ export default function HR(props) {
           link="/hr/WorkPermitRenewal"
           IcontoSet={FaTractor}
           textToSet="Work Permit Management"
+        />
+
+        <SubItem
+          link="/hr/HRSpecific"
+          IcontoSet={MdPerson}
+          textToSet="HR"
         />
       </div>
     </div>

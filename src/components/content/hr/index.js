@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import LeaveManagement from './leaveManagement';
 import ContractRenewal from './contractRenewal';
 import WorkPermitRenewal from './workPermitRenewal';
+import HRSpecific from './HRSpecific';
 
 export default function HR(props) {
   const { componentToRender } = props.match.params;
@@ -11,7 +12,8 @@ export default function HR(props) {
   const ComponentsObject = {
     LeaveManagement,
     ContractRenewal,
-    WorkPermitRenewal
+    WorkPermitRenewal,
+    HRSpecific
   };
 
   const Tag = ComponentsObject[componentToRender];
