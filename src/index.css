@@ -46,6 +46,15 @@ code {
   border-radius: 0.4em;
 }
 
+.successFeedback {
+  /* background-color: rgba(206, 17, 38, 0.05); */
+  background-color: #90ee90;
+  color: black;
+  padding: 1em;
+  margin: 1em;
+  border-radius: 0.4em;
+}
+
 .pointerCursor {
   cursor: pointer;
 }

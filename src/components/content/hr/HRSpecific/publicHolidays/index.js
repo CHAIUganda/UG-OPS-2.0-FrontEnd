@@ -23,24 +23,41 @@ export default function ManagePublicHolidays() {
   const [holidayName, setHolidayName] = useState('');
   const [tableSpinner, setTableSpinner] = useState(false);
   const [tableError, setTableError] = useState('');
+  const [formSuccessMessage, setFormSuccessMessage] = useState('');
 
   const handleSubmit = (event) => {
     event.preventDefault();
     setFormSpinner(true);
-    const x = publicHolidays;
-    x.push({
+    setFormError('');
+    setFormSuccessMessage('');
+    const endPoint = `${BASE_URL}hrApi/createPublicHoliday`;
+    const holiday = {
       name: holidayName,
       date
-    });
-    setPublicHolidays(x);
-    setFormSpinner(false);
-    setHolidayName('');
-    setDate('');
+    };
+
+    axios.post(endPoint, holiday)
+      .then(() => {
+        setFormSpinner(false);
+        setHolidayName('');
+        setDate('');
+        setPublicHolidays([...publicHolidays, holiday]);
+        setFormSuccessMessage(`${holiday.name} Created successfully`);
+      })
+      .catch((err) => {
+        setFormSpinner(false);
+        if (err && err.response && err.response.data && err.response.data.message) {
+          setFormError(err.response.data.message);
+        } else {
+          setFormError(err.message);
+        }
+      });
   };
 
   const handleChange = (event) => {
     event.preventDefault();
     setFormError('');
+    setFormSuccessMessage('');
     const { name, value } = event.target;
     if (name === 'holidayName') {
       setHolidayName(value);
@@ -64,6 +81,7 @@ export default function ManagePublicHolidays() {
       <Form onSubmit={handleSubmit}>
         <h3 className="signInHeading">Create a new Public Holiday</h3>
         {formError && <div className="errorFeedback"> {formError} </div>}
+        {formSuccessMessage && <div className="successFeedback"> {formSuccessMessage} </div>}
         <FormGroup>
           <InputGroup>
             <InputGroupAddon addonType="prepend">
@@ -123,7 +141,7 @@ export default function ManagePublicHolidays() {
         <tbody>
           {
             publicHolidays.map((holiday, index) => (
-              <tr key={index}>
+              <tr key={holiday._id}>
                 <th scope="row">{index + 1}</th>
                 <td>{holiday.name}</td>
                 <td>{holiday.date}</td>
