@@ -9,7 +9,6 @@ import {
   DropdownItem
 } from 'reactstrap';
 
-// import './leaveNavbar.css';
 
 export default function HRSpecificNav({ changer }) {
   const [dropdownOpen, setDropdownOpen] = useState(false);
