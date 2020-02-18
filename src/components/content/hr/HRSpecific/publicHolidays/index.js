@@ -37,11 +37,12 @@ export default function ManagePublicHolidays() {
     };
 
     axios.post(endPoint, holiday)
-      .then(() => {
+      .then((res) => {
+        // debugger;
         setFormSpinner(false);
         setHolidayName('');
         setDate('');
-        setPublicHolidays([...publicHolidays, holiday]);
+        setPublicHolidays([...publicHolidays, res.data.holidaytoSave]);
         setFormSuccessMessage(`${holiday.name} Created successfully`);
       })
       .catch((err) => {
@@ -50,6 +51,30 @@ export default function ManagePublicHolidays() {
           setFormError(err.response.data.message);
         } else {
           setFormError(err.message);
+        }
+      });
+  };
+
+  const handleDeleteHoliday = (event, id) => {
+    event.preventDefault();
+    // eslint-disable-next-line no-param-reassign
+    event.currentTarget.className = 'disappear';
+    // "btn btn-danger btn-sm"
+    setFormError('');
+    setFormSuccessMessage('');
+    const endPoint = `${BASE_URL}hrApi/removePublicHoliday`;
+    const holiday = { id };
+
+    axios.post(endPoint, holiday)
+      .then(() => {
+        const newHolidays = publicHolidays.filter((hol) => hol._id !== id);
+        setPublicHolidays(newHolidays);
+      })
+      .catch((err) => {
+        if (err && err.response && err.response.data && err.response.data.message) {
+          setTableError(err.response.data.message);
+        } else {
+          setTableError(err.message);
         }
       });
   };
@@ -145,7 +170,14 @@ export default function ManagePublicHolidays() {
                 <th scope="row">{index + 1}</th>
                 <td>{holiday.name}</td>
                 <td>{holiday.date}</td>
-                <td><button type="button" className="btn btn-danger btn-sm">Delete</button></td>
+                <td>
+                  <button
+                    type="button"
+                    className="btn btn-danger btn-sm"
+                    onClick={(event) => handleDeleteHoliday(event, holiday._id)}>
+                    Delete
+                  </button>
+                </td>
               </tr>
             ))
           }
