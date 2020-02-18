@@ -9,34 +9,38 @@ import {
   InputGroupText,
   Spinner
 } from 'reactstrap';
+import axios from 'axios';
+
+import { BASE_URL } from '../../../../../config';
 
 import './publicHolidays.css';
 
 export default function ManagePublicHolidays() {
   const [publicHolidays, setPublicHolidays] = useState([]);
-  const [spinner, setSpinner] = useState(false);
-  const [error, setError] = useState('');
+  const [formSpinner, setFormSpinner] = useState(false);
+  const [formError, setFormError] = useState('');
   const [date, setDate] = useState('');
   const [holidayName, setHolidayName] = useState('');
+  const [tableSpinner, setTableSpinner] = useState(false);
+  const [tableError, setTableError] = useState('');
 
   const handleSubmit = (event) => {
-    debugger;
     event.preventDefault();
-    setSpinner(true);
+    setFormSpinner(true);
     const x = publicHolidays;
     x.push({
       name: holidayName,
       date
     });
     setPublicHolidays(x);
-    setSpinner(false);
+    setFormSpinner(false);
     setHolidayName('');
     setDate('');
   };
 
   const handleChange = (event) => {
     event.preventDefault();
-    setError('');
+    setFormError('');
     const { name, value } = event.target;
     if (name === 'holidayName') {
       setHolidayName(value);
@@ -46,7 +50,7 @@ export default function ManagePublicHolidays() {
   };
 
   const buttonText = () => {
-    if (spinner) {
+    if (formSpinner) {
       return (
         <Spinner color="primary" style={{ width: '3rem', height: '3rem' }} />
       );
@@ -59,7 +63,7 @@ export default function ManagePublicHolidays() {
     <div className="SigninFormStyle">
       <Form onSubmit={handleSubmit}>
         <h3 className="signInHeading">Create a new Public Holiday</h3>
-        {error && <div className="errorFeedback"> {error} </div>}
+        {formError && <div className="errorFeedback"> {formError} </div>}
         <FormGroup>
           <InputGroup>
             <InputGroupAddon addonType="prepend">
@@ -97,24 +101,16 @@ export default function ManagePublicHolidays() {
     </div>
   );
 
-  useEffect(() => {
-    const x = [
-      {
-        name: 'xmass',
-        date: '25/12'
-      },
-      {
-        name: 'day 2',
-        date: '09/10'
-      }
-    ];
-    setPublicHolidays(x);
-  }, []);
+  const returnTable = () => {
+    if (tableError) {
+      return <div className="errorFeedback">{ tableError }</div>;
+    }
 
-  return (
-    <div>
-      <h2>Manage Public Holidays</h2>
-      {returnForm()}
+    if (tableSpinner) {
+      return <Spinner color="primary" style={{ width: '3rem', height: '3rem' }} />;
+    }
+
+    return (
       <table className="table holidaysTable">
         <thead className="thead-dark">
           <tr>
@@ -137,6 +133,33 @@ export default function ManagePublicHolidays() {
           }
         </tbody>
       </table>
+    );
+  };
+
+  useEffect(() => {
+    setTableSpinner(true);
+    setTableSpinner('');
+    const endPoint = `${BASE_URL}hrApi/getPublicHolidays`;
+    axios.get(endPoint)
+      .then((res) => {
+        setTableSpinner(false);
+        setPublicHolidays(res.data);
+      })
+      .catch((err) => {
+        setTableSpinner(false);
+        if (err && err.response && err.response.data && err.response.data.message) {
+          setTableError(err.response.data.message);
+        } else {
+          setTableError(err.message);
+        }
+      });
+  }, []);
+
+  return (
+    <div>
+      <h2>Manage Public Holidays</h2>
+      {returnForm()}
+      {returnTable()}
     </div>
   );
 }
