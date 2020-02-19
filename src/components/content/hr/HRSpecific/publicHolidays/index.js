@@ -38,7 +38,6 @@ export default function ManagePublicHolidays() {
 
     axios.post(endPoint, holiday)
       .then((res) => {
-        // debugger;
         setFormSpinner(false);
         setHolidayName('');
         setDate('');

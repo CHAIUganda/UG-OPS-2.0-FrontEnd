@@ -13,8 +13,10 @@ import {
 import Calendar from 'react-calendar';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
+import axios from 'axios';
+import moment from 'moment';
 
-
+import { BASE_URL } from '../../../../../config';
 import './planForLeave.css';
 
 const mapStateToProps = (state) => ({
@@ -32,6 +34,9 @@ function Plan4Leave({ supervisor, gender }) {
   const [supervisorName] = useState(supervisor);
   const [arrayOfLeaveDays, setArrayOfLeaveDays] = useState([]);
   const [arrayOfWeekends, setArrayOfWeekends] = useState([]);
+  const [arrayOfHolidays, setArrayOfHolidays] = useState([]);
+  const [publicHolidaysFeedback, setPublicHolidaysFeedback] = useState('');
+  const [holidays, setHolidays] = useState([]);
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -59,18 +64,37 @@ function Plan4Leave({ supervisor, gender }) {
   const filterLeaveDays = (selectedDays) => {
     const leaveDays = [];
     const weekendDays = [];
+    const holidayDays = [];
 
+    let check = true;
     selectedDays.forEach((day) => {
-      if (day.getDay() === 0 || day.getDay() === 6) {
+      check = true;
+      holidays.forEach((holiday) => {
+        let hol = `${new Date().getFullYear()}-${holiday.date.replace('/', '-').split('-')[1]}-${holiday.date.replace('/', '-').split('-')[0]}`;
+        let dDay = `${day.getFullYear()}-${day.getMonth() + 1}-${day.getDate()}`;
+        // const x = moment(hol).isSame(dDay);
+        // console.log(x);
+        // debugger;
+        hol = moment(new Date(hol));
+        dDay = moment(new Date(dDay));
+        if (check && moment(hol).isSame(dDay)) {
+          holidayDays.push(day);
+          check = false;
+        }
+      });
+
+      if (check && (day.getDay() === 0 || day.getDay() === 6)) {
         weekendDays.push(day);
-      } else {
+        check = false;
+      } else if (check) {
         leaveDays.push(day);
       }
     });
 
     return {
       leaveDays,
-      weekendDays
+      weekendDays,
+      holidayDays
     };
   };
 
@@ -93,12 +117,36 @@ function Plan4Leave({ supervisor, gender }) {
       const daysDetails = filterLeaveDays(arrayOfDays);
       setArrayOfLeaveDays(daysDetails.leaveDays);
       setArrayOfWeekends(daysDetails.weekendDays);
+      setArrayOfHolidays(daysDetails.holidayDays);
     }
   };
 
   useEffect(() => {
     getLeaveDays();
   }, [leaveDates]);
+
+  useEffect(() => {
+    setPublicHolidaysFeedback('Retrieving Public Holidays, Please wait ..... ');
+    const endPoint = `${BASE_URL}hrApi/getPublicHolidays`;
+    axios.get(endPoint)
+      .then((res) => {
+        setPublicHolidaysFeedback('');
+        setHolidays(res.data);
+      })
+      .catch((err) => {
+        if (err && err.response && err.response.data && err.response.data.message) {
+          setPublicHolidaysFeedback(err.response.data.message);
+        } else {
+          setPublicHolidaysFeedback(err.message);
+        }
+      });
+  }, []);
+
+  if (publicHolidaysFeedback) {
+    return <div className="alert alert-info" role="alert">
+      { publicHolidaysFeedback }
+    </div>;
+  }
 
   return (
     <div className="hrFormStyle">
@@ -165,13 +213,23 @@ function Plan4Leave({ supervisor, gender }) {
           </InputGroup>
         </FormGroup>
         <div className="alert alert-info" role="alert">
-          { arrayOfLeaveDays.length > 1
-          && <h5>You have selected {arrayOfLeaveDays.length} leave days</h5> }
-          {arrayOfDays2Str(arrayOfLeaveDays)}
+          { arrayOfLeaveDays.length > 0
+          && <>
+            <h5>You have selected {arrayOfLeaveDays.length} leave day(s)</h5>
+            { arrayOfDays2Str(arrayOfLeaveDays)}
+          </>}
 
-          {arrayOfWeekends.length > 1
-          && <h5>You have selected {arrayOfWeekends.length} Weekend days</h5> }
-          {arrayOfDays2Str(arrayOfWeekends)}
+          {arrayOfWeekends.length > 0
+          && <>
+            <h5>You have {arrayOfWeekends.length} Weekend day(s)</h5>
+            {arrayOfDays2Str(arrayOfWeekends)}
+          </> }
+
+          {arrayOfHolidays.length > 0
+          && <>
+            <h5>You have {arrayOfHolidays.length} Public Holiday(s)</h5>
+            {arrayOfDays2Str(arrayOfHolidays)}
+          </>}
         </div>
         <button className="submitButton" type="submit">
           {buttonText()}
