@@ -47,7 +47,7 @@ function HeaderRight({ logUserOut }) {
   return (
     <div className="inlineHeader headerRight">
       <span className="name">
-        AbelChrisAlexAndrewPaulGreen Oboth anotherVeryLongName
+          anotherVeryLongName
       </span>
       <div className="customDropdown">
         <Dropdown isOpen={dropdownOpen} toggle={toggle}>
