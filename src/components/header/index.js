@@ -13,7 +13,7 @@ const mapStateToProps = (state) => ({
 
 function Header({ token }) {
   if (token) {
-    return (<div className="headerDiv mt-3">
+    return (<div className="headerDiv pt-3">
       <div className="row">
         <div className="col-sm-4 green">
           <HeaderLeft />
