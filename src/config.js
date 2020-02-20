@@ -1,2 +1,2 @@
 /* eslint-disable import/prefer-default-export */
-export const BASE_URL = 'http://127.0.0.1:8080/';
+export const BASE_URL = 'http://45.79.187.217:3040/';

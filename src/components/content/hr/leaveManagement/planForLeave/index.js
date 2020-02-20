@@ -72,9 +72,6 @@ function Plan4Leave({ supervisor, gender }) {
       holidays.forEach((holiday) => {
         let hol = `${new Date().getFullYear()}-${holiday.date.replace('/', '-').split('-')[1]}-${holiday.date.replace('/', '-').split('-')[0]}`;
         let dDay = `${day.getFullYear()}-${day.getMonth() + 1}-${day.getDate()}`;
-        // const x = moment(hol).isSame(dDay);
-        // console.log(x);
-        // debugger;
         hol = moment(new Date(hol));
         dDay = moment(new Date(dDay));
         if (check && moment(hol).isSame(dDay)) {

@@ -1,7 +1,9 @@
 .headerRight {
-  /* margin-left: 3em; */
+  margin-left: 30%;
   text-align: right;
-  /* width: 30em; */
+  /* background-color: green; */
+  min-width: 30em;
+  /* margin-right: -10em; */
 }
 
 .userIcon {
@@ -10,10 +12,12 @@
 
 .name {
   color: darkblue;
-  padding-right: 0.8em;
+  /* margin-right: 1em; */
+  /* padding-right: 0.8em; */
 }
 
 .customDropdown {
   margin-top: -1.8em;
   margin-right: -2em;
+  /* margin-left: 4em; */
 }
