@@ -9,7 +9,6 @@ export default function HeaderMiddle() {
       <Link to="/">
         <span className="item ml-3 px-3 pb-2">HOME</span>
       </Link>
-      <span className="item ml-3 px-3 pb-2">MEDICINE</span>
       <span className="item ml-3 px-3 pb-2">UPDATES</span>
     </div>
   );
