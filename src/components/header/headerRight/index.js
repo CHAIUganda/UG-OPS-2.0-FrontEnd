@@ -49,7 +49,7 @@ function HeaderRight({ logUserOut }) {
       <span className="name mr-2 mt-2">
         Locust KatoBrendenKlop anotherVeryLongName
       </span>
-      <div className="customDropdown  float-right mr-2 mt-1">
+      <div className="customDropdown  float-right mr-2">
         <Dropdown isOpen={dropdownOpen} toggle={toggle}>
           <DropdownToggle tag={'span'}>{returnIcon()}</DropdownToggle>
           <DropdownMenu>
