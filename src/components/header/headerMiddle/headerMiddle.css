@@ -1,14 +1,11 @@
 .middleHeader {
-  margin-left: 14em;
-  width: 24em;
-  text-align: justify;
+ margin-left: 20%; 
 }
 
 .item {
-  margin-left: 0.8em;
   color: darkblue;
-  background-color: white;
-  padding: 0.95em;
+  border-radius: 5%;
+  /* background-color: green; */
 }
 
 .item:hover {
