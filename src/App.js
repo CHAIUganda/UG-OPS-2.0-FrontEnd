@@ -26,21 +26,23 @@ function App(props) {
   return (
     <HashRouter>
       <Header />
-      <Sidebar />
-      <Switch>
-        {!token && (
-          <Route
-            path="/"
-            render={(Routerprops) => <Auth {...Routerprops} isAuthed={false} />}
-          />
-        )}
-        <Route exact path="/" component={Welcome} />
-        <Route path="/hr/:componentToRender" component={HR} />
-        <Route exact path="/auth/:componentToRender" component={Auth} />
+      <div className="row">
+        <Sidebar />
+        <Switch>
+          {!token && (
+            <Route
+              path="/"
+              render={(Routerprops) => <Auth {...Routerprops} isAuthed={false} />}
+            />
+          )}
+          <Route exact path="/" component={Welcome} />
+          <Route path="/hr/:componentToRender" component={HR} />
+          <Route exact path="/auth/:componentToRender" component={Auth} />
 
-        <Route component={Welcome} />
-        <Route component={PageNotFound} />
-      </Switch>
+          <Route component={Welcome} />
+          <Route component={PageNotFound} />
+        </Switch>
+      </div>
     </HashRouter>
   );
 }

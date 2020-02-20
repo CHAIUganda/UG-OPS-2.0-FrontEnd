@@ -5,17 +5,20 @@
   left: 0;
   width: 100%;
   background-color: white;
-  height: 3.6em;
 }
 
 .inlineHeader {
-  display: inline-block;
-  vertical-align: top;
-  padding-top: 0.6em;
-  font-size: 115%;
+  /* display: inline-block;
+  vertical-align: top; */
+  /* padding-top: 0.6em; */
+  /* font-size: 115%; */
   /* background-color: green; */
 }
 
 .MiddleAndRightHeaderContainer {
   visibility: hidden;
+}
+
+.green2 {
+  /* background-color: yellowgreen; */
 }

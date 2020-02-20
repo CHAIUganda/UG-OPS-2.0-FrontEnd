@@ -39,7 +39,7 @@ function Sidebar(props) {
   };
 
   return (
-    <div className="setSideBarInline sidebgColor fixeSidebar">
+    <div className="setSideBarInline sidebgColor col-3 ml-3 position-fixed">
       <div className={`${token ? '' : 'sidebarContainer'}`}>
         <div className="navContainer">
           <HR toggle={hrToggle} onClick={handleHrToggle} />
@@ -50,7 +50,7 @@ function Sidebar(props) {
             onClick={handleProcurementToggle}
           />
         </div>
-        <div className="navContainer">
+        <div className="navContainer ">
           <Finance toggle={financeToggle} onClick={handleFinanceToggle} />
         </div>
       </div>

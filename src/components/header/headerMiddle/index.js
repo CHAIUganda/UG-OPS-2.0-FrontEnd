@@ -5,12 +5,11 @@ import './headerMiddle.css';
 
 export default function HeaderMiddle() {
   return (
-    <div className="inlineHeader middleHeader">
+    <div className="middleHeader">
       <Link to="/">
-        <span className="item">HOME</span>
+        <span className="item ml-3 px-3 pb-2">HOME</span>
       </Link>
-      <span className="item">MEDICINE</span>
-      <span className="item">UPDATES</span>
+      <span className="item ml-3 px-3 pb-2">UPDATES</span>
     </div>
   );
 }

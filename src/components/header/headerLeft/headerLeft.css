@@ -1,17 +1,6 @@
 .headerLeft {
-  margin-left: 1.5em;
   color: darkblue;
   background-color: white;
   cursor: pointer;
-}
-
-/* .headerLeft:hover {
-  border: 0.09em solid darkblue;
-} */
-
-.inlineLogo {
-  display: inline-block;
-  vertical-align: top;
-  padding-bottom: 0.9em;
 }
 
