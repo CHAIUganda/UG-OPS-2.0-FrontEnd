@@ -8,8 +8,6 @@ export default function Welcome() {
     <div className="setContentInline contentbgColor welcome">
       <div className="row">
         <div className="col-12">
-          <h1>You are welcome, to</h1>
-          <h2>UG OPS 2.0</h2>
           <div className="imageDiv">
             <img src={chai} alt="logo" className="img-fluid"/>
           </div>

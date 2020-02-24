@@ -12,8 +12,8 @@
   width: 45%;
   margin-right:auto;
   margin-left: auto;
-  margin-top: 10%;
+  margin-top: 14%;
 }
 .imageDiv img {
-  filter: blur(1.5px);
+  filter: blur(1.9px);
 }
