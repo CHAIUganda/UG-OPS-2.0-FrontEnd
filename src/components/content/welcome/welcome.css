@@ -1,6 +1,7 @@
 .welcome {
   color: darkblue;
   padding-top: 1em;
+  width: 50%;
 }
 
 .welcomeLogo {
@@ -8,5 +9,5 @@
 }
 
 .welcomeImg{
-  height: 5%;
+  /* height: 5%; */
 }
