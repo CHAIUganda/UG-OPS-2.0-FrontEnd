@@ -1,23 +1,23 @@
 .SigninFormStyle {
   width: 45%;
   margin: 3em auto 0em auto;
-  border: 0.1em solid darkblue;
+  border: 0.1em solid #003366;
   padding: 5em 5em 1em 5em;
   border-radius: 0.3em;
 }
 
 .submitButton {
-  background-color: darkblue;
+  background-color: #003366;
   color: white;
   padding: 0.5em;
   border-radius: 0.3em;
-  border: 0.1em solid darkblue;
+  border: 0.1em solid #003366;
 }
 
 .submitButton:hover {
   background-color: white;
-  color: darkblue;
-  border: 0.1em solid darkblue;
+  color: #003366;
+  border: 0.1em solid #003366;
 }
 
 .signInHeading {
@@ -31,5 +31,5 @@
 
 .cursorClass {
   cursor: pointer;
-  color: darkblue;
+  color: #003366;
 }

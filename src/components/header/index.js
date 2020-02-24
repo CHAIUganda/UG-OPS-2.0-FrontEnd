@@ -15,13 +15,13 @@ function Header({ token }) {
   if (token) {
     return (<div className="headerDiv pt-3">
       <div className="row">
-        <div className="col-sm-4 green">
+        <div className="col-sm-3 green">
           <HeaderLeft />
         </div>
-        <div className="col-sm-2 green">
+        <div className="col-sm-5 green">
           <HeaderMiddle />
         </div>
-        <div className="col-sm-6 green2">
+        <div className="col-sm-4 green2">
           <HeaderRight />
         </div>
       </div>

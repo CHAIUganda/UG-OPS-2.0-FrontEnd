@@ -8,13 +8,13 @@ import './subItem.css';
 
 export default function SubItem(props) {
   const { link, IcontoSet, textToSet } = props;
-  const [color, setColor] = useState('white');
+  const [color, setColor] = useState('blueText');
 
   const handleHover = (hover) => {
     if (hover) {
-      setColor('#003366');
-    } else {
       setColor('white');
+    } else {
+      setColor('#003366');
     }
   };
 
@@ -24,14 +24,14 @@ export default function SubItem(props) {
       onMouseLeave={() => handleHover(false)}
     >
       <Link to={link}>
-        <p
-          className={`${
+        <span
+          className={`pr-2 pb-2 ${
             color === 'white' ? 'whiteText' : 'blueText'
           } generalStyles`}
         >
           <Icon icon={() => <IcontoSet />} color={color} />
           <span>{textToSet}</span>
-        </p>
+        </span>
       </Link>
     </span>
   );

@@ -33,7 +33,7 @@ function HeaderRight({ logUserOut }) {
   const returnIcon = () => (
     <IconContext.Provider
       value={{
-        color: 'darkblue',
+        color: '#003366',
         size: '2em',
         className: 'global-class-name'
       }}
