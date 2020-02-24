@@ -3,13 +3,13 @@
 }
 
 .item {
-  color: darkblue;
+  color: #003366;
   border-radius: 5%;
   /* background-color: green; */
 }
 
 .item:hover {
   color: white;
-  background-color: darkblue;
+  background-color: #003366;
   cursor: pointer;
 }

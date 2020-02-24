@@ -40,18 +40,23 @@ function Sidebar(props) {
 
   return (
     <div className="setSideBarInline sidebgColor col-3 ml-3 position-fixed">
-      <div className={`${token ? '' : 'sidebarContainer'}`}>
-        <div className="navContainer">
-          <HR toggle={hrToggle} onClick={handleHrToggle} />
-        </div>
-        <div className="navContainer">
-          <Procurement
-            toggle={procurementToggle}
-            onClick={handleProcurementToggle}
-          />
-        </div>
-        <div className="navContainer ">
-          <Finance toggle={financeToggle} onClick={handleFinanceToggle} />
+      <div className="row">
+        <div className="col-12">
+          <div className={`${token ? '' : 'sidebarContainer'}`}>
+            <h3 className="text-center">Human Resource</h3>
+            <div className="navContainer">
+              <HR toggle={hrToggle} onClick={handleHrToggle} />
+            </div>
+            <div>
+              <Procurement
+                toggle={procurementToggle}
+                onClick={handleProcurementToggle}
+              />
+            </div>
+            <div>
+              <Finance toggle={financeToggle} onClick={handleFinanceToggle} />
+            </div>
+          </div>
         </div>
       </div>
     </div>

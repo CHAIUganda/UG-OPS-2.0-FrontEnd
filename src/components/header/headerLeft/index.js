@@ -9,7 +9,6 @@ export default function HeaderLeft() {
     <Link to="/">
       <div className="headerLeft row ml-1">
         <img src={chai} alt="logo" height="50" />
-        <p className="pt-2 hoverStyle">CHAI UG-OPS 2.0</p>
       </div>
     </Link>
   );

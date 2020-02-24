@@ -1,7 +1,7 @@
 .hrFormStyle {
   width: 65%;
   margin: 0em auto 2em auto;
-  border: 0.1em solid darkblue;
+  border: 0.1em solid #003366;
   padding: 3em 2em 1em 2em;
   border-radius: 0.3em;
 }
@@ -12,16 +12,16 @@
 }
 
 .submitButton {
-  background-color: darkblue;
+  background-color: #003366;
   color: white;
   padding: 0.5em;
   border-radius: 0.3em;
-  border: 0.1em solid darkblue;
+  border: 0.1em solid #003366;
 }
 
 .submitButton:hover {
   background-color: white;
-  color: darkblue;
-  border: 0.1em solid darkblue;
+  color: #003366;
+  border: 0.1em solid #003366;
 }
 

@@ -10,20 +10,20 @@
 
 .navItems {
   padding: 0.7em;
-  border: 0.1em solid darkblue;
+  border: 0.1em solid #003366;
   margin: 1em;
   border-radius: 0.3em;
 }
 
 .dropdownTop {
-  border: 0.1em solid darkblue;
+  border: 0.1em solid #003366;
   margin: 1em;
   border-radius: 0.3em;
   width: 20.1em;
 }
 
 /* .navItems:hover {
-  background-color: darkblue;
+  background-color: #003366;
   color: white;
   cursor: pointer;
 } */

@@ -23,11 +23,11 @@ export default function LeaveNavbar({ changer }) {
       <span className="col ">
         <div className="dropdownTop">
           <Dropdown isOpen={dropdownOpen} toggle={toggle}>
-            <DropdownToggle className={'menuSizing'} color={'darkblue'}>
+            <DropdownToggle className={'menuSizing'} color={'#003366'}>
               Leave Management Submodules{' '}
               <IconContext.Provider
                 value={{
-                  color: 'darkblue',
+                  color: '#003366',
                   size: '2em',
                   className: 'global-class-name'
                 }}
