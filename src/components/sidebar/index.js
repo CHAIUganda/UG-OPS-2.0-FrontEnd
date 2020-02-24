@@ -47,13 +47,13 @@ function Sidebar(props) {
             <div className="navContainer">
               <HR toggle={hrToggle} onClick={handleHrToggle} />
             </div>
-            <div className="navContainer">
+            <div>
               <Procurement
                 toggle={procurementToggle}
                 onClick={handleProcurementToggle}
               />
             </div>
-            <div className="navContainer ">
+            <div>
               <Finance toggle={financeToggle} onClick={handleFinanceToggle} />
             </div>
           </div>

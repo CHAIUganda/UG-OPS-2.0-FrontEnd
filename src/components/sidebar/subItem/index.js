@@ -3,11 +3,10 @@ import { Link } from 'react-router-dom';
 // import { FaPlaneDeparture } from 'react-icons/fa';
 import PropTypes from 'prop-types';
 
-import Icon from '../icon';
 import './subItem.css';
 
 export default function SubItem(props) {
-  const { link, IcontoSet, textToSet } = props;
+  const { link, textToSet } = props;
   const [color, setColor] = useState('white');
 
   const handleHover = (hover) => {
@@ -29,7 +28,6 @@ export default function SubItem(props) {
             color === 'white' ? 'whiteText' : 'blueText'
           } generalStyles`}
         >
-          <Icon icon={() => <IcontoSet />} color={color} />
           <span>{textToSet}</span>
         </p>
       </Link>

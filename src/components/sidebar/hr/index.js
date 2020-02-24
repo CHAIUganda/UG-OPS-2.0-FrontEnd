@@ -1,28 +1,18 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { IoIosPeople } from 'react-icons/io';
 import { MdPerson } from 'react-icons/md';
 import { FaPlaneDeparture, FaFileContract, FaTractor } from 'react-icons/fa';
 
-import Arrow from '../arrow';
-import Icon from '../icon';
 import SubItem from '../subItem';
 
-export default function HR(props) {
-  const { toggle, onClick } = props;
+export default function HR() {
   return (
     <div>
-      <p onClick={onClick} className="sidebTopNav">
-        <Icon icon={() => <IoIosPeople />} />
-        Human Resource
-        <Arrow toggle={toggle} />
+      <p className="sidebTopNav">
+        <FaPlaneDeparture /> Leave
       </p>
-      <div
-        className={`sidebarDropdownContent ${
-          toggle ? 'showContent' : 'dntShowContent'
-        }`}
-      >
+      <div className='showContent'>
         <SubItem
           link="/hr/LeaveManagement"
           IcontoSet={FaPlaneDeparture}
