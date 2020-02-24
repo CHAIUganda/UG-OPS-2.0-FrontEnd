@@ -8,6 +8,12 @@
   margin-top: 2em;
 }
 
-.welcomeImg{
-  /* height: 5%; */
+.imageDiv{
+  width: 45%;
+  margin-right:auto;
+  margin-left: auto;
+  margin-top: 10%;
+}
+.imageDiv img {
+  filter: blur(1.5px);
 }
