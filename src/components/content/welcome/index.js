@@ -6,10 +6,14 @@ import './welcome.css';
 export default function Welcome() {
   return (
     <div className="setContentInline contentbgColor welcome">
-      <h1>You are welcome, to</h1>
-      <h2>UG OPS 2.0</h2>
-      <div className='welcomeImg'>
-        <img src={chai} alt="logo" height="400" />
+      <div className="row">
+        <div className="col-12">
+          <h1>You are welcome, to</h1>
+          <h2>UG OPS 2.0</h2>
+          <div className='welcomeImg'>
+            <img src={chai} alt="logo" className="img-fluid"/>
+          </div>
+        </div>
       </div>
     </div>
   );
