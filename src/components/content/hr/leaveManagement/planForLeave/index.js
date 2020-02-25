@@ -52,12 +52,19 @@ function Plan4Leave({ supervisor, gender }) {
     return 'Submit';
   };
 
-  const arrayOfDays2Str = (arr) => {
+  const arrayOfDays2Str = (arr, type) => {
     if (arr.length === 0) {
       return '';
     }
+
+    if (type === 'holiday') {
+      return arr.map((arrDay, index) => (
+        <p key={index}>  {arrDay.name}  {'  '} {arrDay.day.toDateString()} </p>
+      ));
+    }
+
     return arr.map((arrDay, index) => (
-      <p key={index}> {arrDay.toDateString()} </p>
+      <p key={index}>{arrDay.toDateString()} </p>
     ));
   };
 
@@ -75,7 +82,10 @@ function Plan4Leave({ supervisor, gender }) {
         hol = moment(new Date(hol));
         dDay = moment(new Date(dDay));
         if (check && moment(hol).isSame(dDay)) {
-          holidayDays.push(day);
+          holidayDays.push({
+            day,
+            name: holiday.name
+          });
           check = false;
         }
       });
@@ -226,7 +236,7 @@ function Plan4Leave({ supervisor, gender }) {
           {arrayOfHolidays.length > 0
           && <>
             <h5>You have {arrayOfHolidays.length} Public Holiday(s)</h5>
-            {arrayOfDays2Str(arrayOfHolidays)}
+            {arrayOfDays2Str(arrayOfHolidays, 'holiday')}
           </>}
         </div>
         <button className="submitButton" type="submit">
