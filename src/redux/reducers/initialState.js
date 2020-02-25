@@ -11,5 +11,9 @@ export default {
     supervisor: 'Mr xyz abc',
     Admin: true
   },
+  sideBar: {
+    active: null,
+    section: null
+  },
   courses: []
 };

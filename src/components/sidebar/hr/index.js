@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import { MdPerson } from 'react-icons/md';
-import { FaPlaneDeparture, FaFileContract, FaTractor } from 'react-icons/fa';
+import { FaPlaneDeparture, FaFileContract, FaLaptopCode } from 'react-icons/fa';
 
 import SubItem from '../subItem';
 
@@ -13,28 +13,35 @@ export default function HR() {
         <FaPlaneDeparture /> Leave
       </p>
       <div className='showContent'>
+
         <SubItem
-          link="/hr/LeaveManagement"
-          IcontoSet={FaPlaneDeparture}
-          textToSet="Leave Management"
+          link="/hr/Plan4Leave"
+          textToSet="Plan Leave"
         />
 
         <SubItem
-          link="/hr/ContractRenewal"
-          IcontoSet={FaFileContract}
-          textToSet="Contract Management"
+          link="/hr/Apply4Leave"
+          textToSet="Apply For Leave"
         />
+      </div>
 
-        <SubItem
-          link="/hr/WorkPermitRenewal"
-          IcontoSet={FaTractor}
-          textToSet="Work Permit Management"
-        />
+      <p className="sidebTopNav">
+        <FaFileContract /> Contract
+      </p>
+      <div className='showContent'></div>
 
+      <p className="sidebTopNav">
+        <FaLaptopCode /> Work Permit
+      </p>
+      <div className='showContent'></div>
+
+      <p className="sidebTopNav">
+        <MdPerson /> HR Specific
+      </p>
+      <div className='showContent'>
         <SubItem
-          link="/hr/HRSpecific"
-          IcontoSet={MdPerson}
-          textToSet="HR"
+          link="/hr/ManagePublicHolidays"
+          textToSet="Public Holidays"
         />
       </div>
     </div>

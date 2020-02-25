@@ -154,7 +154,7 @@ export default function ManagePublicHolidays() {
 
     return (
       <table className="table holidaysTable">
-        <thead className="thead-dark">
+        <thead>
           <tr>
             <th scope="col">#</th>
             <th scope="col">Name</th>

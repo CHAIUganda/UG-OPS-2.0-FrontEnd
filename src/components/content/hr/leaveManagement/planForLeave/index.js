@@ -141,7 +141,8 @@ function Plan4Leave({ supervisor, gender }) {
 
   if (publicHolidaysFeedback) {
     return <div className="alert alert-info" role="alert">
-      { publicHolidaysFeedback }
+      <Spinner color="primary" style={{ width: '3rem', height: '3rem' }} />
+      {'         '} { publicHolidaysFeedback }
     </div>;
   }
 
