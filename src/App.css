@@ -17,3 +17,8 @@
   box-shadow: 0 6px 18px rgba(5, 5, 5, 0.3);
   text-align: center;
 }
+
+thead{
+  background-color: #003366;
+  color: white;
+}

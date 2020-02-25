@@ -9,11 +9,12 @@
 }
 
 .imageDiv{
-  width: 45%;
+  width: 50%;
   margin-right:auto;
   margin-left: auto;
   margin-top: 14%;
 }
 .imageDiv img {
-  filter: blur(1.9px);
+  /* filter: blur(1.9px); */
+  opacity: 0.4;
 }
