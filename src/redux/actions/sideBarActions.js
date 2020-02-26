@@ -15,7 +15,6 @@ export const changeActive = (activeItem) => (dispatch) => {
     type: types.CHANGE_ACTIVE,
     sideBar: {
       active: activeItem,
-      section: undefined
     }
   });
 };

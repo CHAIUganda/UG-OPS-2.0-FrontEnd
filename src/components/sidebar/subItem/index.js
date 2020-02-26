@@ -5,7 +5,6 @@ import PropTypes from 'prop-types';
 import './subItem.css';
 
 export default function SubItem({ link, textToSet, active }) {
-  debugger;
   return (
     <span>
       <Link to={link}>

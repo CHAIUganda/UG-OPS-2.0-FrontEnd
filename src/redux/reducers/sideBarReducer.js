@@ -11,6 +11,7 @@ const sideBarReducer = (state = initialState.sideBar, action) => {
 
   case types.CHANGE_ACTIVE:
     return {
+      ...state,
       ...action.sideBar
     };
 
