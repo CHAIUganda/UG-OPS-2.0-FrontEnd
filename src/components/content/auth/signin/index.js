@@ -117,6 +117,7 @@ function SignIn(props) {
     <div className="SigninFormStyle">
       <Form onSubmit={handleSubmit}>
         <h3 className="signInHeading">Sign In</h3>
+        <p>Just click submit to preview</p>
         {loginError && <div className="errorFeedback"> {loginError} </div>}
         <FormGroup>
           <InputGroup>

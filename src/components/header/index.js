@@ -27,15 +27,19 @@ function Header({ token }) {
       </div>
     </div>);
   }
-  return (
-    <div className="headerDiv">
-      <HeaderLeft />
-      <div className='MiddleAndRightHeaderContainer'>
+  return (<div className="headerDiv pt-3">
+    <div className="row">
+      <div className="col-sm-1">
+        <HeaderLeft />
+      </div>
+      <div className="col-sm-6 text-right invisible">
         <HeaderMiddle />
+      </div>
+      <div className="col-sm-5 invisible">
         <HeaderRight />
       </div>
     </div>
-  );
+  </div>);
 }
 
 Header.propTypes = {

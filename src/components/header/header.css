@@ -19,6 +19,10 @@
   visibility: hidden;
 }
 
+.invisible {
+  visibility: hidden;
+}
+
 .green2 {
   /* background-color: yellowgreen; */
 }
