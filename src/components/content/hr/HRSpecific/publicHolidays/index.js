@@ -10,6 +10,7 @@ import {
   Spinner
 } from 'reactstrap';
 import axios from 'axios';
+import Calendar from 'react-calendar';
 
 import { BASE_URL } from '../../../../../config';
 
@@ -19,11 +20,11 @@ export default function ManagePublicHolidays() {
   const [publicHolidays, setPublicHolidays] = useState([]);
   const [formSpinner, setFormSpinner] = useState(false);
   const [formError, setFormError] = useState('');
-  const [date, setDate] = useState('');
   const [holidayName, setHolidayName] = useState('');
   const [tableSpinner, setTableSpinner] = useState(false);
   const [tableError, setTableError] = useState('');
   const [formSuccessMessage, setFormSuccessMessage] = useState('');
+  const [newDate, setNewDate] = useState('');
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -31,16 +32,20 @@ export default function ManagePublicHolidays() {
     setFormError('');
     setFormSuccessMessage('');
     const endPoint = `${BASE_URL}hrApi/createPublicHoliday`;
+    if (!newDate) {
+      setFormError('Please select a date to continue');
+      return;
+    }
     const holiday = {
       name: holidayName,
-      date
+      date: `${newDate.getDate()}/${newDate.getMonth() + 1}`
     };
 
     axios.post(endPoint, holiday)
       .then((res) => {
         setFormSpinner(false);
         setHolidayName('');
-        setDate('');
+        setNewDate();
         setPublicHolidays([...publicHolidays, res.data.holidaytoSave]);
         setFormSuccessMessage(`${holiday.name} Created successfully`);
       })
@@ -85,9 +90,14 @@ export default function ManagePublicHolidays() {
     const { name, value } = event.target;
     if (name === 'holidayName') {
       setHolidayName(value);
-    } else {
-      setDate(value);
     }
+  };
+
+  const handleDateChange = (d) => {
+    setFormSpinner(false);
+    setFormError('');
+    setFormSuccessMessage('');
+    setNewDate(d);
   };
 
   const buttonText = () => {
@@ -101,7 +111,7 @@ export default function ManagePublicHolidays() {
 
 
   const returnForm = () => (
-    <div className="SigninFormStyle">
+    <div className="PublicFormStyle">
       <Form onSubmit={handleSubmit}>
         <h3 className="signInHeading">Create a new Public Holiday</h3>
         {formError && <div className="errorFeedback"> {formError} </div>}
@@ -124,15 +134,11 @@ export default function ManagePublicHolidays() {
         <FormGroup>
           <InputGroup>
             <InputGroupAddon addonType="prepend">
-              <InputGroupText>date (DD/MM)</InputGroupText>
+              <InputGroupText>date</InputGroupText>
             </InputGroupAddon>
-            <Input
-              placeholder="DD/MM"
-              type="text"
-              value={date}
-              onChange={handleChange}
-              required
-              name="date"
+            <Calendar
+              onChange={handleDateChange}
+              value={newDate}
             />
           </InputGroup>
         </FormGroup>

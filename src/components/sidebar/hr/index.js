@@ -59,10 +59,13 @@ function HR({ changeActive, active }) {
         <MdPerson /> HR Specific
       </p>
       <div className='showContent'>
-        <SubItem
-          link="/hr/ManagePublicHolidays"
-          textToSet="Public Holidays"
-        />
+        <span onClick={() => handleChangeActive('ManagePublicHolidays')}>
+          <SubItem
+            link="/hr/ManagePublicHolidays"
+            textToSet="Public Holidays"
+            active={active === 'ManagePublicHolidays'}
+          />
+        </span>
       </div>
     </div>
   );
