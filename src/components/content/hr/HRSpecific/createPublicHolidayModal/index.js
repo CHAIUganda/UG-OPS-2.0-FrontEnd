@@ -19,14 +19,13 @@ import Calendar from 'react-calendar';
 
 import { BASE_URL } from '../../../../../config';
 
-const CreateNewPublicHoliday = () => {
+const CreateNewPublicHoliday = ({ onNewPHoliday }) => {
   const [modal, setModal] = useState(false);
   const [formError, setFormError] = useState('');
   const [formSuccessMessage, setFormSuccessMessage] = useState('');
   const [formSpinner, setFormSpinner] = useState(false);
   const [newDate, setNewDate] = useState('');
   const [holidayName, setHolidayName] = useState('');
-  const [publicHolidays, setPublicHolidays] = useState([]);
 
   const toggle = () => setModal(!modal);
 
@@ -51,7 +50,7 @@ const CreateNewPublicHoliday = () => {
         setFormSpinner(false);
         setHolidayName('');
         setNewDate();
-        setPublicHolidays([...publicHolidays, res.data.holidaytoSave]);
+        onNewPHoliday(res.data.holidaytoSave);
         setFormSuccessMessage(`${holiday.name} Created successfully`);
       })
       .catch((err) => {

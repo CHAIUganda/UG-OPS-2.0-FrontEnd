@@ -1,9 +1,9 @@
 export default {
   user: {
     email: '',
-    token: 'iuiuiu',
-    gender: 'Male',
-    internationalStaff: undefined,
+    token: '',
+    gender: '',
+    internationalStaff: null,
     department: '',
     firstName: '',
     lastName: '',
