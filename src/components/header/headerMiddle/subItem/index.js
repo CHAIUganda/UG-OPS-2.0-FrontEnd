@@ -26,7 +26,7 @@ export default function SubItem(props) {
       <Link to={link}>
         <span
           className={`pb-2 ${
-            color === 'white' ? 'whiteText' : 'blueText'
+            color === 'white' ? 'whiteTextHeader' : 'blueTextHeader'
           } generalStyles`}
         >
           <Icon icon={() => <IcontoSet />} color={color} />

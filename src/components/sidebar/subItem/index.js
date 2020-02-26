@@ -1,33 +1,14 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
-// import { FaPlaneDeparture } from 'react-icons/fa';
 import PropTypes from 'prop-types';
 
 import './subItem.css';
 
-export default function SubItem(props) {
-  const { link, textToSet } = props;
-  const [color, setColor] = useState('white');
-
-  const handleHover = (hover) => {
-    if (hover) {
-      setColor('#003366');
-    } else {
-      setColor('white');
-    }
-  };
-
+export default function SubItem({ link, textToSet, active }) {
   return (
-    <span
-      onMouseEnter={() => handleHover(true)}
-      onMouseLeave={() => handleHover(false)}
-    >
+    <span>
       <Link to={link}>
-        <p
-          className={`${
-            color === 'white' ? 'whiteText' : 'blueText'
-          } generalStyles`}
-        >
+        <p className={`${active ? 'blueText' : 'whiteText'} generalStyles`}>
           <span>{textToSet}</span>
         </p>
       </Link>
@@ -38,5 +19,6 @@ export default function SubItem(props) {
 SubItem.propTypes = {
   link: PropTypes.string.isRequired,
   IcontoSet: PropTypes.any.isRequired,
-  textToSet: PropTypes.string.isRequired
+  textToSet: PropTypes.string.isRequired,
+  active: PropTypes.bool.isRequired
 };

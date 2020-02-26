@@ -1,9 +1,9 @@
-.whiteText {
+.whiteTextHeader {
   color: white;
   background-color: #003366;
 }
 
-.blueText {
+.blueTextHeader {
   color: #003366;
   background-color: white;
 }

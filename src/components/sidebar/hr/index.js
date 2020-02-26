@@ -1,28 +1,48 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-
+import { connect } from 'react-redux';
 import { MdPerson } from 'react-icons/md';
 import { FaPlaneDeparture, FaFileContract, FaLaptopCode } from 'react-icons/fa';
 
+import * as sideBarActions from '../../../redux/actions/sideBarActions';
+
+
 import SubItem from '../subItem';
 
-export default function HR() {
+const matchDispatchToProps = {
+  changeActive: sideBarActions.changeActive
+};
+
+const mapStateToProps = (state) => ({
+  active: state.sideBar.active
+});
+
+function HR({ changeActive, active }) {
+  const handleChangeActive = (toMakeActive) => {
+    changeActive(toMakeActive);
+  };
+
   return (
     <div>
       <p className="sidebTopNav">
         <FaPlaneDeparture /> Leave
       </p>
       <div className='showContent'>
+        <span onClick={() => handleChangeActive('Plan4Leave')}>
+          <SubItem
+            link="/hr/Plan4Leave"
+            textToSet="Plan Leave"
+            active={active === 'Plan4Leave'}
+          />
+        </span>
 
-        <SubItem
-          link="/hr/Plan4Leave"
-          textToSet="Plan Leave"
-        />
-
-        <SubItem
-          link="/hr/Apply4Leave"
-          textToSet="Apply For Leave"
-        />
+        <span onClick={() => handleChangeActive('Apply4Leave')}>
+          <SubItem
+            link="/hr/Apply4Leave"
+            textToSet="Apply For Leave"
+            active={active === 'Apply4Leave'}
+          />
+        </span>
       </div>
 
       <p className="sidebTopNav">
@@ -49,6 +69,8 @@ export default function HR() {
 }
 
 HR.propTypes = {
-  toggle: PropTypes.bool,
-  onClick: PropTypes.func
+  changeActive: PropTypes.func,
+  active: PropTypes.bool
 };
+
+export default connect(mapStateToProps, matchDispatchToProps)(HR);

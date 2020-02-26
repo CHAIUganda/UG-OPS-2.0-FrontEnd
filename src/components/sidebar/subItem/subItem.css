@@ -3,6 +3,11 @@
   background-color: #003366;
 }
 
+.whiteText:hover {
+  color: #003366;
+  background-color: white;
+}
+
 .blueText {
   color: #003366;
   background-color: white;
