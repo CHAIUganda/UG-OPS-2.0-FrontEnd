@@ -22,3 +22,7 @@
 .green2 {
   /* background-color: yellowgreen; */
 }
+
+.green {
+  border: 1px solid green;
+}
