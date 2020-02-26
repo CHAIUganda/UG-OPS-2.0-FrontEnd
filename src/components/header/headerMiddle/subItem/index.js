@@ -25,7 +25,7 @@ export default function SubItem(props) {
     >
       <Link to={link}>
         <span
-          className={`pr-3 pb-2 ${
+          className={`pb-2 ${
             color === 'white' ? 'whiteText' : 'blueText'
           } generalStyles`}
         >
