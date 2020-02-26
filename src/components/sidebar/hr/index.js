@@ -13,15 +13,16 @@ export default function HR() {
         <FaPlaneDeparture /> Leave
       </p>
       <div className='showContent'>
-
         <SubItem
           link="/hr/Plan4Leave"
           textToSet="Plan Leave"
+          active={true}
         />
 
         <SubItem
           link="/hr/Apply4Leave"
           textToSet="Apply For Leave"
+          active={false}
         />
       </div>
 
