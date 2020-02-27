@@ -195,7 +195,7 @@ export default function Plan4LeaveModal({ supervisor, gender, className }) {
               onChange={(date) => setLeaveDate(date)} />
           </InputGroup>
         </FormGroup>
-        <div className="alert alert-info" role="alert">
+        <div className="alert alert-info text-center" role="alert">
           { arrayOfLeaveDays.length > 0
           && <>
             <h5>You have selected {arrayOfLeaveDays.length} leave day(s)</h5>
