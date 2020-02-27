@@ -60,7 +60,6 @@ function App({ token, logUserIn }) {
           Position: position,
           id: _id
         };
-        debugger;
         logUserIn(userObject);
         setSpinner(false);
       })
@@ -75,7 +74,6 @@ function App({ token, logUserIn }) {
       const CookieToken = Cookies.get('token');
       if (CookieToken) {
         setSpinner(true);
-        debugger;
         setUpUser(CookieToken);
       }
     }
