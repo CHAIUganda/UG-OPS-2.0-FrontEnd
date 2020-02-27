@@ -3,6 +3,7 @@ import { FaUserCircle } from 'react-icons/fa';
 import { IconContext } from 'react-icons';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
+import Cookies from 'js-cookie';
 
 import {
   Dropdown,
@@ -27,6 +28,7 @@ function HeaderRight({ logUserOut }) {
 
   const logOut = (event) => {
     event.preventDefault();
+    Cookies.remove('token');
     logUserOut();
   };
 

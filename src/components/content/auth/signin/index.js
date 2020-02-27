@@ -13,6 +13,7 @@ import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
+import Cookies from 'js-cookie';
 
 import { BASE_URL } from '../../../../config';
 import * as authActions from '../../../../redux/actions/authActions';
@@ -78,6 +79,7 @@ function SignIn(props) {
     })
       .then((res) => {
         if (res && res.data && res.data.token) {
+          Cookies.set('token', res.data.token);
           loginSuccess(res.data.token);
         } else {
           setSpinner(false);
