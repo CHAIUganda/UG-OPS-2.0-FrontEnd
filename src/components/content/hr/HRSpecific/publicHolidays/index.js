@@ -84,7 +84,6 @@ export default function ManagePublicHolidays() {
 
   useEffect(() => {
     setTableSpinner(true);
-    setTableSpinner('');
     const endPoint = `${BASE_URL}hrApi/getPublicHolidays`;
     axios.get(endPoint)
       .then((res) => {
