@@ -9,7 +9,8 @@ export default {
     lastName: '',
     Position: '',
     supervisor: 'Mr xyz abc',
-    Admin: true
+    admin: true,
+    leaveDetails: null
   },
   sideBar: {
     active: null,

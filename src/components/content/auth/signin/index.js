@@ -43,7 +43,9 @@ function SignIn(props) {
           gender,
           internationalStaff,
           lName,
-          position
+          position,
+          leaveDetails,
+          _id
         } = res.data;
 
         const userObject = {
@@ -54,7 +56,9 @@ function SignIn(props) {
           department,
           firstName: fName,
           lastName: lName,
-          Position: position
+          Position: position,
+          leaveDetails,
+          id: _id
         };
         logUserIn(userObject);
         setSpinner(false);
