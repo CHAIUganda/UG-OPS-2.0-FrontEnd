@@ -261,7 +261,7 @@ export default function Plan4LeaveModal({ supervisor, gender }) {
             Apply For Leave
       </button>
       <Modal isOpen={modal} toggle={toggle}>
-        <ModalHeader toggle={toggle}>Plan For Leave</ModalHeader>
+        <ModalHeader toggle={toggle}>Apply For Leave</ModalHeader>
         <ModalBody>
           {returnForm()}
         </ModalBody>
