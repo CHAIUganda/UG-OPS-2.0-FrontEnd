@@ -47,7 +47,8 @@ function App({ token, logUserIn }) {
           position,
           email,
           _id,
-          leaveDetails
+          leaveDetails,
+          supervisor
         } = res.data;
 
         const userObject = {
@@ -60,7 +61,8 @@ function App({ token, logUserIn }) {
           lastName: lName,
           Position: position,
           id: _id,
-          leaveDetails
+          leaveDetails,
+          supervisor
         };
         logUserIn(userObject);
         setSpinner(false);

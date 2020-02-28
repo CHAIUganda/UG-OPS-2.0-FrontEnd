@@ -8,9 +8,9 @@ export default {
     firstName: '',
     lastName: '',
     Position: '',
-    supervisor: 'Mr xyz abc',
     admin: true,
-    leaveDetails: null
+    leaveDetails: null,
+    supervisor: null
   },
   sideBar: {
     active: null,

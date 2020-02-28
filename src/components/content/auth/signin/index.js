@@ -45,7 +45,8 @@ function SignIn(props) {
           lName,
           position,
           leaveDetails,
-          _id
+          _id,
+          supervisor
         } = res.data;
 
         const userObject = {
@@ -58,7 +59,8 @@ function SignIn(props) {
           lastName: lName,
           Position: position,
           leaveDetails,
-          id: _id
+          id: _id,
+          supervisor
         };
         logUserIn(userObject);
         setSpinner(false);

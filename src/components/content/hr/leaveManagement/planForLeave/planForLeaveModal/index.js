@@ -32,7 +32,7 @@ function Plan4LeaveModal({ supervisor, gender, leaveDetails }) {
   const [modal, setModal] = useState(false);
   const [spinner, setSpinner] = useState(false);
   const [error, setError] = useState('');
-  const [supervisorName] = useState(supervisor);
+  const [supervisorName] = useState(`${supervisor.fName} ${supervisor.lName}`);
   const [category, setCategory] = useState('Annual');
   const [comment, setComment] = useState('');
   const [leaveDates, setLeaveDate] = useState();
@@ -355,7 +355,7 @@ function Plan4LeaveModal({ supervisor, gender, leaveDetails }) {
 
 
 Plan4LeaveModal.propTypes = {
-  supervisor: PropTypes.string,
+  supervisor: PropTypes.object,
   gender: PropTypes.string,
   leaveDetails: PropTypes.object
 };
