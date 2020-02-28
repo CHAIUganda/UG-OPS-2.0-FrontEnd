@@ -16,18 +16,23 @@ import {
 } from 'reactstrap';
 import PropTypes from 'prop-types';
 import Calendar from 'react-calendar';
-
+import { connect } from 'react-redux';
 import axios from 'axios';
 import moment from 'moment';
 
 import { BASE_URL } from '../../../../../../config';
 import './planLeaveModal.css';
 
-export default function Plan4LeaveModal({ supervisor, gender, className }) {
+const mapStateToProps = (state) => ({
+  token: state.auth.token,
+  leaveDetails: state.auth.leaveDetails
+});
+
+function Plan4LeaveModal({ supervisor, gender, leaveDetails }) {
   const [modal, setModal] = useState(false);
   const [spinner, setSpinner] = useState(false);
-  const [error] = useState('');
-  const [supervisorName] = useState(supervisor);
+  const [error, setError] = useState('');
+  const [supervisorName] = useState(`${supervisor.fName} ${supervisor.lName}`);
   const [category, setCategory] = useState('Annual');
   const [comment, setComment] = useState('');
   const [leaveDates, setLeaveDate] = useState();
@@ -35,6 +40,58 @@ export default function Plan4LeaveModal({ supervisor, gender, className }) {
   const [arrayOfWeekends, setArrayOfWeekends] = useState([]);
   const [arrayOfHolidays, setArrayOfHolidays] = useState([]);
   const [holidays, setHolidays] = useState([]);
+  const [greenContraintsFeedback, setGreenContraintsFeedback] = useState('');
+  const [redContraintsFeedback, setRedContraintsFeedback] = useState('');
+
+  const processAnnualLeaveFeedback = (leaveDaysArray) => {
+    const daysAccruedByThen = leaveDates[1].getMonth() * 1.75;
+    const availableDays = (Math.trunc(daysAccruedByThen) + leaveDetails.annualLeaveBF)
+    - leaveDetails.annualLeaveTaken;
+    if (availableDays >= leaveDaysArray.length) {
+      setGreenContraintsFeedback(`
+      You have ${leaveDetails.annualLeaveBF} annual leave days brought forward.
+      You have used ${leaveDetails.annualLeaveTaken} annual leave days so far.
+      You will have ${availableDays} annual leave day(s) by then, 
+      and you have selected ${leaveDaysArray.length} day(s).
+      You are good to go.
+      `);
+    } else {
+      setRedContraintsFeedback(`
+        You have ${leaveDetails.annualLeaveBF} annual leave days brought forward.
+        You have used ${leaveDetails.annualLeaveTaken} annual leave days so far.
+        You will have ${availableDays} annual leave day(s) by then, 
+        However, you have selected ${leaveDaysArray.length} day(s)!
+        Please reduce by ${leaveDaysArray.length - availableDays}
+      `);
+    }
+  };
+
+  const processMaternityLeaveFeedback = (leaveDaysArray) => {
+    const availableDays = 60 - leaveDetails.maternityLeaveTaken;
+    if (availableDays >= leaveDaysArray.length) {
+      setGreenContraintsFeedback(`
+      You have used ${leaveDetails.maternityLeaveTaken} maternity leave days so far.
+      You will have ${availableDays} maternity leave day(s) by then, 
+      and you have selected ${leaveDaysArray.length} day(s).
+      You are good to go.
+      `);
+    } else {
+      setRedContraintsFeedback(`
+        You have used ${leaveDetails.maternityLeaveTaken} maternity leave days so far.
+        You will have ${availableDays} maternity leave day(s) by then, 
+        However, you have selected ${leaveDaysArray.length} day(s)!
+        Please reduce by ${leaveDaysArray.length - availableDays}
+      `);
+    }
+  };
+
+  const leaveSpecificFeedback = (leaveDaysArray) => {
+    if (category === 'Annual') {
+      processAnnualLeaveFeedback(leaveDaysArray);
+    } else if (category === 'Maternity') {
+      processMaternityLeaveFeedback(leaveDaysArray);
+    }
+  };
 
   const filterLeaveDays = (selectedDays) => {
     const leaveDays = [];
@@ -93,6 +150,8 @@ export default function Plan4LeaveModal({ supervisor, gender, className }) {
       setArrayOfLeaveDays(daysDetails.leaveDays);
       setArrayOfWeekends(daysDetails.weekendDays);
       setArrayOfHolidays(daysDetails.holidayDays);
+      /* Next op goes here: check if annual */
+      leaveSpecificFeedback(daysDetails.leaveDays);
     }
   };
 
@@ -120,6 +179,10 @@ export default function Plan4LeaveModal({ supervisor, gender, className }) {
 
   const handleSubmit = (event) => {
     event.preventDefault();
+    if (!arrayOfLeaveDays.length) {
+      setError('Please select atleast a day to continue');
+      return;
+    }
     setSpinner(true);
   };
 
@@ -136,6 +199,12 @@ export default function Plan4LeaveModal({ supervisor, gender, className }) {
     <div>
       <Form onSubmit={handleSubmit}>
         {error && <div className="errorFeedback"> {error} </div>}
+        {category === 'Maternity'
+          && <div className="alert alert-info text-center">
+            <p>You are entitled to a total of 60 maternity leave days per calendar year.</p>
+            <p>Atleast 20 days shall follow childbirth</p>
+          </div>
+        }
         {/* suoervisor */}
         <FormGroup>
           <InputGroup>
@@ -164,7 +233,7 @@ export default function Plan4LeaveModal({ supervisor, gender, className }) {
             >
               <option value="Annual">Annual Leave</option>
               {gender === 'Female'
-              && <option value="Maternatiy">Maternity Leave</option>
+              && <option value="Maternity">Maternity Leave</option>
               }
             </CustomInput>
           </InputGroup>
@@ -192,7 +261,13 @@ export default function Plan4LeaveModal({ supervisor, gender, className }) {
             <Calendar
               value={leaveDates}
               selectRange={true}
-              onChange={(date) => setLeaveDate(date)} />
+              onChange={(date) => {
+                setGreenContraintsFeedback('');
+                setRedContraintsFeedback('');
+                setError('');
+                setLeaveDate(date);
+              }
+              } />
           </InputGroup>
         </FormGroup>
         <div className="alert alert-info text-center" role="alert">
@@ -214,9 +289,22 @@ export default function Plan4LeaveModal({ supervisor, gender, className }) {
             {arrayOfDays2Str(arrayOfHolidays, 'holiday')}
           </>}
         </div>
-        <button className="submitButton" type="submit">
-          {buttonText()}
-        </button>
+        { redContraintsFeedback
+          && <div className="errorFeedback">
+            {redContraintsFeedback}
+          </div>
+        }
+        { greenContraintsFeedback
+          && <div className="successFeedback">
+            {greenContraintsFeedback}
+          </div>
+        }
+        {
+          !redContraintsFeedback
+          && <button className="submitButton" type="submit">
+            {buttonText()}
+          </button>
+        }
         <Button color="secondary" onClick={toggle} className="float-right">Cancel</Button>
       </Form>
     </div>
@@ -243,7 +331,7 @@ export default function Plan4LeaveModal({ supervisor, gender, className }) {
 
   if (publicHolidaysFeedback) {
     return <div className="alert alert-info text-center" role="alert">
-      <p><Spinner color="primary" style={{ width: '3rem', height: '3rem' }} /></p>
+      <div><Spinner color="primary" style={{ width: '3rem', height: '3rem' }} /></div>
       <p>{ publicHolidaysFeedback }</p>
     </div>;
   }
@@ -255,7 +343,7 @@ export default function Plan4LeaveModal({ supervisor, gender, className }) {
         <IoMdAdd />
             Plan For Leave
       </button>
-      <Modal isOpen={modal} toggle={toggle} className={className}>
+      <Modal isOpen={modal} toggle={toggle}>
         <ModalHeader toggle={toggle}>Plan For Leave</ModalHeader>
         <ModalBody>
           {returnForm()}
@@ -267,7 +355,9 @@ export default function Plan4LeaveModal({ supervisor, gender, className }) {
 
 
 Plan4LeaveModal.propTypes = {
-  supervisor: PropTypes.string,
+  supervisor: PropTypes.object,
   gender: PropTypes.string,
-  className: PropTypes.string
+  leaveDetails: PropTypes.object
 };
+
+export default connect(mapStateToProps)(Plan4LeaveModal);

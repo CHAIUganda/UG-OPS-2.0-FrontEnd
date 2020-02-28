@@ -46,7 +46,9 @@ function App({ token, logUserIn }) {
           lName,
           position,
           email,
-          _id
+          _id,
+          leaveDetails,
+          supervisor
         } = res.data;
 
         const userObject = {
@@ -58,7 +60,9 @@ function App({ token, logUserIn }) {
           firstName: fName,
           lastName: lName,
           Position: position,
-          id: _id
+          id: _id,
+          leaveDetails,
+          supervisor
         };
         logUserIn(userObject);
         setSpinner(false);
@@ -82,7 +86,7 @@ function App({ token, logUserIn }) {
   if (spinner) {
     return (
       <div className="alert alert-info text-center" role="alert">
-        <p><CommonSpinner /></p>
+        <div><CommonSpinner /></div>
         <p>Getting things ready.....</p>
       </div>
     );
