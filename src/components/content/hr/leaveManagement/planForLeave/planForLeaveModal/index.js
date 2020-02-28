@@ -48,12 +48,37 @@ function Plan4LeaveModal({ supervisor, gender, leaveDetails }) {
     const availableDays = (Math.trunc(daysAccruedByThen) + leaveDetails.annualLeaveBF)
     - leaveDetails.annualLeaveTaken;
     if (availableDays >= leaveDaysArray.length) {
-      setGreenContraintsFeedback(`You will have ${availableDays} annual leave day(s) by then, 
+      setGreenContraintsFeedback(`
+      You have ${leaveDetails.annualLeaveBF} annual leave days brought forward.
+      You have used ${leaveDetails.annualLeaveTaken} annual leave days so far.
+      You will have ${availableDays} annual leave day(s) by then, 
       and you have selected ${leaveDaysArray.length} day(s).
       You are good to go.
       `);
     } else {
-      setRedContraintsFeedback(`You will have ${availableDays} annual leave day(s) by then, 
+      setRedContraintsFeedback(`
+        You have ${leaveDetails.annualLeaveBF} annual leave days brought forward.
+        You have used ${leaveDetails.annualLeaveTaken} annual leave days so far.
+        You will have ${availableDays} annual leave day(s) by then, 
+        However, you have selected ${leaveDaysArray.length} day(s)!
+        Please reduce by ${leaveDaysArray.length - availableDays}
+      `);
+    }
+  };
+
+  const processMaternityLeaveFeedback = (leaveDaysArray) => {
+    const availableDays = 60 - leaveDetails.maternityLeaveTaken;
+    if (availableDays >= leaveDaysArray.length) {
+      setGreenContraintsFeedback(`
+      You have used ${leaveDetails.maternityLeaveTaken} maternity leave days so far.
+      You will have ${availableDays} maternity leave day(s) by then, 
+      and you have selected ${leaveDaysArray.length} day(s).
+      You are good to go.
+      `);
+    } else {
+      setRedContraintsFeedback(`
+        You have used ${leaveDetails.maternityLeaveTaken} maternity leave days so far.
+        You will have ${availableDays} maternity leave day(s) by then, 
         However, you have selected ${leaveDaysArray.length} day(s)!
         Please reduce by ${leaveDaysArray.length - availableDays}
       `);
@@ -63,6 +88,8 @@ function Plan4LeaveModal({ supervisor, gender, leaveDetails }) {
   const leaveSpecificFeedback = (leaveDaysArray) => {
     if (category === 'Annual') {
       processAnnualLeaveFeedback(leaveDaysArray);
+    } else if (category === 'Maternity') {
+      processMaternityLeaveFeedback(leaveDaysArray);
     }
   };
 
@@ -172,6 +199,12 @@ function Plan4LeaveModal({ supervisor, gender, leaveDetails }) {
     <div>
       <Form onSubmit={handleSubmit}>
         {error && <div className="errorFeedback"> {error} </div>}
+        {category === 'Maternity'
+          && <div className="alert alert-info text-center">
+            <p>You are entitled to a total of 60 maternity leave days per calendar year.</p>
+            <p>Atleast 20 days shall follow childbirth</p>
+          </div>
+        }
         {/* suoervisor */}
         <FormGroup>
           <InputGroup>
@@ -200,7 +233,7 @@ function Plan4LeaveModal({ supervisor, gender, leaveDetails }) {
             >
               <option value="Annual">Annual Leave</option>
               {gender === 'Female'
-              && <option value="Maternatiy">Maternity Leave</option>
+              && <option value="Maternity">Maternity Leave</option>
               }
             </CustomInput>
           </InputGroup>
