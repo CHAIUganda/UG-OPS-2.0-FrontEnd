@@ -19,9 +19,12 @@ const matchDispatchToProps = {
   logUserOut: authActions.logUserOut
 };
 
-const mapStateToProps = () => ({ });
+const mapStateToProps = (state) => ({
+  firstName: state.auth.firstName,
+  lastName: state.auth.lastName
+});
 
-function HeaderRight({ logUserOut }) {
+function HeaderRight({ logUserOut, firstName, lastName }) {
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
   const toggle = () => setDropdownOpen((prevState) => !prevState);
@@ -49,7 +52,7 @@ function HeaderRight({ logUserOut }) {
   return (
     <div className="headerRight  float-right">
       <span className="name mr-2 mt-2">
-        Locust KatoBrendenKlop anotherVeryLongName
+        {`${firstName} ${lastName[0]}.`}
       </span>
       <div className="customDropdown  float-right mr-2">
         <Dropdown isOpen={dropdownOpen} toggle={toggle}>
@@ -67,7 +70,9 @@ function HeaderRight({ logUserOut }) {
 }
 
 HeaderRight.propTypes = {
-  logUserOut: PropTypes.func
+  logUserOut: PropTypes.func,
+  firstName: PropTypes.string,
+  lastName: PropTypes.string
 };
 
 export default connect(mapStateToProps, matchDispatchToProps)(HeaderRight);
