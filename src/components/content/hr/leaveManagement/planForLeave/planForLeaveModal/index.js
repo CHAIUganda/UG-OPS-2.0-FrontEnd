@@ -85,11 +85,29 @@ function Plan4LeaveModal({ supervisor, gender, leaveDetails }) {
     }
   };
 
+  const processPaternityLeaveFeedback = (leaveDaysArray) => {
+    const availableDays = 7;
+    if (availableDays >= leaveDaysArray.length) {
+      setGreenContraintsFeedback(`
+      You have selected ${leaveDaysArray.length} paternity leave day(s).
+      You are good to go.
+      `);
+    } else {
+      setRedContraintsFeedback(`
+        You are entitled to 7 paternity leave days per occurence.
+        However, you have selected ${leaveDaysArray.length} day(s)!
+        Please reduce by ${leaveDaysArray.length - availableDays}
+      `);
+    }
+  };
+
   const leaveSpecificFeedback = (leaveDaysArray) => {
     if (category === 'Annual') {
       processAnnualLeaveFeedback(leaveDaysArray);
     } else if (category === 'Maternity') {
       processMaternityLeaveFeedback(leaveDaysArray);
+    } else if (category === 'Paternity') {
+      processPaternityLeaveFeedback(leaveDaysArray);
     }
   };
 
@@ -199,12 +217,6 @@ function Plan4LeaveModal({ supervisor, gender, leaveDetails }) {
     <div>
       <Form onSubmit={handleSubmit}>
         {error && <div className="errorFeedback"> {error} </div>}
-        {category === 'Maternity'
-          && <div className="alert alert-info text-center">
-            <p>You are entitled to a total of 60 maternity leave days per calendar year.</p>
-            <p>Atleast 20 days shall follow childbirth</p>
-          </div>
-        }
         {/* suoervisor */}
         <FormGroup>
           <InputGroup>
@@ -235,6 +247,10 @@ function Plan4LeaveModal({ supervisor, gender, leaveDetails }) {
               {gender === 'Female'
               && <option value="Maternity">Maternity Leave</option>
               }
+              <option value="Paternity">Paternity Leave</option>
+              <option value="Home">Home Leave</option>
+              <option value="Sturdy">Sturdy Leave</option>
+              <option value="Unpaid">Unpaid Leave</option>
             </CustomInput>
           </InputGroup>
         </FormGroup>
