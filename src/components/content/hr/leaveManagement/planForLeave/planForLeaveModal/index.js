@@ -95,7 +95,7 @@ function Plan4LeaveModal({ supervisor, gender, leaveDetails }) {
       `);
     } else {
       setRedContraintsFeedback(`
-        You are entitled to 7 paternity leave days per occurence.
+        You are entitled to 7 paternity leave days per occurrence.
         However, you have selected ${leaveDaysArray.length} day(s)!
         Please reduce by ${leaveDaysArray.length - availableDays}
       `);
