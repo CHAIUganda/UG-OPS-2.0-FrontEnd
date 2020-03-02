@@ -102,6 +102,25 @@ function Plan4LeaveModal({ supervisor, gender, leaveDetails }) {
     }
   };
 
+  const processSturdyLeaveFeedback = (leaveDaysArray) => {
+    const availableDays = 4 - leaveDetails.studyLeaveTaken;
+    if (availableDays >= leaveDaysArray.length) {
+      setGreenContraintsFeedback(`
+      You have used ${leaveDetails.studyLeaveTaken} sturdy leave days so far.
+      You will have ${availableDays} sturdy leave day(s) by then, 
+      and you have selected ${leaveDaysArray.length} sturdy leave day(s).
+      You are good to go.
+      `);
+    } else {
+      setRedContraintsFeedback(`
+        You have used ${leaveDetails.studyLeaveTaken} sturdy leave days so far.
+        You will have ${availableDays} sturdy leave day(s) by then, 
+        However, you have selected ${leaveDaysArray.length} sturdy leave day(s)!
+        Please reduce by ${leaveDaysArray.length - availableDays}
+      `);
+    }
+  };
+
   const leaveSpecificFeedback = (leaveDaysArray) => {
     if (category === 'Annual') {
       processAnnualLeaveFeedback(leaveDaysArray);
@@ -111,6 +130,8 @@ function Plan4LeaveModal({ supervisor, gender, leaveDetails }) {
       processPaternityLeaveFeedback(leaveDaysArray);
     } else if (category === 'Home') {
       processAnnualLeaveFeedback(leaveDaysArray, true);
+    } else if (category === 'Sturdy') {
+      processSturdyLeaveFeedback(leaveDaysArray);
     }
   };
 
