@@ -58,7 +58,7 @@ function HeaderRight({ logUserOut, firstName, lastName }) {
         <Dropdown isOpen={dropdownOpen} toggle={toggle}>
           <DropdownToggle tag={'span'}>{returnIcon()}</DropdownToggle>
           <DropdownMenu>
-            <DropdownItem>Reset Password</DropdownItem>
+            <DropdownItem header>{`${firstName} ${lastName}`}</DropdownItem>
             <DropdownItem>Edit My Details</DropdownItem>
             <DropdownItem divider />
             <DropdownItem onClick={logOut}>Log Out</DropdownItem>
