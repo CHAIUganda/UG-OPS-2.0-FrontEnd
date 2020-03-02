@@ -121,6 +121,25 @@ function Plan4LeaveModal({ supervisor, gender, leaveDetails }) {
     }
   };
 
+  const processUnpaidLeaveFeedback = (leaveDaysArray) => {
+    const availableDays = 60 - leaveDetails.unPaidLeaveTaken;
+    if (availableDays >= leaveDaysArray.length) {
+      setGreenContraintsFeedback(`
+      You have used ${leaveDetails.studyLeaveTaken} unpaid leave days so far.
+      You will have ${availableDays} unpaid leave day(s) by then, 
+      and you have selected ${leaveDaysArray.length} unpaid leave day(s).
+      You are good to go.
+      `);
+    } else {
+      setRedContraintsFeedback(`
+        You have used ${leaveDetails.studyLeaveTaken} unpaid leave days so far.
+        You will have ${availableDays} unpaid leave day(s) by then, 
+        However, you have selected ${leaveDaysArray.length} unpaid leave day(s)!
+        Please reduce by ${leaveDaysArray.length - availableDays}
+      `);
+    }
+  };
+
   const leaveSpecificFeedback = (leaveDaysArray) => {
     if (category === 'Annual') {
       processAnnualLeaveFeedback(leaveDaysArray);
@@ -132,6 +151,8 @@ function Plan4LeaveModal({ supervisor, gender, leaveDetails }) {
       processAnnualLeaveFeedback(leaveDaysArray, true);
     } else if (category === 'Sturdy') {
       processSturdyLeaveFeedback(leaveDaysArray);
+    } else if (category === 'Unpaid') {
+      processUnpaidLeaveFeedback(leaveDaysArray);
     }
   };
 
