@@ -43,16 +43,17 @@ function Plan4LeaveModal({ supervisor, gender, leaveDetails }) {
   const [greenContraintsFeedback, setGreenContraintsFeedback] = useState('');
   const [redContraintsFeedback, setRedContraintsFeedback] = useState('');
 
-  const processAnnualLeaveFeedback = (leaveDaysArray) => {
+  const processAnnualLeaveFeedback = (leaveDaysArray, home = false) => {
     const daysAccruedByThen = leaveDates[1].getMonth() * 1.75;
     const availableDays = (Math.trunc(daysAccruedByThen) + leaveDetails.annualLeaveBF)
     - leaveDetails.annualLeaveTaken;
+    const leaveWord = home ? 'Home' : 'Annual';
     if (availableDays >= leaveDaysArray.length) {
       setGreenContraintsFeedback(`
       You have ${leaveDetails.annualLeaveBF} annual leave days brought forward.
       You have used ${leaveDetails.annualLeaveTaken} annual leave days so far.
       You will have ${availableDays} annual leave day(s) by then, 
-      and you have selected ${leaveDaysArray.length} day(s).
+      and you have selected ${leaveDaysArray.length} ${leaveWord} day(s).
       You are good to go.
       `);
     } else {
@@ -60,7 +61,7 @@ function Plan4LeaveModal({ supervisor, gender, leaveDetails }) {
         You have ${leaveDetails.annualLeaveBF} annual leave days brought forward.
         You have used ${leaveDetails.annualLeaveTaken} annual leave days so far.
         You will have ${availableDays} annual leave day(s) by then, 
-        However, you have selected ${leaveDaysArray.length} day(s)!
+        However, you have selected ${leaveDaysArray.length} ${leaveWord} leave day(s)!
         Please reduce by ${leaveDaysArray.length - availableDays}
       `);
     }
@@ -72,7 +73,7 @@ function Plan4LeaveModal({ supervisor, gender, leaveDetails }) {
       setGreenContraintsFeedback(`
       You have used ${leaveDetails.maternityLeaveTaken} maternity leave days so far.
       You will have ${availableDays} maternity leave day(s) by then, 
-      and you have selected ${leaveDaysArray.length} day(s).
+      and you have selected ${leaveDaysArray.length} leave day(s).
       You are good to go.
       `);
     } else {
@@ -108,6 +109,8 @@ function Plan4LeaveModal({ supervisor, gender, leaveDetails }) {
       processMaternityLeaveFeedback(leaveDaysArray);
     } else if (category === 'Paternity') {
       processPaternityLeaveFeedback(leaveDaysArray);
+    } else if (category === 'Home') {
+      processAnnualLeaveFeedback(leaveDaysArray, true);
     }
   };
 
