@@ -7,7 +7,7 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
 // import { BASE_URL } from '../../../../../config';
-import Plan4LeaveModal from './applyForLeaveModal';
+import Apply4LeaveModal from './applyForLeaveModal';
 import './apply4Leave.css';
 
 const mapStateToProps = (state) => ({
@@ -19,7 +19,7 @@ function Apply4Leave({ supervisor, gender }) {
   return (
     <>
       <h3 className="inlineItem">Your Leaves</h3>
-      <Plan4LeaveModal
+      <Apply4LeaveModal
         supervisor={supervisor}
         gender={gender}
       />
