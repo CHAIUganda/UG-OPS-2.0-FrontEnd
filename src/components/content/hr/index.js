@@ -6,6 +6,7 @@ import WorkPermitRenewal from './workPermitRenewal';
 import Plan4Leave from './leaveManagement/planForLeave';
 import Apply4Leave from './leaveManagement/applyForLeave';
 import ManagePublicHolidays from './HRSpecific/publicHolidays';
+import Register from '../auth/register';
 
 export default function HR(props) {
   const { componentToRender } = props.match.params;
@@ -15,14 +16,21 @@ export default function HR(props) {
     WorkPermitRenewal,
     Plan4Leave,
     Apply4Leave,
-    ManagePublicHolidays
+    ManagePublicHolidays,
+    Register
   };
 
   const Tag = ComponentsObject[componentToRender];
-
+  if (Tag) {
+    return (
+      <div className="setContentInline contentbgColor welcome">
+        <Tag />
+      </div>
+    );
+  }
   return (
     <div className="setContentInline contentbgColor welcome">
-      <Tag />
+      Component not found
     </div>
   );
 }

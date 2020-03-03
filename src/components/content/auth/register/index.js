@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 // prettier-ignore
 import {
   Form,
@@ -10,33 +10,77 @@ import {
   CustomInput
 } from 'reactstrap';
 import Calendar from 'react-calendar';
+import { connect } from 'react-redux';
+import axios from 'axios';
+import PropTypes from 'prop-types';
 
+import CommonSpinner from '../../../common/spinner';
+import { BASE_URL } from '../../../../config';
 import './register.css';
 
-export default function Register() {
+const mapStateToProps = (state) => ({
+  token: state.auth.token
+});
+
+function Register({ token }) {
   const [email, setEmail] = useState('');
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [otherNames, setOtherNames] = useState('');
-  const [internationalStaff, setInternationalStaff] = useState(false);
+  const [team, setTeam] = useState(false);
   const [contractType, setContractType] = useState('Full-Time');
   const [contractStartDate, setContractStartDate] = useState(new Date());
   const [contractEndDate, setContractEndDate] = useState(new Date());
-  const [programeManager, setProgrameManager] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPass, setConfirmPass] = useState('');
+  const [personsSupervisor, setPersonsSupervisor] = useState('');
+  const [password, setPassword] = useState('123456');
+  const [confirmPass, setConfirmPass] = useState('123456');
   const [gender, setGender] = useState('female');
   const [position, setPosition] = useState('');
-  const [department, setDepartment] = useState('Human-Resource');
+  const [admin, setAdmin] = useState(false);
+  const [supervisor, setSupervisor] = useState(false);
+  const [humanResource, setHumanResource] = useState(false);
+  const [staffCategory, setStaffCategory] = useState('local');
+  const [programme, setProgramme] = useState('');
+  const [allProgrammes, setAllProgrammes] = useState([]);
+  const [spinner, setSpinner] = useState(false);
+  const [error, setError] = useState('');
 
   const handleSubmit = (event) => {
     event.preventDefault();
   };
 
+  useEffect(() => {
+    setSpinner(true);
+    axios.defaults.headers.common = { token };
+    const apiRoute = `${BASE_URL}hrApi/getPrograms`;
+    axios.get(apiRoute)
+      . then((res) => {
+        setSpinner(false);
+        setAllProgrammes(res.data);
+        setSpinner(false);
+      })
+      .catch((err) => {
+        setSpinner(false);
+        if (err && err.response && err.response.data && err.response.data.message) {
+          setError(err.response.data.message);
+        } else {
+          setError(err.message);
+        }
+      });
+  }, []);
+
   return (
     <div className="registerFormStyle">
       <Form onSubmit={handleSubmit}>
         <h3 className="registerHeading">Register For UG OPS</h3>
+        {
+          spinner
+          && <div className="alert alert-info text-center" role="alert">
+            <div><CommonSpinner /></div>
+            <p>Getting things ready.....</p>
+          </div>
+        }
+        {error && <div className="errorFeedback"> {error} </div>}
         <FormGroup>
           <InputGroup>
             <InputGroupAddon addonType="prepend">
@@ -88,7 +132,7 @@ export default function Register() {
               <InputGroupText>Other Names</InputGroupText>
             </InputGroupAddon>
             <Input
-              placeholder="Other Names"
+              placeholder="Optional"
               type="text"
               value={otherNames}
               onChange={(e) => setOtherNames(e.target.value)}
@@ -132,32 +176,18 @@ export default function Register() {
         <FormGroup>
           <InputGroup>
             <InputGroupAddon addonType="prepend">
-              <InputGroupText>Department</InputGroupText>
+              <InputGroupText>Category Of Staff</InputGroupText>
             </InputGroupAddon>
             <CustomInput
               type="select"
-              id="exampleCustomSelect"
+              id="staffCategoryCustomSelect"
               name="customSelect"
-              value={department}
-              onChange={(e) => setDepartment(e.target.value)}
+              value={staffCategory}
+              onChange={(e) => setStaffCategory(e.target.value)}
             >
-              <option value="Human-Resource">Human-Resource</option>
-              <option value="Finance">Finance</option>
-              <option value="Country-Leadership-Team">
-                Country-Leadership-Team
-              </option>
-              <option value="Procurement">Procurement</option>
-              <option value="Transport">Transport</option>
-              <option value="Vaccines">Vaccines</option>
-              <option value="Infectious-and-Non-Communicable-Diseases">
-                Infectious-and-Non-Communicable-Diseases
-              </option>
-              <option value="Integrated-Child-Health">
-                Integrated-Child-Health
-              </option>
-              <option value="Sexual-Reproductive-Maternal-and-New-born-Health">
-                Sexual-Reproductive-Maternal-and-New-born-Health
-              </option>
+              <option value="local">local</option>
+              <option value="expat">expat</option>
+              <option value="tcn">tcn</option>
             </CustomInput>
           </InputGroup>
         </FormGroup>
@@ -165,15 +195,88 @@ export default function Register() {
         <FormGroup>
           <InputGroup>
             <InputGroupAddon addonType="prepend">
-              <InputGroupText>International staff</InputGroupText>
+              <InputGroupText>Team</InputGroupText>
+            </InputGroupAddon>
+            <CustomInput
+              type="select"
+              id="teamCustomSelect"
+              name="customSelect"
+              value={team}
+              onChange={(e) => setTeam(e.target.value)}
+            >
+              <option value="Global">local</option>
+              <option value="Country Office">expat</option>
+            </CustomInput>
+          </InputGroup>
+        </FormGroup>
+
+        <FormGroup>
+          <InputGroup>
+            <InputGroupAddon addonType="prepend">
+              <InputGroupText>Programme</InputGroupText>
+            </InputGroupAddon>
+            <CustomInput
+              type="select"
+              id="programmeCustomSelect"
+              name="customSelect"
+              value={programme}
+              onChange={(e) => setProgramme(e.target.value)}
+            >
+              {
+                allProgrammes.map((prog) => (
+                  <option key={prog._id} value={prog.name}>{prog.name}</option>
+                ))
+              }
+            </CustomInput>
+          </InputGroup>
+        </FormGroup>
+
+        <FormGroup>
+          <InputGroup>
+            <InputGroupAddon addonType="prepend">
+              <InputGroupText>System Admin</InputGroupText>
             </InputGroupAddon>
             <div className="intSwitch">
               <CustomInput
                 type="switch"
-                id="exampleCustomSwitch"
+                id="adminSwitch2"
                 name="customSwitch"
-                checked={internationalStaff}
-                onChange={(e) => setInternationalStaff(e.target.checked)}
+                checked={admin}
+                onChange={(e) => setAdmin(e.target.checked)}
+              />
+            </div>
+          </InputGroup>
+        </FormGroup>
+
+        <FormGroup>
+          <InputGroup>
+            <InputGroupAddon addonType="prepend">
+              <InputGroupText>Is the person a supervisor?</InputGroupText>
+            </InputGroupAddon>
+            <div className="intSwitch">
+              <CustomInput
+                type="switch"
+                id="supervisorSwitch2"
+                name="customSwitch"
+                checked={supervisor}
+                onChange={(e) => setSupervisor(e.target.checked)}
+              />
+            </div>
+          </InputGroup>
+        </FormGroup>
+
+        <FormGroup>
+          <InputGroup>
+            <InputGroupAddon addonType="prepend">
+              <InputGroupText>Human Resource</InputGroupText>
+            </InputGroupAddon>
+            <div className="intSwitch">
+              <CustomInput
+                type="switch"
+                id="hrSwitch2"
+                name="customSwitch"
+                checked={humanResource}
+                onChange={(e) => setHumanResource(e.target.checked)}
               />
             </div>
           </InputGroup>
@@ -225,13 +328,13 @@ export default function Register() {
         <FormGroup>
           <InputGroup>
             <InputGroupAddon addonType="prepend">
-              <InputGroupText>P.M or Supervisor&apos;s Email @</InputGroupText>
+              <InputGroupText>Supervisor&apos;s Email @</InputGroupText>
             </InputGroupAddon>
             <Input
               placeholder="email@clintonhealthaccess.org"
               type="email"
-              value={programeManager}
-              onChange={(e) => setProgrameManager(e.target.value)}
+              value={personsSupervisor}
+              onChange={(e) => setPersonsSupervisor(e.target.value)}
               required
             />
           </InputGroup>
@@ -278,3 +381,9 @@ export default function Register() {
     </div>
   );
 }
+
+Register.propTypes = {
+  token: PropTypes.string
+};
+
+export default connect(mapStateToProps)(Register);

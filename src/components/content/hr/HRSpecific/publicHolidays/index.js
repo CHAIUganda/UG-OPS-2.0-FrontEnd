@@ -50,8 +50,8 @@ export default function ManagePublicHolidays() {
         <thead>
           <tr>
             <th scope="col">#</th>
-            <th scope="col">Name</th>
-            <th scope="col">Date(DD/MM)</th>
+            <th scope="col">Holiday</th>
+            <th scope="col">Date(DD/MM/YYYY)</th>
             <th scope="col">Manage</th>
           </tr>
         </thead>
@@ -61,7 +61,7 @@ export default function ManagePublicHolidays() {
               <tr key={holiday._id}>
                 <th scope="row">{index + 1}</th>
                 <td>{holiday.name}</td>
-                <td>{holiday.date}</td>
+                <td>{`${holiday.date}/${new Date().getFullYear()}`}</td>
                 <td>
                   <button
                     type="button"
@@ -103,7 +103,7 @@ export default function ManagePublicHolidays() {
   return (
     <div>
       <div>
-        <h2 className="inlineItem">Manage Public Holidays</h2>
+        <h2 className="inlineItem">Public Holidays</h2>
         <CreateNewPublicHoliday onNewPHoliday={updatePHolidayArray} />
       </div>
       {returnTable()}
