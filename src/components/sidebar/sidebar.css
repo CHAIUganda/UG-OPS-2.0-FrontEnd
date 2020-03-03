@@ -32,3 +32,15 @@
 .sidebarContainer {
   visibility: hidden;
 }
+
+.DayPicker-TodayButton{
+  color: white !important;
+  /* padding-left: 50%; */
+  padding: 2%;
+  border-radius: 5%;
+  border: 0.1em solid white; 
+}
+
+.sidebarCalendar{
+  margin-top: 50%;
+}
