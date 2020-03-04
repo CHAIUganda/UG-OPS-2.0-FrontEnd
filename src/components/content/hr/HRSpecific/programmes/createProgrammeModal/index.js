@@ -1,5 +1,5 @@
 /* eslint react/no-multi-comp: 0, react/prop-types: 0 */
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Button,
   Modal,
@@ -12,20 +12,30 @@ import {
   InputGroupAddon,
   InputGroupText,
   Spinner,
+  // CustomInput
 } from 'reactstrap';
 import { IoMdAdd } from 'react-icons/io';
 import axios from 'axios';
-import Calendar from 'react-calendar';
+import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
+import Select from 'react-select';
 
-import { BASE_URL } from '../../../../../config';
+import CommonSpinner from '../../../../../common/spinner';
+import { BASE_URL } from '../../../../../../config';
 
-const CreateNewPublicHoliday = ({ onNewPHoliday }) => {
+const mapStateToProps = (state) => ({
+  token: state.auth.token
+});
+
+const CreateNewProgramme = ({ onNewProgramme, token }) => {
   const [modal, setModal] = useState(false);
   const [formError, setFormError] = useState('');
   const [formSuccessMessage, setFormSuccessMessage] = useState('');
   const [formSpinner, setFormSpinner] = useState(false);
-  const [newDate, setNewDate] = useState('');
-  const [holidayName, setHolidayName] = useState('');
+  const [programmeName, setProgrammeName] = useState('');
+  const [allUsers, setAllUsers] = useState([]);
+  const [loadUsersSpinner, setLoadUsersSpinner] = useState(false);
+  // const [pm, setPm] = useState('none');
 
   const toggle = () => setModal(!modal);
 
@@ -34,24 +44,19 @@ const CreateNewPublicHoliday = ({ onNewPHoliday }) => {
     setFormSpinner(true);
     setFormError('');
     setFormSuccessMessage('');
-    const endPoint = `${BASE_URL}hrApi/createPublicHoliday`;
-    if (!newDate) {
-      setFormError('Please select a date to continue');
-      setFormSpinner(false);
-      return;
-    }
-    const holiday = {
-      name: holidayName,
-      date: `${newDate.getDate()}/${newDate.getMonth() + 1}`
+    const endPoint = `${BASE_URL}hrApi/createProgram`;
+    const programme = {
+      name: programmeName,
+      programManagerEmail: 'a@a.com'
     };
 
-    axios.post(endPoint, holiday)
+    axios.defaults.headers.common = { token };
+    axios.post(endPoint, programme)
       .then((res) => {
         setFormSpinner(false);
-        setHolidayName('');
-        setNewDate();
-        onNewPHoliday(res.data.holidaytoSave);
-        setFormSuccessMessage(`${holiday.name} Created successfully`);
+        setProgrammeName('');
+        onNewProgramme(res.data.programtoSave);
+        setFormSuccessMessage(`${programme.name} Created successfully`);
       })
       .catch((err) => {
         setFormSpinner(false);
@@ -68,16 +73,9 @@ const CreateNewPublicHoliday = ({ onNewPHoliday }) => {
     setFormError('');
     setFormSuccessMessage('');
     const { name, value } = event.target;
-    if (name === 'holidayName') {
-      setHolidayName(value);
+    if (name === 'programmeName') {
+      setProgrammeName(value);
     }
-  };
-
-  const handleDateChange = (d) => {
-    setFormSpinner(false);
-    setFormError('');
-    setFormSuccessMessage('');
-    setNewDate(d);
   };
 
   const buttonText = () => {
@@ -97,13 +95,13 @@ const CreateNewPublicHoliday = ({ onNewPHoliday }) => {
         <FormGroup>
           <InputGroup>
             <InputGroupAddon addonType="prepend">
-              <InputGroupText>Name</InputGroupText>
+              <InputGroupText>Programme Name</InputGroupText>
             </InputGroupAddon>
             <Input
-              placeholder="Name of the Public Holiday"
+              placeholder="Name of the Programme"
               type="text"
-              name="holidayName"
-              value={holidayName}
+              name="programmeName"
+              value={programmeName}
               onChange={handleChange}
               required
             />
@@ -112,12 +110,13 @@ const CreateNewPublicHoliday = ({ onNewPHoliday }) => {
         <FormGroup>
           <InputGroup>
             <InputGroupAddon addonType="prepend">
-              <InputGroupText>date</InputGroupText>
+              <InputGroupText>Select P.M</InputGroupText>
             </InputGroupAddon>
-            <Calendar
-              onChange={handleDateChange}
-              value={newDate}
-            />
+            <div className="selectCustomStyle">
+              <Select
+                options={allUsers}
+              />
+            </div>
           </InputGroup>
         </FormGroup>
         <button className="submitButton" type="submit">
@@ -128,14 +127,46 @@ const CreateNewPublicHoliday = ({ onNewPHoliday }) => {
     </div>
   );
 
+  useEffect(() => {
+    setLoadUsersSpinner(true);
+    axios.defaults.headers.common = { token };
+    const endPoint = `${BASE_URL}auth/getUsers`;
+
+    axios.get(endPoint)
+      .then((res) => {
+        setLoadUsersSpinner(false);
+        const arrayToSet = res.data.map((user) => ({
+          label: `${user.fName} ${user.lName}`,
+          value: user.email
+        }));
+        setAllUsers(arrayToSet);
+      })
+      .catch((err) => {
+        setLoadUsersSpinner(false);
+        if (err && err.response && err.response.data && err.response.data.message) {
+          setFormError(err.response.data.message);
+        } else {
+          setFormError(err.message);
+        }
+      });
+  }, []);
+
+  if (loadUsersSpinner) {
+    return (
+      <div className="alert alert-info text-center" role="alert">
+        <div><CommonSpinner /></div>
+        <p>Getting things ready.....</p>
+      </div>
+    );
+  }
   return (
     <div className="inlineItem">
       <button className="submitButton positionBtn" onClick={toggle}>
         < IoMdAdd />
-          Create New Public Holiday
+          Create New Programme
       </button>
       <Modal isOpen={modal} toggle={toggle}>
-        <ModalHeader toggle={toggle}>Create a new Public Holiday</ModalHeader>
+        <ModalHeader toggle={toggle}>Create a new Programme</ModalHeader>
         <ModalBody>
           {returnForm()}
         </ModalBody>
@@ -144,4 +175,10 @@ const CreateNewPublicHoliday = ({ onNewPHoliday }) => {
   );
 };
 
-export default CreateNewPublicHoliday;
+
+CreateNewProgramme.propTypes = {
+  token: PropTypes.string,
+  logUserIn: PropTypes.func
+};
+
+export default connect(mapStateToProps)(CreateNewProgramme);

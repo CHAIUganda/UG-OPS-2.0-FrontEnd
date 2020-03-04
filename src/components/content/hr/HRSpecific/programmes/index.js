@@ -6,25 +6,25 @@ import {
 import axios from 'axios';
 
 import { BASE_URL } from '../../../../../config';
-import CreateNewPublicHoliday from './createPublicHolidayModal';
-import './publicHolidays.css';
+import CreateNewProgramme from './createProgrammeModal';
+import './programmes.css';
 
-export default function ManagePublicHolidays() {
-  const [publicHolidays, setPublicHolidays] = useState([]);
+export default function ManageProgrammes() {
+  const [programmes, setProgrammes] = useState([]);
   const [tableSpinner, setTableSpinner] = useState(false);
   const [tableError, setTableError] = useState('');
 
-  const handleDeleteHoliday = (event, id) => {
+  const handleprogramme = (event, name) => {
     event.preventDefault();
     // eslint-disable-next-line no-param-reassign
     event.currentTarget.className = 'disappear';
-    const endPoint = `${BASE_URL}hrApi/removePublicHoliday`;
-    const holiday = { id };
+    const endPoint = `${BASE_URL}hrApi/removeProgram`;
+    const programme = { name };
 
-    axios.post(endPoint, holiday)
+    axios.post(endPoint, programme)
       .then(() => {
-        const newHolidays = publicHolidays.filter((hol) => hol._id !== id);
-        setPublicHolidays(newHolidays);
+        const newProgrammes = programmes.filter((prog) => prog.name !== name);
+        setProgrammes(newProgrammes);
       })
       .catch((err) => {
         if (err && err.response && err.response.data && err.response.data.message) {
@@ -50,23 +50,21 @@ export default function ManagePublicHolidays() {
         <thead>
           <tr>
             <th scope="col">#</th>
-            <th scope="col">Holiday</th>
-            <th scope="col">Date(DD/MM/YYYY)</th>
+            <th scope="col">programme</th>
             <th scope="col">Manage</th>
           </tr>
         </thead>
         <tbody>
           {
-            publicHolidays.map((holiday, index) => (
-              <tr key={holiday._id}>
+            programmes.map((prog, index) => (
+              <tr key={prog._id}>
                 <th scope="row">{index + 1}</th>
-                <td>{holiday.name}</td>
-                <td>{`${holiday.date}/${new Date().getFullYear()}`}</td>
+                <td>{prog.name}</td>
                 <td>
                   <button
                     type="button"
                     className="btn btn-danger btn-sm"
-                    onClick={(event) => handleDeleteHoliday(event, holiday._id)}>
+                    onClick={(event) => handleprogramme(event, prog.name)}>
                     Delete
                   </button>
                 </td>
@@ -78,17 +76,17 @@ export default function ManagePublicHolidays() {
     );
   };
 
-  const updatePHolidayArray = (newHoliday) => {
-    setPublicHolidays([...publicHolidays, newHoliday]);
+  const updateProgrammesArray = (newHoliday) => {
+    setProgrammes([...programmes, newHoliday]);
   };
 
   useEffect(() => {
     setTableSpinner(true);
-    const endPoint = `${BASE_URL}hrApi/getPublicHolidays`;
+    const endPoint = `${BASE_URL}hrApi/getPrograms`;
     axios.get(endPoint)
       .then((res) => {
         setTableSpinner(false);
-        setPublicHolidays(res.data);
+        setProgrammes(res.data);
       })
       .catch((err) => {
         setTableSpinner(false);
@@ -103,8 +101,10 @@ export default function ManagePublicHolidays() {
   return (
     <div>
       <div>
-        <h2 className="inlineItem">Public Holidays</h2>
-        <CreateNewPublicHoliday onNewPHoliday={updatePHolidayArray} />
+        <h2 className="inlineItem">CHAI Programmes</h2>
+        <CreateNewProgramme
+          onNewProgramme={updateProgrammesArray}
+        />
       </div>
       {returnTable()}
     </div>
