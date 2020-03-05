@@ -35,7 +35,7 @@ const CreateNewProgramme = ({ onNewProgramme, token }) => {
   const [programmeName, setProgrammeName] = useState('');
   const [allUsers, setAllUsers] = useState([]);
   const [loadUsersSpinner, setLoadUsersSpinner] = useState(false);
-  // const [pm, setPm] = useState('none');
+  const [pm, setPm] = useState('');
 
   const toggle = () => setModal(!modal);
 
@@ -47,7 +47,7 @@ const CreateNewProgramme = ({ onNewProgramme, token }) => {
     const endPoint = `${BASE_URL}hrApi/createProgram`;
     const programme = {
       name: programmeName,
-      programManagerEmail: 'a@a.com'
+      programManagerEmail: pm
     };
 
     axios.defaults.headers.common = { token };
@@ -87,6 +87,10 @@ const CreateNewProgramme = ({ onNewProgramme, token }) => {
     return 'Submit';
   };
 
+  const onSelectPm = (label, value) => {
+    setPm(value);
+  };
+
   const returnForm = () => (
     <div className="PublicFormStyle">
       <Form onSubmit={handleSubmit}>
@@ -115,6 +119,7 @@ const CreateNewProgramme = ({ onNewProgramme, token }) => {
             <div className="selectCustomStyle">
               <Select
                 options={allUsers}
+                onChange={(opt) => onSelectPm(opt.label, opt.value)}
               />
             </div>
           </InputGroup>

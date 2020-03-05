@@ -18,7 +18,6 @@ export default function SubItem({ link, textToSet, active }) {
 
 SubItem.propTypes = {
   link: PropTypes.string.isRequired,
-  IcontoSet: PropTypes.any.isRequired,
   textToSet: PropTypes.string.isRequired,
   active: PropTypes.bool.isRequired
 };

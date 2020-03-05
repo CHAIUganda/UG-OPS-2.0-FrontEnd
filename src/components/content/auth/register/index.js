@@ -44,6 +44,7 @@ function Register({ token }) {
   const [allProgrammes, setAllProgrammes] = useState([]);
   const [spinner, setSpinner] = useState(false);
   const [error, setError] = useState('');
+  const [countryDirector, setCountryDirector] = useState(false);
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -204,8 +205,8 @@ function Register({ token }) {
               value={team}
               onChange={(e) => setTeam(e.target.value)}
             >
-              <option value="Global">local</option>
-              <option value="Country Office">expat</option>
+              <option value="Country Office">Country Office</option>
+              <option value="Global">Global</option>
             </CustomInput>
           </InputGroup>
         </FormGroup>
@@ -277,6 +278,23 @@ function Register({ token }) {
                 name="customSwitch"
                 checked={humanResource}
                 onChange={(e) => setHumanResource(e.target.checked)}
+              />
+            </div>
+          </InputGroup>
+        </FormGroup>
+
+        <FormGroup>
+          <InputGroup>
+            <InputGroupAddon addonType="prepend">
+              <InputGroupText>Country Director</InputGroupText>
+            </InputGroupAddon>
+            <div className="intSwitch">
+              <CustomInput
+                type="switch"
+                id="cdSwitch2"
+                name="customSwitch"
+                checked={countryDirector}
+                onChange={(e) => setCountryDirector(e.target.checked)}
               />
             </div>
           </InputGroup>

@@ -51,6 +51,7 @@ export default function ManageProgrammes() {
           <tr>
             <th scope="col">#</th>
             <th scope="col">programme</th>
+            <th scope="col">PM</th>
             <th scope="col">Manage</th>
           </tr>
         </thead>
@@ -60,6 +61,7 @@ export default function ManageProgrammes() {
               <tr key={prog._id}>
                 <th scope="row">{index + 1}</th>
                 <td>{prog.name}</td>
+                <td>{`${prog.programManagerDetails.fName} ${prog.programManagerDetails.lName}`}</td>
                 <td>
                   <button
                     type="button"
