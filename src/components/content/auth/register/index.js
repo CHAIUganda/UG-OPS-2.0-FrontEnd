@@ -7,12 +7,14 @@ import {
   InputGroup,
   InputGroupAddon,
   InputGroupText,
-  CustomInput
+  CustomInput,
+  Spinner
 } from 'reactstrap';
 import Calendar from 'react-calendar';
 import { connect } from 'react-redux';
 import axios from 'axios';
 import PropTypes from 'prop-types';
+import Select from 'react-select';
 
 import CommonSpinner from '../../../common/spinner';
 import { BASE_URL } from '../../../../config';
@@ -23,7 +25,7 @@ const mapStateToProps = (state) => ({
 });
 
 function Register({ token }) {
-  const [email, setEmail] = useState('');
+  const [email, setEmail] = useState('@clintonhealthaccess.org');
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [otherNames, setOtherNames] = useState('');
@@ -31,7 +33,6 @@ function Register({ token }) {
   const [contractType, setContractType] = useState('Full-Time');
   const [contractStartDate, setContractStartDate] = useState(new Date());
   const [contractEndDate, setContractEndDate] = useState(new Date());
-  const [personsSupervisor, setPersonsSupervisor] = useState('');
   const [password, setPassword] = useState('123456');
   const [confirmPass, setConfirmPass] = useState('123456');
   const [gender, setGender] = useState('female');
@@ -45,9 +46,80 @@ function Register({ token }) {
   const [spinner, setSpinner] = useState(false);
   const [error, setError] = useState('');
   const [countryDirector, setCountryDirector] = useState(false);
+  const [supervisorsEmail, setSupervisorsEmail] = useState('');
+  const [allUsers, setAllUsers] = useState([]);
+  const [submitSpinner, setSubmitSpinner] = useState(false);
+  const [successFeedback, setSuccessFeedback] = useState('');
 
   const handleSubmit = (event) => {
     event.preventDefault();
+    setSuccessFeedback('');
+    setSubmitSpinner(true);
+    setError('');
+    if (!supervisorsEmail) {
+      setError('Please select for the person a supervisor.');
+      setSubmitSpinner(false);
+      return;
+    }
+
+    const newUSer = {
+      fName: firstName,
+      lName: lastName,
+      contractStartDate,
+      contractEndDate,
+      contractType,
+      gender,
+      admin,
+      hr: humanResource,
+      supervisor,
+      countryDirector,
+      title: position,
+      program: programme,
+      type: staffCategory,
+      team,
+      supervisorEmail: supervisorsEmail,
+      oNames: otherNames,
+      email,
+      password
+    };
+
+    axios.defaults.headers.common = { token };
+    const apiRoute = `${BASE_URL}auth/registerUser`;
+    axios.post(apiRoute, newUSer)
+      . then(() => {
+        setSubmitSpinner(false);
+        setSuccessFeedback(`${firstName} ${lastName} Created successfully`);
+      })
+      .catch((err) => {
+        setSubmitSpinner(false);
+        if (err && err.response && err.response.data && err.response.data.message) {
+          setError(err.response.data.message);
+        } else {
+          setError(err.message);
+        }
+      });
+  };
+
+  const getUsers = () => {
+    axios.defaults.headers.common = { token };
+    const apiRoute = `${BASE_URL}auth/getUsers`;
+    axios.get(apiRoute)
+      . then((res) => {
+        setSpinner(false);
+        const arrayToSet = res.data.map((user) => ({
+          label: `${user.fName} ${user.lName}`,
+          value: user.email
+        }));
+        setAllUsers(arrayToSet);
+      })
+      .catch((err) => {
+        setSpinner(false);
+        if (err && err.response && err.response.data && err.response.data.message) {
+          setError(err.response.data.message);
+        } else {
+          setError(err.message);
+        }
+      });
   };
 
   useEffect(() => {
@@ -58,7 +130,7 @@ function Register({ token }) {
       . then((res) => {
         setSpinner(false);
         setAllProgrammes(res.data);
-        setSpinner(false);
+        getUsers();
       })
       .catch((err) => {
         setSpinner(false);
@@ -69,6 +141,21 @@ function Register({ token }) {
         }
       });
   }, []);
+
+  const onSelectSupervisorEmail = (value) => {
+    setSuccessFeedback('');
+    setError('');
+    setSupervisorsEmail(value);
+  };
+
+  const buttonText = () => {
+    if (submitSpinner) {
+      return (
+        <Spinner color="primary" style={{ width: '3rem', height: '3rem' }} />
+      );
+    }
+    return 'Submit';
+  };
 
   return (
     <div className="registerFormStyle">
@@ -82,6 +169,7 @@ function Register({ token }) {
           </div>
         }
         {error && <div className="errorFeedback"> {error} </div>}
+        {successFeedback && <div className="successFeedback"> {successFeedback} </div>}
         <FormGroup>
           <InputGroup>
             <InputGroupAddon addonType="prepend">
@@ -91,7 +179,11 @@ function Register({ token }) {
               placeholder="email@clintonhealthaccess.org"
               type="email"
               value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              onChange={(e) => {
+                setSuccessFeedback('');
+                setError('');
+                setEmail(e.target.value);
+              }}
               required
             />
           </InputGroup>
@@ -106,7 +198,11 @@ function Register({ token }) {
               placeholder="First Name"
               type="text"
               value={firstName}
-              onChange={(e) => setFirstName(e.target.value)}
+              onChange={(e) => {
+                setSuccessFeedback('');
+                setError('');
+                setFirstName(e.target.value);
+              }}
               required
             />
           </InputGroup>
@@ -121,7 +217,11 @@ function Register({ token }) {
               placeholder="Last Name"
               type="text"
               value={lastName}
-              onChange={(e) => setLastName(e.target.value)}
+              onChange={(e) => {
+                setSuccessFeedback('');
+                setError('');
+                setLastName(e.target.value);
+              }}
               required
             />
           </InputGroup>
@@ -346,15 +446,14 @@ function Register({ token }) {
         <FormGroup>
           <InputGroup>
             <InputGroupAddon addonType="prepend">
-              <InputGroupText>Supervisor&apos;s Email @</InputGroupText>
+              <InputGroupText>person&apos;s Supervisor</InputGroupText>
             </InputGroupAddon>
-            <Input
-              placeholder="email@clintonhealthaccess.org"
-              type="email"
-              value={personsSupervisor}
-              onChange={(e) => setPersonsSupervisor(e.target.value)}
-              required
-            />
+            <div className="selectCustomStyle">
+              <Select
+                options={allUsers}
+                onChange={(opt) => onSelectSupervisorEmail(opt.value)}
+              />
+            </div>
           </InputGroup>
         </FormGroup>
 
@@ -392,8 +491,11 @@ function Register({ token }) {
           Please read through and confirm the details provided before submitting
         </p>
 
+        {error && <div className="errorFeedback"> {error} </div>}
+        {successFeedback && <div className="successFeedback"> {successFeedback} </div>}
+
         <button className="submitButton" type="submit">
-          Submit
+          {buttonText()}
         </button>
       </Form>
     </div>

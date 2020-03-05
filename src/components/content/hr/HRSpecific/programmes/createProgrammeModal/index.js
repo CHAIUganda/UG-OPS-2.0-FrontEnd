@@ -11,8 +11,7 @@ import {
   InputGroup,
   InputGroupAddon,
   InputGroupText,
-  Spinner,
-  // CustomInput
+  Spinner
 } from 'reactstrap';
 import { IoMdAdd } from 'react-icons/io';
 import axios from 'axios';
@@ -44,6 +43,10 @@ const CreateNewProgramme = ({ onNewProgramme, token }) => {
     setFormSpinner(true);
     setFormError('');
     setFormSuccessMessage('');
+    if (!pm) {
+      setFormError('Please select a supervisor to continue.');
+      return;
+    }
     const endPoint = `${BASE_URL}hrApi/createProgram`;
     const programme = {
       name: programmeName,
@@ -87,7 +90,7 @@ const CreateNewProgramme = ({ onNewProgramme, token }) => {
     return 'Submit';
   };
 
-  const onSelectPm = (label, value) => {
+  const onSelectPm = (value) => {
     setPm(value);
   };
 
@@ -119,7 +122,7 @@ const CreateNewProgramme = ({ onNewProgramme, token }) => {
             <div className="selectCustomStyle">
               <Select
                 options={allUsers}
-                onChange={(opt) => onSelectPm(opt.label, opt.value)}
+                onChange={(opt) => onSelectPm(opt.value)}
               />
             </div>
           </InputGroup>
