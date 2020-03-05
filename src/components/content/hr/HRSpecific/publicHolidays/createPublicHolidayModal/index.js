@@ -17,7 +17,7 @@ import { IoMdAdd } from 'react-icons/io';
 import axios from 'axios';
 import Calendar from 'react-calendar';
 
-import { BASE_URL } from '../../../../../config';
+import { BASE_URL } from '../../../../../../config';
 
 const CreateNewPublicHoliday = ({ onNewPHoliday }) => {
   const [modal, setModal] = useState(false);
