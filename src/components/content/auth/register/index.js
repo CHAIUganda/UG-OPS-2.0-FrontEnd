@@ -29,7 +29,7 @@ function Register({ token }) {
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [otherNames, setOtherNames] = useState('');
-  const [team, setTeam] = useState(false);
+  const [team, setTeam] = useState('');
   const [contractType, setContractType] = useState('Full-Time');
   const [contractStartDate, setContractStartDate] = useState(new Date());
   const [contractEndDate, setContractEndDate] = useState(new Date());
@@ -50,6 +50,29 @@ function Register({ token }) {
   const [allUsers, setAllUsers] = useState([]);
   const [submitSpinner, setSubmitSpinner] = useState(false);
   const [successFeedback, setSuccessFeedback] = useState('');
+
+  const reset = () => {
+    setEmail('@clintonhealthaccess.org');
+    setFirstName('');
+    setLastName('');
+    setOtherNames('');
+    setTeam('');
+    setContractType('Full-Time');
+    setContractStartDate(new Date());
+    setContractEndDate(new Date());
+    setPassword('123456');
+    setConfirmPass('123456');
+    setGender('female');
+    setPosition('');
+    setAdmin(false);
+    setSupervisor(false);
+    setHumanResource(false);
+    setStaffCategory('local');
+    setProgramme('');
+    setSpinner(false);
+    setCountryDirector(false);
+    setSubmitSpinner(false);
+  };
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -89,6 +112,7 @@ function Register({ token }) {
       . then(() => {
         setSubmitSpinner(false);
         setSuccessFeedback(`${firstName} ${lastName} Created successfully`);
+        reset();
       })
       .catch((err) => {
         setSubmitSpinner(false);
