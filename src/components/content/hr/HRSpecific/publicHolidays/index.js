@@ -4,12 +4,19 @@ import {
   Spinner,
 } from 'reactstrap';
 import axios from 'axios';
+import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
 
 import { BASE_URL } from '../../../../../config';
 import CreateNewPublicHoliday from './createPublicHolidayModal';
 import './publicHolidays.css';
 
-export default function ManagePublicHolidays() {
+const mapStateToProps = (state) => ({
+  roles: state.auth.roles,
+});
+
+function ManagePublicHolidays({ roles }) {
+  const { hr, admin } = roles;
   const [publicHolidays, setPublicHolidays] = useState([]);
   const [tableSpinner, setTableSpinner] = useState(false);
   const [tableError, setTableError] = useState('');
@@ -104,9 +111,18 @@ export default function ManagePublicHolidays() {
     <div>
       <div>
         <h2 className="inlineItem">Public Holidays</h2>
-        <CreateNewPublicHoliday onNewPHoliday={updatePHolidayArray} />
+        { (hr || admin)
+          && <CreateNewPublicHoliday onNewPHoliday={updatePHolidayArray} />
+        }
       </div>
       {returnTable()}
     </div>
   );
 }
+
+
+ManagePublicHolidays.propTypes = {
+  roles: PropTypes.object,
+};
+
+export default connect(mapStateToProps)(ManagePublicHolidays);

@@ -50,6 +50,7 @@ function SignIn(props) {
         } = res.data;
 
         const userObject = {
+          ...res.data,
           email,
           token,
           gender,

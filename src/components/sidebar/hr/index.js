@@ -14,10 +14,19 @@ const matchDispatchToProps = {
 };
 
 const mapStateToProps = (state) => ({
-  active: state.sideBar.active
+  active: state.sideBar.active,
+  type: state.auth.type,
+  roles: state.auth.roles
 });
 
-function HR({ changeActive, active }) {
+function HR({
+  changeActive,
+  active,
+  type,
+  roles
+}) {
+  const { hr, admin } = roles;
+
   const handleChangeActive = (toMakeActive) => {
     changeActive(toMakeActive);
   };
@@ -43,22 +52,7 @@ function HR({ changeActive, active }) {
             active={active === 'Apply4Leave'}
           />
         </span>
-      </div>
 
-      <p className="sidebTopNav">
-        <FaFileContract /> Contract
-      </p>
-      <div className='showContent'></div>
-
-      <p className="sidebTopNav">
-        <FaLaptopCode /> Work Permit
-      </p>
-      <div className='showContent'></div>
-
-      <p className="sidebTopNav">
-        <MdPerson /> HR Specific
-      </p>
-      <div className='showContent'>
         <span onClick={() => handleChangeActive('ManagePublicHolidays')}>
           <SubItem
             link="/hr/ManagePublicHolidays"
@@ -66,28 +60,55 @@ function HR({ changeActive, active }) {
             active={active === 'ManagePublicHolidays'}
           />
         </span>
-        <span onClick={() => handleChangeActive('Register')}>
-          <SubItem
-            link="/hr/Register"
-            textToSet="Register Staff"
-            active={active === 'Register'}
-          />
-        </span>
-        <span onClick={() => handleChangeActive('ManageProgrammes')}>
-          <SubItem
-            link="/hr/ManageProgrammes"
-            textToSet="Programmes"
-            active={active === 'ManageProgrammes'}
-          />
-        </span>
       </div>
+
+      <p className="sidebTopNav">
+        <FaFileContract /> Contract
+      </p>
+      <div className='showContent'></div>
+
+      {(type === 'expat' || type === 'tcn' || hr || admin)
+        && <>
+          <p className="sidebTopNav">
+            <FaLaptopCode /> Work Permit
+          </p>
+          <div className='showContent'></div>
+        </>
+      }
+
+      {(hr || admin)
+        && <>
+          <p className="sidebTopNav">
+            <MdPerson /> HR Specific
+          </p>
+          <div className='showContent'>
+            <span onClick={() => handleChangeActive('Register')}>
+              <SubItem
+                link="/hr/Register"
+                textToSet="Register Staff"
+                active={active === 'Register'}
+              />
+            </span>
+            <span onClick={() => handleChangeActive('ManageProgrammes')}>
+              <SubItem
+                link="/hr/ManageProgrammes"
+                textToSet="Programmes"
+                active={active === 'ManageProgrammes'}
+              />
+            </span>
+          </div>
+        </>
+      }
+
     </div>
   );
 }
 
 HR.propTypes = {
   changeActive: PropTypes.func,
-  active: PropTypes.bool
+  active: PropTypes.bool,
+  type: PropTypes.string,
+  roles: PropTypes.object
 };
 
 export default connect(mapStateToProps, matchDispatchToProps)(HR);
