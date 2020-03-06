@@ -76,25 +76,30 @@ function HR({
         </>
       }
 
-      <p className="sidebTopNav">
-        <MdPerson /> HR Specific
-      </p>
-      <div className='showContent'>
-        <span onClick={() => handleChangeActive('Register')}>
-          <SubItem
-            link="/hr/Register"
-            textToSet="Register Staff"
-            active={active === 'Register'}
-          />
-        </span>
-        <span onClick={() => handleChangeActive('ManageProgrammes')}>
-          <SubItem
-            link="/hr/ManageProgrammes"
-            textToSet="Programmes"
-            active={active === 'ManageProgrammes'}
-          />
-        </span>
-      </div>
+      {(hr || admin)
+        && <>
+          <p className="sidebTopNav">
+            <MdPerson /> HR Specific
+          </p>
+          <div className='showContent'>
+            <span onClick={() => handleChangeActive('Register')}>
+              <SubItem
+                link="/hr/Register"
+                textToSet="Register Staff"
+                active={active === 'Register'}
+              />
+            </span>
+            <span onClick={() => handleChangeActive('ManageProgrammes')}>
+              <SubItem
+                link="/hr/ManageProgrammes"
+                textToSet="Programmes"
+                active={active === 'ManageProgrammes'}
+              />
+            </span>
+          </div>
+        </>
+      }
+
     </div>
   );
 }

@@ -10,8 +10,8 @@ export default {
     Position: '',
     leaveDetails: null,
     roles: {
-      admin: true,
-      ordinary: true,
+      admin: false,
+      ordinary: false,
       hr: false,
       supervisor: false,
       countryDirector: false
