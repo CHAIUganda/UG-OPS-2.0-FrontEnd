@@ -43,6 +43,14 @@ function HR({ changeActive, active }) {
             active={active === 'Apply4Leave'}
           />
         </span>
+
+        <span onClick={() => handleChangeActive('ManagePublicHolidays')}>
+          <SubItem
+            link="/hr/ManagePublicHolidays"
+            textToSet="Public Holidays"
+            active={active === 'ManagePublicHolidays'}
+          />
+        </span>
       </div>
 
       <p className="sidebTopNav">
@@ -59,13 +67,6 @@ function HR({ changeActive, active }) {
         <MdPerson /> HR Specific
       </p>
       <div className='showContent'>
-        <span onClick={() => handleChangeActive('ManagePublicHolidays')}>
-          <SubItem
-            link="/hr/ManagePublicHolidays"
-            textToSet="Public Holidays"
-            active={active === 'ManagePublicHolidays'}
-          />
-        </span>
         <span onClick={() => handleChangeActive('Register')}>
           <SubItem
             link="/hr/Register"

@@ -52,6 +52,7 @@ function App({ token, logUserIn }) {
         } = res.data;
 
         const userObject = {
+          ...res.data,
           email,
           token: tokenToSet,
           gender,
