@@ -29,7 +29,7 @@ function Register({ token }) {
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [otherNames, setOtherNames] = useState('');
-  const [team, setTeam] = useState('');
+  const [team, setTeam] = useState('Country Office');
   const [contractType, setContractType] = useState('Full-Time');
   const [contractStartDate, setContractStartDate] = useState(new Date());
   const [contractEndDate, setContractEndDate] = useState(new Date());
@@ -154,6 +154,7 @@ function Register({ token }) {
       . then((res) => {
         setSpinner(false);
         setAllProgrammes(res.data);
+        setProgramme(res.data[0]);
         getUsers();
       })
       .catch((err) => {

@@ -8,9 +8,14 @@ export default {
     firstName: '',
     lastName: '',
     Position: '',
-    admin: true,
     leaveDetails: null,
-    supervisor: null
+    roles: {
+      admin: true,
+      ordinary: true,
+      hr: false,
+      supervisor: false,
+      countryDirector: false
+    },
   },
   sideBar: {
     active: null,
