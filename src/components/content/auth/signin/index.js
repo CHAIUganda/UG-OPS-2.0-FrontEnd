@@ -9,7 +9,6 @@ import {
   InputGroupText,
   Spinner
 } from 'reactstrap';
-import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
@@ -162,12 +161,6 @@ function SignIn(props) {
           {buttonText()}
         </button>
       </Form>
-      <div className="forgotPassword">
-        <p className="cursorClass">Forgot password?</p>
-        <Link to="/auth/Register">
-          <p className="cursorClass">Register</p>
-        </Link>
-      </div>
     </div>
   );
 }

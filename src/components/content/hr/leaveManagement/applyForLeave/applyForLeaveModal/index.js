@@ -24,11 +24,15 @@ import { BASE_URL } from '../../../../../../config';
 import './apply4LeaveModal.css';
 
 const mapStateToProps = (state) => ({
-  token: state.auth.token,
-  leaveDetails: state.auth.leaveDetails
+  token: state.auth.token
 });
 
-function Apply4LeaveModal({ supervisor, gender, leaveDetails }) {
+function Apply4LeaveModal({
+  supervisor,
+  gender,
+  leaveDetails,
+  email
+}) {
   const [modal, setModal] = useState(false);
   const [spinner, setSpinner] = useState(false);
   const [error, setError] = useState('');
@@ -42,6 +46,7 @@ function Apply4LeaveModal({ supervisor, gender, leaveDetails }) {
   const [holidays, setHolidays] = useState([]);
   const [greenContraintsFeedback, setGreenContraintsFeedback] = useState('');
   const [redContraintsFeedback, setRedContraintsFeedback] = useState('');
+  const [successFeedback, setSuccessFeedback] = useState('');
 
   const processAnnualLeaveFeedback = (leaveDaysArray, home = false) => {
     const daysAccruedByThen = leaveDates[1].getMonth() * 1.75;
@@ -160,6 +165,7 @@ function Apply4LeaveModal({ supervisor, gender, leaveDetails }) {
   };
 
   const leaveSpecificFeedback = (leaveDaysArray) => {
+    setSuccessFeedback('');
     if (category === 'Annual') {
       processAnnualLeaveFeedback(leaveDaysArray);
     } else if (category === 'Maternity') {
@@ -176,6 +182,7 @@ function Apply4LeaveModal({ supervisor, gender, leaveDetails }) {
       processSickLeaveFeedback(leaveDaysArray);
     }
   };
+
   const filterLeaveDays = (selectedDays) => {
     const leaveDays = [];
     const weekendDays = [];
@@ -263,6 +270,32 @@ function Apply4LeaveModal({ supervisor, gender, leaveDetails }) {
   const handleSubmit = (event) => {
     event.preventDefault();
     setSpinner(true);
+    const leaveObject = {
+      startDate: leaveDates[0],
+      endDate: leaveDates[1],
+      type: category,
+      staffEmail: email,
+      status: 'pending',
+      daysTaken: arrayOfLeaveDays.length,
+      publicHolidays: arrayOfHolidays,
+      comment,
+    };
+
+    const endPoint = `${BASE_URL}leaveApi/leave`;
+    axios.post(endPoint, leaveObject)
+      .then((res) => {
+        setSpinner(false);
+        setSuccessFeedback(res.data.message);
+      })
+      .catch((err) => {
+        if (err && err.response && err.response.data && err.response.data.message) {
+          setError(err.response.data.message);
+          setSpinner(false);
+        } else {
+          setError(err.message);
+          setSpinner(false);
+        }
+      });
   };
 
   const buttonText = () => {
@@ -278,6 +311,11 @@ function Apply4LeaveModal({ supervisor, gender, leaveDetails }) {
     <div>
       <Form onSubmit={handleSubmit}>
         {error && <div className="errorFeedback"> {error} </div>}
+        { successFeedback
+          && <div className="successFeedback">
+            {successFeedback}
+          </div>
+        }
         {/* suoervisor */}
         <FormGroup>
           <InputGroup>
@@ -311,7 +349,7 @@ function Apply4LeaveModal({ supervisor, gender, leaveDetails }) {
               <option value="Paternity">Paternity Leave</option>
               <option value="Home">Home Leave</option>
               <option value="Sick">Sick Leave</option>
-              <option value="Sturdy">Sturdy Leave</option>
+              <option value="Study">Study Leave</option>
               <option value="Unpaid">Unpaid Leave</option>
             </CustomInput>
           </InputGroup>
@@ -342,6 +380,7 @@ function Apply4LeaveModal({ supervisor, gender, leaveDetails }) {
               onChange={(date) => {
                 setGreenContraintsFeedback('');
                 setRedContraintsFeedback('');
+                setSuccessFeedback('');
                 setError('');
                 setLeaveDate(date);
               }
@@ -375,6 +414,12 @@ function Apply4LeaveModal({ supervisor, gender, leaveDetails }) {
         { greenContraintsFeedback
           && <div className="successFeedback">
             {greenContraintsFeedback}
+          </div>
+        }
+        {error && <div className="errorFeedback"> {error} </div>}
+        { successFeedback
+          && <div className="successFeedback">
+            {successFeedback}
           </div>
         }
         {
@@ -435,7 +480,8 @@ function Apply4LeaveModal({ supervisor, gender, leaveDetails }) {
 Apply4LeaveModal.propTypes = {
   supervisor: PropTypes.string,
   gender: PropTypes.string,
-  leaveDetails: PropTypes.object
+  leaveDetails: PropTypes.object,
+  email: PropTypes.string
 };
 
 export default connect(mapStateToProps)(Apply4LeaveModal);

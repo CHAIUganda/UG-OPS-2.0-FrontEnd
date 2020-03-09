@@ -59,7 +59,9 @@ function ManagePublicHolidays({ roles }) {
             <th scope="col">#</th>
             <th scope="col">Holiday</th>
             <th scope="col">Date(DD/MM/YYYY)</th>
-            <th scope="col">Manage</th>
+            {(hr || admin)
+              && <th scope="col">Manage</th>
+            }
           </tr>
         </thead>
         <tbody>
@@ -69,14 +71,16 @@ function ManagePublicHolidays({ roles }) {
                 <th scope="row">{index + 1}</th>
                 <td>{holiday.name}</td>
                 <td>{`${holiday.date}/${new Date().getFullYear()}`}</td>
-                <td>
-                  <button
-                    type="button"
-                    className="btn btn-danger btn-sm"
-                    onClick={(event) => handleDeleteHoliday(event, holiday._id)}>
+                {(hr || admin)
+              && <td>
+                <button
+                  type="button"
+                  className="btn btn-danger btn-sm"
+                  onClick={(event) => handleDeleteHoliday(event, holiday._id)}>
                     Delete
-                  </button>
-                </td>
+                </button>
+              </td>
+                }
               </tr>
             ))
           }
