@@ -31,7 +31,8 @@ function Apply4LeaveModal({
   supervisor,
   gender,
   leaveDetails,
-  email
+  email,
+  addLeave
 }) {
   const [modal, setModal] = useState(false);
   const [spinner, setSpinner] = useState(false);
@@ -174,7 +175,7 @@ function Apply4LeaveModal({
       processPaternityLeaveFeedback(leaveDaysArray);
     } else if (category === 'Home') {
       processAnnualLeaveFeedback(leaveDaysArray, true);
-    } else if (category === 'Sturdy') {
+    } else if (category === 'Study') {
       processSturdyLeaveFeedback(leaveDaysArray);
     } else if (category === 'Unpaid') {
       processUnpaidLeaveFeedback(leaveDaysArray);
@@ -286,6 +287,7 @@ function Apply4LeaveModal({
       .then((res) => {
         setSpinner(false);
         setSuccessFeedback(res.data.message);
+        addLeave(res.data.leave);
       })
       .catch((err) => {
         if (err && err.response && err.response.data && err.response.data.message) {
@@ -481,7 +483,8 @@ Apply4LeaveModal.propTypes = {
   supervisor: PropTypes.string,
   gender: PropTypes.string,
   leaveDetails: PropTypes.object,
-  email: PropTypes.string
+  email: PropTypes.string,
+  addLeave: PropTypes.func
 };
 
 export default connect(mapStateToProps)(Apply4LeaveModal);

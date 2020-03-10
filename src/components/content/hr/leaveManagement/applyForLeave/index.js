@@ -96,9 +96,9 @@ function Apply4Leave({
       </thead>
       <tbody>
         {
-          personsLeaves.map((leave, index) => (
+          personsLeaves.reverse().map((leave, index) => (
             <tr key={leave._id}>
-              <th scope="row">{index + 1}</th>
+              <th scope="row">{personsLeaves.length - index}</th>
               <td>{leave.daysTaken}</td>
               <td>{leave.type}</td>
               <td>{leave.status}</td>
@@ -113,6 +113,10 @@ function Apply4Leave({
     </table>
   );
 
+  const addLeave = (leave) => {
+    setPersonsLeaves([...personsLeaves, leave]);
+  };
+
   return (
     <>
       <h3 className="inlineItem">Your Leaves</h3>
@@ -121,6 +125,7 @@ function Apply4Leave({
         gender={gender}
         leaveDetails={leaveDetails}
         email={email}
+        addLeave={addLeave}
       />
       { returnTable() }
     </>
