@@ -87,8 +87,8 @@ function Apply4Leave({
       <thead>
         <tr>
           <th scope="col">#</th>
-          <th scope="col">Days Taken</th>
           <th scope="col">Category</th>
+          <th scope="col">Days Taken</th>
           <th scope="col">Status</th>
           <th scope="col">Progress</th>
           <th scope="col">Manage</th>
@@ -99,12 +99,15 @@ function Apply4Leave({
           personsLeaves.reverse().map((leave, index) => (
             <tr key={leave._id}>
               <th scope="row">{personsLeaves.length - index}</th>
-              <td>{leave.daysTaken}</td>
               <td>{leave.type}</td>
+              <td>{leave.daysTaken}</td>
               <td>{leave.status}</td>
               <td>{leave.progress}</td>
               <td>
-                <ManageLeaveModal />
+                <ManageLeaveModal
+                  leave={leave}
+                  supervisor={supervisor}
+                />
               </td>
             </tr>
           ))

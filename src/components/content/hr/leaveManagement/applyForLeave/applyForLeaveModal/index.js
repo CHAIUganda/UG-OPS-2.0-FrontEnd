@@ -24,7 +24,9 @@ import { BASE_URL } from '../../../../../../config';
 import './apply4LeaveModal.css';
 
 const mapStateToProps = (state) => ({
-  token: state.auth.token
+  token: state.auth.token,
+  roles: state.auth.roles,
+  type: state.auth.type
 });
 
 function Apply4LeaveModal({
@@ -32,7 +34,8 @@ function Apply4LeaveModal({
   gender,
   leaveDetails,
   email,
-  addLeave
+  addLeave,
+  type
 }) {
   const [modal, setModal] = useState(false);
   const [spinner, setSpinner] = useState(false);
@@ -48,6 +51,19 @@ function Apply4LeaveModal({
   const [greenContraintsFeedback, setGreenContraintsFeedback] = useState('');
   const [redContraintsFeedback, setRedContraintsFeedback] = useState('');
   const [successFeedback, setSuccessFeedback] = useState('');
+
+  const reset = () => {
+    setError('');
+    setCategory('Annual');
+    setComment('');
+    setLeaveDate();
+    setArrayOfLeaveDays([]);
+    setArrayOfWeekends([]);
+    setArrayOfHolidays([]);
+    setHolidays([]);
+    setGreenContraintsFeedback('');
+    setRedContraintsFeedback('');
+  };
 
   const processAnnualLeaveFeedback = (leaveDaysArray, home = false) => {
     const daysAccruedByThen = leaveDates[1].getMonth() * 1.75;
@@ -112,9 +128,9 @@ function Apply4LeaveModal({
     const availableDays = 4 - leaveDetails.studyLeaveTaken;
     if (availableDays >= leaveDaysArray.length) {
       setGreenContraintsFeedback(`
-      You have used ${leaveDetails.studyLeaveTaken} sturdy leave days so far.
-      You have ${availableDays} sturdy leave day(s), 
-      and you have selected ${leaveDaysArray.length} sturdy leave day(s).
+      You have used ${leaveDetails.studyLeaveTaken} study leave days so far.
+      You have ${availableDays} study leave day(s), 
+      and you have selected ${leaveDaysArray.length} study leave day(s).
       You are good to go.
       `);
     } else {
@@ -250,12 +266,12 @@ function Apply4LeaveModal({
     getLeaveDays();
   }, [leaveDates]);
 
-  const arrayOfDays2Str = (arr, type) => {
+  const arrayOfDays2Str = (arr, typeOfDay) => {
     if (arr.length === 0) {
       return '';
     }
 
-    if (type === 'holiday') {
+    if (typeOfDay === 'holiday') {
       return arr.map((arrDay, index) => (
         <p key={index}>  {arrDay.name}  {'  '} {arrDay.day.toDateString()} </p>
       ));
@@ -288,6 +304,7 @@ function Apply4LeaveModal({
         setSpinner(false);
         setSuccessFeedback(res.data.message);
         addLeave(res.data.leave);
+        reset();
       })
       .catch((err) => {
         if (err && err.response && err.response.data && err.response.data.message) {
@@ -348,8 +365,13 @@ function Apply4LeaveModal({
               {gender === 'Female'
               && <option value="Maternatiy">Maternity Leave</option>
               }
-              <option value="Paternity">Paternity Leave</option>
-              <option value="Home">Home Leave</option>
+              {(gender === 'Male' || gender === 'male')
+              && <option value="Paternity">Paternity Leave</option>
+              }
+              {
+                (type === 'tcn' || type === 'expat')
+                && <option value="Home">Home Leave</option>
+              }
               <option value="Sick">Sick Leave</option>
               <option value="Study">Study Leave</option>
               <option value="Unpaid">Unpaid Leave</option>
@@ -484,7 +506,9 @@ Apply4LeaveModal.propTypes = {
   gender: PropTypes.string,
   leaveDetails: PropTypes.object,
   email: PropTypes.string,
-  addLeave: PropTypes.func
+  addLeave: PropTypes.func,
+  roles: PropTypes.object,
+  type: PropTypes.string
 };
 
 export default connect(mapStateToProps)(Apply4LeaveModal);

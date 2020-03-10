@@ -35,7 +35,7 @@ function Register({ token }) {
   const [contractEndDate, setContractEndDate] = useState(new Date());
   const [password, setPassword] = useState('123456');
   const [confirmPass, setConfirmPass] = useState('123456');
-  const [gender, setGender] = useState('female');
+  const [gender, setGender] = useState('Female');
   const [position, setPosition] = useState('');
   const [admin, setAdmin] = useState(false);
   const [supervisor, setSupervisor] = useState(false);
@@ -278,8 +278,8 @@ function Register({ token }) {
               value={gender}
               onChange={(e) => setGender(e.target.value)}
             >
-              <option value="female">Female</option>
-              <option value="male">Male</option>
+              <option value="Female">Female</option>
+              <option value="Male">Male</option>
             </CustomInput>
           </InputGroup>
         </FormGroup>
