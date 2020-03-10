@@ -25,7 +25,15 @@ function HR({
   type,
   roles
 }) {
-  const { hr, admin } = roles;
+  let hr;
+  let admin;
+  if (roles) {
+    hr = roles.hr;
+    admin = roles.admin;
+  } else {
+    hr = false;
+    admin = false;
+  }
 
   const handleChangeActive = (toMakeActive) => {
     changeActive(toMakeActive);
