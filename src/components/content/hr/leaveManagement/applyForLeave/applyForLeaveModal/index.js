@@ -238,6 +238,8 @@ function Apply4LeaveModal({
   };
 
   const getLeaveDays = () => {
+    setGreenContraintsFeedback('');
+    setRedContraintsFeedback('');
     const arrayOfDays = [];
     if (leaveDates) {
       arrayOfDays.push(leaveDates[0]);
@@ -264,7 +266,7 @@ function Apply4LeaveModal({
 
   useEffect(() => {
     getLeaveDays();
-  }, [leaveDates]);
+  }, [leaveDates, category]);
 
   const arrayOfDays2Str = (arr, typeOfDay) => {
     if (arr.length === 0) {
@@ -287,6 +289,11 @@ function Apply4LeaveModal({
   const handleSubmit = (event) => {
     event.preventDefault();
     setSpinner(true);
+    if (!leaveDates || leaveDates.length < 1) {
+      setError('Please select atleast a day to continue.');
+      setSpinner(false);
+      return;
+    }
     const leaveObject = {
       startDate: leaveDates[0],
       endDate: leaveDates[1],

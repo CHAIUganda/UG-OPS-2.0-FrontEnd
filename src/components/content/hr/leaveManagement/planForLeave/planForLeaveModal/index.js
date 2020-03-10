@@ -25,7 +25,6 @@ import './planLeaveModal.css';
 
 const mapStateToProps = (state) => ({
   token: state.auth.token,
-  leaveDetails: state.auth.leaveDetails,
   type: state.auth.type
 });
 
@@ -200,6 +199,8 @@ function Plan4LeaveModal({
   };
 
   const getLeaveDays = () => {
+    setGreenContraintsFeedback('');
+    setRedContraintsFeedback('');
     const arrayOfDays = [];
     if (leaveDates) {
       arrayOfDays.push(leaveDates[0]);
@@ -226,7 +227,7 @@ function Plan4LeaveModal({
 
   useEffect(() => {
     getLeaveDays();
-  }, [leaveDates]);
+  }, [leaveDates, category]);
 
   const arrayOfDays2Str = (arr, typeOfDay) => {
     if (arr.length === 0) {
