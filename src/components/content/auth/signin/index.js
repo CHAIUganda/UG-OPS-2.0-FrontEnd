@@ -26,7 +26,7 @@ const mapStateToProps = () => ({ });
 
 function SignIn(props) {
   const { logUserIn } = props;
-  const [email, setEmail] = useState('aoboth@clintonhealthaccess.org');
+  const [email, setEmail] = useState('khyper2345@gmail.com');
   const [password, setPassword] = useState('123456');
   const [spinner, setSpinner] = useState(false);
   const [loginError, setLoginError] = useState('');
