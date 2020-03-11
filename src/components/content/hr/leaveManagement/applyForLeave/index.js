@@ -34,7 +34,7 @@ function Apply4Leave({
     axios.get(endPoint)
       .then((res) => {
         setSpinner(false);
-        setPersonsLeaves(res.data);
+        setPersonsLeaves(res.data.filter((l) => l.status !== 'planned'));
       })
       .catch((err) => {
         if (err && err.response && err.response.data && err.response.data.message) {
