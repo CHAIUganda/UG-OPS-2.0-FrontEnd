@@ -25,14 +25,17 @@ import './planLeaveModal.css';
 
 const mapStateToProps = (state) => ({
   token: state.auth.token,
-  type: state.auth.type
+  type: state.auth.type,
+  email: state.auth.email
 });
 
 function Plan4LeaveModal({
   supervisor,
   gender,
   leaveDetails,
-  type
+  type,
+  email,
+  token
 }) {
   const [modal, setModal] = useState(false);
   const [spinner, setSpinner] = useState(false);
@@ -47,6 +50,21 @@ function Plan4LeaveModal({
   const [holidays, setHolidays] = useState([]);
   const [greenContraintsFeedback, setGreenContraintsFeedback] = useState('');
   const [redContraintsFeedback, setRedContraintsFeedback] = useState('');
+  const [successFeedback, setSuccessFeedback] = useState('');
+
+  const reset = () => {
+    setError('');
+    setCategory('Annual');
+    setComment('');
+    setLeaveDate();
+    setArrayOfLeaveDays([]);
+    setArrayOfWeekends([]);
+    setArrayOfHolidays([]);
+    setHolidays([]);
+    setGreenContraintsFeedback('');
+    setRedContraintsFeedback('');
+  };
+
 
   const processAnnualLeaveFeedback = (leaveDaysArray, home = false) => {
     const daysAccruedByThen = leaveDates[1].getMonth() * 1.75;
@@ -201,6 +219,8 @@ function Plan4LeaveModal({
   const getLeaveDays = () => {
     setGreenContraintsFeedback('');
     setRedContraintsFeedback('');
+    setSuccessFeedback('');
+    setError('');
     const arrayOfDays = [];
     if (leaveDates) {
       arrayOfDays.push(leaveDates[0]);
@@ -249,11 +269,41 @@ function Plan4LeaveModal({
 
   const handleSubmit = (event) => {
     event.preventDefault();
+    setSpinner(true);
     if (!arrayOfLeaveDays.length) {
       setError('Please select atleast a day to continue');
       return;
     }
-    setSpinner(true);
+
+    const leaveObject = {
+      startDate: leaveDates[0],
+      endDate: leaveDates[1],
+      type: category,
+      staffEmail: email,
+      status: 'planned',
+      daysTaken: arrayOfLeaveDays.length,
+      publicHolidays: arrayOfHolidays,
+      comment,
+    };
+
+    axios.defaults.headers.common = { token };
+    const endPoint = `${BASE_URL}leaveApi/leave`;
+    axios.post(endPoint, leaveObject)
+      .then((res) => {
+        reset();
+        setSpinner(false);
+        setSuccessFeedback(res.data.message);
+        // addLeave(res.data.leave);
+      })
+      .catch((err) => {
+        if (err && err.response && err.response.data && err.response.data.message) {
+          setError(err.response.data.message);
+          setSpinner(false);
+        } else {
+          setError(err.message);
+          setSpinner(false);
+        }
+      });
   };
 
   const buttonText = () => {
@@ -269,6 +319,11 @@ function Plan4LeaveModal({
     <div>
       <Form onSubmit={handleSubmit}>
         {error && <div className="errorFeedback"> {error} </div>}
+        { successFeedback
+          && <div className="successFeedback">
+            {successFeedback}
+          </div>
+        }
         {/* suoervisor */}
         <FormGroup>
           <InputGroup>
@@ -321,7 +376,13 @@ function Plan4LeaveModal({
               placeholder="Optional"
               type="text"
               value={comment}
-              onChange={(e) => setComment(e.target.value)}
+              onChange={(e) => {
+                setGreenContraintsFeedback('');
+                setRedContraintsFeedback('');
+                setSuccessFeedback('');
+                setError('');
+                setComment(e.target.value);
+              }}
             />
           </InputGroup>
         </FormGroup>
@@ -337,6 +398,7 @@ function Plan4LeaveModal({
               onChange={(date) => {
                 setGreenContraintsFeedback('');
                 setRedContraintsFeedback('');
+                setSuccessFeedback('');
                 setError('');
                 setLeaveDate(date);
               }
@@ -370,6 +432,11 @@ function Plan4LeaveModal({
         { greenContraintsFeedback
           && <div className="successFeedback">
             {greenContraintsFeedback}
+          </div>
+        }
+        { successFeedback
+          && <div className="successFeedback">
+            {successFeedback}
           </div>
         }
         {
@@ -431,7 +498,9 @@ Plan4LeaveModal.propTypes = {
   supervisor: PropTypes.object,
   gender: PropTypes.string,
   leaveDetails: PropTypes.object,
-  type: PropTypes.string
+  type: PropTypes.string,
+  email: PropTypes.string,
+  token: PropTypes.string
 };
 
 export default connect(mapStateToProps)(Plan4LeaveModal);

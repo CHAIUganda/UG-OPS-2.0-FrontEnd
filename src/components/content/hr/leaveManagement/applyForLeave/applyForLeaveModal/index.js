@@ -240,6 +240,8 @@ function Apply4LeaveModal({
   const getLeaveDays = () => {
     setGreenContraintsFeedback('');
     setRedContraintsFeedback('');
+    setSuccessFeedback('');
+    setError('');
     const arrayOfDays = [];
     if (leaveDates) {
       arrayOfDays.push(leaveDates[0]);
@@ -308,10 +310,10 @@ function Apply4LeaveModal({
     const endPoint = `${BASE_URL}leaveApi/leave`;
     axios.post(endPoint, leaveObject)
       .then((res) => {
-        setSpinner(false);
-        setSuccessFeedback(res.data.message);
-        addLeave(res.data.leave);
         reset();
+        setSpinner(false);
+        addLeave(res.data.leave);
+        setSuccessFeedback(res.data.message);
       })
       .catch((err) => {
         if (err && err.response && err.response.data && err.response.data.message) {
