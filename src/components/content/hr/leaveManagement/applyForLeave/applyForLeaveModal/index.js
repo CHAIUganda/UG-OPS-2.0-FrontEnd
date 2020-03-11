@@ -238,6 +238,10 @@ function Apply4LeaveModal({
   };
 
   const getLeaveDays = () => {
+    setGreenContraintsFeedback('');
+    setRedContraintsFeedback('');
+    setSuccessFeedback('');
+    setError('');
     const arrayOfDays = [];
     if (leaveDates) {
       arrayOfDays.push(leaveDates[0]);
@@ -264,7 +268,7 @@ function Apply4LeaveModal({
 
   useEffect(() => {
     getLeaveDays();
-  }, [leaveDates]);
+  }, [leaveDates, category]);
 
   const arrayOfDays2Str = (arr, typeOfDay) => {
     if (arr.length === 0) {
@@ -287,6 +291,11 @@ function Apply4LeaveModal({
   const handleSubmit = (event) => {
     event.preventDefault();
     setSpinner(true);
+    if (!leaveDates || leaveDates.length < 1) {
+      setError('Please select atleast a day to continue.');
+      setSpinner(false);
+      return;
+    }
     const leaveObject = {
       startDate: leaveDates[0],
       endDate: leaveDates[1],
@@ -301,10 +310,10 @@ function Apply4LeaveModal({
     const endPoint = `${BASE_URL}leaveApi/leave`;
     axios.post(endPoint, leaveObject)
       .then((res) => {
-        setSpinner(false);
-        setSuccessFeedback(res.data.message);
-        addLeave(res.data.leave);
         reset();
+        setSpinner(false);
+        addLeave(res.data.leave);
+        setSuccessFeedback(res.data.message);
       })
       .catch((err) => {
         if (err && err.response && err.response.data && err.response.data.message) {

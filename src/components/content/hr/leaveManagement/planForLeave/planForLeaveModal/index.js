@@ -25,10 +25,19 @@ import './planLeaveModal.css';
 
 const mapStateToProps = (state) => ({
   token: state.auth.token,
-  leaveDetails: state.auth.leaveDetails
+  type: state.auth.type,
+  email: state.auth.email
 });
 
-function Plan4LeaveModal({ supervisor, gender, leaveDetails }) {
+function Plan4LeaveModal({
+  supervisor,
+  gender,
+  leaveDetails,
+  type,
+  email,
+  token,
+  addLeave
+}) {
   const [modal, setModal] = useState(false);
   const [spinner, setSpinner] = useState(false);
   const [error, setError] = useState('');
@@ -42,6 +51,21 @@ function Plan4LeaveModal({ supervisor, gender, leaveDetails }) {
   const [holidays, setHolidays] = useState([]);
   const [greenContraintsFeedback, setGreenContraintsFeedback] = useState('');
   const [redContraintsFeedback, setRedContraintsFeedback] = useState('');
+  const [successFeedback, setSuccessFeedback] = useState('');
+
+  const reset = () => {
+    setError('');
+    setCategory('Annual');
+    setComment('');
+    setLeaveDate();
+    setArrayOfLeaveDays([]);
+    setArrayOfWeekends([]);
+    setArrayOfHolidays([]);
+    setHolidays([]);
+    setGreenContraintsFeedback('');
+    setRedContraintsFeedback('');
+  };
+
 
   const processAnnualLeaveFeedback = (leaveDaysArray, home = false) => {
     const daysAccruedByThen = leaveDates[1].getMonth() * 1.75;
@@ -102,19 +126,19 @@ function Plan4LeaveModal({ supervisor, gender, leaveDetails }) {
     }
   };
 
-  const processSturdyLeaveFeedback = (leaveDaysArray) => {
+  const processStudyLeaveFeedback = (leaveDaysArray) => {
     const availableDays = 4 - leaveDetails.studyLeaveTaken;
     if (availableDays >= leaveDaysArray.length) {
       setGreenContraintsFeedback(`
-      You have used ${leaveDetails.studyLeaveTaken} sturdy leave days so far.
-      You will have ${availableDays} sturdy leave day(s) by then, 
-      and you have selected ${leaveDaysArray.length} sturdy leave day(s).
+      You have used ${leaveDetails.studyLeaveTaken} study leave days so far.
+      You will have ${availableDays} study leave day(s) by then, 
+      and you have selected ${leaveDaysArray.length} study leave day(s).
       You are good to go.
       `);
     } else {
       setRedContraintsFeedback(`
-        You have used ${leaveDetails.studyLeaveTaken} sturdy leave days so far.
-        You will have ${availableDays} sturdy leave day(s) by then, 
+        You have used ${leaveDetails.studyLeaveTaken} study leave days so far.
+        You will have ${availableDays} study leave day(s) by then, 
         However, you have selected ${leaveDaysArray.length} sturdy leave day(s)!
         Please reduce by ${leaveDaysArray.length - availableDays}
       `);
@@ -149,8 +173,8 @@ function Plan4LeaveModal({ supervisor, gender, leaveDetails }) {
       processPaternityLeaveFeedback(leaveDaysArray);
     } else if (category === 'Home') {
       processAnnualLeaveFeedback(leaveDaysArray, true);
-    } else if (category === 'Sturdy') {
-      processSturdyLeaveFeedback(leaveDaysArray);
+    } else if (category === 'Study') {
+      processStudyLeaveFeedback(leaveDaysArray);
     } else if (category === 'Unpaid') {
       processUnpaidLeaveFeedback(leaveDaysArray);
     }
@@ -194,6 +218,10 @@ function Plan4LeaveModal({ supervisor, gender, leaveDetails }) {
   };
 
   const getLeaveDays = () => {
+    setGreenContraintsFeedback('');
+    setRedContraintsFeedback('');
+    setSuccessFeedback('');
+    setError('');
     const arrayOfDays = [];
     if (leaveDates) {
       arrayOfDays.push(leaveDates[0]);
@@ -220,14 +248,14 @@ function Plan4LeaveModal({ supervisor, gender, leaveDetails }) {
 
   useEffect(() => {
     getLeaveDays();
-  }, [leaveDates]);
+  }, [leaveDates, category]);
 
-  const arrayOfDays2Str = (arr, type) => {
+  const arrayOfDays2Str = (arr, typeOfDay) => {
     if (arr.length === 0) {
       return '';
     }
 
-    if (type === 'holiday') {
+    if (typeOfDay === 'holiday') {
       return arr.map((arrDay, index) => (
         <p key={index}>  {arrDay.name}  {'  '} {arrDay.day.toDateString()} </p>
       ));
@@ -242,11 +270,41 @@ function Plan4LeaveModal({ supervisor, gender, leaveDetails }) {
 
   const handleSubmit = (event) => {
     event.preventDefault();
+    setSpinner(true);
     if (!arrayOfLeaveDays.length) {
       setError('Please select atleast a day to continue');
       return;
     }
-    setSpinner(true);
+
+    const leaveObject = {
+      startDate: leaveDates[0],
+      endDate: leaveDates[1],
+      type: category,
+      staffEmail: email,
+      status: 'planned',
+      daysTaken: arrayOfLeaveDays.length,
+      publicHolidays: arrayOfHolidays,
+      comment,
+    };
+
+    axios.defaults.headers.common = { token };
+    const endPoint = `${BASE_URL}leaveApi/leave`;
+    axios.post(endPoint, leaveObject)
+      .then((res) => {
+        reset();
+        setSpinner(false);
+        setSuccessFeedback(res.data.message);
+        addLeave(res.data.leave);
+      })
+      .catch((err) => {
+        if (err && err.response && err.response.data && err.response.data.message) {
+          setError(err.response.data.message);
+          setSpinner(false);
+        } else {
+          setError(err.message);
+          setSpinner(false);
+        }
+      });
   };
 
   const buttonText = () => {
@@ -262,6 +320,11 @@ function Plan4LeaveModal({ supervisor, gender, leaveDetails }) {
     <div>
       <Form onSubmit={handleSubmit}>
         {error && <div className="errorFeedback"> {error} </div>}
+        { successFeedback
+          && <div className="successFeedback">
+            {successFeedback}
+          </div>
+        }
         {/* suoervisor */}
         <FormGroup>
           <InputGroup>
@@ -290,11 +353,16 @@ function Plan4LeaveModal({ supervisor, gender, leaveDetails }) {
             >
               <option value="Annual">Annual Leave</option>
               {gender === 'Female'
-              && <option value="Maternity">Maternity Leave</option>
+              && <option value="Maternatiy">Maternity Leave</option>
               }
-              <option value="Paternity">Paternity Leave</option>
-              <option value="Home">Home Leave</option>
-              <option value="Sturdy">Sturdy Leave</option>
+              {(gender === 'Male' || gender === 'male')
+              && <option value="Paternity">Paternity Leave</option>
+              }
+              {
+                (type === 'tcn' || type === 'expat')
+                && <option value="Home">Home Leave</option>
+              }
+              <option value="Study">Study Leave</option>
               <option value="Unpaid">Unpaid Leave</option>
             </CustomInput>
           </InputGroup>
@@ -309,7 +377,13 @@ function Plan4LeaveModal({ supervisor, gender, leaveDetails }) {
               placeholder="Optional"
               type="text"
               value={comment}
-              onChange={(e) => setComment(e.target.value)}
+              onChange={(e) => {
+                setGreenContraintsFeedback('');
+                setRedContraintsFeedback('');
+                setSuccessFeedback('');
+                setError('');
+                setComment(e.target.value);
+              }}
             />
           </InputGroup>
         </FormGroup>
@@ -325,6 +399,7 @@ function Plan4LeaveModal({ supervisor, gender, leaveDetails }) {
               onChange={(date) => {
                 setGreenContraintsFeedback('');
                 setRedContraintsFeedback('');
+                setSuccessFeedback('');
                 setError('');
                 setLeaveDate(date);
               }
@@ -358,6 +433,11 @@ function Plan4LeaveModal({ supervisor, gender, leaveDetails }) {
         { greenContraintsFeedback
           && <div className="successFeedback">
             {greenContraintsFeedback}
+          </div>
+        }
+        { successFeedback
+          && <div className="successFeedback">
+            {successFeedback}
           </div>
         }
         {
@@ -418,7 +498,11 @@ function Plan4LeaveModal({ supervisor, gender, leaveDetails }) {
 Plan4LeaveModal.propTypes = {
   supervisor: PropTypes.object,
   gender: PropTypes.string,
-  leaveDetails: PropTypes.object
+  leaveDetails: PropTypes.object,
+  type: PropTypes.string,
+  email: PropTypes.string,
+  token: PropTypes.string,
+  addLeave: PropTypes.func
 };
 
 export default connect(mapStateToProps)(Plan4LeaveModal);
