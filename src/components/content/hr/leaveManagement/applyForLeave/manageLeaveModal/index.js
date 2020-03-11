@@ -10,7 +10,7 @@ import { IoMdSettings } from 'react-icons/io';
 import { IconContext } from 'react-icons';
 import PropTypes from 'prop-types';
 
-export default function ManageLeaveModal({ leave, supervisor }) {
+export default function ManageLeaveModal({ leave, supervisor, type }) {
   const [modal, setModal] = useState(false);
   const toggle = () => setModal(!modal);
 
@@ -30,7 +30,9 @@ export default function ManageLeaveModal({ leave, supervisor }) {
             <div className="col">
               <p> Starts: {new Date(leave.startDate).toDateString()}</p>
               <p>Category: {leave.type} </p>
-              <p>Progress: {leave.progress} </p>
+              {type !== 'plan'
+              && <p>Progress: {leave.progress} </p>
+              }
             </div>
             <div className="col">
               <p>Ends: {new Date(leave.endDate).toDateString()} </p>
@@ -58,5 +60,6 @@ export default function ManageLeaveModal({ leave, supervisor }) {
 
 ManageLeaveModal.propTypes = {
   leave: PropTypes.object,
-  supervisor: PropTypes.object
+  supervisor: PropTypes.object,
+  type: PropTypes.string
 };

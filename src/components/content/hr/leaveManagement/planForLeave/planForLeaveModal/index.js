@@ -35,7 +35,8 @@ function Plan4LeaveModal({
   leaveDetails,
   type,
   email,
-  token
+  token,
+  addLeave
 }) {
   const [modal, setModal] = useState(false);
   const [spinner, setSpinner] = useState(false);
@@ -293,7 +294,7 @@ function Plan4LeaveModal({
         reset();
         setSpinner(false);
         setSuccessFeedback(res.data.message);
-        // addLeave(res.data.leave);
+        addLeave(res.data.leave);
       })
       .catch((err) => {
         if (err && err.response && err.response.data && err.response.data.message) {
@@ -500,7 +501,8 @@ Plan4LeaveModal.propTypes = {
   leaveDetails: PropTypes.object,
   type: PropTypes.string,
   email: PropTypes.string,
-  token: PropTypes.string
+  token: PropTypes.string,
+  addLeave: PropTypes.func
 };
 
 export default connect(mapStateToProps)(Plan4LeaveModal);
