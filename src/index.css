@@ -58,3 +58,57 @@ code {
 .pointerCursor {
   cursor: pointer;
 }
+
+.pending {
+  background-color: #f6684a;
+  color: white;
+  padding: 0.5em;
+  border-radius: 0.3em;
+  /* border: 0.1em solid #003366; */
+}
+
+.planned {
+  background-color: #5987c4;
+  color: white;
+  padding: 0.5em;
+  border-radius: 0.3em;
+  /* border: 0.1em solid #003366; */
+}
+
+.cancelled {
+  background-color:  #581845 ;
+  color: white;
+  padding: 0.5em;
+  border-radius: 0.3em;
+  /* border: 0.1em solid #003366; */
+}
+
+.rejected {
+  background-color: #f60623;
+  color: white;
+  padding: 0.5em;
+  border-radius: 0.3em;
+  /* border: 0.1em solid #003366; */
+}
+
+.approved {
+  background-color: #028b1f;
+  color: white;
+  padding: 0.5em;
+  border-radius: 0.3em;
+  /* border: 0.1em solid #003366; */
+}
+
+.taken {
+  /* color: white; */
+  padding: 0.5em;
+  border-radius: 0.3em;
+  border: 0.1em solid  #028b1f;
+}
+
+.nottaken {
+  /* color: white; */
+  padding: 0.5em;
+  border-radius: 0.3em;
+  border: 0.1em solid  #581845;
+}

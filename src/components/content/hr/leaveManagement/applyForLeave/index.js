@@ -34,7 +34,7 @@ function Apply4Leave({
     axios.get(endPoint)
       .then((res) => {
         setSpinner(false);
-        setPersonsLeaves(res.data);
+        setPersonsLeaves(res.data.filter((l) => l.status !== 'planned'));
       })
       .catch((err) => {
         if (err && err.response && err.response.data && err.response.data.message) {
@@ -102,7 +102,11 @@ function Apply4Leave({
               <th scope="row">{personsLeaves.length - index}</th>
               <td>{leave.type}</td>
               <td>{leave.daysTaken}</td>
-              <td>{leave.status}</td>
+              <td>
+                <button className={leave.status}>
+                  {leave.status}
+                </button>
+              </td>
               <td>{leave.progress}</td>
               <td>
                 <ManageLeaveModal
