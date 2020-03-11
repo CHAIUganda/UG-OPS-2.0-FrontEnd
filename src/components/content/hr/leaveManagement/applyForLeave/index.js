@@ -102,7 +102,11 @@ function Apply4Leave({
               <th scope="row">{personsLeaves.length - index}</th>
               <td>{leave.type}</td>
               <td>{leave.daysTaken}</td>
-              <td>{leave.status}</td>
+              <td>
+                <button className={leave.status}>
+                  {leave.status}
+                </button>
+              </td>
               <td>{leave.progress}</td>
               <td>
                 <ManageLeaveModal

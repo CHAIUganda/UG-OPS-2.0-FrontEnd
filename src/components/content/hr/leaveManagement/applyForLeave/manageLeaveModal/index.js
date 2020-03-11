@@ -36,7 +36,9 @@ export default function ManageLeaveModal({ leave, supervisor, type }) {
             </div>
             <div className="col">
               <p>Ends: {new Date(leave.endDate).toDateString()} </p>
-              <p>Status: {leave.status} </p>
+              <p>Status: <button className={leave.status}>
+                {leave.status}
+              </button> </p>
               <p>Comment: {leave.comment} </p>
             </div>
 
