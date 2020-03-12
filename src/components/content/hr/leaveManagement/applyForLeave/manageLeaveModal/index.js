@@ -10,7 +10,9 @@ import { IoMdSettings } from 'react-icons/io';
 import { IconContext } from 'react-icons';
 import PropTypes from 'prop-types';
 
-export default function ManageLeaveModal({ leave, supervisor, type }) {
+import { returnStatusClass } from '../../../../../../config';
+
+export default function ManageLeaveModal({ leave, supervisor }) {
   const [modal, setModal] = useState(false);
   const toggle = () => setModal(!modal);
 
@@ -30,22 +32,18 @@ export default function ManageLeaveModal({ leave, supervisor, type }) {
             <div className="col">
               <p> Starts: {new Date(leave.startDate).toDateString()}</p>
               <p>Category: {leave.type} </p>
-              {type !== 'plan'
-              && <p>Progress: {leave.progress} </p>
-              }
+              <p>Comment: {leave.comment} </p>
             </div>
             <div className="col">
               <p>Ends: {new Date(leave.endDate).toDateString()} </p>
-              <p>Status: <button className={leave.status}>
+              <p>Status: <button className={returnStatusClass(leave.status)}>
                 {leave.status}
               </button> </p>
-              <p>Comment: {leave.comment} </p>
             </div>
 
             <div className="col">
               <p>days Taken: {leave.daysTaken} </p>
               <p>Supervisor: {`${supervisor.fName} ${supervisor.lName}`} </p>
-              <p>Programme: {leave.program} </p>
             </div>
           </div>
 
@@ -63,5 +61,4 @@ export default function ManageLeaveModal({ leave, supervisor, type }) {
 ManageLeaveModal.propTypes = {
   leave: PropTypes.object,
   supervisor: PropTypes.object,
-  type: PropTypes.string
 };

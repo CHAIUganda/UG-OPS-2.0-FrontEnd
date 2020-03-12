@@ -21,21 +21,22 @@ import axios from 'axios';
 import moment from 'moment';
 
 import { BASE_URL } from '../../../../../../config';
-import './apply4LeaveModal.css';
+import './planLeaveModal.css';
 
 const mapStateToProps = (state) => ({
   token: state.auth.token,
-  roles: state.auth.roles,
-  type: state.auth.type
+  type: state.auth.type,
+  email: state.auth.email
 });
 
-function Apply4LeaveModal({
+function Plan4LeaveModal({
   supervisor,
   gender,
   leaveDetails,
+  type,
   email,
-  addLeave,
-  type
+  token,
+  addLeave
 }) {
   const [modal, setModal] = useState(false);
   const [spinner, setSpinner] = useState(false);
@@ -65,6 +66,7 @@ function Apply4LeaveModal({
     setRedContraintsFeedback('');
   };
 
+
   const processAnnualLeaveFeedback = (leaveDaysArray, home = false) => {
     const daysAccruedByThen = leaveDates[1].getMonth() * 1.75;
     const availableDays = (Math.trunc(daysAccruedByThen) + leaveDetails.annualLeaveBF)
@@ -74,7 +76,7 @@ function Apply4LeaveModal({
       setGreenContraintsFeedback(`
       You have ${leaveDetails.annualLeaveBF} annual leave days brought forward.
       You have used ${leaveDetails.annualLeaveTaken} annual leave days so far.
-      You have ${availableDays} annual leave day(s), 
+      You will have ${availableDays} annual leave day(s) by then, 
       and you have selected ${leaveDaysArray.length} ${leaveWord} day(s).
       You are good to go.
       `);
@@ -82,7 +84,7 @@ function Apply4LeaveModal({
       setRedContraintsFeedback(`
         You have ${leaveDetails.annualLeaveBF} annual leave days brought forward.
         You have used ${leaveDetails.annualLeaveTaken} annual leave days so far.
-        You have ${availableDays} annual leave day(s), 
+        You will have ${availableDays} annual leave day(s) by then, 
         However, you have selected ${leaveDaysArray.length} ${leaveWord} leave day(s)!
         Please reduce by ${leaveDaysArray.length - availableDays}
       `);
@@ -94,14 +96,14 @@ function Apply4LeaveModal({
     if (availableDays >= leaveDaysArray.length) {
       setGreenContraintsFeedback(`
       You have used ${leaveDetails.maternityLeaveTaken} maternity leave days so far.
-      You have ${availableDays} maternity leave day(s), 
+      You will have ${availableDays} maternity leave day(s) by then, 
       and you have selected ${leaveDaysArray.length} leave day(s).
       You are good to go.
       `);
     } else {
       setRedContraintsFeedback(`
         You have used ${leaveDetails.maternityLeaveTaken} maternity leave days so far.
-        You have ${availableDays} maternity leave day(s), 
+        You will have ${availableDays} maternity leave day(s) by then, 
         However, you have selected ${leaveDaysArray.length} day(s)!
         Please reduce by ${leaveDaysArray.length - availableDays}
       `);
@@ -124,19 +126,19 @@ function Apply4LeaveModal({
     }
   };
 
-  const processSturdyLeaveFeedback = (leaveDaysArray) => {
+  const processStudyLeaveFeedback = (leaveDaysArray) => {
     const availableDays = 4 - leaveDetails.studyLeaveTaken;
     if (availableDays >= leaveDaysArray.length) {
       setGreenContraintsFeedback(`
       You have used ${leaveDetails.studyLeaveTaken} study leave days so far.
-      You have ${availableDays} study leave day(s), 
+      You will have ${availableDays} study leave day(s) by then, 
       and you have selected ${leaveDaysArray.length} study leave day(s).
       You are good to go.
       `);
     } else {
       setRedContraintsFeedback(`
-        You have used ${leaveDetails.studyLeaveTaken} sturdy leave days so far.
-        You have ${availableDays} sturdy leave day(s), 
+        You have used ${leaveDetails.studyLeaveTaken} study leave days so far.
+        You will have ${availableDays} study leave day(s) by then, 
         However, you have selected ${leaveDaysArray.length} sturdy leave day(s)!
         Please reduce by ${leaveDaysArray.length - availableDays}
       `);
@@ -148,41 +150,21 @@ function Apply4LeaveModal({
     if (availableDays >= leaveDaysArray.length) {
       setGreenContraintsFeedback(`
       You have used ${leaveDetails.studyLeaveTaken} unpaid leave days so far.
-      You have ${availableDays} unpaid leave day(s), 
+      You will have ${availableDays} unpaid leave day(s) by then, 
       and you have selected ${leaveDaysArray.length} unpaid leave day(s).
       You are good to go.
       `);
     } else {
       setRedContraintsFeedback(`
         You have used ${leaveDetails.studyLeaveTaken} unpaid leave days so far.
-        You have ${availableDays} unpaid leave day(s), 
+        You will have ${availableDays} unpaid leave day(s) by then, 
         However, you have selected ${leaveDaysArray.length} unpaid leave day(s)!
         Please reduce by ${leaveDaysArray.length - availableDays}
       `);
     }
   };
 
-  const processSickLeaveFeedback = (leaveDaysArray) => {
-    const availableDays = 42 - leaveDetails.sickLeaveTaken;
-    if (availableDays >= leaveDaysArray.length) {
-      setGreenContraintsFeedback(`
-      You have used ${leaveDetails.sickLeaveTaken} sick leave days so far.
-      You have ${availableDays} sick leave day(s), 
-      and you have selected ${leaveDaysArray.length} sick leave day(s).
-      You are good to go.
-      `);
-    } else {
-      setRedContraintsFeedback(`
-        You have used ${leaveDetails.sickLeaveTaken} sick leave days so far.
-        You have ${availableDays} sick leave day(s), 
-        However, you have selected ${leaveDaysArray.length} sick leave day(s)!
-        Please reduce by ${leaveDaysArray.length - availableDays}
-      `);
-    }
-  };
-
   const leaveSpecificFeedback = (leaveDaysArray) => {
-    setSuccessFeedback('');
     if (category === 'Annual') {
       processAnnualLeaveFeedback(leaveDaysArray);
     } else if (category === 'Maternity') {
@@ -192,11 +174,9 @@ function Apply4LeaveModal({
     } else if (category === 'Home') {
       processAnnualLeaveFeedback(leaveDaysArray, true);
     } else if (category === 'Study') {
-      processSturdyLeaveFeedback(leaveDaysArray);
+      processStudyLeaveFeedback(leaveDaysArray);
     } else if (category === 'Unpaid') {
       processUnpaidLeaveFeedback(leaveDaysArray);
-    } else if (category === 'Sick') {
-      processSickLeaveFeedback(leaveDaysArray);
     }
   };
 
@@ -291,30 +271,30 @@ function Apply4LeaveModal({
   const handleSubmit = (event) => {
     event.preventDefault();
     setSpinner(true);
-    if (!leaveDates || leaveDates.length < 1) {
-      setError('Please select atleast a day to continue.');
-      setSpinner(false);
+    if (!arrayOfLeaveDays.length) {
+      setError('Please select atleast a day to continue');
       return;
     }
+
     const leaveObject = {
       startDate: leaveDates[0],
       endDate: leaveDates[1],
       type: category,
       staffEmail: email,
-      leaveDays: arrayOfLeaveDays,
-      status: 'Pending Supervisor',
+      status: 'planned',
       daysTaken: arrayOfLeaveDays.length,
       publicHolidays: arrayOfHolidays,
       comment,
     };
 
+    axios.defaults.headers.common = { token };
     const endPoint = `${BASE_URL}leaveApi/leave`;
     axios.post(endPoint, leaveObject)
       .then((res) => {
         reset();
         setSpinner(false);
-        addLeave(res.data.leave);
         setSuccessFeedback(res.data.message);
+        addLeave(res.data.leave);
       })
       .catch((err) => {
         if (err && err.response && err.response.data && err.response.data.message) {
@@ -382,7 +362,6 @@ function Apply4LeaveModal({
                 (type === 'tcn' || type === 'expat')
                 && <option value="Home">Home Leave</option>
               }
-              <option value="Sick">Sick Leave</option>
               <option value="Study">Study Leave</option>
               <option value="Unpaid">Unpaid Leave</option>
             </CustomInput>
@@ -398,7 +377,13 @@ function Apply4LeaveModal({
               placeholder="Optional"
               type="text"
               value={comment}
-              onChange={(e) => setComment(e.target.value)}
+              onChange={(e) => {
+                setGreenContraintsFeedback('');
+                setRedContraintsFeedback('');
+                setSuccessFeedback('');
+                setError('');
+                setComment(e.target.value);
+              }}
             />
           </InputGroup>
         </FormGroup>
@@ -450,7 +435,6 @@ function Apply4LeaveModal({
             {greenContraintsFeedback}
           </div>
         }
-        {error && <div className="errorFeedback"> {error} </div>}
         { successFeedback
           && <div className="successFeedback">
             {successFeedback}
@@ -488,7 +472,7 @@ function Apply4LeaveModal({
 
   if (publicHolidaysFeedback) {
     return <div className="alert alert-info text-center" role="alert">
-      <p><Spinner color="primary" style={{ width: '3rem', height: '3rem' }} /></p>
+      <div><Spinner color="primary" style={{ width: '3rem', height: '3rem' }} /></div>
       <p>{ publicHolidaysFeedback }</p>
     </div>;
   }
@@ -498,10 +482,10 @@ function Apply4LeaveModal({
     <div className="inlineItem">
       <button className="submitButton positionBtn" onClick={toggle}>
         <IoMdAdd />
-            Apply For Leave
+            Plan For Leave
       </button>
       <Modal isOpen={modal} toggle={toggle}>
-        <ModalHeader toggle={toggle}>Apply For Leave</ModalHeader>
+        <ModalHeader toggle={toggle}>Plan For Leave</ModalHeader>
         <ModalBody>
           {returnForm()}
         </ModalBody>
@@ -511,14 +495,14 @@ function Apply4LeaveModal({
 }
 
 
-Apply4LeaveModal.propTypes = {
-  supervisor: PropTypes.string,
+Plan4LeaveModal.propTypes = {
+  supervisor: PropTypes.object,
   gender: PropTypes.string,
   leaveDetails: PropTypes.object,
+  type: PropTypes.string,
   email: PropTypes.string,
-  addLeave: PropTypes.func,
-  roles: PropTypes.object,
-  type: PropTypes.string
+  token: PropTypes.string,
+  addLeave: PropTypes.func
 };
 
-export default connect(mapStateToProps)(Apply4LeaveModal);
+export default connect(mapStateToProps)(Plan4LeaveModal);

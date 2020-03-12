@@ -8,6 +8,7 @@ import Apply4Leave from './leaveManagement/applyForLeave';
 import ManagePublicHolidays from './HRSpecific/publicHolidays';
 import Register from '../auth/register';
 import ManageProgrammes from './HRSpecific/programmes';
+import SuperviseLeave from './leaveManagement/superviseLeave';
 
 export default function HR(props) {
   const { componentToRender } = props.match.params;
@@ -19,7 +20,8 @@ export default function HR(props) {
     Apply4Leave,
     ManagePublicHolidays,
     Register,
-    ManageProgrammes
+    ManageProgrammes,
+    SuperviseLeave
   };
 
   const Tag = ComponentsObject[componentToRender];

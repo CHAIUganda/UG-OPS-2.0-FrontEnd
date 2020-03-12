@@ -281,8 +281,9 @@ function Plan4LeaveModal({
       endDate: leaveDates[1],
       type: category,
       staffEmail: email,
-      status: 'planned',
+      status: 'Planned',
       daysTaken: arrayOfLeaveDays.length,
+      leaveDays: arrayOfLeaveDays,
       publicHolidays: arrayOfHolidays,
       comment,
     };
@@ -440,6 +441,7 @@ function Plan4LeaveModal({
             {successFeedback}
           </div>
         }
+        {error && <div className="errorFeedback"> {error} </div>}
         {
           !redContraintsFeedback
           && <button className="submitButton" type="submit">

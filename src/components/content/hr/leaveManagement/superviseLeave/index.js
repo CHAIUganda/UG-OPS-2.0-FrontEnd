@@ -9,9 +9,8 @@ import axios from 'axios';
 import ManageLeaveModal from '../applyForLeave/manageLeaveModal';
 
 import CommonSpinner from '../../../../common/spinner';
-import { BASE_URL, returnStatusClass } from '../../../../../config';
-import Plan4LeaveModal from './planForLeaveModal';
-import './planForLeave.css';
+import { BASE_URL } from '../../../../../config';
+import './superviseLeave.css';
 
 const mapStateToProps = (state) => ({
   supervisor: state.auth.supervisor,
@@ -20,43 +19,24 @@ const mapStateToProps = (state) => ({
   token: state.auth.token
 });
 
-function Plan4Leave({
+function SuperviseLeave({
   supervisor,
-  gender,
   email,
   token
 }) {
   const [spinner, setSpinner] = useState(false);
-  const [leaveDetails, setLeaveDetails] = useState(null);
+  const [leavesToApprove, setLeavesToApprove] = useState(null);
   const [error, setError] = useState('');
-  const [personsLeaves, setPersonsLeaves] = useState([]);
-
-  const getPersonsLeaves = () => {
-    const endPoint = `${BASE_URL}leaveApi/getStaffLeaves/${email}/Planned`;
-    axios.defaults.headers.common = { token };
-    axios.get(endPoint)
-      .then((res) => {
-        setSpinner(false);
-        setPersonsLeaves(res.data);
-      })
-      .catch((err) => {
-        if (err && err.response && err.response.data && err.response.data.message) {
-          setError(err.response.data.message);
-        } else {
-          setError(err.message);
-        }
-      });
-  };
 
   useEffect(() => {
     setSpinner(true);
-    setError(false);
-    const endPoint = `${BASE_URL}leaveApi/getStaffLeavesTaken/${email}`;
+    setError('');
+    axios.defaults.headers.common = { token };
+    const endPoint = `${BASE_URL}leaveApi/getSupervisorLeaves/${email}/Pending Supervisor`;
     axios.get(endPoint)
       .then((res) => {
-        setLeaveDetails(res.data.leaveDetails);
+        setLeavesToApprove(res.data);
         setSpinner(false);
-        getPersonsLeaves();
       })
       .catch((err) => {
         setSpinner(false);
@@ -76,7 +56,7 @@ function Plan4Leave({
     );
   }
 
-  if (spinner || !leaveDetails) {
+  if (spinner || !leavesToApprove) {
     return (
       <div className="alert alert-info text-center" role="alert">
         <div>
@@ -91,29 +71,24 @@ function Plan4Leave({
     <table className="table holidaysTable">
       <thead>
         <tr>
+          <th scope="col">#</th>
+          <th scope="col">Staff</th>
           <th scope="col">Category</th>
           <th scope="col">Days Taken</th>
-          <th scope="col">Starts</th>
-          <th scope="col">Ends</th>
-          <th scope="col">Status</th>
           <th scope="col">Manage</th>
         </tr>
       </thead>
       <tbody>
         {
-          personsLeaves.reverse().map((leave) => (
+          leavesToApprove.map((leave, index) => (
             <tr key={leave._id}>
+              <th scope="row">{index + 1}</th>
+              <td>{`${leave.staff.fName} ${leave.staff.lName}`}</td>
               <td>{leave.type}</td>
               <td>{leave.daysTaken}</td>
-              <td>{new Date(leave.startDate).toDateString()}</td>
-              <td>{new Date(leave.endDate).toDateString()}</td>
-              <td>
-                <button className={returnStatusClass(leave.status)}>
-                  {leave.status}
-                </button>
-              </td>
               <td>
                 <ManageLeaveModal
+                  type={'plan'}
                   leave={leave}
                   supervisor={supervisor}
                 />
@@ -125,30 +100,19 @@ function Plan4Leave({
     </table>
   );
 
-  const addLeave = (leave) => {
-    setPersonsLeaves([...personsLeaves, leave]);
-  };
-
   return (
     <>
-      <h3 className="inlineItem">Planned Leaves</h3>
-      <Plan4LeaveModal
-        supervisor={supervisor}
-        gender={gender}
-        className={'planLeaveModal'}
-        leaveDetails={leaveDetails}
-        addLeave={addLeave}
-      />
+      <h3 className="inlineItem">Leaves To Supervise</h3>
       { returnTable() }
     </>
   );
 }
 
-Plan4Leave.propTypes = {
+SuperviseLeave.propTypes = {
   supervisor: PropTypes.string,
   gender: PropTypes.string,
   email: PropTypes.string,
   token: PropTypes.string
 };
 
-export default connect(mapStateToProps)(Plan4Leave);
+export default connect(mapStateToProps)(SuperviseLeave);
