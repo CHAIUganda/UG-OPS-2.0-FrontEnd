@@ -74,7 +74,9 @@ function SuperviseLeave({
           <th scope="col">#</th>
           <th scope="col">Staff</th>
           <th scope="col">Category</th>
-          <th scope="col">Days Taken</th>
+          <th scope="col">No. Of Days</th>
+          <th scope="col">Starts</th>
+          <th scope="col">Ends</th>
           <th scope="col">Manage</th>
         </tr>
       </thead>
@@ -86,6 +88,8 @@ function SuperviseLeave({
               <td>{`${leave.staff.fName} ${leave.staff.lName}`}</td>
               <td>{leave.type}</td>
               <td>{leave.daysTaken}</td>
+              <td>{new Date(leave.startDate).toDateString()}</td>
+              <td>{new Date(leave.endDate).toDateString()}</td>
               <td>
                 <ManageLeaveModal
                   type={'plan'}
