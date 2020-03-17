@@ -58,7 +58,8 @@ export default function ManageLeaveModal({
     const manageLeaveObject = {
       leaveId: leave._id,
       status,
-      staffEmail: leave.staff.email
+      staffEmail: leave.staff.email,
+      reason
     };
 
     axios.defaults.headers.common = { token };
