@@ -6,7 +6,7 @@ import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import axios from 'axios';
-import ManageLeaveModal from '../applyForLeave/manageLeaveModal';
+import ManageLeaveModal from './manageLeaveModal';
 
 import CommonSpinner from '../../../../common/spinner';
 import { BASE_URL, returnStatusClass } from '../../../../../config';

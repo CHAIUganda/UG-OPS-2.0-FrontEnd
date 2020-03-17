@@ -58,7 +58,7 @@ function ManagePublicHolidays({ roles }) {
           <tr>
             <th scope="col">#</th>
             <th scope="col">Holiday</th>
-            <th scope="col">Date(DD/MM/YYYY)</th>
+            <th scope="col">Date</th>
             {(hr || admin)
               && <th scope="col">Manage</th>
             }

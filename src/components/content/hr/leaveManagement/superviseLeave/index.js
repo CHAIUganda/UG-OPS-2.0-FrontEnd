@@ -6,21 +6,19 @@ import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import axios from 'axios';
-import ManageLeaveModal from '../applyForLeave/manageLeaveModal';
+import ManageLeaveModal from './manageLeaveModal';
 
 import CommonSpinner from '../../../../common/spinner';
 import { BASE_URL } from '../../../../../config';
 import './superviseLeave.css';
 
 const mapStateToProps = (state) => ({
-  supervisor: state.auth.supervisor,
   gender: state.auth.gender,
   email: state.auth.email,
   token: state.auth.token
 });
 
 function SuperviseLeave({
-  supervisor,
   email,
   token
 }) {
@@ -67,13 +65,18 @@ function SuperviseLeave({
     );
   }
 
+  const removeLeaveFromList = (id2Remove) => {
+    const newArray = leavesToApprove.filter((leave) => leave._id !== id2Remove);
+    setLeavesToApprove([...newArray]);
+  };
+
   const returnTable = () => (
     <table className="table holidaysTable">
       <thead>
         <tr>
           <th scope="col">#</th>
           <th scope="col">Staff</th>
-          <th scope="col">Category</th>
+          <th scope="col">Type</th>
           <th scope="col">No. Of Days</th>
           <th scope="col">Starts</th>
           <th scope="col">Ends</th>
@@ -92,9 +95,10 @@ function SuperviseLeave({
               <td>{new Date(leave.endDate).toDateString()}</td>
               <td>
                 <ManageLeaveModal
-                  type={'plan'}
                   leave={leave}
-                  supervisor={supervisor}
+                  staff={`${leave.staff.fName} ${leave.staff.lName}`}
+                  token={token}
+                  removeLeaveFromList={removeLeaveFromList}
                 />
               </td>
             </tr>
@@ -113,7 +117,6 @@ function SuperviseLeave({
 }
 
 SuperviseLeave.propTypes = {
-  supervisor: PropTypes.string,
   gender: PropTypes.string,
   email: PropTypes.string,
   token: PropTypes.string
