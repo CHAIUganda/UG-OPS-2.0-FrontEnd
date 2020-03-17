@@ -27,9 +27,13 @@ function HR({
 }) {
   let hr;
   let admin;
+  let supervisor;
+  let countryDirector;
   if (roles) {
     hr = roles.hr;
     admin = roles.admin;
+    supervisor = roles.supervisor;
+    countryDirector = roles.countryDirector;
   } else {
     hr = false;
     admin = false;
@@ -60,6 +64,16 @@ function HR({
             active={active === 'Apply4Leave'}
           />
         </span>
+
+        { (supervisor || countryDirector)
+          && <span onClick={() => handleChangeActive('SuperviseLeave')}>
+            <SubItem
+              link="/hr/SuperviseLeave"
+              textToSet="Supervise Leave"
+              active={active === 'SuperviseLeave'}
+            />
+          </span>
+        }
 
         <span onClick={() => handleChangeActive('ManagePublicHolidays')}>
           <SubItem

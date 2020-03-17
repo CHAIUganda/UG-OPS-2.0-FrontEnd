@@ -5,7 +5,7 @@ import axios from 'axios';
 
 
 import CommonSpinner from '../../../../common/spinner';
-import { BASE_URL } from '../../../../../config';
+import { BASE_URL, returnStatusClass } from '../../../../../config';
 import Apply4LeaveModal from './applyForLeaveModal';
 import ManageLeaveModal from './manageLeaveModal';
 import './apply4Leave.css';
@@ -33,8 +33,9 @@ function Apply4Leave({
     axios.defaults.headers.common = { token };
     axios.get(endPoint)
       .then((res) => {
+        debugger;
         setSpinner(false);
-        setPersonsLeaves(res.data.filter((l) => l.status !== 'planned'));
+        setPersonsLeaves(res.data.filter((l) => l.status !== 'Planned'));
       })
       .catch((err) => {
         if (err && err.response && err.response.data && err.response.data.message) {
@@ -87,27 +88,27 @@ function Apply4Leave({
     <table className="table holidaysTable">
       <thead>
         <tr>
-          <th scope="col">#</th>
           <th scope="col">Category</th>
           <th scope="col">Days Taken</th>
+          <th scope="col">Starts</th>
+          <th scope="col">Ends</th>
           <th scope="col">Status</th>
-          <th scope="col">Progress</th>
           <th scope="col">Manage</th>
         </tr>
       </thead>
       <tbody>
         {
-          personsLeaves.reverse().map((leave, index) => (
+          personsLeaves.reverse().map((leave) => (
             <tr key={leave._id}>
-              <th scope="row">{personsLeaves.length - index}</th>
               <td>{leave.type}</td>
               <td>{leave.daysTaken}</td>
+              <td>{new Date(leave.startDate).toDateString()}</td>
+              <td>{new Date(leave.endDate).toDateString()}</td>
               <td>
-                <button className={leave.status}>
+                <button className={returnStatusClass(leave.status)}>
                   {leave.status}
                 </button>
               </td>
-              <td>{leave.progress}</td>
               <td>
                 <ManageLeaveModal
                   leave={leave}

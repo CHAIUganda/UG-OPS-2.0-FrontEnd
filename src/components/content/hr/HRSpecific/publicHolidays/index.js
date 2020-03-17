@@ -58,7 +58,7 @@ function ManagePublicHolidays({ roles }) {
           <tr>
             <th scope="col">#</th>
             <th scope="col">Holiday</th>
-            <th scope="col">Date(DD/MM/YYYY)</th>
+            <th scope="col">Date</th>
             {(hr || admin)
               && <th scope="col">Manage</th>
             }
@@ -70,7 +70,7 @@ function ManagePublicHolidays({ roles }) {
               <tr key={holiday._id}>
                 <th scope="row">{index + 1}</th>
                 <td>{holiday.name}</td>
-                <td>{`${holiday.date}/${new Date().getFullYear()}`}</td>
+                <td>{new Date(`${new Date().getFullYear()}-${holiday.date.split('/')[1]}-${holiday.date.split('/')[0]}`).toDateString()}</td>
                 {(hr || admin)
               && <td>
                 <button
