@@ -44,6 +44,10 @@ export default function ManageLeaveModal({ leave, supervisor }) {
             <div className="col">
               <p>days Taken: {leave.daysTaken} </p>
               <p>Supervisor: {`${supervisor.fName} ${supervisor.lName}`} </p>
+              { leave.rejectionReason
+              && <p>Rejection reason: { leave.rejectionReason }  </p>
+              }
+              <p></p>
             </div>
           </div>
 
