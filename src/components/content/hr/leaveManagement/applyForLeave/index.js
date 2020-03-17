@@ -33,7 +33,6 @@ function Apply4Leave({
     axios.defaults.headers.common = { token };
     axios.get(endPoint)
       .then((res) => {
-        debugger;
         setSpinner(false);
         setPersonsLeaves(res.data.filter((l) => l.status !== 'Planned'));
       })

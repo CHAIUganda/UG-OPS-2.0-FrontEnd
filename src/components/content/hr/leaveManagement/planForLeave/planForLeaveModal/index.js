@@ -273,6 +273,7 @@ function Plan4LeaveModal({
     setSpinner(true);
     if (!arrayOfLeaveDays.length) {
       setError('Please select atleast a day to continue');
+      setSpinner(false);
       return;
     }
 

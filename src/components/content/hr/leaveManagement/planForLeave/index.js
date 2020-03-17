@@ -6,8 +6,8 @@ import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import axios from 'axios';
-import ManageLeaveModal from './manageLeaveModal';
 
+import ManageLeaveModal from './manageLeaveModal';
 import CommonSpinner from '../../../../common/spinner';
 import { BASE_URL, returnStatusClass } from '../../../../../config';
 import Plan4LeaveModal from './planForLeaveModal';
@@ -87,6 +87,11 @@ function Plan4Leave({
     );
   }
 
+  const removeLeave = (id) => {
+    const newLeaves = personsLeaves.filter((l) => l._id !== id);
+    setPersonsLeaves(newLeaves);
+  };
+
   const returnTable = () => (
     <table className="table holidaysTable">
       <thead>
@@ -116,6 +121,7 @@ function Plan4Leave({
                 <ManageLeaveModal
                   leave={leave}
                   supervisor={supervisor}
+                  removeLeave={removeLeave}
                 />
               </td>
             </tr>

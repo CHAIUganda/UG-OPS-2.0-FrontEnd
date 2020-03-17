@@ -9,20 +9,59 @@ import {
 import { IoMdSettings } from 'react-icons/io';
 import { IconContext } from 'react-icons';
 import PropTypes from 'prop-types';
+import axios from 'axios';
 
-import { returnStatusClass } from '../../../../../../config';
+import { BASE_URL, returnStatusClass } from '../../../../../../config';
 import CommonSpinner from '../../../../../common/spinner';
 
-export default function ManageLeaveModal({ leave, supervisor }) {
+export default function ManageLeaveModal({ leave, supervisor, removeLeave }) {
   const [modal, setModal] = useState(false);
   const [applySpinner, setApplySpinner] = useState(false);
+  const [showApplyButton, setShowApplyButton] = useState(true);
+  const [error, setError] = useState('');
+  const [successFeedback, setSuccessFeedback] = useState('');
+  const [RebuildArray, setRebuildArray] = useState(false);
+  const [leaveStatus, setLeaveStatus] = useState(leave.status);
 
-  const toggle = () => setModal(!modal);
+  const toggle = () => {
+    const bool = !modal;
+    if (!bool && RebuildArray) {
+      removeLeave(leave._id);
+      setModal(bool);
+      return;
+    }
+    setModal(bool);
+  };
 
   const handleApply4Leave = (event) => {
     event.preventDefault();
     setApplySpinner(true);
+    setError('');
+    setSuccessFeedback('');
     /* Apply for the leave */
+    const leaveObject = {
+      ...leave,
+      status: 'Pending Supervisor',
+      staffEmail: leave.staff.email
+    };
+
+    const endPoint = `${BASE_URL}leaveApi/leave`;
+    axios.post(endPoint, leaveObject)
+      .then((res) => {
+        setApplySpinner(false);
+        setShowApplyButton(false);
+        setRebuildArray(true);
+        setLeaveStatus('Pending Supervisor');
+        setSuccessFeedback(res.data.message);
+      })
+      .catch((err) => {
+        setApplySpinner(false);
+        if (err && err.response && err.response.data && err.response.data.message) {
+          setError(err.response.data.message);
+        } else {
+          setError(err.message);
+        }
+      });
   };
 
   const applyForLeaveTxt = () => {
@@ -50,6 +89,22 @@ export default function ManageLeaveModal({ leave, supervisor }) {
       <Modal isOpen={modal} toggle={toggle}>
         <ModalHeader toggle={toggle}>Manage Leave</ModalHeader>
         <ModalBody>
+          {
+            error
+            && <div className="errorFeedback row">
+              <div className="col">
+                {error}
+              </div>
+            </div>
+          }
+          {
+            successFeedback
+            && <div className="successFeedback row">
+              <div className="col">
+                {successFeedback}
+              </div>
+            </div>
+          }
           <div className="row">
             <div className="col">
               <p> Starts: {new Date(leave.startDate).toDateString()}</p>
@@ -58,8 +113,8 @@ export default function ManageLeaveModal({ leave, supervisor }) {
             </div>
             <div className="col">
               <p>Ends: {new Date(leave.endDate).toDateString()} </p>
-              <p>Status: <button className={returnStatusClass(leave.status)}>
-                {leave.status}
+              <p>Status: <button className={returnStatusClass(leaveStatus)}>
+                {leaveStatus}
               </button> </p>
             </div>
 
@@ -71,7 +126,10 @@ export default function ManageLeaveModal({ leave, supervisor }) {
 
           <ModalFooter>
             <button className="submitButton">Modify this Leave</button>
-            <button className="submitButton" onClick={handleApply4Leave}>{applyForLeaveTxt()}</button>
+            {
+              showApplyButton
+              && <button className="submitButton" onClick={handleApply4Leave}>{applyForLeaveTxt()}</button>
+            }
             <button className="submitButton">Cancel The Leave</button>
             <Button color="secondary" onClick={toggle} className="float-right">Close</Button>
           </ModalFooter>
@@ -85,4 +143,5 @@ export default function ManageLeaveModal({ leave, supervisor }) {
 ManageLeaveModal.propTypes = {
   leave: PropTypes.object,
   supervisor: PropTypes.object,
+  removeLeave: PropTypes.func
 };
