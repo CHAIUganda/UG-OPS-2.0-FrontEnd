@@ -25,7 +25,7 @@ function HeaderMiddle({ changeSection }) {
     <div className="middleHeader">
       <span onClick={() => handleClick('Human Resource')}>
         <SubItem
-          link="/"
+          link="/hr/HRHome"
           IcontoSet={IoIosPeople}
           textToSet="Human Resource"
         />
