@@ -10,6 +10,7 @@ import Register from '../auth/register';
 import ManageProgrammes from './HRSpecific/programmes';
 import SuperviseLeave from './leaveManagement/superviseLeave';
 import HRHome from './hrHome';
+import ConsolidatedTracker from './leaveManagement/consolidatedTracker';
 
 export default function HR(props) {
   const { componentToRender } = props.match.params;
@@ -23,7 +24,8 @@ export default function HR(props) {
     Register,
     ManageProgrammes,
     SuperviseLeave,
-    HRHome
+    HRHome,
+    ConsolidatedTracker
   };
 
   const Tag = ComponentsObject[componentToRender];
