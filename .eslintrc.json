@@ -27,7 +27,7 @@
     "comma-dangle": 0,
     "react/prop-types": "error",
     "indent": ["error", 2],
-    "linebreak-style": ["error", "unix"],
+    "linebreak-style": 0,
     "quotes": ["error", "single"],
     "semi": ["error", "always"],
     "no-useless-return": 1,

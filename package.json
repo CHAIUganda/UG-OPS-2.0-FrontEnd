@@ -10,6 +10,7 @@
     "bootstrap": "^4.4.1",
     "html2canvas": "^1.0.0-rc.5",
     "js-cookie": "^2.2.1",
+    "jspdf": "^1.5.3",
     "moment": "^2.24.0",
     "prop-types": "^15.7.2",
     "react": "^16.12.0",
