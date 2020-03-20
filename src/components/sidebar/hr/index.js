@@ -75,6 +75,16 @@ function HR({
           </span>
         }
 
+        { (hr || admin)
+          && <span onClick={() => handleChangeActive('ConsolidatedTracker')}>
+            <SubItem
+              link="/hr/ConsolidatedTracker"
+              textToSet="Consolidated Leave Tracker"
+              active={active === 'ConsolidatedTracker'}
+            />
+          </span>
+        }
+
         <span onClick={() => handleChangeActive('ManagePublicHolidays')}>
           <SubItem
             link="/hr/ManagePublicHolidays"

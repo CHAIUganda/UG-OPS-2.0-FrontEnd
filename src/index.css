@@ -62,7 +62,7 @@ code {
 .pending {
   background-color: #f6684a;
   color: white;
-  padding: 0.5em;
+  padding: 0 0.2em;
   border-radius: 0.3em;
   /* border: 0.1em solid #003366; */
 }
@@ -70,7 +70,7 @@ code {
 .planned {
   background-color: #5987c4;
   color: white;
-  padding: 0.5em;
+  padding: 0 0.2em;
   border-radius: 0.3em;
   /* border: 0.1em solid #003366; */
 }
@@ -78,7 +78,7 @@ code {
 .cancelled {
   background-color:  #581845 ;
   color: white;
-  padding: 0.5em;
+  padding: 0 0.2em;
   border-radius: 0.3em;
   /* border: 0.1em solid #003366; */
 }
@@ -86,7 +86,7 @@ code {
 .rejected {
   background-color: red;
   color: white;
-  padding: 0.5em;
+  padding: 0 0.2em;
   border-radius: 0.3em;
   /* border: 0.1em solid #003366; */
 }
@@ -94,21 +94,21 @@ code {
 .approved {
   background-color: #028b1f;
   color: white;
-  padding: 0.5em;
+  padding: 0 0.2em;
   border-radius: 0.3em;
   /* border: 0.1em solid #003366; */
 }
 
 .taken {
   /* color: white; */
-  padding: 0.5em;
+  padding: 0 0.2em;
   border-radius: 0.3em;
   border: 0.1em solid  #028b1f;
 }
 
 .nottaken {
   /* color: white; */
-  padding: 0.5em;
+  padding: 0 0.2em;
   border-radius: 0.3em;
   border: 0.1em solid  #581845;
 }
