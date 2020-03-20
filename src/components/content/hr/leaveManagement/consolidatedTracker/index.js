@@ -25,12 +25,15 @@ function ConsolidatedTracker({ token }) {
   const [statusFilter, setStatusFilter] = useState('all');
   const [startDate, setStartDate] = useState('all');
   const [endDate, setEndDate] = useState('all');
+  const [allPrograms, setAllPRograms] = useState([]);
+  const [program, setProgram] = useState('all');
   const [allFiltersState, setAllFiltersState] = useState(
     {
       type: 'all',
       status: 'all',
       startDate: 'all',
-      endDate: 'all'
+      endDate: 'all',
+      program: 'all'
     }
   );
 
@@ -38,7 +41,26 @@ function ConsolidatedTracker({ token }) {
     type: 'all',
     status: 'all',
     startDate: 'all',
-    endDate: 'all'
+    endDate: 'all',
+    program: 'all'
+  };
+
+  const getProgrammes = () => {
+    const endPoint = `${BASE_URL}hrApi/getPrograms`;
+    axios.defaults.headers.common = { token };
+    axios.get(endPoint)
+      .then((res) => {
+        setSpinner(false);
+        setAllPRograms(res.data);
+      })
+      .catch((err) => {
+        setSpinner(false);
+        if (err && err.response && err.response.data && err.response.data.message) {
+          setError(err.response.data.message);
+        } else {
+          setError(err.message);
+        }
+      });
   };
 
   useEffect(() => {
@@ -50,7 +72,7 @@ function ConsolidatedTracker({ token }) {
       .then((res) => {
         setallLeaves(res.data);
         setFilteredLeaves(res.data);
-        setSpinner(false);
+        getProgrammes();
       })
       .catch((err) => {
         setSpinner(false);
@@ -182,12 +204,27 @@ function ConsolidatedTracker({ token }) {
     </th>
   );
 
+  const returnEndProgramFilterHead = () => (
+    <th scope="col">
+            program
+      <select className="dropdownFilter" value={program} onChange={(e) => handleChange(e, setProgram, 'program')}>
+        <option value="all" className="optionTableStyle">all</option>
+        {
+          allPrograms.map((prog) => (
+            <option key={prog._id} value={prog.name} className="optionTableStyle">{prog.name}</option>
+          ))
+        }
+      </select>
+    </th>
+  );
+
   const returnData = () => (
     <table className="table holidaysTable" id="hrConsolidatedTrackerTable">
       <thead>
         <tr>
           <th scope="col">Name</th>
-          <th scope="col">Program</th>
+          {/* <th scope="col">Program</th> */}
+          {returnEndProgramFilterHead()}
           {returnTypeFilterHead()}
           {returnStatusFilterHead()}
           <th scope="col">Days</th>
