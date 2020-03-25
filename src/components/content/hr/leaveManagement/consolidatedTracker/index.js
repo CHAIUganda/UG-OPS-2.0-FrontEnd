@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import axios from 'axios';
 import html2canvas from 'html2canvas';
 import JSPDF from 'jspdf';
+import Select from 'react-select';
 
 import CommonSpinner from '../../../../common/spinner';
 import { BASE_URL, returnStatusClass } from '../../../../../config';
@@ -27,13 +28,17 @@ function ConsolidatedTracker({ token }) {
   const [endDate, setEndDate] = useState('all');
   const [allPrograms, setAllPRograms] = useState([]);
   const [program, setProgram] = useState('all');
+  const [allUsers, setAllUsers] = useState([]);
+  // eslint-disable-next-line no-unused-vars
+  const [name, setName] = useState('all');
   const [allFiltersState, setAllFiltersState] = useState(
     {
       type: 'all',
       status: 'all',
       startDate: 'all',
       endDate: 'all',
-      program: 'all'
+      program: 'all',
+      name: 'all'
     }
   );
 
@@ -42,7 +47,36 @@ function ConsolidatedTracker({ token }) {
     status: 'all',
     startDate: 'all',
     endDate: 'all',
-    program: 'all'
+    program: 'all',
+    name: 'all'
+  };
+
+  const getUsers = () => {
+    axios.defaults.headers.common = { token };
+    const apiRoute = `${BASE_URL}auth/getUsers`;
+    axios.get(apiRoute)
+      . then((res) => {
+        setSpinner(false);
+        const arrayToSet = res.data.map((user) => ({
+          label: `${user.fName} ${user.lName}`,
+          value: user.email
+        }));
+        setAllUsers([
+          {
+            label: 'all',
+            value: 'all'
+          },
+          ...arrayToSet
+        ]);
+      })
+      .catch((err) => {
+        setSpinner(false);
+        if (err && err.response && err.response.data && err.response.data.message) {
+          setError(err.response.data.message);
+        } else {
+          setError(err.message);
+        }
+      });
   };
 
   const getProgrammes = () => {
@@ -50,8 +84,8 @@ function ConsolidatedTracker({ token }) {
     axios.defaults.headers.common = { token };
     axios.get(endPoint)
       .then((res) => {
-        setSpinner(false);
         setAllPRograms(res.data);
+        getUsers();
       })
       .catch((err) => {
         setSpinner(false);
@@ -107,9 +141,17 @@ function ConsolidatedTracker({ token }) {
     let array2Filter = [...allLeaves];
     Object.keys(filterObj).forEach((fil) => {
       if (filterObj[fil] === 'all') {
-        array2Filter = array2Filter.filter((leave) => leave[fil]);
+        if (fil === 'name' && filterObj.name === 'all') {
+          array2Filter = array2Filter.filter((leave) => leave.staff);
+        } else {
+          array2Filter = array2Filter.filter((leave) => leave[fil]);
+        }
       } else if (fil === 'startDate' || fil === 'endDate') {
         array2Filter = array2Filter.filter((leave) => `${new Date(leave[fil]).getMonth()}` === allFilters[fil]);
+      } else if (fil === 'name' && filterObj.name === 'all') {
+        array2Filter = array2Filter.filter((leave) => leave.staff);
+      } else if (fil === 'name') {
+        array2Filter = array2Filter.filter((leave) => `${leave.staff.fName} ${leave.staff.lName}` === allFilters.name);
       } else {
         array2Filter = array2Filter.filter((leave) => leave[fil] === allFilters[fil]);
       }
@@ -120,6 +162,16 @@ function ConsolidatedTracker({ token }) {
   const handleChange = (event, stateSetter, filterParam) => {
     event.preventDefault();
     const { value } = event.target;
+    stateSetter(value);
+    allFilters = {
+      ...allFiltersState,
+      [filterParam]: value
+    };
+    setAllFiltersState(allFilters);
+    filter(allFilters);
+  };
+
+  const selectLibOnChange = (value, stateSetter, filterParam) => {
     stateSetter(value);
     allFilters = {
       ...allFiltersState,
@@ -218,12 +270,23 @@ function ConsolidatedTracker({ token }) {
     </th>
   );
 
+  const returnNameFilterHead = () => (
+    <th scope="col">
+      Name <span className="dontshowText">name name xx</span>
+      <span className="customSelectStyles">
+        <Select
+          options={allUsers}
+          onChange={(opt) => selectLibOnChange(opt.label, setName, 'name')}
+        />
+      </span>
+    </th>
+  );
+
   const returnData = () => (
     <table className="table holidaysTable" id="hrConsolidatedTrackerTable">
       <thead>
         <tr>
-          <th scope="col">Name</th>
-          {/* <th scope="col">Program</th> */}
+          {returnNameFilterHead()}
           {returnEndProgramFilterHead()}
           {returnTypeFilterHead()}
           {returnStatusFilterHead()}
@@ -260,14 +323,18 @@ function ConsolidatedTracker({ token }) {
 
     html2canvas(input)
       .then((canvas) => {
-        // const imgData = canvas.toDataURL('image/png');
-        const imgData = canvas.toDataURL('image/jpeg');
+        const imgData = canvas.toDataURL('image/jpeg', 1);
+        const pdf = new JSPDF('p', 'mm', 'a4');
+        const pageWidth = pdf.internal.pageSize.getWidth();
+        const pageHeight = pdf.internal.pageSize.getHeight();
+        const imageWidth = canvas.width;
+        const imageHeight = canvas.height;
 
-        const pdf = new JSPDF({
-          orientation: 'landscape'
-        });
-        pdf.addImage(imgData, 'jpeg', 0, 0, 0, 0);
-        pdf.save('download.pdf');
+        const ratio = imageWidth / imageHeight >= pageWidth / pageHeight
+          ? pageWidth / imageWidth
+          : pageHeight / imageHeight;
+        pdf.addImage(imgData, 'JPEG', 0, 0, imageWidth * ratio, imageHeight * ratio);
+        pdf.save('invoice.pdf');
       });
   };
 

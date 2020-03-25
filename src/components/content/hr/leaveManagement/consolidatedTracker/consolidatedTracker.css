@@ -7,3 +7,12 @@
 .optionTableStyle{
   color: black;
 }
+
+.customSelectStyles{
+  color: green;
+  width: 90px;
+}
+
+.dontshowText{
+  visibility: hidden;
+}
