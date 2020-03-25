@@ -85,6 +85,14 @@ function HR({
           </span>
         }
 
+        <span onClick={() => handleChangeActive('ProgramLeaveTracker')}>
+          <SubItem
+            link="/hr/ProgramLeaveTracker"
+            textToSet="Program Leave Tracker"
+            active={active === 'ProgramLeaveTracker'}
+          />
+        </span>
+
         <span onClick={() => handleChangeActive('ManagePublicHolidays')}>
           <SubItem
             link="/hr/ManagePublicHolidays"
