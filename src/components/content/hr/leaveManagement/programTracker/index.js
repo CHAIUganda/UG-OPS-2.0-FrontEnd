@@ -311,7 +311,7 @@ function ProgramLeaveTracker({ token, program }) {
     <div className="row">
       <div className="col">
         <h3>
-            Consolidated Leave ConsolidatedTracker
+            Program Consolidated Leave Tracker
           <button type="button" className="btn btn-secondary float-right" onClick={generatePDf}>
             Generate PDF
           </button>

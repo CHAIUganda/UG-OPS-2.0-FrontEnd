@@ -129,6 +129,13 @@ function HR({
                 active={active === 'Register'}
               />
             </span>
+            <span onClick={() => handleChangeActive('EditUsers')}>
+              <SubItem
+                link="/hr/EditUsers"
+                textToSet="Edit Users"
+                active={active === 'EditUsers'}
+              />
+            </span>
             <span onClick={() => handleChangeActive('ManageProgrammes')}>
               <SubItem
                 link="/hr/ManageProgrammes"

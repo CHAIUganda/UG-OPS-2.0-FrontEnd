@@ -342,7 +342,7 @@ function ConsolidatedTracker({ token }) {
     <div className="row">
       <div className="col">
         <h3>
-            Consolidated Leave ConsolidatedTracker
+            Consolidated Leave Tracker
           <button type="button" className="btn btn-secondary float-right" onClick={generatePDf}>
             Generate PDF
           </button>

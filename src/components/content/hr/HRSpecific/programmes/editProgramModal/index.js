@@ -1,58 +1,70 @@
-/* eslint react/no-multi-comp: 0, react/prop-types: 0 */
 import React, { useState, useEffect } from 'react';
 import {
-  Button,
   Modal,
   ModalHeader,
   ModalBody,
+  Button,
+  ModalFooter,
   Form,
   FormGroup,
   Input,
   InputGroup,
   InputGroupAddon,
   InputGroupText,
-  Spinner
 } from 'reactstrap';
-import { IoMdAdd } from 'react-icons/io';
-import axios from 'axios';
-import { connect } from 'react-redux';
+import { FiEdit } from 'react-icons/fi';
+import { IconContext } from 'react-icons';
 import PropTypes from 'prop-types';
+import axios from 'axios';
 import Select from 'react-select';
 
-import CommonSpinner from '../../../../../common/spinner';
 import { BASE_URL } from '../../../../../../config';
+import CommonSpinner from '../../../../../common/spinner';
 
-const mapStateToProps = (state) => ({
-  token: state.auth.token
-});
-
-const CreateNewProgramme = ({ onNewProgramme, token }) => {
+export default function EditProgram({
+  program,
+  progIndex,
+  manageProgs,
+  token
+}) {
   const [modal, setModal] = useState(false);
-  const [formError, setFormError] = useState('');
-  const [formSuccessMessage, setFormSuccessMessage] = useState('');
-  const [formSpinner, setFormSpinner] = useState(false);
-  const [programmeName, setProgrammeName] = useState('');
-  const [shortForm, setShortForm] = useState('');
+  const [submitSpinner, setSubmitSpinner] = useState(false);
+  const [error, setError] = useState('');
+  const [successFeedback, setSuccessFeedback] = useState('');
+  const [RebuildArray, setRebuildArray] = useState(false);
+  const [pm, setPm] = useState(program.programManagerId);
+  const [programmeName, setProgrammeName] = useState(program.name);
+  const [shortForm, setShortForm] = useState(program.shortForm);
   const [allUsers, setAllUsers] = useState([]);
   const [loadUsersSpinner, setLoadUsersSpinner] = useState(false);
-  const [pm, setPm] = useState('');
 
-  const toggle = () => setModal(!modal);
+  const toggle = () => {
+    const bool = !modal;
+    if (!bool && RebuildArray) {
+      const rebuildObject = {
+        ...program
+      };
+      manageProgs(progIndex, rebuildObject);
+      setModal(bool);
+      return;
+    }
+    setModal(bool);
+  };
 
-  const handleSubmit = (event) => {
+  const handleSubmitChanges = (event) => {
     event.preventDefault();
-    setFormSpinner(true);
-    setFormError('');
-    setFormSuccessMessage('');
+    setSubmitSpinner(true);
+    setError('');
+    setSuccessFeedback('');
     if (!pm) {
-      setFormError('Please select a supervisor to continue.');
+      setError('Please select a supervisor to continue.');
       return;
     }
     if (!shortForm) {
-      setFormError('Please select a short form. A short program name will do.');
+      setError('Please select a short form. A short program name will do.');
       return;
     }
-    const endPoint = `${BASE_URL}hrApi/createProgram`;
+    const endPoint = `${BASE_URL}hrApi/createProgram123`;
     const programme = {
       name: programmeName,
       programManagerId: pm,
@@ -61,26 +73,39 @@ const CreateNewProgramme = ({ onNewProgramme, token }) => {
 
     axios.defaults.headers.common = { token };
     axios.post(endPoint, programme)
-      .then((res) => {
-        setFormSpinner(false);
+      .then(() => {
+        setSubmitSpinner(false);
         setProgrammeName('');
-        onNewProgramme(res.data.programtoSave);
-        setFormSuccessMessage(`${programme.name} Created successfully`);
+        setRebuildArray(true);
+        setSuccessFeedback(`${programme.name} modified successfully`);
       })
       .catch((err) => {
-        setFormSpinner(false);
+        setSubmitSpinner(false);
         if (err && err.response && err.response.data && err.response.data.message) {
-          setFormError(err.response.data.message);
+          setError(err.response.data.message);
         } else {
-          setFormError(err.message);
+          setError(err.message);
         }
       });
   };
 
+  const submitNewChangesTxt = () => {
+    if (submitSpinner) {
+      return (
+        <div>
+          <p>Please wait ... </p>
+          <CommonSpinner />
+        </div>
+      );
+    }
+
+    return 'Submit New Changes';
+  };
+
   const handleChange = (event) => {
     event.preventDefault();
-    setFormError('');
-    setFormSuccessMessage('');
+    setError('');
+    setSuccessFeedback('');
     const { name, value } = event.target;
     if (name === 'programmeName') {
       setProgrammeName(value);
@@ -89,24 +114,13 @@ const CreateNewProgramme = ({ onNewProgramme, token }) => {
     }
   };
 
-  const buttonText = () => {
-    if (formSpinner) {
-      return (
-        <Spinner color="primary" style={{ width: '3rem', height: '3rem' }} />
-      );
-    }
-    return 'Submit';
-  };
-
   const onSelectPm = (value) => {
     setPm(value);
   };
 
   const returnForm = () => (
     <div className="PublicFormStyle">
-      <Form onSubmit={handleSubmit}>
-        {formError && <div className="errorFeedback"> {formError} </div>}
-        {formSuccessMessage && <div className="successFeedback"> {formSuccessMessage} </div>}
+      <Form onSubmit={submitNewChangesTxt}>
         <FormGroup>
           <InputGroup>
             <InputGroupAddon addonType="prepend">
@@ -150,9 +164,7 @@ const CreateNewProgramme = ({ onNewProgramme, token }) => {
             </div>
           </InputGroup>
         </FormGroup>
-        <button className="submitButton" type="submit">
-          {buttonText()}
-        </button>
+        <button className="submitButton" onClick={handleSubmitChanges}>{submitNewChangesTxt()}</button>
         <Button color="secondary" onClick={toggle} className="float-right">Cancel</Button>
       </Form>
     </div>
@@ -175,9 +187,9 @@ const CreateNewProgramme = ({ onNewProgramme, token }) => {
       .catch((err) => {
         setLoadUsersSpinner(false);
         if (err && err.response && err.response.data && err.response.data.message) {
-          setFormError(err.response.data.message);
+          setError(err.response.data.message);
         } else {
-          setFormError(err.message);
+          setError(err.message);
         }
       });
   }, []);
@@ -190,26 +202,54 @@ const CreateNewProgramme = ({ onNewProgramme, token }) => {
       </div>
     );
   }
+
   return (
-    <div className="inlineItem">
-      <button className="submitButton positionBtn" onClick={toggle}>
-        < IoMdAdd />
-          Create New Programme
-      </button>
+    <div>
+      <span
+        onClick={toggle}
+        className="pointerCursor">
+        <IconContext.Provider value={{ size: '2em' }}>
+          <FiEdit />
+        </IconContext.Provider>
+      </span>
       <Modal isOpen={modal} toggle={toggle}>
-        <ModalHeader toggle={toggle}>Create a new Programme</ModalHeader>
+        <ModalHeader toggle={toggle}>Edit Program</ModalHeader>
         <ModalBody>
-          {returnForm()}
+          {
+            error
+            && <div className="errorFeedback row">
+              <div className="col">
+                {error}
+              </div>
+            </div>
+          }
+          {
+            successFeedback
+            && <div className="successFeedback row">
+              <div className="col">
+                {successFeedback}
+              </div>
+            </div>
+          }
+          <div className="row">
+            <div className="col">
+              {returnForm()}
+            </div>
+          </div>
+
+          <ModalFooter>
+            <Button color="secondary" onClick={toggle} className="float-right">Close</Button>
+          </ModalFooter>
         </ModalBody>
       </Modal>
     </div>
   );
+}
+
+
+EditProgram.propTypes = {
+  program: PropTypes.object,
+  progIndex: PropTypes.number,
+  manageProgs: PropTypes.func,
+  token: PropTypes.string
 };
-
-
-CreateNewProgramme.propTypes = {
-  token: PropTypes.string,
-  logUserIn: PropTypes.func
-};
-
-export default connect(mapStateToProps)(CreateNewProgramme);
