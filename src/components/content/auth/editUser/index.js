@@ -3,6 +3,8 @@ import { connect } from 'react-redux';
 import axios from 'axios';
 import PropTypes from 'prop-types';
 import Select from 'react-select';
+import { FiEdit } from 'react-icons/fi';
+import { IconContext } from 'react-icons';
 
 import { BASE_URL } from '../../../../config';
 import CommonSpinner from '../../../common/spinner';
@@ -54,7 +56,14 @@ function EditUsers({ token }) {
             <tr key={user._id}>
               <td>{`${user.fName} ${user.lName}`}</td>
               <td>{user.email}</td>
-              <td>...</td>
+              <td>
+                <span
+                  className="pointerCursor">
+                  <IconContext.Provider value={{ size: '2em' }}>
+                    <FiEdit />
+                  </IconContext.Provider>
+                </span>
+              </td>
             </tr>
           ))
         }
