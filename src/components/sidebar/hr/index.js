@@ -85,6 +85,14 @@ function HR({
           </span>
         }
 
+        <span onClick={() => handleChangeActive('ProgramLeaveTracker')}>
+          <SubItem
+            link="/hr/ProgramLeaveTracker"
+            textToSet="Program Leave Tracker"
+            active={active === 'ProgramLeaveTracker'}
+          />
+        </span>
+
         <span onClick={() => handleChangeActive('ManagePublicHolidays')}>
           <SubItem
             link="/hr/ManagePublicHolidays"
@@ -119,6 +127,13 @@ function HR({
                 link="/hr/Register"
                 textToSet="Register Staff"
                 active={active === 'Register'}
+              />
+            </span>
+            <span onClick={() => handleChangeActive('EditUsers')}>
+              <SubItem
+                link="/hr/EditUsers"
+                textToSet="Edit Users"
+                active={active === 'EditUsers'}
               />
             </span>
             <span onClick={() => handleChangeActive('ManageProgrammes')}>

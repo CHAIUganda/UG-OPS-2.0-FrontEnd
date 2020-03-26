@@ -8,16 +8,17 @@ import Select from 'react-select';
 
 import CommonSpinner from '../../../../common/spinner';
 import { BASE_URL, returnStatusClass } from '../../../../../config';
-import './consolidatedTracker.css';
+import './programTracker.css';
 
 const mapStateToProps = (state) => ({
   token: state.auth.token,
   email: state.auth.email,
   gender: state.auth.gender,
-  type: state.auth.type
+  type: state.auth.type,
+  program: state.auth.program
 });
 
-function ConsolidatedTracker({ token }) {
+function ProgramLeaveTracker({ token, program }) {
   const [spinner, setSpinner] = useState(false);
   const [error, setError] = useState('');
   const [allLeaves, setallLeaves] = useState([]);
@@ -26,8 +27,6 @@ function ConsolidatedTracker({ token }) {
   const [statusFilter, setStatusFilter] = useState('all');
   const [startDate, setStartDate] = useState('all');
   const [endDate, setEndDate] = useState('all');
-  const [allPrograms, setAllPRograms] = useState([]);
-  const [program, setProgram] = useState('all');
   const [allUsers, setAllUsers] = useState([]);
   // eslint-disable-next-line no-unused-vars
   const [name, setName] = useState('all');
@@ -37,7 +36,6 @@ function ConsolidatedTracker({ token }) {
       status: 'all',
       startDate: 'all',
       endDate: 'all',
-      program: 'all',
       name: 'all'
     }
   );
@@ -47,7 +45,6 @@ function ConsolidatedTracker({ token }) {
     status: 'all',
     startDate: 'all',
     endDate: 'all',
-    program: 'all',
     name: 'all'
   };
 
@@ -57,7 +54,8 @@ function ConsolidatedTracker({ token }) {
     axios.get(apiRoute)
       . then((res) => {
         setSpinner(false);
-        const arrayToSet = res.data.map((user) => ({
+        const filterByProgram = res.data.filter((user) => user.program === program);
+        const arrayToSet = filterByProgram.map((user) => ({
           label: `${user.fName} ${user.lName}`,
           value: user.email
         }));
@@ -79,24 +77,6 @@ function ConsolidatedTracker({ token }) {
       });
   };
 
-  const getProgrammes = () => {
-    const endPoint = `${BASE_URL}hrApi/getPrograms`;
-    axios.defaults.headers.common = { token };
-    axios.get(endPoint)
-      .then((res) => {
-        setAllPRograms(res.data);
-        getUsers();
-      })
-      .catch((err) => {
-        setSpinner(false);
-        if (err && err.response && err.response.data && err.response.data.message) {
-          setError(err.response.data.message);
-        } else {
-          setError(err.message);
-        }
-      });
-  };
-
   useEffect(() => {
     setSpinner(true);
     setError('');
@@ -104,9 +84,10 @@ function ConsolidatedTracker({ token }) {
     const endPoint = `${BASE_URL}leaveApi/getAllStaffLeaves/all/all`;
     axios.get(endPoint)
       .then((res) => {
-        setallLeaves(res.data);
-        setFilteredLeaves(res.data);
-        getProgrammes();
+        const sortByProgram = res.data.filter((l) => l.program === program);
+        setallLeaves(sortByProgram);
+        setFilteredLeaves(sortByProgram);
+        getUsers();
       })
       .catch((err) => {
         setSpinner(false);
@@ -256,19 +237,7 @@ function ConsolidatedTracker({ token }) {
     </th>
   );
 
-  const returnEndProgramFilterHead = () => (
-    <th scope="col">
-            program
-      <select className="dropdownFilter" value={program} onChange={(e) => handleChange(e, setProgram, 'program')}>
-        <option value="all" className="optionTableStyle">all</option>
-        {
-          allPrograms.map((prog) => (
-            <option key={prog._id} value={prog.name} className="optionTableStyle">{prog.name}</option>
-          ))
-        }
-      </select>
-    </th>
-  );
+  const returnEndProgramFilterHead = () => (<th scope="col">program</th>);
 
   const returnNameFilterHead = () => (
     <th scope="col">
@@ -342,7 +311,7 @@ function ConsolidatedTracker({ token }) {
     <div className="row">
       <div className="col">
         <h3>
-            Consolidated Leave Tracker
+            Program Consolidated Leave Tracker
           <button type="button" className="btn btn-secondary float-right" onClick={generatePDf}>
             Generate PDF
           </button>
@@ -357,11 +326,12 @@ function ConsolidatedTracker({ token }) {
   );
 }
 
-ConsolidatedTracker.propTypes = {
+ProgramLeaveTracker.propTypes = {
   token: PropTypes.string,
   email: PropTypes.string,
   gender: PropTypes.string,
   type: PropTypes.string,
+  program: PropTypes.string
 };
 
-export default connect(mapStateToProps)(ConsolidatedTracker);
+export default connect(mapStateToProps)(ProgramLeaveTracker);

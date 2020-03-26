@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
 // prettier-ignore
 import {
   Spinner,
@@ -7,9 +9,18 @@ import axios from 'axios';
 
 import { BASE_URL } from '../../../../../config';
 import CreateNewProgramme from './createProgrammeModal';
+import EditProgram from './editProgramModal';
 import './programmes.css';
 
-export default function ManageProgrammes() {
+const mapStateToProps = (state) => ({
+  token: state.auth.token,
+  email: state.auth.email,
+  gender: state.auth.gender,
+  type: state.auth.type,
+  program: state.auth.program
+});
+
+function ManageProgrammes({ token }) {
   const [programmes, setProgrammes] = useState([]);
   const [tableSpinner, setTableSpinner] = useState(false);
   const [tableError, setTableError] = useState('');
@@ -21,6 +32,7 @@ export default function ManageProgrammes() {
     const endPoint = `${BASE_URL}hrApi/removeProgram`;
     const programme = { name };
 
+    axios.defaults.headers.common = { token };
     axios.post(endPoint, programme)
       .then(() => {
         const newProgrammes = programmes.filter((prog) => prog.name !== name);
@@ -33,6 +45,10 @@ export default function ManageProgrammes() {
           setTableError(err.message);
         }
       });
+  };
+
+  const manageProgs = () => {
+
   };
 
 
@@ -50,9 +66,10 @@ export default function ManageProgrammes() {
         <thead>
           <tr>
             <th scope="col">#</th>
-            <th scope="col">programme</th>
+            <th scope="col">Programme</th>
+            <th scope="col">Shortform</th>
             <th scope="col">PM</th>
-            <th scope="col">Manage</th>
+            <th scope="col">Edit</th>
           </tr>
         </thead>
         <tbody>
@@ -61,7 +78,16 @@ export default function ManageProgrammes() {
               <tr key={prog._id}>
                 <th scope="row">{index + 1}</th>
                 <td>{prog.name}</td>
+                <td>{prog.shortForm}</td>
                 <td>{`${prog.programManagerDetails.fName} ${prog.programManagerDetails.lName}`}</td>
+                <td>
+                  <EditProgram
+                    program={prog}
+                    progIndex={index}
+                    manageProgs={manageProgs}
+                    token={token}
+                  />
+                </td>
                 <td>
                   <button
                     type="button"
@@ -85,6 +111,7 @@ export default function ManageProgrammes() {
   useEffect(() => {
     setTableSpinner(true);
     const endPoint = `${BASE_URL}hrApi/getPrograms`;
+    axios.defaults.headers.common = { token };
     axios.get(endPoint)
       .then((res) => {
         setTableSpinner(false);
@@ -103,7 +130,7 @@ export default function ManageProgrammes() {
   return (
     <div>
       <div>
-        <h2 className="inlineItem">CHAI Programmes</h2>
+        <h2 className="inlineItem">CHAI Programs</h2>
         <CreateNewProgramme
           onNewProgramme={updateProgrammesArray}
         />
@@ -112,3 +139,9 @@ export default function ManageProgrammes() {
     </div>
   );
 }
+
+ManageProgrammes.propTypes = {
+  token: PropTypes.string
+};
+
+export default connect(mapStateToProps)(ManageProgrammes);
