@@ -84,7 +84,7 @@ function ProgramLeaveTracker({ token, program }) {
     const endPoint = `${BASE_URL}leaveApi/getAllStaffLeaves/all/all`;
     axios.get(endPoint)
       .then((res) => {
-        const sortByProgram = res.data.filter((l) => l.program === program);
+        const sortByProgram = res.data.filter((l) => l.program === program && (l.status === 'Planned' || l.status === 'Approved '));
         setallLeaves(sortByProgram);
         setFilteredLeaves(sortByProgram);
         getUsers();
@@ -184,13 +184,8 @@ function ProgramLeaveTracker({ token, program }) {
       <select className="dropdownFilter" value={statusFilter} onChange={(e) => handleChange(e, setStatusFilter, 'status')}>
         <option value="all" className="optionTableStyle">all</option>
         <option value="Planned" className="optionTableStyle">Planned</option>
-        <option value="Pending Supervisor" className="optionTableStyle">Pending Supervisor</option>
-        <option value="Cancelled" className="optionTableStyle">Cancelled</option>
-        <option value="Supervisor Declined" className="optionTableStyle">Supervisor Declined</option>
-        <option value="Country Director Declined" className="optionTableStyle">Country Director Declined</option>
         <option value="Approved" className="optionTableStyle">Approved</option>
         <option value="Taken" className="optionTableStyle">Taken </option>
-        <option value="Not taken" className="optionTableStyle">Not taken </option>
       </select>
     </th>
   );

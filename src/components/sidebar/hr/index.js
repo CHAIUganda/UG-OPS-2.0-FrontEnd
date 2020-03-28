@@ -75,16 +75,6 @@ function HR({
           </span>
         }
 
-        { (hr || admin)
-          && <span onClick={() => handleChangeActive('ConsolidatedTracker')}>
-            <SubItem
-              link="/hr/ConsolidatedTracker"
-              textToSet="Consolidated Leave Tracker"
-              active={active === 'ConsolidatedTracker'}
-            />
-          </span>
-        }
-
         <span onClick={() => handleChangeActive('ProgramLeaveTracker')}>
           <SubItem
             link="/hr/ProgramLeaveTracker"
@@ -121,28 +111,34 @@ function HR({
           <p className="sidebTopNav">
             <MdPerson /> HR Specific
           </p>
-          <div className='showContent'>
-            <span onClick={() => handleChangeActive('Register')}>
-              <SubItem
-                link="/hr/Register"
-                textToSet="Register Staff"
-                active={active === 'Register'}
-              />
-            </span>
-            <span onClick={() => handleChangeActive('EditUsers')}>
-              <SubItem
-                link="/hr/EditUsers"
-                textToSet="Edit Users"
-                active={active === 'EditUsers'}
-              />
-            </span>
-            <span onClick={() => handleChangeActive('ManageProgrammes')}>
-              <SubItem
-                link="/hr/ManageProgrammes"
-                textToSet="Programmes"
-                active={active === 'ManageProgrammes'}
-              />
-            </span>
+          <div className='showContent'><span onClick={() => handleChangeActive('ConsolidatedTracker')}>
+            <SubItem
+              link="/hr/ConsolidatedTracker"
+              textToSet="Consolidated Leave Tracker"
+              active={active === 'ConsolidatedTracker'}
+            />
+          </span>
+          <span onClick={() => handleChangeActive('Register')}>
+            <SubItem
+              link="/hr/Register"
+              textToSet="Register Staff"
+              active={active === 'Register'}
+            />
+          </span>
+          <span onClick={() => handleChangeActive('ViewAllUsers')}>
+            <SubItem
+              link="/hr/ViewAllUsers"
+              textToSet="View All Users"
+              active={active === 'ViewAllUsers'}
+            />
+          </span>
+          <span onClick={() => handleChangeActive('ManageProgrammes')}>
+            <SubItem
+              link="/hr/ManageProgrammes"
+              textToSet="Programmes"
+              active={active === 'ManageProgrammes'}
+            />
+          </span>
           </div>
         </>
       }

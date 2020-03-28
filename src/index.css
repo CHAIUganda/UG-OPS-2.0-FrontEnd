@@ -23,7 +23,7 @@ body {
 }
 
 a {
-  color: white !important;
+  color: white; /* Come back later incase of trouble*/
   text-decoration: inherit; /* no underline */
 }
 

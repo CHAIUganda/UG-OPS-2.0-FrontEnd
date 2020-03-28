@@ -12,10 +12,19 @@ import SuperviseLeave from './leaveManagement/superviseLeave';
 import HRHome from './hrHome';
 import ConsolidatedTracker from './leaveManagement/consolidatedTracker';
 import ProgramLeaveTracker from './leaveManagement/programTracker';
-import EditUsers from '../auth/editUser';
+import ViewAllUsers from '../auth/ViewAllUsers';
+import EditUser from '../auth/editUser';
 
 export default function HR(props) {
   const { componentToRender } = props.match.params;
+  let user;
+  let propsPassed;
+
+  if (props && props.location && props.location.state && props.location.state.propsPassed) {
+    // debugger;
+    user = props.location.state.user;
+    propsPassed = props.location.state.propsPassed;
+  }
 
   const ComponentsObject = {
     ContractRenewal,
@@ -29,11 +38,22 @@ export default function HR(props) {
     HRHome,
     ConsolidatedTracker,
     ProgramLeaveTracker,
-    EditUsers
+    ViewAllUsers,
+    EditUser
   };
 
   const Tag = ComponentsObject[componentToRender];
   if (Tag) {
+    if (propsPassed && user) {
+      return (
+        <div className="setContentInline contentbgColor welcome">
+          <Tag
+            propsPassed={propsPassed}
+            user={user}
+          />
+        </div>
+      );
+    }
     return (
       <div className="setContentInline contentbgColor welcome">
         <Tag />
@@ -48,5 +68,6 @@ export default function HR(props) {
 }
 
 HR.propTypes = {
-  match: PropTypes.object.isRequired
+  match: PropTypes.object.isRequired,
+  location: PropTypes.object
 };
