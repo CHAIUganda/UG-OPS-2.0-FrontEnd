@@ -48,8 +48,10 @@ function ManageProgrammes({ token }) {
       });
   };
 
-  const manageProgs = () => {
-
+  const manageProgs = (progIndex, editObj) => {
+    const arrToEdit = [...programmes];
+    arrToEdit.splice(progIndex, 1, editObj);
+    setProgrammes(arrToEdit);
   };
 
 
@@ -85,9 +87,12 @@ function ManageProgrammes({ token }) {
                   <EditProgram
                     program={prog}
                     progIndex={index}
-                    manageProgs={manageProgs}
+                    manageProg={manageProgs}
                     token={token}
                     allUsers={allUsers}
+                    setDefault={
+                      allUsers.filter((u) => u.value === prog.programManagerId)[0]
+                    }
                   />
                 </td>
                 <td>
