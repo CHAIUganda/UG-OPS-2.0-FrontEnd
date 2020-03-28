@@ -10,7 +10,7 @@ import Register from '../auth/register';
 import ManageProgrammes from './HRSpecific/programmes';
 import SuperviseLeave from './leaveManagement/superviseLeave';
 import HRHome from './hrHome';
-import ConsolidatedTracker from './leaveManagement/consolidatedTracker';
+import ConsolidatedTracker from './HRSpecific/consolidatedTracker';
 import ProgramLeaveTracker from './leaveManagement/programTracker';
 import ViewAllUsers from '../auth/ViewAllUsers';
 import EditUser from '../auth/editUser';

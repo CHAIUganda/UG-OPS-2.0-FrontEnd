@@ -46,6 +46,7 @@ function EditUser(props) {
   const [firstName, setFirstName] = useState(user.fName);
   const [lastName, setLastName] = useState(user.lName);
   const [otherNames, setOtherNames] = useState(user.oNames);
+  const [birthDate, setBirthDate] = useState();
   const [team, setTeam] = useState(user.team);
   const [contractType, setContractType] = useState(user.contractType);
   const [contractStartDate, setContractStartDate] = useState(new Date(user.contractStartDate));
@@ -67,12 +68,17 @@ function EditUser(props) {
   const [allUsers, setAllUsers] = useState([]);
   const [submitSpinner, setSubmitSpinner] = useState(false);
   const [successFeedback, setSuccessFeedback] = useState('');
+  const [bankName, setBankName] = useState('');
+  const [accountNumber, setAccountNumber] = useState('');
 
   const reset = () => {
     setEmail('@clintonhealthaccess.org');
     setFirstName('');
     setLastName('');
     setOtherNames('');
+    setBirthDate();
+    setBankName('');
+    setAccountNumber('');
     setTeam('');
     setContractType('Full-Time');
     setContractStartDate(new Date());
@@ -102,9 +108,18 @@ function EditUser(props) {
       return;
     }
 
+    if (!birthDate) {
+      setError('Please select a birth date.');
+      setSubmitSpinner(false);
+      return;
+    }
+
     const newUSer = {
       fName: firstName,
       lName: lastName,
+      birthDate,
+      bankName,
+      accountNumber,
       contractStartDate,
       contractEndDate,
       contractType,
@@ -128,7 +143,7 @@ function EditUser(props) {
     axios.post(apiRoute, newUSer)
       . then(() => {
         setSubmitSpinner(false);
-        setSuccessFeedback(`${firstName} ${lastName} Created successfully`);
+        setSuccessFeedback(`${firstName} ${lastName} modified successfully`);
         reset();
       })
       .catch((err) => {
@@ -287,6 +302,56 @@ function EditUser(props) {
               type="text"
               value={otherNames}
               onChange={(e) => setOtherNames(e.target.value)}
+            />
+          </InputGroup>
+        </FormGroup>
+
+        <FormGroup>
+          <InputGroup>
+            <InputGroupAddon addonType="prepend">
+              <InputGroupText>Birth Date</InputGroupText>
+            </InputGroupAddon>
+            <Calendar
+              value={birthDate}
+              onChange={(date) => setBirthDate(date)}
+            />
+          </InputGroup>
+        </FormGroup>
+
+        <FormGroup>
+          <InputGroup>
+            <InputGroupAddon addonType="prepend">
+              <InputGroupText>Bank Name</InputGroupText>
+            </InputGroupAddon>
+            <Input
+              placeholder="Bank Name"
+              type="text"
+              value={bankName}
+              onChange={(e) => {
+                setSuccessFeedback('');
+                setError('');
+                setBankName(e.target.value);
+              }}
+              required
+            />
+          </InputGroup>
+        </FormGroup>
+
+        <FormGroup>
+          <InputGroup>
+            <InputGroupAddon addonType="prepend">
+              <InputGroupText>Bank Account Number</InputGroupText>
+            </InputGroupAddon>
+            <Input
+              placeholder="Bank Account Number"
+              type="text"
+              value={accountNumber}
+              onChange={(e) => {
+                setSuccessFeedback('');
+                setError('');
+                setAccountNumber(e.target.value);
+              }}
+              required
             />
           </InputGroup>
         </FormGroup>

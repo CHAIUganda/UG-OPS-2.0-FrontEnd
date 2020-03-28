@@ -29,6 +29,7 @@ function Register({ token }) {
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [otherNames, setOtherNames] = useState('');
+  const [birthDate, setBirthDate] = useState();
   const [team, setTeam] = useState('Country Office');
   const [contractType, setContractType] = useState('Full-Time');
   const [contractStartDate, setContractStartDate] = useState(new Date());
@@ -50,12 +51,17 @@ function Register({ token }) {
   const [allUsers, setAllUsers] = useState([]);
   const [submitSpinner, setSubmitSpinner] = useState(false);
   const [successFeedback, setSuccessFeedback] = useState('');
+  const [bankName, setBankName] = useState('');
+  const [accountNumber, setAccountNumber] = useState('');
 
   const reset = () => {
     setEmail('@clintonhealthaccess.org');
     setFirstName('');
     setLastName('');
     setOtherNames('');
+    setBirthDate();
+    setBankName('');
+    setAccountNumber('');
     setTeam('');
     setContractType('Full-Time');
     setContractStartDate(new Date());
@@ -85,9 +91,18 @@ function Register({ token }) {
       return;
     }
 
+    if (!birthDate) {
+      setError('Please select a birth date.');
+      setSubmitSpinner(false);
+      return;
+    }
+
     const newUSer = {
       fName: firstName,
       lName: lastName,
+      birthDate,
+      bankName,
+      accountNumber,
       contractStartDate,
       contractEndDate,
       contractType,
@@ -262,6 +277,56 @@ function Register({ token }) {
               type="text"
               value={otherNames}
               onChange={(e) => setOtherNames(e.target.value)}
+            />
+          </InputGroup>
+        </FormGroup>
+
+        <FormGroup>
+          <InputGroup>
+            <InputGroupAddon addonType="prepend">
+              <InputGroupText>Birth Date</InputGroupText>
+            </InputGroupAddon>
+            <Calendar
+              value={birthDate}
+              onChange={(date) => setBirthDate(date)}
+            />
+          </InputGroup>
+        </FormGroup>
+
+        <FormGroup>
+          <InputGroup>
+            <InputGroupAddon addonType="prepend">
+              <InputGroupText>Bank Name</InputGroupText>
+            </InputGroupAddon>
+            <Input
+              placeholder="Bank Name"
+              type="text"
+              value={bankName}
+              onChange={(e) => {
+                setSuccessFeedback('');
+                setError('');
+                setBankName(e.target.value);
+              }}
+              required
+            />
+          </InputGroup>
+        </FormGroup>
+
+        <FormGroup>
+          <InputGroup>
+            <InputGroupAddon addonType="prepend">
+              <InputGroupText>Bank Account Number</InputGroupText>
+            </InputGroupAddon>
+            <Input
+              placeholder="Bank Account Number"
+              type="text"
+              value={accountNumber}
+              onChange={(e) => {
+                setSuccessFeedback('');
+                setError('');
+                setAccountNumber(e.target.value);
+              }}
+              required
             />
           </InputGroup>
         </FormGroup>
