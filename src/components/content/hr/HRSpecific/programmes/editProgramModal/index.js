@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import {
   Modal,
   ModalHeader,
@@ -25,7 +25,8 @@ export default function EditProgram({
   program,
   progIndex,
   manageProgs,
-  token
+  token,
+  allUsers
 }) {
   const [modal, setModal] = useState(false);
   const [submitSpinner, setSubmitSpinner] = useState(false);
@@ -35,8 +36,6 @@ export default function EditProgram({
   const [pm, setPm] = useState(program.programManagerId);
   const [programmeName, setProgrammeName] = useState(program.name);
   const [shortForm, setShortForm] = useState(program.shortForm);
-  const [allUsers, setAllUsers] = useState([]);
-  const [loadUsersSpinner, setLoadUsersSpinner] = useState(false);
 
   const toggle = () => {
     const bool = !modal;
@@ -170,39 +169,6 @@ export default function EditProgram({
     </div>
   );
 
-  useEffect(() => {
-    setLoadUsersSpinner(true);
-    axios.defaults.headers.common = { token };
-    const endPoint = `${BASE_URL}auth/getUsers`;
-
-    axios.get(endPoint)
-      .then((res) => {
-        setLoadUsersSpinner(false);
-        const arrayToSet = res.data.map((user) => ({
-          label: `${user.fName} ${user.lName}`,
-          value: user._id
-        }));
-        setAllUsers(arrayToSet);
-      })
-      .catch((err) => {
-        setLoadUsersSpinner(false);
-        if (err && err.response && err.response.data && err.response.data.message) {
-          setError(err.response.data.message);
-        } else {
-          setError(err.message);
-        }
-      });
-  }, []);
-
-  if (loadUsersSpinner) {
-    return (
-      <div className="alert alert-info text-center" role="alert">
-        <div><CommonSpinner /></div>
-        <p>Getting things ready.....</p>
-      </div>
-    );
-  }
-
   return (
     <div>
       <span
@@ -251,5 +217,6 @@ EditProgram.propTypes = {
   program: PropTypes.object,
   progIndex: PropTypes.number,
   manageProgs: PropTypes.func,
-  token: PropTypes.string
+  token: PropTypes.string,
+  allUsers: PropTypes.array
 };

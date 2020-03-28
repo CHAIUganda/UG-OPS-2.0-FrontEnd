@@ -174,7 +174,8 @@ const CreateNewProgramme = ({ onNewProgramme, token, allUsers }) => {
 
 CreateNewProgramme.propTypes = {
   token: PropTypes.string,
-  logUserIn: PropTypes.func
+  logUserIn: PropTypes.func,
+  allUsers: PropTypes.array
 };
 
 export default connect(mapStateToProps)(CreateNewProgramme);
