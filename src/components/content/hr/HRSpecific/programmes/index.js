@@ -22,6 +22,7 @@ const mapStateToProps = (state) => ({
 
 function ManageProgrammes({ token }) {
   const [programmes, setProgrammes] = useState([]);
+  const [allUsers, setAllUsers] = useState([]);
   const [tableSpinner, setTableSpinner] = useState(false);
   const [tableError, setTableError] = useState('');
 
@@ -53,7 +54,6 @@ function ManageProgrammes({ token }) {
 
 
   const returnTable = () => {
-    debugger;
     if (tableError) {
       return <div className="errorFeedback">{ tableError }</div>;
     }
@@ -87,6 +87,7 @@ function ManageProgrammes({ token }) {
                     progIndex={index}
                     manageProgs={manageProgs}
                     token={token}
+                    allUsers={allUsers}
                   />
                 </td>
                 <td>
@@ -106,8 +107,30 @@ function ManageProgrammes({ token }) {
   };
 
   const updateProgrammesArray = (newProgram) => {
-    debugger;
     setProgrammes([...programmes, newProgram]);
+  };
+
+  const getUsers = () => {
+    axios.defaults.headers.common = { token };
+    const endPoint = `${BASE_URL}auth/getUsers`;
+
+    axios.get(endPoint)
+      .then((res) => {
+        setTableSpinner(false);
+        const arrayToSet = res.data.map((user) => ({
+          label: `${user.fName} ${user.lName}`,
+          value: user._id
+        }));
+        setAllUsers(arrayToSet);
+      })
+      .catch((err) => {
+        setTableSpinner(false);
+        if (err && err.response && err.response.data && err.response.data.message) {
+          setTableError(err.response.data.message);
+        } else {
+          setTableError(err.message);
+        }
+      });
   };
 
   useEffect(() => {
@@ -116,8 +139,8 @@ function ManageProgrammes({ token }) {
     axios.defaults.headers.common = { token };
     axios.get(endPoint)
       .then((res) => {
-        setTableSpinner(false);
         setProgrammes(res.data);
+        getUsers();
       })
       .catch((err) => {
         setTableSpinner(false);
@@ -134,6 +157,7 @@ function ManageProgrammes({ token }) {
       <div>
         <h2 className="inlineItem">CHAI Programs</h2>
         <CreateNewProgramme
+          allUsers={allUsers}
           onNewProgramme={updateProgrammesArray}
         />
       </div>

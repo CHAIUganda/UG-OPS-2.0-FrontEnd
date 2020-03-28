@@ -1,5 +1,5 @@
 /* eslint react/no-multi-comp: 0, react/prop-types: 0 */
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import {
   Button,
   Modal,
@@ -19,22 +19,19 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import Select from 'react-select';
 
-import CommonSpinner from '../../../../../common/spinner';
 import { BASE_URL } from '../../../../../../config';
 
 const mapStateToProps = (state) => ({
   token: state.auth.token
 });
 
-const CreateNewProgramme = ({ onNewProgramme, token }) => {
+const CreateNewProgramme = ({ onNewProgramme, token, allUsers }) => {
   const [modal, setModal] = useState(false);
   const [formError, setFormError] = useState('');
   const [formSuccessMessage, setFormSuccessMessage] = useState('');
   const [formSpinner, setFormSpinner] = useState(false);
   const [programmeName, setProgrammeName] = useState('');
   const [shortForm, setShortForm] = useState('');
-  const [allUsers, setAllUsers] = useState([]);
-  const [loadUsersSpinner, setLoadUsersSpinner] = useState(false);
   const [pm, setPm] = useState('');
 
   const toggle = () => setModal(!modal);
@@ -158,38 +155,6 @@ const CreateNewProgramme = ({ onNewProgramme, token }) => {
     </div>
   );
 
-  useEffect(() => {
-    setLoadUsersSpinner(true);
-    axios.defaults.headers.common = { token };
-    const endPoint = `${BASE_URL}auth/getUsers`;
-
-    axios.get(endPoint)
-      .then((res) => {
-        setLoadUsersSpinner(false);
-        const arrayToSet = res.data.map((user) => ({
-          label: `${user.fName} ${user.lName}`,
-          value: user._id
-        }));
-        setAllUsers(arrayToSet);
-      })
-      .catch((err) => {
-        setLoadUsersSpinner(false);
-        if (err && err.response && err.response.data && err.response.data.message) {
-          setFormError(err.response.data.message);
-        } else {
-          setFormError(err.message);
-        }
-      });
-  }, []);
-
-  if (loadUsersSpinner) {
-    return (
-      <div className="alert alert-info text-center" role="alert">
-        <div><CommonSpinner /></div>
-        <p>Getting things ready.....</p>
-      </div>
-    );
-  }
   return (
     <div className="inlineItem">
       <button className="submitButton positionBtn" onClick={toggle}>
