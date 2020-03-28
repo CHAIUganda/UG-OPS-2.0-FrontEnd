@@ -64,7 +64,7 @@ const CreateNewProgramme = ({ onNewProgramme, token }) => {
       .then((res) => {
         setFormSpinner(false);
         setProgrammeName('');
-        onNewProgramme(res.data.programtoSave);
+        onNewProgramme(res.data);
         setFormSuccessMessage(`${programme.name} Created successfully`);
       })
       .catch((err) => {

@@ -53,6 +53,7 @@ function ManageProgrammes({ token }) {
 
 
   const returnTable = () => {
+    debugger;
     if (tableError) {
       return <div className="errorFeedback">{ tableError }</div>;
     }
@@ -104,8 +105,9 @@ function ManageProgrammes({ token }) {
     );
   };
 
-  const updateProgrammesArray = (newHoliday) => {
-    setProgrammes([...programmes, newHoliday]);
+  const updateProgrammesArray = (newProgram) => {
+    debugger;
+    setProgrammes([...programmes, newProgram]);
   };
 
   useEffect(() => {
