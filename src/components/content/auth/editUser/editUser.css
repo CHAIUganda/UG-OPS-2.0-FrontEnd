@@ -1,0 +1,37 @@
+.registerFormStyle {
+  width: 90%;
+  margin: 0.4em auto 2em auto;
+  border: 0.1em solid #003366;
+  padding: 5em 5em 2em 5em;
+  border-radius: 0.3em;
+}
+
+.submitButton {
+  background-color: #003366;
+  color: white;
+  padding: 0.5em;
+  border-radius: 0.3em;
+  border: 0.1em solid #003366;
+}
+
+.submitButton:hover {
+  background-color: white;
+  color: #003366;
+  border: 0.1em solid #003366;
+}
+
+.registerHeading {
+  margin-top: -2em;
+  margin-bottom: 1em;
+}
+
+.intSwitch {
+  /* background-color: green; */
+  padding-top: 0.5em;
+  padding-left: 0.6em;
+}
+
+.readThru {
+  padding: 3em;
+  margin: 3em 0em;
+}

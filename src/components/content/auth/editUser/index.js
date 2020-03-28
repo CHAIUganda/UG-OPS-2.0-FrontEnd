@@ -1,97 +1,178 @@
 import React, { useState, useEffect } from 'react';
+// prettier-ignore
+import {
+  Form,
+  FormGroup,
+  Input,
+  InputGroup,
+  InputGroupAddon,
+  InputGroupText,
+  CustomInput,
+  Spinner
+} from 'reactstrap';
+import Calendar from 'react-calendar';
 import { connect } from 'react-redux';
 import axios from 'axios';
 import PropTypes from 'prop-types';
 import Select from 'react-select';
-import { FiEdit } from 'react-icons/fi';
-import { IconContext } from 'react-icons';
 
-import { BASE_URL } from '../../../../config';
 import CommonSpinner from '../../../common/spinner';
+import { BASE_URL } from '../../../../config';
+import './editUser.css';
 
 const mapStateToProps = (state) => ({
   token: state.auth.token
 });
 
-function EditUsers({ token }) {
-  const [allUsers, setAllUsers] = useState([]);
-  const [filteredUsers, setFilteredUsers] = useState([]);
+function EditUser(props) {
+  let user;
+  let propsPassed;
+  const { token } = props;
+
+  if (props && props.propsPassed && props.user) {
+    user = props.user;
+    propsPassed = props.propsPassed;
+    debugger;
+    console.log();
+  } else {
+    return (
+      <div className="alert alert-info text-center" role="alert">
+        <p>Please select a particular user.</p>
+      </div>
+    );
+  }
+
+  const [email, setEmail] = useState(user.email);
+  const [firstName, setFirstName] = useState(user.fName);
+  const [lastName, setLastName] = useState(user.lName);
+  const [otherNames, setOtherNames] = useState(user.oNames);
+  const [team, setTeam] = useState(user.team);
+  const [contractType, setContractType] = useState(user.contractType);
+  const [contractStartDate, setContractStartDate] = useState(new Date(user.contractStartDate));
+  const [contractEndDate, setContractEndDate] = useState(new Date(user.contractEndDate));
+  const [password, setPassword] = useState('123456');
+  const [confirmPass, setConfirmPass] = useState('123456');
+  const [gender, setGender] = useState(user.gender);
+  const [position, setPosition] = useState(user.title);
+  const [admin, setAdmin] = useState(user.roles.admin);
+  const [supervisor, setSupervisor] = useState(user.roles.supervisor);
+  const [humanResource, setHumanResource] = useState(user.roles.hr);
+  const [staffCategory, setStaffCategory] = useState(user.type);
+  const [programme, setProgramme] = useState(user.program);
+  const [allProgrammes, setAllProgrammes] = useState([]);
   const [spinner, setSpinner] = useState(false);
   const [error, setError] = useState('');
-  const [selectLibArray, setSelectLibArray] = useState([]);
+  const [countryDirector, setCountryDirector] = useState(user.roles.countryDirector);
+  const [supervisorsEmail, setSupervisorsEmail] = useState(user.supervisorEmail);
+  const [allUsers, setAllUsers] = useState([]);
+  const [submitSpinner, setSubmitSpinner] = useState(false);
+  const [successFeedback, setSuccessFeedback] = useState('');
 
-  const selectLibOnChange = (id) => {
-    if (id === 'all') {
-      setFilteredUsers(allUsers);
-    } else {
-      const newArr = allUsers.filter((user) => user._id === id);
-      setFilteredUsers(newArr);
-    }
+  const reset = () => {
+    setEmail('@clintonhealthaccess.org');
+    setFirstName('');
+    setLastName('');
+    setOtherNames('');
+    setTeam('');
+    setContractType('Full-Time');
+    setContractStartDate(new Date());
+    setContractEndDate(new Date());
+    setPassword('123456');
+    setConfirmPass('123456');
+    setGender('female');
+    setPosition('');
+    setAdmin(false);
+    setSupervisor(false);
+    setHumanResource(false);
+    setStaffCategory('local');
+    setProgramme('');
+    setSpinner(false);
+    setCountryDirector(false);
+    setSubmitSpinner(false);
   };
 
-  const returnNameFilterHead = () => (
-    <th scope="col">
-      Name
-      <span className="customSelectStyles">
-        <Select
-          options={selectLibArray}
-          onChange={(opt) => selectLibOnChange(opt.value)}
-        />
-      </span>
-    </th>
-  );
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    setSuccessFeedback('');
+    setSubmitSpinner(true);
+    setError('');
+    if (!supervisorsEmail) {
+      setError('Please select for the person a supervisor.');
+      setSubmitSpinner(false);
+      return;
+    }
 
-  const returnData = () => (
-    <table className="table holidaysTable" id="hrConsolidatedTrackerTable">
-      <thead>
-        <tr>
-          {returnNameFilterHead()}
-          <th scope="col">Email</th>
-          <th scope="col">Edit</th>
-        </tr>
-      </thead>
-      <tbody>
-        {
-          filteredUsers.map((user) => (
-            <tr key={user._id}>
-              <td>{`${user.fName} ${user.lName}`}</td>
-              <td>{user.email}</td>
-              <td>
-                <span
-                  className="pointerCursor">
-                  <IconContext.Provider value={{ size: '2em' }}>
-                    <FiEdit />
-                  </IconContext.Provider>
-                </span>
-              </td>
-            </tr>
-          ))
+    const newUSer = {
+      fName: firstName,
+      lName: lastName,
+      contractStartDate,
+      contractEndDate,
+      contractType,
+      gender,
+      admin,
+      hr: humanResource,
+      supervisor,
+      countryDirector,
+      title: position,
+      program: programme,
+      type: staffCategory,
+      team,
+      supervisorEmail: supervisorsEmail,
+      oNames: otherNames,
+      email,
+      password
+    };
+
+    axios.defaults.headers.common = { token };
+    const apiRoute = `${BASE_URL}auth/registerUser`;
+    axios.post(apiRoute, newUSer)
+      . then(() => {
+        setSubmitSpinner(false);
+        setSuccessFeedback(`${firstName} ${lastName} Created successfully`);
+        reset();
+      })
+      .catch((err) => {
+        setSubmitSpinner(false);
+        if (err && err.response && err.response.data && err.response.data.message) {
+          setError(err.response.data.message);
+        } else {
+          setError(err.message);
         }
-      </tbody>
-    </table>
-  );
+      });
+  };
+
+  const getUsers = () => {
+    axios.defaults.headers.common = { token };
+    const apiRoute = `${BASE_URL}auth/getUsers`;
+    axios.get(apiRoute)
+      . then((res) => {
+        setSpinner(false);
+        const arrayToSet = res.data.map((arrMapUser) => ({
+          label: `${arrMapUser.fName} ${arrMapUser.lName}`,
+          value: arrMapUser.email
+        }));
+        setAllUsers(arrayToSet);
+      })
+      .catch((err) => {
+        setSpinner(false);
+        if (err && err.response && err.response.data && err.response.data.message) {
+          setError(err.response.data.message);
+        } else {
+          setError(err.message);
+        }
+      });
+  };
 
   useEffect(() => {
     setSpinner(true);
     axios.defaults.headers.common = { token };
-    const apiRoute = `${BASE_URL}auth/getUsers`;
-
+    const apiRoute = `${BASE_URL}hrApi/getPrograms`;
     axios.get(apiRoute)
       . then((res) => {
         setSpinner(false);
-        setAllUsers(res.data);
-        setFilteredUsers(res.data);
-        const arrayToSet = res.data.map((user) => ({
-          label: `${user.fName} ${user.lName}`,
-          value: user._id
-        }));
-        setSelectLibArray([
-          {
-            label: 'all',
-            value: 'all'
-          },
-          ...arrayToSet
-        ]);
+        setAllProgrammes(res.data);
+        setProgramme(res.data[0]);
+        getUsers();
       })
       .catch((err) => {
         setSpinner(false);
@@ -103,37 +184,378 @@ function EditUsers({ token }) {
       });
   }, []);
 
-  if (error) {
-    return (
-      <div className="alert alert-danger text-center" role="alert">
-        <p>{error}</p>
-      </div>
-    );
-  }
+  const onSelectSupervisorEmail = (value) => {
+    setSuccessFeedback('');
+    setError('');
+    setSupervisorsEmail(value);
+  };
 
-  if (spinner) {
+  const buttonText = () => {
+    if (submitSpinner) {
+      return (
+        <Spinner color="primary" style={{ width: '3rem', height: '3rem' }} />
+      );
+    }
+    return 'Submit';
+  };
+
+  if (!propsPassed) {
     return (
       <div className="alert alert-info text-center" role="alert">
-        <div>
-          <CommonSpinner />
-          <p>Getting things ready.....</p>
-        </div>
+        <p>Please select a particular user.</p>
       </div>
     );
   }
 
   return (
-    <div className="row">
-      <div className="col">
-        <h3 className="text-center">All users</h3>
-        {returnData()}
-      </div>
+    <div className="registerFormStyle">
+      <Form onSubmit={handleSubmit}>
+        <h3 className="registerHeading">Register For UG OPS</h3>
+        {
+          spinner
+          && <div className="alert alert-info text-center" role="alert">
+            <div><CommonSpinner /></div>
+            <p>Getting things ready.....</p>
+          </div>
+        }
+        {error && <div className="errorFeedback"> {error} </div>}
+        {successFeedback && <div className="successFeedback"> {successFeedback} </div>}
+        <FormGroup>
+          <InputGroup>
+            <InputGroupAddon addonType="prepend">
+              <InputGroupText>@ Email</InputGroupText>
+            </InputGroupAddon>
+            <Input
+              placeholder="email@clintonhealthaccess.org"
+              type="email"
+              value={email}
+              onChange={(e) => {
+                setSuccessFeedback('');
+                setError('');
+                setEmail(e.target.value);
+              }}
+              required
+            />
+          </InputGroup>
+        </FormGroup>
+
+        <FormGroup>
+          <InputGroup>
+            <InputGroupAddon addonType="prepend">
+              <InputGroupText>First Name</InputGroupText>
+            </InputGroupAddon>
+            <Input
+              placeholder="First Name"
+              type="text"
+              value={firstName}
+              onChange={(e) => {
+                setSuccessFeedback('');
+                setError('');
+                setFirstName(e.target.value);
+              }}
+              required
+            />
+          </InputGroup>
+        </FormGroup>
+
+        <FormGroup>
+          <InputGroup>
+            <InputGroupAddon addonType="prepend">
+              <InputGroupText>Last Name</InputGroupText>
+            </InputGroupAddon>
+            <Input
+              placeholder="Last Name"
+              type="text"
+              value={lastName}
+              onChange={(e) => {
+                setSuccessFeedback('');
+                setError('');
+                setLastName(e.target.value);
+              }}
+              required
+            />
+          </InputGroup>
+        </FormGroup>
+
+        <FormGroup>
+          <InputGroup>
+            <InputGroupAddon addonType="prepend">
+              <InputGroupText>Other Names</InputGroupText>
+            </InputGroupAddon>
+            <Input
+              placeholder="Optional"
+              type="text"
+              value={otherNames}
+              onChange={(e) => setOtherNames(e.target.value)}
+            />
+          </InputGroup>
+        </FormGroup>
+
+        <FormGroup>
+          <InputGroup>
+            <InputGroupAddon addonType="prepend">
+              <InputGroupText>Gender</InputGroupText>
+            </InputGroupAddon>
+            <CustomInput
+              type="select"
+              id="exampleCustomSelect"
+              name="customSelect"
+              value={gender}
+              onChange={(e) => setGender(e.target.value)}
+            >
+              <option value="Female">Female</option>
+              <option value="Male">Male</option>
+            </CustomInput>
+          </InputGroup>
+        </FormGroup>
+
+        <FormGroup>
+          <InputGroup>
+            <InputGroupAddon addonType="prepend">
+              <InputGroupText>Position</InputGroupText>
+            </InputGroupAddon>
+            <Input
+              placeholder="Assistant Programme Officer"
+              type="text"
+              value={position}
+              onChange={(e) => setPosition(e.target.value)}
+              required
+            />
+          </InputGroup>
+        </FormGroup>
+
+        <FormGroup>
+          <InputGroup>
+            <InputGroupAddon addonType="prepend">
+              <InputGroupText>Category Of Staff</InputGroupText>
+            </InputGroupAddon>
+            <CustomInput
+              type="select"
+              id="staffCategoryCustomSelect"
+              name="customSelect"
+              value={staffCategory}
+              onChange={(e) => setStaffCategory(e.target.value)}
+            >
+              <option value="local">local</option>
+              <option value="expat">expat</option>
+              <option value="tcn">tcn</option>
+            </CustomInput>
+          </InputGroup>
+        </FormGroup>
+
+        <FormGroup>
+          <InputGroup>
+            <InputGroupAddon addonType="prepend">
+              <InputGroupText>Team</InputGroupText>
+            </InputGroupAddon>
+            <CustomInput
+              type="select"
+              id="teamCustomSelect"
+              name="customSelect"
+              value={team}
+              onChange={(e) => setTeam(e.target.value)}
+            >
+              <option value="Country Office">Country Office</option>
+              <option value="Global">Global</option>
+            </CustomInput>
+          </InputGroup>
+        </FormGroup>
+
+        <FormGroup>
+          <InputGroup>
+            <InputGroupAddon addonType="prepend">
+              <InputGroupText>Programme</InputGroupText>
+            </InputGroupAddon>
+            <CustomInput
+              type="select"
+              id="programmeCustomSelect"
+              name="customSelect"
+              value={programme}
+              onChange={(e) => setProgramme(e.target.value)}
+            >
+              {
+                allProgrammes.map((prog) => (
+                  <option key={prog._id} value={prog.name}>{prog.name}</option>
+                ))
+              }
+            </CustomInput>
+          </InputGroup>
+        </FormGroup>
+
+        <FormGroup>
+          <InputGroup>
+            <InputGroupAddon addonType="prepend">
+              <InputGroupText>System Admin</InputGroupText>
+            </InputGroupAddon>
+            <div className="intSwitch">
+              <CustomInput
+                type="switch"
+                id="adminSwitch2"
+                name="customSwitch"
+                checked={admin}
+                onChange={(e) => setAdmin(e.target.checked)}
+              />
+            </div>
+          </InputGroup>
+        </FormGroup>
+
+        <FormGroup>
+          <InputGroup>
+            <InputGroupAddon addonType="prepend">
+              <InputGroupText>Is the person a supervisor?</InputGroupText>
+            </InputGroupAddon>
+            <div className="intSwitch">
+              <CustomInput
+                type="switch"
+                id="supervisorSwitch2"
+                name="customSwitch"
+                checked={supervisor}
+                onChange={(e) => setSupervisor(e.target.checked)}
+              />
+            </div>
+          </InputGroup>
+        </FormGroup>
+
+        <FormGroup>
+          <InputGroup>
+            <InputGroupAddon addonType="prepend">
+              <InputGroupText>Human Resource</InputGroupText>
+            </InputGroupAddon>
+            <div className="intSwitch">
+              <CustomInput
+                type="switch"
+                id="hrSwitch2"
+                name="customSwitch"
+                checked={humanResource}
+                onChange={(e) => setHumanResource(e.target.checked)}
+              />
+            </div>
+          </InputGroup>
+        </FormGroup>
+
+        <FormGroup>
+          <InputGroup>
+            <InputGroupAddon addonType="prepend">
+              <InputGroupText>Country Director</InputGroupText>
+            </InputGroupAddon>
+            <div className="intSwitch">
+              <CustomInput
+                type="switch"
+                id="cdSwitch2"
+                name="customSwitch"
+                checked={countryDirector}
+                onChange={(e) => setCountryDirector(e.target.checked)}
+              />
+            </div>
+          </InputGroup>
+        </FormGroup>
+
+        <FormGroup>
+          <InputGroup>
+            <InputGroupAddon addonType="prepend">
+              <InputGroupText>Contract Type</InputGroupText>
+            </InputGroupAddon>
+            <CustomInput
+              type="select"
+              id="exampleCustomSelect"
+              name="customSelect"
+              value={contractType}
+              onChange={(e) => setContractType(e.target.value)}
+            >
+              <option value="Full-Time">Full-Time</option>
+              <option value="Part-Time">Part-Time</option>
+              <option value="Volunteer">Volunteer</option>
+            </CustomInput>
+          </InputGroup>
+        </FormGroup>
+
+        <FormGroup>
+          <InputGroup>
+            <InputGroupAddon addonType="prepend">
+              <InputGroupText>Contract Start Date</InputGroupText>
+            </InputGroupAddon>
+            <Calendar
+              value={contractStartDate}
+              onChange={(date) => setContractStartDate(date)}
+            />
+          </InputGroup>
+        </FormGroup>
+
+        <FormGroup>
+          <InputGroup>
+            <InputGroupAddon addonType="prepend">
+              <InputGroupText>Contract End Date</InputGroupText>
+            </InputGroupAddon>
+            <Calendar
+              value={contractEndDate}
+              onChange={(date) => setContractEndDate(date)}
+            />
+          </InputGroup>
+        </FormGroup>
+
+        <FormGroup>
+          <InputGroup>
+            <InputGroupAddon addonType="prepend">
+              <InputGroupText>person&apos;s Supervisor</InputGroupText>
+            </InputGroupAddon>
+            <div className="selectCustomStyle">
+              <Select
+                options={allUsers}
+                onChange={(opt) => onSelectSupervisorEmail(opt.value)}
+              />
+            </div>
+          </InputGroup>
+        </FormGroup>
+
+        <FormGroup>
+          <InputGroup>
+            <InputGroupAddon addonType="prepend">
+              <InputGroupText>***</InputGroupText>
+            </InputGroupAddon>
+            <Input
+              placeholder="password"
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+          </InputGroup>
+        </FormGroup>
+
+        <FormGroup>
+          <InputGroup>
+            <InputGroupAddon addonType="prepend">
+              <InputGroupText>***</InputGroupText>
+            </InputGroupAddon>
+            <Input
+              placeholder="Confirm Password"
+              type="password"
+              value={confirmPass}
+              onChange={(e) => setConfirmPass(e.target.value)}
+              required
+            />
+          </InputGroup>
+        </FormGroup>
+
+        <p className="readThru alert alert-info">
+          Please read through and confirm the details provided before submitting
+        </p>
+
+        {error && <div className="errorFeedback"> {error} </div>}
+        {successFeedback && <div className="successFeedback"> {successFeedback} </div>}
+
+        <button className="submitButton" type="submit">
+          {buttonText()}
+        </button>
+      </Form>
     </div>
   );
 }
 
-EditUsers.propTypes = {
-  token: PropTypes.string
+EditUser.propTypes = {
+  token: PropTypes.string,
+  propsPassed: PropTypes.bool,
+  user: PropTypes.object
 };
 
-export default connect(mapStateToProps)(EditUsers);
+export default connect(mapStateToProps)(EditUser);
