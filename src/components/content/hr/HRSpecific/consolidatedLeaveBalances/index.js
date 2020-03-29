@@ -237,14 +237,14 @@ function ConsolidatedLeaveBalances({ token }) {
               <td>{l.program}</td>
               <td className={
                 l.leaveDetails.annualLeaveBal > 2
-                  ? returnStatusClass('Declined')
-                  : returnStatusClass('Approved')
+                  ? returnStatusClass('rejectedWords')
+                  : returnStatusClass('approvedWords')
               }>
                 {l.leaveDetails.annualLeaveTaken} ~ {l.leaveDetails.annualLeaveBal}
               </td>
               <td>
                 { l.type === 'local'
-                  ? 'local'
+                  ? 'NA'
                   : `${l.leaveDetails.homeLeaveTaken} ~ ${l.leaveDetails.homeLeaveBal}`
                 }
               </td>
@@ -253,14 +253,14 @@ function ConsolidatedLeaveBalances({ token }) {
                 {
                   (l.gender === 'Female' || l.gender === 'female')
                     ? `${l.leaveDetails.maternityLeaveTaken} ~ ${l.leaveDetails.maternityLeaveBal}`
-                    : '_'
+                    : 'NA'
                 }
               </td>
               <td>
                 {
                   (l.gender === 'Male' || l.gender === 'male')
                     ? `${l.leaveDetails.paternityLeaveTaken} ~ _`
-                    : '_'
+                    : 'NA'
                 }
               </td>
               <td>{l.leaveDetails.sickLeaveTaken} ~ {l.leaveDetails.sickLeaveBal}</td>
