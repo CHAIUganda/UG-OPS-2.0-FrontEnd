@@ -62,15 +62,15 @@ function EditUser(props) {
   const [spinner, setSpinner] = useState(false);
   const [error, setError] = useState('');
   const [countryDirector, setCountryDirector] = useState(user.roles.countryDirector);
-  const [supervisorsEmail, setSupervisorsEmail] = useState(user.supervisorEmail);
+  const [supervisorsEmail, setSupervisorsEmail] = useState(user.supervisorDetails.email);
   const [allUsers, setAllUsers] = useState([]);
   const [submitSpinner, setSubmitSpinner] = useState(false);
   const [successFeedback, setSuccessFeedback] = useState('');
   const [bankName, setBankName] = useState('');
   const [accountNumber, setAccountNumber] = useState('');
   const [defaultSupervisor, setDefaultSupervisor] = useState({
-    label: 'Wait, loading ....',
-    value: 'Wait, loading ....'
+    label: `${user.supervisorDetails.fName} ${user.supervisorDetails.lName}`,
+    value: user.supervisorDetails.email
   });
 
   const reset = () => {
@@ -116,7 +116,7 @@ function EditUser(props) {
       return;
     }
 
-    const newUSer = {
+    const editUser = {
       fName: firstName,
       lName: lastName,
       birthDate,
@@ -137,12 +137,13 @@ function EditUser(props) {
       supervisorEmail: supervisorsEmail,
       oNames: otherNames,
       email,
-      password
+      password,
+      contractId: user.contractId
     };
 
     axios.defaults.headers.common = { token };
-    const apiRoute = `${BASE_URL}auth/registerUser`;
-    axios.post(apiRoute, newUSer)
+    const apiRoute = `${BASE_URL}auth/editUser`;
+    axios.post(apiRoute, editUser)
       . then(() => {
         setSubmitSpinner(false);
         setSuccessFeedback(`${firstName} ${lastName} modified successfully`);
@@ -214,7 +215,7 @@ function EditUser(props) {
         <Spinner color="primary" style={{ width: '3rem', height: '3rem' }} />
       );
     }
-    return 'Submit';
+    return 'Edit';
   };
 
   if (!propsPassed) {
