@@ -44,7 +44,7 @@ function EditUser(props) {
   const [firstName, setFirstName] = useState(user.fName);
   const [lastName, setLastName] = useState(user.lName);
   const [otherNames, setOtherNames] = useState(user.oNames);
-  const [birthDate, setBirthDate] = useState();
+  const [birthDate, setBirthDate] = useState(user.birthDate ? new Date(user.birthDate) : '');
   const [team, setTeam] = useState(user.team);
   const [contractType, setContractType] = useState(user.contractType);
   const [contractStartDate, setContractStartDate] = useState(new Date(user.contractStartDate));
@@ -66,38 +66,12 @@ function EditUser(props) {
   const [allUsers, setAllUsers] = useState([]);
   const [submitSpinner, setSubmitSpinner] = useState(false);
   const [successFeedback, setSuccessFeedback] = useState('');
-  const [bankName, setBankName] = useState('');
-  const [accountNumber, setAccountNumber] = useState('');
+  const [bankName, setBankName] = useState(user.bankDetails.bankName);
+  const [accountNumber, setAccountNumber] = useState(user.bankDetails.accountNumber);
   const [defaultSupervisor, setDefaultSupervisor] = useState({
     label: `${user.supervisorDetails.fName} ${user.supervisorDetails.lName}`,
     value: user.supervisorDetails.email
   });
-
-  const reset = () => {
-    setEmail('@clintonhealthaccess.org');
-    setFirstName('');
-    setLastName('');
-    setOtherNames('');
-    setBirthDate();
-    setBankName('');
-    setAccountNumber('');
-    setTeam('');
-    setContractType('Full-Time');
-    setContractStartDate(new Date());
-    setContractEndDate(new Date());
-    setPassword('123456');
-    setConfirmPass('123456');
-    setGender('female');
-    setPosition('');
-    setAdmin(false);
-    setSupervisor(false);
-    setHumanResource(false);
-    setStaffCategory('local');
-    setProgramme('');
-    setSpinner(false);
-    setCountryDirector(false);
-    setSubmitSpinner(false);
-  };
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -147,7 +121,6 @@ function EditUser(props) {
       . then(() => {
         setSubmitSpinner(false);
         setSuccessFeedback(`${firstName} ${lastName} modified successfully`);
-        reset();
       })
       .catch((err) => {
         setSubmitSpinner(false);

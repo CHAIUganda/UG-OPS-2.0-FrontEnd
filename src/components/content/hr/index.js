@@ -14,6 +14,7 @@ import ConsolidatedTracker from './HRSpecific/consolidatedTracker';
 import ProgramLeaveTracker from './leaveManagement/programTracker';
 import ViewAllUsers from '../auth/ViewAllUsers';
 import EditUser from '../auth/editUser';
+import ConsolidatedLeaveBalances from './HRSpecific/consolidatedLeaveBalances';
 
 export default function HR(props) {
   const { componentToRender } = props.match.params;
@@ -39,7 +40,8 @@ export default function HR(props) {
     ConsolidatedTracker,
     ProgramLeaveTracker,
     ViewAllUsers,
-    EditUser
+    EditUser,
+    ConsolidatedLeaveBalances
   };
 
   const Tag = ComponentsObject[componentToRender];
