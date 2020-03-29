@@ -27,10 +27,12 @@ function ConsolidatedLeaveBalances({ token }) {
   const [allUsers, setAllUsers] = useState([]);
   // eslint-disable-next-line no-unused-vars
   const [name, setName] = useState('all');
+  const [annualSort, setAnnualSort] = useState('all');
   const [allFiltersState, setAllFiltersState] = useState(
     {
       program: 'all',
-      name: 'all'
+      name: 'all',
+      annualSort: 'all'
     }
   );
 
@@ -131,6 +133,8 @@ function ConsolidatedLeaveBalances({ token }) {
       if (filterObj[fil] === 'all') {
         if (fil === 'name' && filterObj.name === 'all') {
           array2Filter = array2Filter.filter((leave) => leave.fName);
+        } else if (fil === 'annualSort') {
+          array2Filter = array2Filter.filter((leave) => leave.fName);
         } else {
           array2Filter = array2Filter.filter((leave) => leave[fil]);
         }
@@ -138,6 +142,12 @@ function ConsolidatedLeaveBalances({ token }) {
         array2Filter = array2Filter.filter((leave) => leave.fName);
       } else if (fil === 'name') {
         array2Filter = array2Filter.filter((leave) => `${leave.fName} ${leave.lName}` === allFilters.name);
+      } else if (fil === 'annualSort') {
+        if (filterObj[fil] === 'red') {
+          array2Filter = array2Filter.filter((leave) => leave.leaveDetails.annualLeaveBal > 2);
+        } else {
+          array2Filter = array2Filter.filter((leave) => leave.leaveDetails.annualLeaveBal <= 2);
+        }
       } else {
         array2Filter = array2Filter.filter((leave) => leave[fil] === allFilters[fil]);
       }
@@ -181,6 +191,17 @@ function ConsolidatedLeaveBalances({ token }) {
     </th>
   );
 
+  const returnAnnualLeaveFilterHead = () => (
+    <th scope="col">
+            Annual
+      <select className="dropdownFilter" value={annualSort} onChange={(e) => handleChange(e, setAnnualSort, 'annualSort')}>
+        <option value="all" className="optionTableStyle">all</option>
+        <option value="green" className="optionTableStyle">green</option>
+        <option value="red" className="optionTableStyle">red</option>
+      </select>
+    </th>
+  );
+
   const returnNameFilterHead = () => (
     <th scope="col">
       Name <span className="dontshowText">name name xx</span>
@@ -199,7 +220,7 @@ function ConsolidatedLeaveBalances({ token }) {
         <tr>
           {returnNameFilterHead()}
           {returnEndProgramFilterHead()}
-          <th scope="col">Annual</th>
+          {returnAnnualLeaveFilterHead()}
           <th scope="col">Home</th>
           <th scope="col">Study</th>
           <th scope="col">Maternity</th>
@@ -216,8 +237,8 @@ function ConsolidatedLeaveBalances({ token }) {
               <td>{l.program}</td>
               <td className={
                 l.leaveDetails.annualLeaveBal > 2
-                  ? returnStatusClass('Approved')
-                  : returnStatusClass('Declined')
+                  ? returnStatusClass('Declined')
+                  : returnStatusClass('Approved')
               }>
                 {l.leaveDetails.annualLeaveTaken} ~ {l.leaveDetails.annualLeaveBal}
               </td>
