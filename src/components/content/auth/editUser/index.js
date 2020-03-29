@@ -32,8 +32,6 @@ function EditUser(props) {
   if (props && props.propsPassed && props.user) {
     user = props.user;
     propsPassed = props.propsPassed;
-    debugger;
-    console.log();
   } else {
     return (
       <div className="alert alert-info text-center" role="alert">
@@ -70,6 +68,10 @@ function EditUser(props) {
   const [successFeedback, setSuccessFeedback] = useState('');
   const [bankName, setBankName] = useState('');
   const [accountNumber, setAccountNumber] = useState('');
+  const [defaultSupervisor, setDefaultSupervisor] = useState({
+    label: 'Wait, loading ....',
+    value: 'Wait, loading ....'
+  });
 
   const reset = () => {
     setEmail('@clintonhealthaccess.org');
@@ -129,7 +131,7 @@ function EditUser(props) {
       supervisor,
       countryDirector,
       title: position,
-      program: programme,
+      program: programme === 'notSet' ? user.program : programme,
       type: staffCategory,
       team,
       supervisorEmail: supervisorsEmail,
@@ -167,6 +169,7 @@ function EditUser(props) {
           value: arrMapUser.email
         }));
         setAllUsers(arrayToSet);
+        setDefaultSupervisor(arrayToSet.filter((arr) => arr.value === user.supervisorEmail)[0]);
       })
       .catch((err) => {
         setSpinner(false);
@@ -225,7 +228,7 @@ function EditUser(props) {
   return (
     <div className="registerFormStyle">
       <Form onSubmit={handleSubmit}>
-        <h3 className="registerHeading">Register For UG OPS</h3>
+        <h3 className="registerHeading">Edit User</h3>
         {
           spinner
           && <div className="alert alert-info text-center" role="alert">
@@ -429,7 +432,20 @@ function EditUser(props) {
         <FormGroup>
           <InputGroup>
             <InputGroupAddon addonType="prepend">
-              <InputGroupText>Programme</InputGroupText>
+              <InputGroupText>Current Program</InputGroupText>
+            </InputGroupAddon>
+            <Input
+              type="text"
+              value={user.program}
+              disabled
+            />
+          </InputGroup>
+        </FormGroup>
+
+        <FormGroup>
+          <InputGroup>
+            <InputGroupAddon addonType="prepend">
+              <InputGroupText>New Programme</InputGroupText>
             </InputGroupAddon>
             <CustomInput
               type="select"
@@ -438,6 +454,7 @@ function EditUser(props) {
               value={programme}
               onChange={(e) => setProgramme(e.target.value)}
             >
+              <option value='notSet'>Set a new program(optional)</option>
               {
                 allProgrammes.map((prog) => (
                   <option key={prog._id} value={prog.name}>{prog.name}</option>
@@ -567,6 +584,7 @@ function EditUser(props) {
               <Select
                 options={allUsers}
                 onChange={(opt) => onSelectSupervisorEmail(opt.value)}
+                defaultValue={defaultSupervisor}
               />
             </div>
           </InputGroup>
