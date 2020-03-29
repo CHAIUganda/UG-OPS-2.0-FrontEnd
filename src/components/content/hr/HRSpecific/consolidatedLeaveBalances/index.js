@@ -7,7 +7,7 @@ import JSPDF from 'jspdf';
 import Select from 'react-select';
 
 import CommonSpinner from '../../../../common/spinner';
-import { BASE_URL, /* returnStatusClass */ } from '../../../../../config';
+import { BASE_URL, returnStatusClass } from '../../../../../config';
 import './consolidatedLeaveBalances.css';
 
 const mapStateToProps = (state) => ({
@@ -194,7 +194,7 @@ function ConsolidatedLeaveBalances({ token }) {
   );
 
   const returnData = () => (
-    <table className="table holidaysTable" id="hrConsolidatedTrackerTable">
+    <table className="table holidaysTable">
       <thead>
         <tr>
           {returnNameFilterHead()}
@@ -214,7 +214,13 @@ function ConsolidatedLeaveBalances({ token }) {
             <tr key={l._id}>
               <td>{`${l.fName} ${l.lName}`}</td>
               <td>{l.program}</td>
-              <td>{l.leaveDetails.annualLeaveTaken} ~ {l.leaveDetails.annualLeaveBal}</td>
+              <td className={
+                l.leaveDetails.annualLeaveBal > 2
+                  ? returnStatusClass('Approved')
+                  : returnStatusClass('Declined')
+              }>
+                {l.leaveDetails.annualLeaveTaken} ~ {l.leaveDetails.annualLeaveBal}
+              </td>
               <td>
                 { l.type === 'local'
                   ? 'local'
@@ -269,18 +275,20 @@ function ConsolidatedLeaveBalances({ token }) {
   return (
     <div className="row">
       <div className="col">
-        <h3>
-          <button type="button" className="btn btn-info float-left">
+        <div id="hrConsolidatedTrackerTable">
+          <h3>
+            <button type="button" className="btn btn-info float-left">
             KEY: (Used ~ Balance)
-          </button>
+            </button>
             Consolidated Leave Balances
-          <button type="button" className="btn btn-secondary float-right" onClick={generatePDf}>
+            <button type="button" className="btn btn-secondary float-right" onClick={generatePDf}>
             Generate PDF
-          </button>
-        </h3>
-        <div className="row">
-          <div className="col">
-            {returnData() }
+            </button>
+          </h3>
+          <div className="row">
+            <div className="col">
+              {returnData() }
+            </div>
           </div>
         </div>
       </div>
