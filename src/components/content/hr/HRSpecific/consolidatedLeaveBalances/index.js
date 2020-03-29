@@ -130,16 +130,14 @@ function ConsolidatedLeaveBalances({ token }) {
     Object.keys(filterObj).forEach((fil) => {
       if (filterObj[fil] === 'all') {
         if (fil === 'name' && filterObj.name === 'all') {
-          array2Filter = array2Filter.filter((leave) => leave.staff);
+          array2Filter = array2Filter.filter((leave) => leave.fName);
         } else {
           array2Filter = array2Filter.filter((leave) => leave[fil]);
         }
-      } else if (fil === 'startDate' || fil === 'endDate') {
-        array2Filter = array2Filter.filter((leave) => `${new Date(leave[fil]).getMonth()}` === allFilters[fil]);
       } else if (fil === 'name' && filterObj.name === 'all') {
-        array2Filter = array2Filter.filter((leave) => leave.staff);
+        array2Filter = array2Filter.filter((leave) => leave.fName);
       } else if (fil === 'name') {
-        array2Filter = array2Filter.filter((leave) => `${leave.staff.fName} ${leave.staff.lName}` === allFilters.name);
+        array2Filter = array2Filter.filter((leave) => `${leave.fName} ${leave.lName}` === allFilters.name);
       } else {
         array2Filter = array2Filter.filter((leave) => leave[fil] === allFilters[fil]);
       }
@@ -202,15 +200,44 @@ function ConsolidatedLeaveBalances({ token }) {
           {returnNameFilterHead()}
           {returnEndProgramFilterHead()}
           <th scope="col">Annual</th>
+          <th scope="col">Home</th>
+          <th scope="col">Study</th>
+          <th scope="col">Maternity</th>
+          <th scope="col">Paternity</th>
+          <th scope="col">Sick</th>
+          <th scope="col">Unpaid</th>
         </tr>
       </thead>
       <tbody>
         {
-          filteredLeaves.map((leave) => (
-            <tr key={leave._id}>
-              <td>{`${leave.fName} ${leave.lName}`}</td>
-              <td>{leave.program}</td>
-              <td>coming</td>
+          filteredLeaves.map((l) => (
+            <tr key={l._id}>
+              <td>{`${l.fName} ${l.lName}`}</td>
+              <td>{l.program}</td>
+              <td>{l.leaveDetails.annualLeaveTaken} ~ {l.leaveDetails.annualLeaveBal}</td>
+              <td>
+                { l.type === 'local'
+                  ? 'local'
+                  : `${l.leaveDetails.homeLeaveTaken} ~ ${l.leaveDetails.homeLeaveBal}`
+                }
+              </td>
+              <td>{l.leaveDetails.studyLeaveTaken} ~ {l.leaveDetails.studyLeaveBal}</td>
+              <td>
+                {
+                  (l.gender === 'Female' || l.gender === 'female')
+                    ? `${l.leaveDetails.maternityLeaveTaken} ~ ${l.leaveDetails.maternityLeaveBal}`
+                    : '_'
+                }
+              </td>
+              <td>
+                {
+                  (l.gender === 'Male' || l.gender === 'male')
+                    ? `${l.leaveDetails.paternityLeaveTaken} ~ _`
+                    : '_'
+                }
+              </td>
+              <td>{l.leaveDetails.sickLeaveTaken} ~ {l.leaveDetails.sickLeaveBal}</td>
+              <td>{l.leaveDetails.sickLeaveTaken} ~ {l.leaveDetails.sickLeaveBal}</td>
             </tr>
           ))
         }
@@ -243,6 +270,9 @@ function ConsolidatedLeaveBalances({ token }) {
     <div className="row">
       <div className="col">
         <h3>
+          <button type="button" className="btn btn-info float-left">
+            KEY: (Used ~ Balance)
+          </button>
             Consolidated Leave Balances
           <button type="button" className="btn btn-secondary float-right" onClick={generatePDf}>
             Generate PDF
