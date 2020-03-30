@@ -22,6 +22,7 @@ const mapStateToProps = (state) => ({
 
 function ManageProgrammes({ token }) {
   const [programmes, setProgrammes] = useState([]);
+  const [allUsers, setAllUsers] = useState([]);
   const [tableSpinner, setTableSpinner] = useState(false);
   const [tableError, setTableError] = useState('');
 
@@ -47,8 +48,10 @@ function ManageProgrammes({ token }) {
       });
   };
 
-  const manageProgs = () => {
-
+  const manageProgs = (progIndex, editObj) => {
+    const arrToEdit = [...programmes];
+    arrToEdit.splice(progIndex, 1, editObj);
+    setProgrammes(arrToEdit);
   };
 
 
@@ -84,8 +87,12 @@ function ManageProgrammes({ token }) {
                   <EditProgram
                     program={prog}
                     progIndex={index}
-                    manageProgs={manageProgs}
+                    manageProg={manageProgs}
                     token={token}
+                    allUsers={allUsers}
+                    setDefault={
+                      allUsers.filter((u) => u.value === prog.programManagerId)[0]
+                    }
                   />
                 </td>
                 <td>
@@ -104,8 +111,31 @@ function ManageProgrammes({ token }) {
     );
   };
 
-  const updateProgrammesArray = (newHoliday) => {
-    setProgrammes([...programmes, newHoliday]);
+  const updateProgrammesArray = (newProgram) => {
+    setProgrammes([...programmes, newProgram]);
+  };
+
+  const getUsers = () => {
+    axios.defaults.headers.common = { token };
+    const endPoint = `${BASE_URL}auth/getUsers`;
+
+    axios.get(endPoint)
+      .then((res) => {
+        setTableSpinner(false);
+        const arrayToSet = res.data.map((user) => ({
+          label: `${user.fName} ${user.lName}`,
+          value: user._id
+        }));
+        setAllUsers(arrayToSet);
+      })
+      .catch((err) => {
+        setTableSpinner(false);
+        if (err && err.response && err.response.data && err.response.data.message) {
+          setTableError(err.response.data.message);
+        } else {
+          setTableError(err.message);
+        }
+      });
   };
 
   useEffect(() => {
@@ -114,8 +144,8 @@ function ManageProgrammes({ token }) {
     axios.defaults.headers.common = { token };
     axios.get(endPoint)
       .then((res) => {
-        setTableSpinner(false);
         setProgrammes(res.data);
+        getUsers();
       })
       .catch((err) => {
         setTableSpinner(false);
@@ -132,6 +162,7 @@ function ManageProgrammes({ token }) {
       <div>
         <h2 className="inlineItem">CHAI Programs</h2>
         <CreateNewProgramme
+          allUsers={allUsers}
           onNewProgramme={updateProgrammesArray}
         />
       </div>

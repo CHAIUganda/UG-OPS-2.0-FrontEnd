@@ -112,3 +112,19 @@ code {
   border-radius: 0.3em;
   border: 0.1em solid  #581845;
 }
+
+.rejectedWords {
+  background-color: red;
+  color: white;
+  border-radius: 0.3em;
+  padding: 1em
+  /* border: 0.1em solid #003366; */
+}
+
+.approvedWords {
+  background-color: #028b1f;
+  color: white;
+  border-radius: 0.3em;
+  padding: 1em
+  /* border: 0.1em solid #003366; */
+}

@@ -32,8 +32,6 @@ function EditUser(props) {
   if (props && props.propsPassed && props.user) {
     user = props.user;
     propsPassed = props.propsPassed;
-    debugger;
-    console.log();
   } else {
     return (
       <div className="alert alert-info text-center" role="alert">
@@ -46,6 +44,7 @@ function EditUser(props) {
   const [firstName, setFirstName] = useState(user.fName);
   const [lastName, setLastName] = useState(user.lName);
   const [otherNames, setOtherNames] = useState(user.oNames);
+  const [birthDate, setBirthDate] = useState(user.birthDate ? new Date(user.birthDate) : '');
   const [team, setTeam] = useState(user.team);
   const [contractType, setContractType] = useState(user.contractType);
   const [contractStartDate, setContractStartDate] = useState(new Date(user.contractStartDate));
@@ -63,33 +62,16 @@ function EditUser(props) {
   const [spinner, setSpinner] = useState(false);
   const [error, setError] = useState('');
   const [countryDirector, setCountryDirector] = useState(user.roles.countryDirector);
-  const [supervisorsEmail, setSupervisorsEmail] = useState(user.supervisorEmail);
+  const [supervisorsEmail, setSupervisorsEmail] = useState(user.supervisorDetails.email);
   const [allUsers, setAllUsers] = useState([]);
   const [submitSpinner, setSubmitSpinner] = useState(false);
   const [successFeedback, setSuccessFeedback] = useState('');
-
-  const reset = () => {
-    setEmail('@clintonhealthaccess.org');
-    setFirstName('');
-    setLastName('');
-    setOtherNames('');
-    setTeam('');
-    setContractType('Full-Time');
-    setContractStartDate(new Date());
-    setContractEndDate(new Date());
-    setPassword('123456');
-    setConfirmPass('123456');
-    setGender('female');
-    setPosition('');
-    setAdmin(false);
-    setSupervisor(false);
-    setHumanResource(false);
-    setStaffCategory('local');
-    setProgramme('');
-    setSpinner(false);
-    setCountryDirector(false);
-    setSubmitSpinner(false);
-  };
+  const [bankName, setBankName] = useState(user.bankDetails.bankName);
+  const [accountNumber, setAccountNumber] = useState(user.bankDetails.accountNumber);
+  const [defaultSupervisor, setDefaultSupervisor] = useState({
+    label: `${user.supervisorDetails.fName} ${user.supervisorDetails.lName}`,
+    value: user.supervisorDetails.email
+  });
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -102,9 +84,18 @@ function EditUser(props) {
       return;
     }
 
-    const newUSer = {
+    if (!birthDate) {
+      setError('Please select a birth date.');
+      setSubmitSpinner(false);
+      return;
+    }
+
+    const editUser = {
       fName: firstName,
       lName: lastName,
+      birthDate,
+      bankName,
+      accountNumber,
       contractStartDate,
       contractEndDate,
       contractType,
@@ -114,22 +105,22 @@ function EditUser(props) {
       supervisor,
       countryDirector,
       title: position,
-      program: programme,
+      program: programme === 'notSet' ? user.program : programme,
       type: staffCategory,
       team,
       supervisorEmail: supervisorsEmail,
       oNames: otherNames,
       email,
-      password
+      password,
+      contractId: user.contractId
     };
 
     axios.defaults.headers.common = { token };
-    const apiRoute = `${BASE_URL}auth/registerUser`;
-    axios.post(apiRoute, newUSer)
+    const apiRoute = `${BASE_URL}auth/editUser`;
+    axios.post(apiRoute, editUser)
       . then(() => {
         setSubmitSpinner(false);
-        setSuccessFeedback(`${firstName} ${lastName} Created successfully`);
-        reset();
+        setSuccessFeedback(`${firstName} ${lastName} modified successfully`);
       })
       .catch((err) => {
         setSubmitSpinner(false);
@@ -152,6 +143,7 @@ function EditUser(props) {
           value: arrMapUser.email
         }));
         setAllUsers(arrayToSet);
+        setDefaultSupervisor(arrayToSet.filter((arr) => arr.value === user.supervisorEmail)[0]);
       })
       .catch((err) => {
         setSpinner(false);
@@ -196,7 +188,7 @@ function EditUser(props) {
         <Spinner color="primary" style={{ width: '3rem', height: '3rem' }} />
       );
     }
-    return 'Submit';
+    return 'Edit';
   };
 
   if (!propsPassed) {
@@ -210,7 +202,7 @@ function EditUser(props) {
   return (
     <div className="registerFormStyle">
       <Form onSubmit={handleSubmit}>
-        <h3 className="registerHeading">Register For UG OPS</h3>
+        <h3 className="registerHeading">Edit User</h3>
         {
           spinner
           && <div className="alert alert-info text-center" role="alert">
@@ -294,6 +286,56 @@ function EditUser(props) {
         <FormGroup>
           <InputGroup>
             <InputGroupAddon addonType="prepend">
+              <InputGroupText>Birth Date</InputGroupText>
+            </InputGroupAddon>
+            <Calendar
+              value={birthDate}
+              onChange={(date) => setBirthDate(date)}
+            />
+          </InputGroup>
+        </FormGroup>
+
+        <FormGroup>
+          <InputGroup>
+            <InputGroupAddon addonType="prepend">
+              <InputGroupText>Bank Name</InputGroupText>
+            </InputGroupAddon>
+            <Input
+              placeholder="Bank Name"
+              type="text"
+              value={bankName}
+              onChange={(e) => {
+                setSuccessFeedback('');
+                setError('');
+                setBankName(e.target.value);
+              }}
+              required
+            />
+          </InputGroup>
+        </FormGroup>
+
+        <FormGroup>
+          <InputGroup>
+            <InputGroupAddon addonType="prepend">
+              <InputGroupText>Bank Account Number</InputGroupText>
+            </InputGroupAddon>
+            <Input
+              placeholder="Bank Account Number"
+              type="text"
+              value={accountNumber}
+              onChange={(e) => {
+                setSuccessFeedback('');
+                setError('');
+                setAccountNumber(e.target.value);
+              }}
+              required
+            />
+          </InputGroup>
+        </FormGroup>
+
+        <FormGroup>
+          <InputGroup>
+            <InputGroupAddon addonType="prepend">
               <InputGroupText>Gender</InputGroupText>
             </InputGroupAddon>
             <CustomInput
@@ -364,7 +406,20 @@ function EditUser(props) {
         <FormGroup>
           <InputGroup>
             <InputGroupAddon addonType="prepend">
-              <InputGroupText>Programme</InputGroupText>
+              <InputGroupText>Current Program</InputGroupText>
+            </InputGroupAddon>
+            <Input
+              type="text"
+              value={user.program}
+              disabled
+            />
+          </InputGroup>
+        </FormGroup>
+
+        <FormGroup>
+          <InputGroup>
+            <InputGroupAddon addonType="prepend">
+              <InputGroupText>New Programme</InputGroupText>
             </InputGroupAddon>
             <CustomInput
               type="select"
@@ -373,6 +428,7 @@ function EditUser(props) {
               value={programme}
               onChange={(e) => setProgramme(e.target.value)}
             >
+              <option value='notSet'>Set a new program(optional)</option>
               {
                 allProgrammes.map((prog) => (
                   <option key={prog._id} value={prog.name}>{prog.name}</option>
@@ -502,6 +558,7 @@ function EditUser(props) {
               <Select
                 options={allUsers}
                 onChange={(opt) => onSelectSupervisorEmail(opt.value)}
+                defaultValue={defaultSupervisor}
               />
             </div>
           </InputGroup>
