@@ -4,17 +4,32 @@ import {
   ModalHeader,
   ModalBody,
   Button,
-  ModalFooter
+  ModalFooter,
+  FormGroup,
+  Input,
+  InputGroup,
+  InputGroupAddon,
+  InputGroupText,
+  CustomInput,
 } from 'reactstrap';
 import { IoMdSettings } from 'react-icons/io';
 import { IconContext } from 'react-icons';
 import PropTypes from 'prop-types';
 import axios from 'axios';
+import Calendar from 'react-calendar';
 
 import { BASE_URL, returnStatusClass } from '../../../../../../config';
 import CommonSpinner from '../../../../../common/spinner';
 
-export default function ManageLeaveModal({ leave, supervisor, removeLeave }) {
+export default function ManageLeaveModal({
+  leave,
+  supervisor,
+  removeLeave,
+  type,
+  gender,
+  indexOfLeave,
+  propToModifyArray
+}) {
   const [modal, setModal] = useState(false);
   const [applySpinner, setApplySpinner] = useState(false);
   const [showApplyButton, setShowApplyButton] = useState(true);
@@ -22,11 +37,34 @@ export default function ManageLeaveModal({ leave, supervisor, removeLeave }) {
   const [successFeedback, setSuccessFeedback] = useState('');
   const [RebuildArray, setRebuildArray] = useState(false);
   const [leaveStatus, setLeaveStatus] = useState(leave.status);
+  const [showCancelButton, setShowCancelButton] = useState(true);
+  const [showModifyLeaveButton, setShowModifyLeaveButton] = useState(true);
+  const [modifyLeaveSpinner, setModifyLeaveSpinner] = useState(false);
+  const [cancelSpinner, setCancelSpinner] = useState(false);
+  const [supervisorName] = useState(`${supervisor.fName} ${supervisor.lName}`);
+  const [category, setCategory] = useState(leave.type);
+  const [comment, setComment] = useState('');
+  const [leaveDates, setLeaveDate] = useState([new Date(leave.startDate), new Date(leave.endDate)]);
+  const [modifyArray, setModifyArray] = useState(false);
+
 
   const toggle = () => {
     const bool = !modal;
     if (!bool && RebuildArray) {
       removeLeave(leave._id);
+      setModal(bool);
+      return;
+    }
+
+    if (!bool && modifyArray) {
+      propToModifyArray(indexOfLeave,
+        {
+          ...leave,
+          type: category,
+          startDate: leaveDates[0],
+          endDate: leaveDates[1],
+          comment
+        });
       setModal(bool);
       return;
     }
@@ -40,22 +78,90 @@ export default function ManageLeaveModal({ leave, supervisor, removeLeave }) {
     setSuccessFeedback('');
     /* Apply for the leave */
     const leaveObject = {
-      ...leave,
-      status: 'Pending Supervisor',
+      leaveId: leave._id,
+      action: 'applyForLeave',
       staffEmail: leave.staff.email
     };
 
-    const endPoint = `${BASE_URL}leaveApi/leave`;
+    const endPoint = `${BASE_URL}leaveApi/handlePlannedLeave`;
     axios.post(endPoint, leaveObject)
       .then((res) => {
         setApplySpinner(false);
         setShowApplyButton(false);
+        setShowModifyLeaveButton(false);
         setRebuildArray(true);
         setLeaveStatus('Pending Supervisor');
         setSuccessFeedback(res.data.message);
       })
       .catch((err) => {
         setApplySpinner(false);
+        if (err && err.response && err.response.data && err.response.data.message) {
+          setError(err.response.data.message);
+        } else {
+          setError(err.message);
+        }
+      });
+  };
+
+  const handleCancelLeave = (event) => {
+    event.preventDefault();
+    setCancelSpinner(true);
+    setError('');
+    setSuccessFeedback('');
+    /* Apply for the leave */
+    const leaveObject = {
+      leaveId: leave._id,
+      action: 'cancelLeave',
+      staffEmail: leave.staff.email
+    };
+
+    const endPoint = `${BASE_URL}leaveApi/handlePlannedLeave`;
+    axios.post(endPoint, leaveObject)
+      .then((res) => {
+        setCancelSpinner(false);
+        setShowCancelButton(false);
+        setShowApplyButton(false);
+        setShowModifyLeaveButton(false);
+        setRebuildArray(true);
+        setLeaveStatus('Cancelled');
+        setSuccessFeedback(res.data.message);
+      })
+      .catch((err) => {
+        setCancelSpinner(false);
+        if (err && err.response && err.response.data && err.response.data.message) {
+          setError(err.response.data.message);
+        } else {
+          setError(err.message);
+        }
+      });
+  };
+
+  const handleModifyLeave = (event) => {
+    event.preventDefault();
+    setModifyLeaveSpinner(true);
+    setModifyArray(false);
+    setError('');
+    setSuccessFeedback('');
+    /* Apply for the leave */
+    const leaveObject = {
+      leaveId: leave._id,
+      action: 'changeLeave',
+      staffEmail: leave.staff.email,
+      type: category,
+      startDate: leaveDates[0],
+      endDate: leaveDates[1],
+      comment
+    };
+
+    const endPoint = `${BASE_URL}leaveApi/handlePlannedLeave`;
+    axios.post(endPoint, leaveObject)
+      .then((res) => {
+        setModifyLeaveSpinner(false);
+        setModifyArray(true);
+        setSuccessFeedback(res.data.message);
+      })
+      .catch((err) => {
+        setModifyLeaveSpinner(false);
         if (err && err.response && err.response.data && err.response.data.message) {
           setError(err.response.data.message);
         } else {
@@ -75,6 +181,32 @@ export default function ManageLeaveModal({ leave, supervisor, removeLeave }) {
     }
 
     return 'Apply For This Leave';
+  };
+
+  const cancelLeaveTxt = () => {
+    if (cancelSpinner) {
+      return (
+        <div>
+          <p>Please wait ... </p>
+          <CommonSpinner />
+        </div>
+      );
+    }
+
+    return 'Cancel Leave';
+  };
+
+  const modifyLeaveTxt = () => {
+    if (modifyLeaveSpinner) {
+      return (
+        <div>
+          <p>Please wait ... </p>
+          <CommonSpinner />
+        </div>
+      );
+    }
+
+    return 'Modify Leave';
   };
 
   return (
@@ -107,30 +239,107 @@ export default function ManageLeaveModal({ leave, supervisor, removeLeave }) {
           }
           <div className="row">
             <div className="col">
-              <p> Starts: {new Date(leave.startDate).toDateString()}</p>
-              <p>Category: {leave.type} </p>
-              <p>Comment: {leave.comment} </p>
-            </div>
-            <div className="col">
-              <p>Ends: {new Date(leave.endDate).toDateString()} </p>
               <p>Status: <button className={returnStatusClass(leaveStatus)}>
                 {leaveStatus}
               </button> </p>
             </div>
+          </div>
 
+          <div className="row">
             <div className="col">
-              <p>days Taken: {leave.daysTaken} </p>
-              <p>Supervisor: {`${supervisor.fName} ${supervisor.lName}`} </p>
+              <FormGroup>
+                <InputGroup>
+                  <InputGroupAddon addonType="prepend">
+                    <InputGroupText>Supervisor</InputGroupText>
+                  </InputGroupAddon>
+                  <Input
+                    type="text"
+                    value={supervisorName}
+                    disabled
+                  />
+                </InputGroup>
+              </FormGroup>
+              {/* Category */}
+              <FormGroup>
+                <InputGroup>
+                  <InputGroupAddon addonType="prepend">
+                    <InputGroupText>Category</InputGroupText>
+                  </InputGroupAddon>
+                  <CustomInput
+                    type="select"
+                    id="exampleCustomSelect"
+                    name="customSelect"
+                    value={category}
+                    onChange={(e) => setCategory(e.target.value)}
+                  >
+                    <option value="Annual">Annual Leave</option>
+                    {gender === 'Female'
+                      && <option value="Maternatiy">Maternity Leave</option>
+                    }
+                    {(gender === 'Male' || gender === 'male')
+                        && <option value="Paternity">Paternity Leave</option>
+                    }
+                    {
+                      (type === 'tcn' || type === 'expat')
+                && <option value="Home">Home Leave</option>
+                    }
+                    <option value="Study">Study Leave</option>
+                    <option value="Unpaid">Unpaid Leave</option>
+                  </CustomInput>
+                </InputGroup>
+              </FormGroup>
+              {/* Comment */}
+              <FormGroup>
+                <InputGroup>
+                  <InputGroupAddon addonType="prepend">
+                    <InputGroupText>Comment</InputGroupText>
+                  </InputGroupAddon>
+                  <Input
+                    placeholder="Optional"
+                    type="text"
+                    value={comment}
+                    onChange={(e) => {
+                      setSuccessFeedback('');
+                      setError('');
+                      setComment(e.target.value);
+                    }}
+                  />
+                </InputGroup>
+              </FormGroup>
+              {/*  leave Date */}
+              <FormGroup>
+                <InputGroup>
+                  <InputGroupAddon addonType="prepend">
+                    <InputGroupText>Select Range of Leave</InputGroupText>
+                  </InputGroupAddon>
+                  <Calendar
+                    value={leaveDates}
+                    selectRange={true}
+                    onChange={(date) => {
+                      setSuccessFeedback('');
+                      setError('');
+                      setError('');
+                      setLeaveDate(date);
+                    }
+                    } />
+                </InputGroup>
+              </FormGroup>
             </div>
           </div>
 
           <ModalFooter>
-            <button className="submitButton">Modify this Leave</button>
+            {
+              showModifyLeaveButton
+              && <button className="submitButton" onClick={handleModifyLeave}>{modifyLeaveTxt()}</button>
+            }
             {
               showApplyButton
               && <button className="submitButton" onClick={handleApply4Leave}>{applyForLeaveTxt()}</button>
             }
-            <button className="submitButton">Cancel The Leave</button>
+            {
+              showCancelButton
+              && <button className="submitButton" onClick={handleCancelLeave}>{cancelLeaveTxt()}</button>
+            }
             <Button color="secondary" onClick={toggle} className="float-right">Close</Button>
           </ModalFooter>
         </ModalBody>
@@ -143,5 +352,9 @@ export default function ManageLeaveModal({ leave, supervisor, removeLeave }) {
 ManageLeaveModal.propTypes = {
   leave: PropTypes.object,
   supervisor: PropTypes.object,
-  removeLeave: PropTypes.func
+  removeLeave: PropTypes.func,
+  type: PropTypes.string,
+  gender: PropTypes.string,
+  indexOfLeave: PropTypes.number,
+  propToModifyArray: PropTypes.func
 };

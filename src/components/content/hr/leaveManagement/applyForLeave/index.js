@@ -14,14 +14,16 @@ const mapStateToProps = (state) => ({
   supervisor: state.auth.supervisor,
   gender: state.auth.gender,
   email: state.auth.email,
-  token: state.auth.token
+  token: state.auth.token,
+  type: state.auth.type
 });
 
 function Apply4Leave({
   supervisor,
   gender,
   email,
-  token
+  token,
+  type
 }) {
   const [spinner, setSpinner] = useState(false);
   const [leaveDetails, setLeaveDetails] = useState(null);
@@ -83,6 +85,17 @@ function Apply4Leave({
     );
   }
 
+  const removeLeave = (id) => {
+    const newLeaves = personsLeaves.filter((l) => l._id !== id);
+    setPersonsLeaves(newLeaves);
+  };
+
+  const modifyLeave = (index, leaveObj) => {
+    const arrToEdit = [...personsLeaves];
+    arrToEdit.splice(index, 1, leaveObj);
+    setPersonsLeaves(arrToEdit);
+  };
+
   const returnTable = () => (
     <table className="table holidaysTable">
       <thead>
@@ -97,7 +110,7 @@ function Apply4Leave({
       </thead>
       <tbody>
         {
-          personsLeaves.reverse().map((leave) => (
+          personsLeaves.reverse().map((leave, index) => (
             <tr key={leave._id}>
               <td>{leave.type}</td>
               <td>{leave.daysTaken}</td>
@@ -112,6 +125,11 @@ function Apply4Leave({
                 <ManageLeaveModal
                   leave={leave}
                   supervisor={supervisor}
+                  removeLeave={removeLeave}
+                  type={type}
+                  gender={gender}
+                  indexOfLeave={index}
+                  propToModifyArray={modifyLeave}
                 />
               </td>
             </tr>
@@ -144,7 +162,8 @@ Apply4Leave.propTypes = {
   supervisor: PropTypes.object,
   gender: PropTypes.string,
   email: PropTypes.string,
-  token: PropTypes.string
+  token: PropTypes.string,
+  type: PropTypes.string
 };
 
 export default connect(mapStateToProps)(Apply4Leave);
