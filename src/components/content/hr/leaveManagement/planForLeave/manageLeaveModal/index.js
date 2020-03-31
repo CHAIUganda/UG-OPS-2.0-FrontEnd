@@ -22,6 +22,8 @@ export default function ManageLeaveModal({ leave, supervisor, removeLeave }) {
   const [successFeedback, setSuccessFeedback] = useState('');
   const [RebuildArray, setRebuildArray] = useState(false);
   const [leaveStatus, setLeaveStatus] = useState(leave.status);
+  const [showCancelButton, setShowCancelButton] = useState(true);
+  const [cancelSpinner, setCancelSpinner] = useState(false);
 
   const toggle = () => {
     const bool = !modal;
@@ -64,6 +66,37 @@ export default function ManageLeaveModal({ leave, supervisor, removeLeave }) {
       });
   };
 
+  const handleCancelLeave = (event) => {
+    event.preventDefault();
+    setCancelSpinner(true);
+    setError('');
+    setSuccessFeedback('');
+    /* Apply for the leave */
+    const leaveObject = {
+      leaveId: leave._id,
+      action: 'cancelLeave',
+      staffEmail: leave.staff.email
+    };
+
+    const endPoint = `${BASE_URL}leaveApi/handlePlannedLeave`;
+    axios.post(endPoint, leaveObject)
+      .then((res) => {
+        setCancelSpinner(false);
+        setShowCancelButton(false);
+        setRebuildArray(true);
+        setLeaveStatus('Cancelled');
+        setSuccessFeedback(res.data.message);
+      })
+      .catch((err) => {
+        setCancelSpinner(false);
+        if (err && err.response && err.response.data && err.response.data.message) {
+          setError(err.response.data.message);
+        } else {
+          setError(err.message);
+        }
+      });
+  };
+
   const applyForLeaveTxt = () => {
     if (applySpinner) {
       return (
@@ -75,6 +108,19 @@ export default function ManageLeaveModal({ leave, supervisor, removeLeave }) {
     }
 
     return 'Apply For This Leave';
+  };
+
+  const cancelLeaveTxt = () => {
+    if (cancelSpinner) {
+      return (
+        <div>
+          <p>Please wait ... </p>
+          <CommonSpinner />
+        </div>
+      );
+    }
+
+    return 'Cancel Leave';
   };
 
   return (
@@ -130,7 +176,10 @@ export default function ManageLeaveModal({ leave, supervisor, removeLeave }) {
               showApplyButton
               && <button className="submitButton" onClick={handleApply4Leave}>{applyForLeaveTxt()}</button>
             }
-            <button className="submitButton">Cancel The Leave</button>
+            {
+              showCancelButton
+              && <button className="submitButton" onClick={handleCancelLeave}>{cancelLeaveTxt()}</button>
+            }
             <Button color="secondary" onClick={toggle} className="float-right">Close</Button>
           </ModalFooter>
         </ModalBody>
