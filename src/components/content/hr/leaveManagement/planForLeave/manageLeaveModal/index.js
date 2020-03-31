@@ -45,7 +45,7 @@ export default function ManageLeaveModal({ leave, supervisor, removeLeave }) {
       staffEmail: leave.staff.email
     };
 
-    const endPoint = `${BASE_URL}leaveApi/leave`;
+    const endPoint = `${BASE_URL}leaveApi/leave1234`;
     axios.post(endPoint, leaveObject)
       .then((res) => {
         setApplySpinner(false);
