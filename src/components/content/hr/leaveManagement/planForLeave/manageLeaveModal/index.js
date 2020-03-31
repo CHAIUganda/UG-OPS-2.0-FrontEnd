@@ -40,12 +40,12 @@ export default function ManageLeaveModal({ leave, supervisor, removeLeave }) {
     setSuccessFeedback('');
     /* Apply for the leave */
     const leaveObject = {
-      ...leave,
-      status: 'Pending Supervisor',
+      leaveId: leave._id,
+      action: 'applyForLeave',
       staffEmail: leave.staff.email
     };
 
-    const endPoint = `${BASE_URL}leaveApi/leave1234`;
+    const endPoint = `${BASE_URL}leaveApi/handlePlannedLeave`;
     axios.post(endPoint, leaveObject)
       .then((res) => {
         setApplySpinner(false);
