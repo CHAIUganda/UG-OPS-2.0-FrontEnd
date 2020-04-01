@@ -71,7 +71,7 @@ function ManageProgrammes({ token }) {
             <th scope="col">#</th>
             <th scope="col">Programme</th>
             <th scope="col">Shortform</th>
-            <th scope="col">PM</th>
+            <th scope="col">Program Manager</th>
             <th scope="col">Edit</th>
           </tr>
         </thead>
