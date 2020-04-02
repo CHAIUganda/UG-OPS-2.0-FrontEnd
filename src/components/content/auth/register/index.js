@@ -34,6 +34,8 @@ function Register({ token }) {
   const [contractType, setContractType] = useState('Full-Time');
   const [contractStartDate, setContractStartDate] = useState(new Date());
   const [contractEndDate, setContractEndDate] = useState(new Date());
+  const [workPermitStartDate, setWorkPermitStartDate] = useState();
+  const [workPermitEndDate, setWorkPermitEndDate] = useState();
   const [password, setPassword] = useState('123456');
   const [confirmPass, setConfirmPass] = useState('123456');
   const [gender, setGender] = useState('Female');
@@ -82,6 +84,11 @@ function Register({ token }) {
     setSpinner(false);
     setCountryDirector(false);
     setSubmitSpinner(false);
+    setNssfNumber('');
+    setTinNumber('');
+    setBankAccounts([]);
+    setWorkPermitEndDate();
+    setWorkPermitStartDate();
   };
 
   const handleSubmit = (event) => {
@@ -125,7 +132,9 @@ function Register({ token }) {
       bankAccounts,
       password,
       nssfNumber,
-      tinNumber
+      tinNumber,
+      workPermitStartDate,
+      workPermitEndDate
     };
 
     axios.defaults.headers.common = { token };
@@ -503,6 +512,36 @@ function Register({ token }) {
             </CustomInput>
           </InputGroup>
         </FormGroup>
+
+        {
+          (staffCategory === 'tcn' || staffCategory === 'expat')
+          && (<>
+            <FormGroup>
+              <InputGroup>
+                <InputGroupAddon addonType="prepend">
+                  <InputGroupText>Work Permit Start Date</InputGroupText>
+                </InputGroupAddon>
+                <Calendar
+                  value={contractStartDate}
+                  onChange={(date) => setWorkPermitStartDate(date)}
+                />
+              </InputGroup>
+            </FormGroup>
+
+            <FormGroup>
+              <InputGroup>
+                <InputGroupAddon addonType="prepend">
+                  <InputGroupText>Work Permit End Date</InputGroupText>
+                </InputGroupAddon>
+                <Calendar
+                  value={contractEndDate}
+                  onChange={(date) => setWorkPermitEndDate(date)}
+                />
+              </InputGroup>
+            </FormGroup>
+          </>
+          )
+        }
 
         <FormGroup>
           <InputGroup>

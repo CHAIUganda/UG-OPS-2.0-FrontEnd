@@ -77,6 +77,8 @@ function EditUser(props) {
     value: user.supervisorDetails.email
   });
   const [archiveSpinner, setArchiveSpinner] = useState(false);
+  const [workPermitStartDate, setWorkPermitStartDate] = useState(user.workPermitStartDate);
+  const [workPermitEndDate, setWorkPermitEndDate] = useState(user.workPermitEndDate);
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -118,7 +120,9 @@ function EditUser(props) {
       password,
       contractId: user.contractId,
       nssfNumber,
-      tinNumber
+      tinNumber,
+      workPermitStartDate,
+      workPermitEndDate
     };
 
     axios.defaults.headers.common = { token };
@@ -547,6 +551,36 @@ function EditUser(props) {
             </CustomInput>
           </InputGroup>
         </FormGroup>
+
+        {
+          (staffCategory === 'tcn' || staffCategory === 'expat')
+          && (<>
+            <FormGroup>
+              <InputGroup>
+                <InputGroupAddon addonType="prepend">
+                  <InputGroupText>Work Permit Start Date</InputGroupText>
+                </InputGroupAddon>
+                <Calendar
+                  value={contractStartDate}
+                  onChange={(date) => setWorkPermitStartDate(date)}
+                />
+              </InputGroup>
+            </FormGroup>
+
+            <FormGroup>
+              <InputGroup>
+                <InputGroupAddon addonType="prepend">
+                  <InputGroupText>Work Permit End Date</InputGroupText>
+                </InputGroupAddon>
+                <Calendar
+                  value={contractEndDate}
+                  onChange={(date) => setWorkPermitEndDate(date)}
+                />
+              </InputGroup>
+            </FormGroup>
+          </>
+          )
+        }
 
         <FormGroup>
           <InputGroup>
