@@ -545,7 +545,7 @@ function EditUser(props) {
               value={staffCategory}
               onChange={(e) => setStaffCategory(e.target.value)}
             >
-              <option value="local">local</option>
+              <option value="national">national</option>
               <option value="expat">expat</option>
               <option value="tcn">tcn</option>
             </CustomInput>

@@ -43,7 +43,7 @@ function Register({ token }) {
   const [admin, setAdmin] = useState(false);
   const [supervisor, setSupervisor] = useState(false);
   const [humanResource, setHumanResource] = useState(false);
-  const [staffCategory, setStaffCategory] = useState('local');
+  const [staffCategory, setStaffCategory] = useState('national');
   const [programme, setProgramme] = useState('');
   const [allProgrammes, setAllProgrammes] = useState([]);
   const [spinner, setSpinner] = useState(false);
@@ -79,7 +79,7 @@ function Register({ token }) {
     setAdmin(false);
     setSupervisor(false);
     setHumanResource(false);
-    setStaffCategory('local');
+    setStaffCategory('national');
     setProgramme('');
     setSpinner(false);
     setCountryDirector(false);
@@ -506,7 +506,7 @@ function Register({ token }) {
               value={staffCategory}
               onChange={(e) => setStaffCategory(e.target.value)}
             >
-              <option value="local">local</option>
+              <option value="national">national</option>
               <option value="expat">expat</option>
               <option value="tcn">tcn</option>
             </CustomInput>
