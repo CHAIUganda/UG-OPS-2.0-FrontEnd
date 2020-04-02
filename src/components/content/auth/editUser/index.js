@@ -17,7 +17,7 @@ import PropTypes from 'prop-types';
 import Select from 'react-select';
 
 import CommonSpinner from '../../../common/spinner';
-import { BASE_URL } from '../../../../config';
+import { BASE_URL, returnStatusClass } from '../../../../config';
 import './editUser.css';
 
 const mapStateToProps = (state) => ({
@@ -66,12 +66,15 @@ function EditUser(props) {
   const [allUsers, setAllUsers] = useState([]);
   const [submitSpinner, setSubmitSpinner] = useState(false);
   const [successFeedback, setSuccessFeedback] = useState('');
-  const [bankName, setBankName] = useState(user.bankDetails.bankName);
-  const [accountNumber, setAccountNumber] = useState(user.bankDetails.accountNumber);
+  const [bankName, setBankName] = useState('');
+  const [accountNumber, setAccountNumber] = useState('');
+  const [currency, setCurrency] = useState('UGX');
+  const [bankAccounts, setBankAccounts] = useState(user.bankAccoounts);
   const [defaultSupervisor, setDefaultSupervisor] = useState({
     label: `${user.supervisorDetails.fName} ${user.supervisorDetails.lName}`,
     value: user.supervisorDetails.email
   });
+  const [archiveSpinner, setArchiveSpinner] = useState(false);
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -94,8 +97,7 @@ function EditUser(props) {
       fName: firstName,
       lName: lastName,
       birthDate,
-      bankName,
-      accountNumber,
+      bankAccounts,
       contractStartDate,
       contractEndDate,
       contractType,
@@ -199,6 +201,58 @@ function EditUser(props) {
     );
   }
 
+  const handleArchiveBankAccount = (event, id, index) => {
+    event.preventDefault();
+    setArchiveSpinner(true);
+
+    const accountToArchive = {
+      id
+    };
+
+    axios.defaults.headers.common = { token };
+    const apiRoute = `${BASE_URL}path to be set`;
+    axios.post(apiRoute, accountToArchive)
+      . then(() => {
+        setArchiveSpinner(false);
+        const arr = [...bankAccounts];
+        arr.splice(index, 1, {
+          ...bankAccounts[index],
+          status: 'archived'
+        });
+        setBankAccounts([...arr]);
+      })
+      .catch((err) => {
+        setArchiveSpinner(false);
+        if (err && err.response && err.response.data && err.response.data.message) {
+          setError(err.response.data.message);
+        } else {
+          setError(err.message);
+        }
+      });
+  };
+
+  const handleNewBankAccount = (event) => {
+    event.preventDefault();
+    if (!bankName) {
+      setError('Please enter a bank to add account');
+    } else if (!accountNumber) {
+      setError('Please enter an account number to add account');
+    } else {
+      bankAccounts.push();
+      setBankAccounts([...bankAccounts,
+        {
+          bankName,
+          accountNumber,
+          currency,
+          status: 'To be saved'
+        }
+      ]);
+      setBankName('');
+      setAccountNumber('');
+      setCurrency('UGX');
+    }
+  };
+
   return (
     <div className="registerFormStyle">
       <Form onSubmit={handleSubmit}>
@@ -295,43 +349,113 @@ function EditUser(props) {
           </InputGroup>
         </FormGroup>
 
-        <FormGroup>
-          <InputGroup>
-            <InputGroupAddon addonType="prepend">
-              <InputGroupText>Bank Name</InputGroupText>
-            </InputGroupAddon>
-            <Input
-              placeholder="Bank Name"
-              type="text"
-              value={bankName}
-              onChange={(e) => {
-                setSuccessFeedback('');
-                setError('');
-                setBankName(e.target.value);
-              }}
-              required
-            />
-          </InputGroup>
-        </FormGroup>
+        <div className="bankDetailsSection">
+          <h5>Bank Details</h5>
+          {error && <div className="errorFeedback"> {error} </div>}
+          <table className="table holidaysTable">
+            <thead>
+              <tr>
+                <th scope="col">#</th>
+                <th scope="col">Bank</th>
+                <th scope="col">Account No_</th>
+                <th scope="col">Currency</th>
+                <th scope="col">Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              {
+                bankAccounts.map((bankAccount, index) => (
+                  <tr key={index}>
+                    <td>{index + 1}</td>
+                    <td>{bankAccount.bankName}</td>
+                    <td>{bankAccount.accountNumber}</td>
+                    <td>{bankAccount.currency}</td>
+                    <td className={
+                      returnStatusClass(bankAccount.status)
+                    }>
+                      {bankAccount.status}
+                    </td>
+                    <td>
+                      <button
+                        type="button"
+                        className="btn btn-danger btn-sm"
+                        onClick={
+                          (event) => handleArchiveBankAccount(event, bankAccount._id, index)
+                        }>
+                        {
+                          archiveSpinner
+                            ? <CommonSpinner />
+                            : 'Archive Account'
+                        }
+                      </button>
+                    </td>
+                  </tr>
+                ))
+              }
+            </tbody>
+          </table>
 
-        <FormGroup>
-          <InputGroup>
-            <InputGroupAddon addonType="prepend">
-              <InputGroupText>Bank Account Number</InputGroupText>
-            </InputGroupAddon>
-            <Input
-              placeholder="Bank Account Number"
-              type="text"
-              value={accountNumber}
-              onChange={(e) => {
-                setSuccessFeedback('');
-                setError('');
-                setAccountNumber(e.target.value);
-              }}
-              required
-            />
-          </InputGroup>
-        </FormGroup>
+          <FormGroup>
+            <InputGroup>
+              <InputGroupAddon addonType="prepend">
+                <InputGroupText>Bank Name</InputGroupText>
+              </InputGroupAddon>
+              <Input
+                placeholder="Bank Name"
+                type="text"
+                value={bankName}
+                onChange={(e) => {
+                  setSuccessFeedback('');
+                  setError('');
+                  setBankName(e.target.value);
+                }}
+              />
+            </InputGroup>
+          </FormGroup>
+
+          <FormGroup>
+            <InputGroup>
+              <InputGroupAddon addonType="prepend">
+                <InputGroupText>Bank Account Number</InputGroupText>
+              </InputGroupAddon>
+              <Input
+                placeholder="Bank Account Number"
+                type="text"
+                value={accountNumber}
+                onChange={(e) => {
+                  setSuccessFeedback('');
+                  setError('');
+                  setAccountNumber(e.target.value);
+                }}
+              />
+            </InputGroup>
+          </FormGroup>
+
+          <FormGroup>
+            <InputGroup>
+              <InputGroupAddon addonType="prepend">
+                <InputGroupText>Currency</InputGroupText>
+              </InputGroupAddon>
+              <CustomInput
+                type="select"
+                id="exampleCustomSelect"
+                name="customSelect"
+                value={currency}
+                onChange={(e) => setCurrency(e.target.value)}
+              >
+                <option value="UGx">UGX</option>
+                <option value="USD">USD</option>
+              </CustomInput>
+            </InputGroup>
+          </FormGroup>
+
+          <button
+            className="submitButton"
+            onClick={handleNewBankAccount}
+          >
+            Add New Account
+          </button>
+        </div>
 
         <FormGroup>
           <InputGroup>

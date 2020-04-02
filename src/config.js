@@ -21,6 +21,12 @@ export const returnStatusClass = (status) => {
     return 'taken';
   } if (status.includes('Not')) {
     return 'nottaken';
+  } if (status.includes('To be saved')) {
+    return 'pending';
+  } if (status.includes('active')) {
+    return 'approved';
+  } if (status.includes('archived')) {
+    return 'rejected';
   }
 
   return '';
