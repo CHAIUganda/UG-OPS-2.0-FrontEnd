@@ -55,6 +55,8 @@ function Register({ token }) {
   const [accountNumber, setAccountNumber] = useState('');
   const [currency, setCurrency] = useState('UGX');
   const [bankAccounts, setBankAccounts] = useState([]);
+  const [nssfNumber, setNssfNumber] = useState('');
+  const [tinNumber, setTinNumber] = useState('');
 
   const reset = () => {
     setEmail('@clintonhealthaccess.org');
@@ -121,7 +123,9 @@ function Register({ token }) {
       oNames: otherNames,
       email,
       bankAccounts,
-      password
+      password,
+      nssfNumber,
+      tinNumber
     };
 
     axios.defaults.headers.common = { token };
@@ -411,6 +415,42 @@ function Register({ token }) {
             Add New Account
           </button>
         </div>
+
+        <FormGroup>
+          <InputGroup>
+            <InputGroupAddon addonType="prepend">
+              <InputGroupText>NSSF Number</InputGroupText>
+            </InputGroupAddon>
+            <Input
+              placeholder="NSSF Number"
+              type="text"
+              value={nssfNumber}
+              onChange={(e) => {
+                setSuccessFeedback('');
+                setError('');
+                setNssfNumber(e.target.value);
+              }}
+            />
+          </InputGroup>
+        </FormGroup>
+
+        <FormGroup>
+          <InputGroup>
+            <InputGroupAddon addonType="prepend">
+              <InputGroupText>TIN Number</InputGroupText>
+            </InputGroupAddon>
+            <Input
+              placeholder="TIN Number"
+              type="text"
+              value={tinNumber}
+              onChange={(e) => {
+                setSuccessFeedback('');
+                setError('');
+                setTinNumber(e.target.value);
+              }}
+            />
+          </InputGroup>
+        </FormGroup>
 
         <FormGroup>
           <InputGroup>

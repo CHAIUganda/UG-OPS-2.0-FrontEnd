@@ -70,6 +70,8 @@ function EditUser(props) {
   const [accountNumber, setAccountNumber] = useState('');
   const [currency, setCurrency] = useState('UGX');
   const [bankAccounts, setBankAccounts] = useState(user.bankAccoounts);
+  const [nssfNumber, setNssfNumber] = useState(user.nssfNumber);
+  const [tinNumber, setTinNumber] = useState(user.tinNumber);
   const [defaultSupervisor, setDefaultSupervisor] = useState({
     label: `${user.supervisorDetails.fName} ${user.supervisorDetails.lName}`,
     value: user.supervisorDetails.email
@@ -114,7 +116,9 @@ function EditUser(props) {
       oNames: otherNames,
       email,
       password,
-      contractId: user.contractId
+      contractId: user.contractId,
+      nssfNumber,
+      tinNumber
     };
 
     axios.defaults.headers.common = { token };
@@ -457,6 +461,41 @@ function EditUser(props) {
           </button>
         </div>
 
+        <FormGroup>
+          <InputGroup>
+            <InputGroupAddon addonType="prepend">
+              <InputGroupText>NSSF Number</InputGroupText>
+            </InputGroupAddon>
+            <Input
+              placeholder="NSSF Number"
+              type="text"
+              value={nssfNumber}
+              onChange={(e) => {
+                setSuccessFeedback('');
+                setError('');
+                setNssfNumber(e.target.value);
+              }}
+            />
+          </InputGroup>
+        </FormGroup>
+
+        <FormGroup>
+          <InputGroup>
+            <InputGroupAddon addonType="prepend">
+              <InputGroupText>TIN Number</InputGroupText>
+            </InputGroupAddon>
+            <Input
+              placeholder="TIN Number"
+              type="text"
+              value={tinNumber}
+              onChange={(e) => {
+                setSuccessFeedback('');
+                setError('');
+                setTinNumber(e.target.value);
+              }}
+            />
+          </InputGroup>
+        </FormGroup>
         <FormGroup>
           <InputGroup>
             <InputGroupAddon addonType="prepend">
