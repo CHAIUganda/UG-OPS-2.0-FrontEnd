@@ -15,6 +15,7 @@ import ProgramLeaveTracker from './leaveManagement/programTracker';
 import ViewAllUsers from '../auth/ViewAllUsers';
 import EditUser from '../auth/editUser';
 import ConsolidatedLeaveBalances from './HRSpecific/consolidatedLeaveBalances';
+import NssfAndTin from './HRSpecific/nssfAndTin';
 
 export default function HR(props) {
   const { componentToRender } = props.match.params;
@@ -41,7 +42,8 @@ export default function HR(props) {
     ProgramLeaveTracker,
     ViewAllUsers,
     EditUser,
-    ConsolidatedLeaveBalances
+    ConsolidatedLeaveBalances,
+    NssfAndTin
   };
 
   const Tag = ComponentsObject[componentToRender];

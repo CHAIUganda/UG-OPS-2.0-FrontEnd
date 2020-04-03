@@ -3,21 +3,16 @@ import { connect } from 'react-redux';
 import axios from 'axios';
 import PropTypes from 'prop-types';
 import Select from 'react-select';
-import { FiEdit } from 'react-icons/fi';
-import { IconContext } from 'react-icons';
-import { Link } from 'react-router-dom';
-import html2canvas from 'html2canvas';
-import JSPDF from 'jspdf';
 
-import { BASE_URL } from '../../../../config';
-import CommonSpinner from '../../../common/spinner';
-import './viewAllUsers.css';
+import { BASE_URL } from '../../../../../config';
+import CommonSpinner from '../../../../common/spinner';
+import './nssfAndTin.css';
 
 const mapStateToProps = (state) => ({
   token: state.auth.token
 });
 
-function ViewAllUsers({ token }) {
+function NssfAndTin({ token }) {
   const [allUsers, setAllUsers] = useState([]);
   const [filteredUsers, setFilteredUsers] = useState([]);
   const [spinner, setSpinner] = useState(false);
@@ -51,9 +46,8 @@ function ViewAllUsers({ token }) {
         <tr>
           {returnNameFilterHead()}
           <th scope="col">Email</th>
-          <th scope="col">NSSF No_</th>
+          <th scope="col">NSSF</th>
           <th scope="col">TIN</th>
-          <th scope="col">Edit</th>
         </tr>
       </thead>
       <tbody>
@@ -64,21 +58,6 @@ function ViewAllUsers({ token }) {
               <td>{user.email}</td>
               <td>{user.nssfNumber}</td>
               <td>{user.tinNumber}</td>
-              <td>
-                <span className="pointerCursor changeHColor">
-                  <Link to={{
-                    pathname: '/hr/EditUser',
-                    state: {
-                      propsPassed: true,
-                      user
-                    }
-                  }}>
-                    <IconContext.Provider value={{ size: '2em' }}>
-                      <FiEdit />
-                    </IconContext.Provider>
-                  </Link>
-                </span>
-              </td>
             </tr>
           ))
         }
@@ -137,44 +116,18 @@ function ViewAllUsers({ token }) {
     );
   }
 
-  const generatePDf = (event) => {
-    event.preventDefault();
-    const input = document.getElementById('allUSersContent');
-
-    html2canvas(input)
-      .then((canvas) => {
-        const imgData = canvas.toDataURL('image/jpeg', 1);
-        const pdf = new JSPDF('p', 'mm', 'a4');
-        const pageWidth = pdf.internal.pageSize.getWidth();
-        const pageHeight = pdf.internal.pageSize.getHeight();
-        const imageWidth = canvas.width;
-        const imageHeight = canvas.height;
-
-        const ratio = imageWidth / imageHeight >= pageWidth / pageHeight
-          ? pageWidth / imageWidth
-          : pageHeight / imageHeight;
-        pdf.addImage(imgData, 'JPEG', 0, 0, imageWidth * ratio, imageHeight * ratio);
-        pdf.save('invoice.pdf');
-      });
-  };
-
   return (
     <div className="row">
-      <div className="col" id="allUSersContent">
-        <h3 className="text-center">
-          All users
-          <button type="button" className="btn btn-secondary float-right" onClick={generatePDf}>
-            Generate PDF
-          </button>
-        </h3>
+      <div className="col">
+        <h3 className="text-center">All users</h3>
         {returnData()}
       </div>
     </div>
   );
 }
 
-ViewAllUsers.propTypes = {
+NssfAndTin.propTypes = {
   token: PropTypes.string
 };
 
-export default connect(mapStateToProps)(ViewAllUsers);
+export default connect(mapStateToProps)(NssfAndTin);

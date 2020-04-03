@@ -40,45 +40,137 @@ function EditUser(props) {
     );
   }
 
-  const [email, setEmail] = useState(user.email);
-  const [firstName, setFirstName] = useState(user.fName);
-  const [lastName, setLastName] = useState(user.lName);
-  const [otherNames, setOtherNames] = useState(user.oNames);
-  const [birthDate, setBirthDate] = useState(user.birthDate ? new Date(user.birthDate) : '');
-  const [team, setTeam] = useState(user.team);
-  const [contractType, setContractType] = useState(user.contractType);
-  const [contractStartDate, setContractStartDate] = useState(new Date(user.contractStartDate));
-  const [contractEndDate, setContractEndDate] = useState(new Date(user.contractEndDate));
+  const [email, setEmail] = useState(
+    user.email
+      ? user.email
+      : '@clintonhealthaccess.org'
+  );
+  const [firstName, setFirstName] = useState(
+    user.fName
+      ? user.fName
+      : ''
+  );
+  const [lastName, setLastName] = useState(
+    user.lName
+      ? user.lName
+      : ''
+  );
+  const [otherNames, setOtherNames] = useState(
+    user.oNames
+      ? user.oNames
+      : ''
+  );
+  const [birthDate, setBirthDate] = useState(
+    user.birthDate
+      ? new Date(user.birthDate)
+      : ''
+  );
+  const [team, setTeam] = useState(
+    user.team
+      ? user.team
+      : 'Country Office'
+  );
+  const [contractType, setContractType] = useState(
+    user.contractType
+      ? user.contractType
+      : 'Full-Time'
+  );
+  const [contractStartDate, setContractStartDate] = useState(
+    user.contractStartDate
+      ? new Date(user.contractStartDate)
+      : ''
+  );
+  const [contractEndDate, setContractEndDate] = useState(
+    user.contractEndDate
+      ? new Date(user.contractEndDate)
+      : ''
+  );
   const [password, setPassword] = useState('123456');
   const [confirmPass, setConfirmPass] = useState('123456');
-  const [gender, setGender] = useState(user.gender);
-  const [position, setPosition] = useState(user.title);
-  const [admin, setAdmin] = useState(user.roles.admin);
-  const [supervisor, setSupervisor] = useState(user.roles.supervisor);
-  const [humanResource, setHumanResource] = useState(user.roles.hr);
-  const [staffCategory, setStaffCategory] = useState(user.type);
-  const [programme, setProgramme] = useState(user.program);
+  const [gender, setGender] = useState(
+    user.gender
+      ? user.gender
+      : 'Female'
+  );
+  const [position, setPosition] = useState(
+    user.title
+      ? user.title
+      : ''
+  );
+  const [admin, setAdmin] = useState(
+    user.roles.admin
+      ? user.roles.admin
+      : false
+  );
+  const [supervisor, setSupervisor] = useState(
+    user.roles.supervisor
+      ? user.roles.supervisor
+      : false
+  );
+  const [humanResource, setHumanResource] = useState(
+    user.roles.hr
+      ? user.roles.hr
+      : false
+  );
+  const [staffCategory, setStaffCategory] = useState(
+    user.type
+      ? user.type
+      : 'national'
+  );
+  const [programme, setProgramme] = useState(
+    user.program
+      ? user.program
+      : ''
+  );
+  const [countryDirector, setCountryDirector] = useState(
+    user.roles.countryDirector
+      ? user.roles.countryDirector
+      : false
+  );
+  const [supervisorsEmail, setSupervisorsEmail] = useState(
+    user.supervisorDetails.email
+      ? user.supervisorDetails.email
+      : ''
+  );
+  const [nssfNumber, setNssfNumber] = useState(
+    user.nssfNumber
+      ? user.nssfNumber
+      : ''
+  );
+  const [tinNumber, setTinNumber] = useState(
+    user.tinNumber
+      ? user.tinNumber
+      : ''
+  );
+  const [workPermitStartDate, setWorkPermitStartDate] = useState(
+    user.workPermitStartDate
+      ? user.workPermitStartDate
+      : ''
+  );
+  const [workPermitEndDate, setWorkPermitEndDate] = useState(
+    user.workPermitEndDate
+      ? user.workPermitEndDate
+      : ''
+  );
+  const [bankAccounts, setBankAccounts] = useState(
+    user.bankAccoounts
+      ? user.bankAccoounts
+      : []
+  );
   const [allProgrammes, setAllProgrammes] = useState([]);
   const [spinner, setSpinner] = useState(false);
   const [error, setError] = useState('');
-  const [countryDirector, setCountryDirector] = useState(user.roles.countryDirector);
-  const [supervisorsEmail, setSupervisorsEmail] = useState(user.supervisorDetails.email);
   const [allUsers, setAllUsers] = useState([]);
   const [submitSpinner, setSubmitSpinner] = useState(false);
   const [successFeedback, setSuccessFeedback] = useState('');
   const [bankName, setBankName] = useState('');
   const [accountNumber, setAccountNumber] = useState('');
   const [currency, setCurrency] = useState('UGX');
-  const [bankAccounts, setBankAccounts] = useState(user.bankAccoounts);
-  const [nssfNumber, setNssfNumber] = useState(user.nssfNumber);
-  const [tinNumber, setTinNumber] = useState(user.tinNumber);
   const [defaultSupervisor, setDefaultSupervisor] = useState({
     label: `${user.supervisorDetails.fName} ${user.supervisorDetails.lName}`,
     value: user.supervisorDetails.email
   });
   const [archiveSpinner, setArchiveSpinner] = useState(false);
-  const [workPermitStartDate, setWorkPermitStartDate] = useState(user.workPermitStartDate);
-  const [workPermitEndDate, setWorkPermitEndDate] = useState(user.workPermitEndDate);
 
   const handleSubmit = (event) => {
     event.preventDefault();
