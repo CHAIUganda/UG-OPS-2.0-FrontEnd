@@ -167,8 +167,9 @@ function EditUser(props) {
   const [accountNumber, setAccountNumber] = useState('');
   const [currency, setCurrency] = useState('UGX');
   const [defaultSupervisor, setDefaultSupervisor] = useState({
-    label: `${user.supervisorDetails.fName} ${user.supervisorDetails.lName}`,
-    value: user.supervisorDetails.email
+    label: `${user.supervisorDetails.fName ? user.supervisorDetails.fName : 'Not'} 
+    ${user.supervisorDetails.lName ? user.supervisorDetails.lName : 'supplied'}`,
+    value: user.supervisorDetails.email ? user.supervisorDetails.email : ''
   });
   const [archiveSpinner, setArchiveSpinner] = useState(false);
 

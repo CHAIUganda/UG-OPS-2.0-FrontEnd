@@ -5,6 +5,7 @@ import axios from 'axios';
 import html2canvas from 'html2canvas';
 import JSPDF from 'jspdf';
 import Select from 'react-select';
+import moment from 'moment';
 
 import CommonSpinner from '../../../../common/spinner';
 import { BASE_URL, returnStatusClass } from '../../../../../config';
@@ -85,8 +86,10 @@ function ProgramLeaveTracker({ token, program }) {
     axios.get(endPoint)
       .then((res) => {
         const sortByProgram = res.data.filter((l) => l.program === program && (l.status === 'Planned' || l.status === 'Approved' || l.status === 'Taken'));
-        setallLeaves(sortByProgram);
-        setFilteredLeaves(sortByProgram);
+        // eslint-disable-next-line max-len
+        const sortForFutureDates = sortByProgram.filter((l) => moment(l.startDate).isSameOrAfter(new Date()) || moment(l.endDate).isSameOrAfter(new Date()));
+        setallLeaves(sortForFutureDates);
+        setFilteredLeaves(sortForFutureDates);
         getUsers();
       })
       .catch((err) => {

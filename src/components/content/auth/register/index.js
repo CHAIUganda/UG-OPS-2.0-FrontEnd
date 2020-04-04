@@ -220,12 +220,11 @@ function Register({ token }) {
     } else if (!accountNumber) {
       setError('Please enter an account number to add account');
     } else {
-      bankAccounts.push();
       setBankAccounts([...bankAccounts,
         {
           bankName,
           accountNumber,
-          currency,
+          Currency: currency,
           status: 'To be saved'
         }
       ]);
