@@ -123,7 +123,7 @@ function Register({ token }) {
       supervisor,
       countryDirector,
       title: position,
-      program: programme,
+      programId: programme,
       type: staffCategory,
       team,
       supervisorEmail: supervisorsEmail,
@@ -185,7 +185,6 @@ function Register({ token }) {
       . then((res) => {
         setSpinner(false);
         setAllProgrammes(res.data);
-        setProgramme(res.data[0]);
         getUsers();
       })
       .catch((err) => {
@@ -574,7 +573,7 @@ function Register({ token }) {
             >
               {
                 allProgrammes.map((prog) => (
-                  <option key={prog._id} value={prog.name}>{prog.name}</option>
+                  <option key={prog._id} value={prog._id}>{prog.name}</option>
                 ))
               }
             </CustomInput>
