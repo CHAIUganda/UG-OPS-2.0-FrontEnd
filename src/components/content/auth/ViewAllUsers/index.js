@@ -8,6 +8,7 @@ import { IconContext } from 'react-icons';
 import { Link } from 'react-router-dom';
 import html2canvas from 'html2canvas';
 import JSPDF from 'jspdf';
+import { CustomInput } from 'reactstrap';
 
 import { BASE_URL } from '../../../../config';
 import CommonSpinner from '../../../common/spinner';
@@ -23,6 +24,9 @@ function ViewAllUsers({ token }) {
   const [spinner, setSpinner] = useState(false);
   const [error, setError] = useState('');
   const [selectLibArray, setSelectLibArray] = useState([]);
+  const [displayEmail, setDisplayEmail] = useState('true');
+  const [displayNssf, setDisplayNssf] = useState('true');
+  const [displayTIN, setDisplayTIN] = useState('true');
 
   const selectLibOnChange = (id) => {
     if (id === 'all') {
@@ -45,14 +49,68 @@ function ViewAllUsers({ token }) {
     </th>
   );
 
+  const returnEmailFilterHead = () => (
+    <th scope="col">
+      Email
+      <span className="customSelectStyles">
+        <CustomInput
+          type="select"
+          id="emailCustomSelect"
+          name="customSelect"
+          value={displayEmail}
+          onChange={(e) => setDisplayEmail(e.target.value)}
+        >
+          <option value='true'>display</option>
+          <option value='false'>Dont display</option>
+        </CustomInput>
+      </span>
+    </th>
+  );
+
+  const returnNSSFFilterHead = () => (
+    <th scope="col">
+      NSSF Number
+      <span className="customSelectStyles">
+        <CustomInput
+          type="select"
+          id="nssfCustomSelect"
+          name="customSelect"
+          value={displayNssf}
+          onChange={(e) => setDisplayNssf(e.target.value)}
+        >
+          <option value='true'>display</option>
+          <option value='false'>Dont display</option>
+        </CustomInput>
+      </span>
+    </th>
+  );
+
+  const returnTINFilterHead = () => (
+    <th scope="col">
+      TIN
+      <span className="customSelectStyles">
+        <CustomInput
+          type="select"
+          id="tinCustomSelect"
+          name="customSelect"
+          value={displayTIN}
+          onChange={(e) => setDisplayTIN(e.target.value)}
+        >
+          <option value='true'>display</option>
+          <option value='false'>Dont display</option>
+        </CustomInput>
+      </span>
+    </th>
+  );
+
   const returnData = () => (
     <table className="table holidaysTable" id="hrConsolidatedTrackerTable">
       <thead>
         <tr>
           {returnNameFilterHead()}
-          <th scope="col">Email</th>
-          <th scope="col">NSSF No_</th>
-          <th scope="col">TIN</th>
+          {returnEmailFilterHead()}
+          {returnNSSFFilterHead()}
+          {returnTINFilterHead()}
           <th scope="col">Edit</th>
         </tr>
       </thead>
@@ -61,9 +119,21 @@ function ViewAllUsers({ token }) {
           filteredUsers.map((user) => (
             <tr key={user._id}>
               <td>{`${user.fName} ${user.lName}`}</td>
-              <td>{user.email}</td>
-              <td>{user.nssfNumber}</td>
-              <td>{user.tinNumber}</td>
+              <td>{
+                displayEmail === 'true'
+                  ? user.email
+                  : ''
+              }</td>
+              <td>{
+                displayNssf === 'true'
+                  ? user.nssfNumber
+                  : ''
+              }</td>
+              <td>{
+                displayTIN === 'true'
+                  ? user.tinNumber
+                  : ''
+              }</td>
               <td>
                 <span className="pointerCursor changeHColor">
                   <Link to={{

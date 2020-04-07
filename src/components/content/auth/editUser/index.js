@@ -68,12 +68,12 @@ function EditUser(props) {
   const [team, setTeam] = useState(
     user.team
       ? user.team
-      : 'Country Office'
+      : ''
   );
   const [contractType, setContractType] = useState(
     user.contractType
       ? user.contractType
-      : 'Full-Time'
+      : ''
   );
   const [contractStartDate, setContractStartDate] = useState(
     user.contractStartDate
@@ -90,7 +90,7 @@ function EditUser(props) {
   const [gender, setGender] = useState(
     user.gender
       ? user.gender
-      : 'Female'
+      : ''
   );
   const [position, setPosition] = useState(
     user.title
@@ -115,7 +115,7 @@ function EditUser(props) {
   const [staffCategory, setStaffCategory] = useState(
     user.type
       ? user.type
-      : 'national'
+      : ''
   );
   const [programme, setProgramme] = useState(
     user.program
@@ -153,8 +153,8 @@ function EditUser(props) {
       : ''
   );
   const [bankAccounts, setBankAccounts] = useState(
-    user.bankAccoounts
-      ? user.bankAccoounts
+    user.bankAccounts.length > 0
+      ? user.bankAccounts
       : []
   );
   const [allProgrammes, setAllProgrammes] = useState([]);
@@ -605,6 +605,7 @@ function EditUser(props) {
               value={gender}
               onChange={(e) => setGender(e.target.value)}
             >
+              <option value="">Not set</option>
               <option value="Female">Female</option>
               <option value="Male">Male</option>
             </CustomInput>
@@ -638,6 +639,7 @@ function EditUser(props) {
               value={staffCategory}
               onChange={(e) => setStaffCategory(e.target.value)}
             >
+              <option value="">Not set</option>
               <option value="national">national</option>
               <option value="expat">expat</option>
               <option value="tcn">tcn</option>
@@ -687,6 +689,7 @@ function EditUser(props) {
               value={team}
               onChange={(e) => setTeam(e.target.value)}
             >
+              <option value="">Not set</option>
               <option value="Country Office">Country Office</option>
               <option value="Global">Global</option>
             </CustomInput>
@@ -696,20 +699,7 @@ function EditUser(props) {
         <FormGroup>
           <InputGroup>
             <InputGroupAddon addonType="prepend">
-              <InputGroupText>Current Program</InputGroupText>
-            </InputGroupAddon>
-            <Input
-              type="text"
-              value={user.program}
-              disabled
-            />
-          </InputGroup>
-        </FormGroup>
-
-        <FormGroup>
-          <InputGroup>
-            <InputGroupAddon addonType="prepend">
-              <InputGroupText>New Programme</InputGroupText>
+              <InputGroupText>Program</InputGroupText>
             </InputGroupAddon>
             <CustomInput
               type="select"
@@ -718,7 +708,7 @@ function EditUser(props) {
               value={programme}
               onChange={(e) => setProgramme(e.target.value)}
             >
-              <option value='notSet'>Set a new program(optional)</option>
+              <option value=''>Not set</option>
               {
                 allProgrammes.map((prog) => (
                   <option key={prog._id} value={prog.name}>{prog.name}</option>
@@ -808,6 +798,7 @@ function EditUser(props) {
               value={contractType}
               onChange={(e) => setContractType(e.target.value)}
             >
+              <option value="">Not set</option>
               <option value="Full-Time">Full-Time</option>
               <option value="Part-Time">Part-Time</option>
               <option value="Volunteer">Volunteer</option>

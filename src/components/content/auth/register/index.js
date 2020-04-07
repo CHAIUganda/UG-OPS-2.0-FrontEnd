@@ -571,6 +571,7 @@ function Register({ token }) {
               value={programme}
               onChange={(e) => setProgramme(e.target.value)}
             >
+              <option value=''>Not set</option>
               {
                 allProgrammes.map((prog) => (
                   <option key={prog._id} value={prog._id}>{prog.name}</option>
