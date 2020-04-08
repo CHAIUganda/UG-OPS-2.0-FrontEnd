@@ -17,6 +17,7 @@ import PropTypes from 'prop-types';
 import Select from 'react-select';
 
 import CommonSpinner from '../../../common/spinner';
+import EditBankDetailsModal from './editBankDetails';
 import { BASE_URL, returnStatusClass } from '../../../../config';
 import './editUser.css';
 
@@ -165,13 +166,12 @@ function EditUser(props) {
   const [successFeedback, setSuccessFeedback] = useState('');
   const [bankName, setBankName] = useState('');
   const [accountNumber, setAccountNumber] = useState('');
-  const [currency, setCurrency] = useState('UGX');
+  const [Currency, setCurrency] = useState('UGX');
   const [defaultSupervisor, setDefaultSupervisor] = useState({
     label: `${user.supervisorDetails.fName ? user.supervisorDetails.fName : 'Not'} 
     ${user.supervisorDetails.lName ? user.supervisorDetails.lName : 'supplied'}`,
     value: user.supervisorDetails.email ? user.supervisorDetails.email : ''
   });
-  const [archiveSpinner, setArchiveSpinner] = useState(false);
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -302,36 +302,6 @@ function EditUser(props) {
     );
   }
 
-  const handleArchiveBankAccount = (event, id, index) => {
-    event.preventDefault();
-    setArchiveSpinner(true);
-
-    const accountToArchive = {
-      id
-    };
-
-    axios.defaults.headers.common = { token };
-    const apiRoute = `${BASE_URL}path to be set`;
-    axios.post(apiRoute, accountToArchive)
-      . then(() => {
-        setArchiveSpinner(false);
-        const arr = [...bankAccounts];
-        arr.splice(index, 1, {
-          ...bankAccounts[index],
-          status: 'archived'
-        });
-        setBankAccounts([...arr]);
-      })
-      .catch((err) => {
-        setArchiveSpinner(false);
-        if (err && err.response && err.response.data && err.response.data.message) {
-          setError(err.response.data.message);
-        } else {
-          setError(err.message);
-        }
-      });
-  };
-
   const handleNewBankAccount = (event) => {
     event.preventDefault();
     if (!bankName) {
@@ -339,19 +309,26 @@ function EditUser(props) {
     } else if (!accountNumber) {
       setError('Please enter an account number to add account');
     } else {
-      bankAccounts.push();
       setBankAccounts([...bankAccounts,
         {
           bankName,
           accountNumber,
-          currency,
-          status: 'To be saved'
+          Currency,
+          status: 'To be saved',
+          new: true,
+          modify: false
         }
       ]);
       setBankName('');
       setAccountNumber('');
       setCurrency('UGX');
     }
+  };
+
+  const handleEditBankAccountAction = (index, modifiedAccountDetails) => {
+    const holder = [...bankAccounts];
+    holder[index] = modifiedAccountDetails;
+    setBankAccounts(holder);
   };
 
   return (
@@ -470,7 +447,7 @@ function EditUser(props) {
                     <td>{index + 1}</td>
                     <td>{bankAccount.bankName}</td>
                     <td>{bankAccount.accountNumber}</td>
-                    <td>{bankAccount.currency}</td>
+                    <td>{bankAccount.Currency}</td>
                     <td className={
                       returnStatusClass(bankAccount.status)
                     }>
@@ -478,16 +455,12 @@ function EditUser(props) {
                     </td>
                     <td>
                       <button
-                        type="button"
-                        className="btn btn-danger btn-sm"
-                        onClick={
-                          (event) => handleArchiveBankAccount(event, bankAccount._id, index)
-                        }>
-                        {
-                          archiveSpinner
-                            ? <CommonSpinner />
-                            : 'Archive Account'
-                        }
+                        type="button">
+                        <EditBankDetailsModal
+                          bankDetails={bankAccount}
+                          editAction={handleEditBankAccountAction}
+                          index={index}
+                        />
                       </button>
                     </td>
                   </tr>
@@ -495,7 +468,7 @@ function EditUser(props) {
               }
             </tbody>
           </table>
-
+          <h6>Add a new bank account</h6>
           <FormGroup>
             <InputGroup>
               <InputGroupAddon addonType="prepend">
@@ -541,7 +514,7 @@ function EditUser(props) {
                 type="select"
                 id="exampleCustomSelect"
                 name="customSelect"
-                value={currency}
+                value={Currency}
                 onChange={(e) => setCurrency(e.target.value)}
               >
                 <option value="UGx">UGX</option>
