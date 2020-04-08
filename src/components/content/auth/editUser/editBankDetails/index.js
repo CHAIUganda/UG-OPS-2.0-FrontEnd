@@ -34,12 +34,11 @@ export default function EditBankDetailsModal({ bankDetails, editAction, index })
       editAction(
         index,
         {
+          ...bankDetails,
           bankName,
           accountNumber,
           Currency,
-          status,
-          new: false,
-          modify: true
+          status
         }
       );
     }

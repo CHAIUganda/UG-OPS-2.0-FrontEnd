@@ -191,6 +191,7 @@ function EditUser(props) {
     }
 
     const editUser = {
+      ...user,
       fName: firstName,
       lName: lastName,
       birthDate,
@@ -314,9 +315,7 @@ function EditUser(props) {
           bankName,
           accountNumber,
           Currency,
-          status: 'To be saved',
-          new: true,
-          modify: false
+          status: 'active',
         }
       ]);
       setBankName('');
@@ -629,7 +628,7 @@ function EditUser(props) {
                   <InputGroupText>Work Permit Start Date</InputGroupText>
                 </InputGroupAddon>
                 <Calendar
-                  value={contractStartDate}
+                  value={workPermitStartDate}
                   onChange={(date) => setWorkPermitStartDate(date)}
                 />
               </InputGroup>
@@ -641,7 +640,7 @@ function EditUser(props) {
                   <InputGroupText>Work Permit End Date</InputGroupText>
                 </InputGroupAddon>
                 <Calendar
-                  value={contractEndDate}
+                  value={workPermitEndDate}
                   onChange={(date) => setWorkPermitEndDate(date)}
                 />
               </InputGroup>
