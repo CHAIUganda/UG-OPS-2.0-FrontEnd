@@ -92,8 +92,8 @@ function Apply4Leave({
 
   const modifyLeave = (index, leaveObj) => {
     const arrToEdit = [...personsLeaves];
-    arrToEdit.splice(index, 1, leaveObj);
-    setPersonsLeaves(arrToEdit);
+    arrToEdit[index] = leaveObj;
+    setPersonsLeaves(arrToEdit.reverse());
   };
 
   const returnTable = () => (

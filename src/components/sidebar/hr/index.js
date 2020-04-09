@@ -147,6 +147,20 @@ function HR({
                 active={active === 'ManageProgrammes'}
               />
             </span>
+            <span onClick={() => handleChangeActive('ContractsExpiry')}>
+              <SubItem
+                link="/hr/ContractsExpiry"
+                textToSet="Contracts Expiry"
+                active={active === 'ContractsExpiry'}
+              />
+            </span>
+            <span onClick={() => handleChangeActive('WorkPermitsExpiry')}>
+              <SubItem
+                link="/hr/WorkPermitsExpiry"
+                textToSet="Work Permits Expiry"
+                active={active === 'WorkPermitsExpiry'}
+              />
+            </span>
           </div>
         </>
       }

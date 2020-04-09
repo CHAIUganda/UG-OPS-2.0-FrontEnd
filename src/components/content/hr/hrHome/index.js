@@ -62,9 +62,6 @@ function HRHome({
     );
   }
 
-  // modify to include contract start date
-  const leaveAccrued = () => Math.trunc(new Date().getMonth() * 1.75);
-
   const returnData = () => (
     <table className="table holidaysTable">
       <thead>
@@ -79,7 +76,7 @@ function HRHome({
         <tr>
           <td>Annual Leave</td>
           <td>{leaveBalances.annualLeaveTaken}</td>
-          <td>{(leaveAccrued() + leaveBalances.annualLeaveBF) - leaveBalances.annualLeaveTaken}</td>
+          <td>{leaveBalances.annualLeaveBal}</td>
           <td className="text-left">You accrue 1.75 annual leave days per month</td>
         </tr>
         {
@@ -90,7 +87,7 @@ function HRHome({
             {
               leaveBalances.homeLeaveTaken === 0
               && <td>
-                {(leaveAccrued() + leaveBalances.annualLeaveBF) - leaveBalances.annualLeaveTaken}
+                {leaveBalances.homeLeaveBal}
               </td>
             }
             {
@@ -105,7 +102,7 @@ function HRHome({
           && <tr>
             <td>Maternity</td>
             <td>{leaveBalances.maternityLeaveTaken}</td>
-            <td>{60 - leaveBalances.maternityLeaveTaken}</td>
+            <td>{leaveBalances.maternityLeaveBal}</td>
             <td className="text-left" >
               You are entitled to 60 days of maternity leave days
             </td>
@@ -123,7 +120,7 @@ function HRHome({
         <tr>
           <td>Sick Leave</td>
           <td>{leaveBalances.sickLeaveTaken}</td>
-          <td>{42 - leaveBalances.sickLeaveTaken}</td>
+          <td>{leaveBalances.sickLeaveBal}</td>
           <td className="text-left">
             You are entitled to 42 sick leave days.
             More than 3 days will require a doctor&apos;s note
@@ -132,13 +129,13 @@ function HRHome({
         <tr>
           <td>Study Leave</td>
           <td>{leaveBalances.studyLeaveTaken}</td>
-          <td>{4 - leaveBalances.studyLeaveTaken}</td>
+          <td>{leaveBalances.studyLeaveBal}</td>
           <td className="text-left">You are entitled to 4 study leave days</td>
         </tr>
         <tr>
           <td>Unpaid Leave</td>
           <td>{leaveBalances.unPaidLeaveTaken}</td>
-          <td>{60 - leaveBalances.unPaidLeaveTaken}</td>
+          <td>{leaveBalances.unpaidLeaveBal}</td>
           <td className="text-left">
             You can have up to 60 unpaid leave days.
             You should have exhausted all other leave entitlements

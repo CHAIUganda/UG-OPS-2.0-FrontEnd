@@ -5,6 +5,7 @@ import axios from 'axios';
 import html2canvas from 'html2canvas';
 import JSPDF from 'jspdf';
 import Select from 'react-select';
+import moment from 'moment';
 
 import CommonSpinner from '../../../../common/spinner';
 import { BASE_URL, returnStatusClass } from '../../../../../config';
@@ -84,9 +85,11 @@ function ProgramLeaveTracker({ token, program }) {
     const endPoint = `${BASE_URL}leaveApi/getAllStaffLeaves/all/all`;
     axios.get(endPoint)
       .then((res) => {
-        const sortByProgram = res.data.filter((l) => l.program === program && (l.status === 'Planned' || l.status === 'Approved '));
-        setallLeaves(sortByProgram);
-        setFilteredLeaves(sortByProgram);
+        const sortByProgram = res.data.filter((l) => l.program === program && (l.status === 'Planned' || l.status === 'Approved' || l.status === 'Taken'));
+        // eslint-disable-next-line max-len
+        const sortForFutureDates = sortByProgram.filter((l) => moment(l.startDate).isSameOrAfter(new Date()) || moment(l.endDate).isSameOrAfter(new Date()));
+        setallLeaves(sortForFutureDates);
+        setFilteredLeaves(sortForFutureDates);
         getUsers();
       })
       .catch((err) => {
@@ -133,6 +136,8 @@ function ProgramLeaveTracker({ token, program }) {
         array2Filter = array2Filter.filter((leave) => leave.staff);
       } else if (fil === 'name') {
         array2Filter = array2Filter.filter((leave) => `${leave.staff.fName} ${leave.staff.lName}` === allFilters.name);
+      } else if (fil === 'status' && filterObj[fil] === 'On Leave') {
+        array2Filter = array2Filter.filter((leave) => (leave.status === 'Approved' || leave.status === 'Taken'));
       } else {
         array2Filter = array2Filter.filter((leave) => leave[fil] === allFilters[fil]);
       }
@@ -184,8 +189,7 @@ function ProgramLeaveTracker({ token, program }) {
       <select className="dropdownFilter" value={statusFilter} onChange={(e) => handleChange(e, setStatusFilter, 'status')}>
         <option value="all" className="optionTableStyle">all</option>
         <option value="Planned" className="optionTableStyle">Planned</option>
-        <option value="Approved" className="optionTableStyle">Approved</option>
-        <option value="Taken" className="optionTableStyle">Taken </option>
+        <option value="On Leave" className="optionTableStyle">On Leave</option>
       </select>
     </th>
   );
@@ -246,6 +250,34 @@ function ProgramLeaveTracker({ token, program }) {
     </th>
   );
 
+  const returnStatus = (status) => {
+    if (status === 'Planned') {
+      return (
+        <button className={returnStatusClass(status)}>
+          {status}
+        </button>
+      );
+    }
+
+    if (status === 'Approved') {
+      return (
+        <button className={returnStatusClass('Approved')}>
+          On Leave
+        </button>
+      );
+    }
+
+    if (status === 'Taken') {
+      return (
+        <button className={returnStatusClass('Approved')}>
+          On Leave
+        </button>
+      );
+    }
+
+    return '';
+  };
+
   const returnData = () => (
     <table className="table holidaysTable" id="hrConsolidatedTrackerTable">
       <thead>
@@ -267,9 +299,7 @@ function ProgramLeaveTracker({ token, program }) {
               <td>{leave.program}</td>
               <td>{leave.type}</td>
               <td>
-                <button className={returnStatusClass(leave.status)}>
-                  {leave.status}
-                </button>
+                {returnStatus(leave.status)}
               </td>
               <td>{leave.daysTaken}</td>
               <td>{new Date(leave.startDate).toDateString()}</td>

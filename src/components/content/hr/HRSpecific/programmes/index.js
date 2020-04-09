@@ -26,17 +26,17 @@ function ManageProgrammes({ token }) {
   const [tableSpinner, setTableSpinner] = useState(false);
   const [tableError, setTableError] = useState('');
 
-  const handleprogramme = (event, name) => {
+  const handleprogramme = (event, id) => {
     event.preventDefault();
     // eslint-disable-next-line no-param-reassign
     event.currentTarget.className = 'disappear';
-    const endPoint = `${BASE_URL}hrApi/removeProgram`;
-    const programme = { name };
+    const endPoint = `${BASE_URL}hrApi/deleteProgram`;
+    const programme = { id };
 
     axios.defaults.headers.common = { token };
     axios.post(endPoint, programme)
       .then(() => {
-        const newProgrammes = programmes.filter((prog) => prog.name !== name);
+        const newProgrammes = programmes.filter((prog) => prog._id !== id);
         setProgrammes(newProgrammes);
       })
       .catch((err) => {
@@ -71,7 +71,7 @@ function ManageProgrammes({ token }) {
             <th scope="col">#</th>
             <th scope="col">Programme</th>
             <th scope="col">Shortform</th>
-            <th scope="col">PM</th>
+            <th scope="col">Program Manager</th>
             <th scope="col">Edit</th>
           </tr>
         </thead>
@@ -79,7 +79,7 @@ function ManageProgrammes({ token }) {
           {
             programmes.map((prog, index) => (
               <tr key={prog._id}>
-                <th scope="row">{index + 1}</th>
+                <td scope="row">{index + 1}</td>
                 <td>{prog.name}</td>
                 <td>{prog.shortForm}</td>
                 <td>{`${prog.programManagerDetails.fName} ${prog.programManagerDetails.lName}`}</td>
@@ -99,7 +99,7 @@ function ManageProgrammes({ token }) {
                   <button
                     type="button"
                     className="btn btn-danger btn-sm"
-                    onClick={(event) => handleprogramme(event, prog.name)}>
+                    onClick={(event) => handleprogramme(event, prog._id)}>
                     Delete
                   </button>
                 </td>

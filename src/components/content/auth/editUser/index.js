@@ -17,7 +17,8 @@ import PropTypes from 'prop-types';
 import Select from 'react-select';
 
 import CommonSpinner from '../../../common/spinner';
-import { BASE_URL } from '../../../../config';
+import EditBankDetailsModal from './editBankDetails';
+import { BASE_URL, returnStatusClass } from '../../../../config';
 import './editUser.css';
 
 const mapStateToProps = (state) => ({
@@ -40,37 +41,141 @@ function EditUser(props) {
     );
   }
 
-  const [email, setEmail] = useState(user.email);
-  const [firstName, setFirstName] = useState(user.fName);
-  const [lastName, setLastName] = useState(user.lName);
-  const [otherNames, setOtherNames] = useState(user.oNames);
-  const [birthDate, setBirthDate] = useState(user.birthDate ? new Date(user.birthDate) : '');
-  const [team, setTeam] = useState(user.team);
-  const [contractType, setContractType] = useState(user.contractType);
-  const [contractStartDate, setContractStartDate] = useState(new Date(user.contractStartDate));
-  const [contractEndDate, setContractEndDate] = useState(new Date(user.contractEndDate));
+  console.log(user);
+  // debugger;
+
+  const [email, setEmail] = useState(
+    user.email
+      ? user.email
+      : '@clintonhealthaccess.org'
+  );
+  const [firstName, setFirstName] = useState(
+    user.fName
+      ? user.fName
+      : ''
+  );
+  const [lastName, setLastName] = useState(
+    user.lName
+      ? user.lName
+      : ''
+  );
+  const [otherNames, setOtherNames] = useState(
+    user.oNames
+      ? user.oNames
+      : ''
+  );
+  const [birthDate, setBirthDate] = useState(
+    user.birthDate
+      ? new Date(user.birthDate)
+      : ''
+  );
+  const [team, setTeam] = useState(
+    user.team
+      ? user.team
+      : ''
+  );
+  const [contractType, setContractType] = useState(
+    user.contractType
+      ? user.contractType
+      : ''
+  );
+  const [contractStartDate, setContractStartDate] = useState(
+    user.contractStartDate
+      ? new Date(user.contractStartDate)
+      : ''
+  );
+  const [contractEndDate, setContractEndDate] = useState(
+    user.contractEndDate
+      ? new Date(user.contractEndDate)
+      : ''
+  );
   const [password, setPassword] = useState('123456');
   const [confirmPass, setConfirmPass] = useState('123456');
-  const [gender, setGender] = useState(user.gender);
-  const [position, setPosition] = useState(user.title);
-  const [admin, setAdmin] = useState(user.roles.admin);
-  const [supervisor, setSupervisor] = useState(user.roles.supervisor);
-  const [humanResource, setHumanResource] = useState(user.roles.hr);
-  const [staffCategory, setStaffCategory] = useState(user.type);
-  const [programme, setProgramme] = useState(user.program);
+  const [gender, setGender] = useState(
+    user.gender
+      ? user.gender
+      : ''
+  );
+  const [position, setPosition] = useState(
+    user.title
+      ? user.title
+      : ''
+  );
+  const [admin, setAdmin] = useState(
+    user.roles.admin
+      ? user.roles.admin
+      : false
+  );
+  const [supervisor, setSupervisor] = useState(
+    user.roles.supervisor
+      ? user.roles.supervisor
+      : false
+  );
+  const [humanResource, setHumanResource] = useState(
+    user.roles.hr
+      ? user.roles.hr
+      : false
+  );
+  const [staffCategory, setStaffCategory] = useState(
+    user.type
+      ? user.type
+      : ''
+  );
+  const [programId, setProgramId] = useState(
+    user.programId
+      ? user.programId
+      : ''
+  );
+  // console.log(programId);
+  // debugger;
+  const [countryDirector, setCountryDirector] = useState(
+    user.roles.countryDirector
+      ? user.roles.countryDirector
+      : false
+  );
+  const [supervisorsEmail, setSupervisorsEmail] = useState(
+    user.supervisorDetails.email
+      ? user.supervisorDetails.email
+      : ''
+  );
+  const [nssfNumber, setNssfNumber] = useState(
+    user.nssfNumber
+      ? user.nssfNumber
+      : ''
+  );
+  const [tinNumber, setTinNumber] = useState(
+    user.tinNumber
+      ? user.tinNumber
+      : ''
+  );
+  const [workPermitStartDate, setWorkPermitStartDate] = useState(
+    user.workPermitStartDate
+      ? user.workPermitStartDate
+      : ''
+  );
+  const [workPermitEndDate, setWorkPermitEndDate] = useState(
+    user.workPermitEndDate
+      ? user.workPermitEndDate
+      : ''
+  );
+  const [bankAccounts, setBankAccounts] = useState(
+    user.bankAccounts.length > 0
+      ? user.bankAccounts
+      : []
+  );
   const [allProgrammes, setAllProgrammes] = useState([]);
   const [spinner, setSpinner] = useState(false);
   const [error, setError] = useState('');
-  const [countryDirector, setCountryDirector] = useState(user.roles.countryDirector);
-  const [supervisorsEmail, setSupervisorsEmail] = useState(user.supervisorDetails.email);
   const [allUsers, setAllUsers] = useState([]);
   const [submitSpinner, setSubmitSpinner] = useState(false);
   const [successFeedback, setSuccessFeedback] = useState('');
-  const [bankName, setBankName] = useState(user.bankDetails.bankName);
-  const [accountNumber, setAccountNumber] = useState(user.bankDetails.accountNumber);
+  const [bankName, setBankName] = useState('');
+  const [accountNumber, setAccountNumber] = useState('');
+  const [Currency, setCurrency] = useState('UGX');
   const [defaultSupervisor, setDefaultSupervisor] = useState({
-    label: `${user.supervisorDetails.fName} ${user.supervisorDetails.lName}`,
-    value: user.supervisorDetails.email
+    label: `${user.supervisorDetails.fName ? user.supervisorDetails.fName : 'Not'} 
+    ${user.supervisorDetails.lName ? user.supervisorDetails.lName : 'supplied'}`,
+    value: user.supervisorDetails.email ? user.supervisorDetails.email : ''
   });
 
   const handleSubmit = (event) => {
@@ -91,11 +196,11 @@ function EditUser(props) {
     }
 
     const editUser = {
+      ...user,
       fName: firstName,
       lName: lastName,
       birthDate,
-      bankName,
-      accountNumber,
+      bankAccounts,
       contractStartDate,
       contractEndDate,
       contractType,
@@ -105,14 +210,18 @@ function EditUser(props) {
       supervisor,
       countryDirector,
       title: position,
-      program: programme === 'notSet' ? user.program : programme,
+      programId,
       type: staffCategory,
       team,
       supervisorEmail: supervisorsEmail,
       oNames: otherNames,
       email,
       password,
-      contractId: user.contractId
+      contractId: user.contractId,
+      nssfNumber,
+      tinNumber,
+      workPermitStartDate,
+      workPermitEndDate
     };
 
     axios.defaults.headers.common = { token };
@@ -163,7 +272,7 @@ function EditUser(props) {
       . then((res) => {
         setSpinner(false);
         setAllProgrammes(res.data);
-        setProgramme(res.data[0]);
+        setProgramId(res.data[0]);
         getUsers();
       })
       .catch((err) => {
@@ -198,6 +307,33 @@ function EditUser(props) {
       </div>
     );
   }
+
+  const handleNewBankAccount = (event) => {
+    event.preventDefault();
+    if (!bankName) {
+      setError('Please enter a bank to add account');
+    } else if (!accountNumber) {
+      setError('Please enter an account number to add account');
+    } else {
+      setBankAccounts([...bankAccounts,
+        {
+          bankName,
+          accountNumber,
+          Currency,
+          status: 'active',
+        }
+      ]);
+      setBankName('');
+      setAccountNumber('');
+      setCurrency('UGX');
+    }
+  };
+
+  const handleEditBankAccountAction = (index, modifiedAccountDetails) => {
+    const holder = [...bankAccounts];
+    holder[index] = modifiedAccountDetails;
+    setBankAccounts(holder);
+  };
 
   return (
     <div className="registerFormStyle">
@@ -295,21 +431,124 @@ function EditUser(props) {
           </InputGroup>
         </FormGroup>
 
+        <div className="bankDetailsSection">
+          <h5>Bank Details</h5>
+          {error && <div className="errorFeedback"> {error} </div>}
+          <table className="table holidaysTable">
+            <thead>
+              <tr>
+                <th scope="col">#</th>
+                <th scope="col">Bank</th>
+                <th scope="col">Account No_</th>
+                <th scope="col">Currency</th>
+                <th scope="col">Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              {
+                bankAccounts.map((bankAccount, index) => (
+                  <tr key={index}>
+                    <td>{index + 1}</td>
+                    <td>{bankAccount.bankName}</td>
+                    <td>{bankAccount.accountNumber}</td>
+                    <td>{bankAccount.Currency}</td>
+                    <td className={
+                      returnStatusClass(bankAccount.status)
+                    }>
+                      {bankAccount.status}
+                    </td>
+                    <td>
+                      <button
+                        type="button">
+                        <EditBankDetailsModal
+                          bankDetails={bankAccount}
+                          editAction={handleEditBankAccountAction}
+                          index={index}
+                        />
+                      </button>
+                    </td>
+                  </tr>
+                ))
+              }
+            </tbody>
+          </table>
+          <h6>Add a new bank account</h6>
+          <FormGroup>
+            <InputGroup>
+              <InputGroupAddon addonType="prepend">
+                <InputGroupText>Bank Name</InputGroupText>
+              </InputGroupAddon>
+              <Input
+                placeholder="Bank Name"
+                type="text"
+                value={bankName}
+                onChange={(e) => {
+                  setSuccessFeedback('');
+                  setError('');
+                  setBankName(e.target.value);
+                }}
+              />
+            </InputGroup>
+          </FormGroup>
+
+          <FormGroup>
+            <InputGroup>
+              <InputGroupAddon addonType="prepend">
+                <InputGroupText>Bank Account Number</InputGroupText>
+              </InputGroupAddon>
+              <Input
+                placeholder="Bank Account Number"
+                type="text"
+                value={accountNumber}
+                onChange={(e) => {
+                  setSuccessFeedback('');
+                  setError('');
+                  setAccountNumber(e.target.value);
+                }}
+              />
+            </InputGroup>
+          </FormGroup>
+
+          <FormGroup>
+            <InputGroup>
+              <InputGroupAddon addonType="prepend">
+                <InputGroupText>Currency</InputGroupText>
+              </InputGroupAddon>
+              <CustomInput
+                type="select"
+                id="exampleCustomSelect"
+                name="customSelect"
+                value={Currency}
+                onChange={(e) => setCurrency(e.target.value)}
+              >
+                <option value="UGx">UGX</option>
+                <option value="USD">USD</option>
+              </CustomInput>
+            </InputGroup>
+          </FormGroup>
+
+          <button
+            className="submitButton"
+            onClick={handleNewBankAccount}
+          >
+            Add New Account
+          </button>
+        </div>
+
         <FormGroup>
           <InputGroup>
             <InputGroupAddon addonType="prepend">
-              <InputGroupText>Bank Name</InputGroupText>
+              <InputGroupText>NSSF Number</InputGroupText>
             </InputGroupAddon>
             <Input
-              placeholder="Bank Name"
+              placeholder="NSSF Number"
               type="text"
-              value={bankName}
+              value={nssfNumber}
               onChange={(e) => {
                 setSuccessFeedback('');
                 setError('');
-                setBankName(e.target.value);
+                setNssfNumber(e.target.value);
               }}
-              required
             />
           </InputGroup>
         </FormGroup>
@@ -317,22 +556,20 @@ function EditUser(props) {
         <FormGroup>
           <InputGroup>
             <InputGroupAddon addonType="prepend">
-              <InputGroupText>Bank Account Number</InputGroupText>
+              <InputGroupText>TIN Number</InputGroupText>
             </InputGroupAddon>
             <Input
-              placeholder="Bank Account Number"
+              placeholder="TIN Number"
               type="text"
-              value={accountNumber}
+              value={tinNumber}
               onChange={(e) => {
                 setSuccessFeedback('');
                 setError('');
-                setAccountNumber(e.target.value);
+                setTinNumber(e.target.value);
               }}
-              required
             />
           </InputGroup>
         </FormGroup>
-
         <FormGroup>
           <InputGroup>
             <InputGroupAddon addonType="prepend">
@@ -345,6 +582,7 @@ function EditUser(props) {
               value={gender}
               onChange={(e) => setGender(e.target.value)}
             >
+              <option value="">Not set</option>
               <option value="Female">Female</option>
               <option value="Male">Male</option>
             </CustomInput>
@@ -378,12 +616,43 @@ function EditUser(props) {
               value={staffCategory}
               onChange={(e) => setStaffCategory(e.target.value)}
             >
-              <option value="local">local</option>
+              <option value="">Not set</option>
+              <option value="national">national</option>
               <option value="expat">expat</option>
               <option value="tcn">tcn</option>
             </CustomInput>
           </InputGroup>
         </FormGroup>
+
+        {
+          (staffCategory === 'tcn' || staffCategory === 'expat')
+          && (<>
+            <FormGroup>
+              <InputGroup>
+                <InputGroupAddon addonType="prepend">
+                  <InputGroupText>Work Permit Start Date</InputGroupText>
+                </InputGroupAddon>
+                <Calendar
+                  value={workPermitStartDate}
+                  onChange={(date) => setWorkPermitStartDate(date)}
+                />
+              </InputGroup>
+            </FormGroup>
+
+            <FormGroup>
+              <InputGroup>
+                <InputGroupAddon addonType="prepend">
+                  <InputGroupText>Work Permit End Date</InputGroupText>
+                </InputGroupAddon>
+                <Calendar
+                  value={workPermitEndDate}
+                  onChange={(date) => setWorkPermitEndDate(date)}
+                />
+              </InputGroup>
+            </FormGroup>
+          </>
+          )
+        }
 
         <FormGroup>
           <InputGroup>
@@ -397,6 +666,7 @@ function EditUser(props) {
               value={team}
               onChange={(e) => setTeam(e.target.value)}
             >
+              <option value="">Not set</option>
               <option value="Country Office">Country Office</option>
               <option value="Global">Global</option>
             </CustomInput>
@@ -406,32 +676,19 @@ function EditUser(props) {
         <FormGroup>
           <InputGroup>
             <InputGroupAddon addonType="prepend">
-              <InputGroupText>Current Program</InputGroupText>
-            </InputGroupAddon>
-            <Input
-              type="text"
-              value={user.program}
-              disabled
-            />
-          </InputGroup>
-        </FormGroup>
-
-        <FormGroup>
-          <InputGroup>
-            <InputGroupAddon addonType="prepend">
-              <InputGroupText>New Programme</InputGroupText>
+              <InputGroupText>Program</InputGroupText>
             </InputGroupAddon>
             <CustomInput
               type="select"
               id="programmeCustomSelect"
               name="customSelect"
-              value={programme}
-              onChange={(e) => setProgramme(e.target.value)}
+              value={programId}
+              onChange={(e) => setProgramId(e.target.value)}
             >
-              <option value='notSet'>Set a new program(optional)</option>
+              <option value=''>Not set</option>
               {
                 allProgrammes.map((prog) => (
-                  <option key={prog._id} value={prog.name}>{prog.name}</option>
+                  <option key={prog._id} value={prog._id}>{prog.name}</option>
                 ))
               }
             </CustomInput>
@@ -518,6 +775,7 @@ function EditUser(props) {
               value={contractType}
               onChange={(e) => setContractType(e.target.value)}
             >
+              <option value="">Not set</option>
               <option value="Full-Time">Full-Time</option>
               <option value="Part-Time">Part-Time</option>
               <option value="Volunteer">Volunteer</option>

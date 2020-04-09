@@ -17,7 +17,7 @@ import PropTypes from 'prop-types';
 import Select from 'react-select';
 
 import CommonSpinner from '../../../common/spinner';
-import { BASE_URL } from '../../../../config';
+import { BASE_URL, returnStatusClass } from '../../../../config';
 import './register.css';
 
 const mapStateToProps = (state) => ({
@@ -34,6 +34,8 @@ function Register({ token }) {
   const [contractType, setContractType] = useState('Full-Time');
   const [contractStartDate, setContractStartDate] = useState(new Date());
   const [contractEndDate, setContractEndDate] = useState(new Date());
+  const [workPermitStartDate, setWorkPermitStartDate] = useState();
+  const [workPermitEndDate, setWorkPermitEndDate] = useState();
   const [password, setPassword] = useState('123456');
   const [confirmPass, setConfirmPass] = useState('123456');
   const [gender, setGender] = useState('Female');
@@ -41,7 +43,7 @@ function Register({ token }) {
   const [admin, setAdmin] = useState(false);
   const [supervisor, setSupervisor] = useState(false);
   const [humanResource, setHumanResource] = useState(false);
-  const [staffCategory, setStaffCategory] = useState('local');
+  const [staffCategory, setStaffCategory] = useState('national');
   const [programme, setProgramme] = useState('');
   const [allProgrammes, setAllProgrammes] = useState([]);
   const [spinner, setSpinner] = useState(false);
@@ -53,6 +55,10 @@ function Register({ token }) {
   const [successFeedback, setSuccessFeedback] = useState('');
   const [bankName, setBankName] = useState('');
   const [accountNumber, setAccountNumber] = useState('');
+  const [Currency, setCurrency] = useState('UGX');
+  const [bankAccounts, setBankAccounts] = useState([]);
+  const [nssfNumber, setNssfNumber] = useState('');
+  const [tinNumber, setTinNumber] = useState('');
 
   const reset = () => {
     setEmail('@clintonhealthaccess.org');
@@ -73,11 +79,16 @@ function Register({ token }) {
     setAdmin(false);
     setSupervisor(false);
     setHumanResource(false);
-    setStaffCategory('local');
+    setStaffCategory('national');
     setProgramme('');
     setSpinner(false);
     setCountryDirector(false);
     setSubmitSpinner(false);
+    setNssfNumber('');
+    setTinNumber('');
+    setBankAccounts([]);
+    setWorkPermitEndDate();
+    setWorkPermitStartDate();
   };
 
   const handleSubmit = (event) => {
@@ -112,13 +123,18 @@ function Register({ token }) {
       supervisor,
       countryDirector,
       title: position,
-      program: programme,
+      programId: programme,
       type: staffCategory,
       team,
       supervisorEmail: supervisorsEmail,
       oNames: otherNames,
       email,
-      password
+      bankAccounts,
+      password,
+      nssfNumber,
+      tinNumber,
+      workPermitStartDate,
+      workPermitEndDate
     };
 
     axios.defaults.headers.common = { token };
@@ -169,7 +185,6 @@ function Register({ token }) {
       . then((res) => {
         setSpinner(false);
         setAllProgrammes(res.data);
-        setProgramme(res.data[0]);
         getUsers();
       })
       .catch((err) => {
@@ -195,6 +210,27 @@ function Register({ token }) {
       );
     }
     return 'Submit';
+  };
+
+  const handleNewBankAccount = (event) => {
+    event.preventDefault();
+    if (!bankName) {
+      setError('Please enter a bank to add account');
+    } else if (!accountNumber) {
+      setError('Please enter an account number to add account');
+    } else {
+      setBankAccounts([...bankAccounts,
+        {
+          bankName,
+          accountNumber,
+          Currency,
+          status: 'active'
+        }
+      ]);
+      setBankName('');
+      setAccountNumber('');
+      setCurrency('UGX');
+    }
   };
 
   return (
@@ -293,21 +329,114 @@ function Register({ token }) {
           </InputGroup>
         </FormGroup>
 
+        <div className="bankDetailsSection">
+          <h5>Bank Details</h5>
+          {error && <div className="errorFeedback"> {error} </div>}
+          <table className="table holidaysTable">
+            <thead>
+              <tr>
+                <th scope="col">#</th>
+                <th scope="col">Bank</th>
+                <th scope="col">Account No_</th>
+                <th scope="col">Currency</th>
+                <th scope="col">Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              {
+                bankAccounts.map((bankAccount, index) => (
+                  <tr key={index}>
+                    <td>{index + 1}</td>
+                    <td>{bankAccount.bankName}</td>
+                    <td>{bankAccount.accountNumber}</td>
+                    <td>{bankAccount.Currency}</td>
+                    <td className={
+                      returnStatusClass(bankAccount.status)
+                    }>
+                      {bankAccount.status}
+                    </td>
+                  </tr>
+                ))
+              }
+            </tbody>
+          </table>
+
+          <FormGroup>
+            <InputGroup>
+              <InputGroupAddon addonType="prepend">
+                <InputGroupText>Bank Name</InputGroupText>
+              </InputGroupAddon>
+              <Input
+                placeholder="Bank Name"
+                type="text"
+                value={bankName}
+                onChange={(e) => {
+                  setSuccessFeedback('');
+                  setError('');
+                  setBankName(e.target.value);
+                }}
+              />
+            </InputGroup>
+          </FormGroup>
+
+          <FormGroup>
+            <InputGroup>
+              <InputGroupAddon addonType="prepend">
+                <InputGroupText>Bank Account Number</InputGroupText>
+              </InputGroupAddon>
+              <Input
+                placeholder="Bank Account Number"
+                type="text"
+                value={accountNumber}
+                onChange={(e) => {
+                  setSuccessFeedback('');
+                  setError('');
+                  setAccountNumber(e.target.value);
+                }}
+              />
+            </InputGroup>
+          </FormGroup>
+
+          <FormGroup>
+            <InputGroup>
+              <InputGroupAddon addonType="prepend">
+                <InputGroupText>Currency</InputGroupText>
+              </InputGroupAddon>
+              <CustomInput
+                type="select"
+                id="exampleCustomSelect"
+                name="customSelect"
+                value={Currency}
+                onChange={(e) => setCurrency(e.target.value)}
+              >
+                <option value="UGx">UGX</option>
+                <option value="USD">USD</option>
+              </CustomInput>
+            </InputGroup>
+          </FormGroup>
+
+          <button
+            className="submitButton"
+            onClick={handleNewBankAccount}
+          >
+            Add New Account
+          </button>
+        </div>
+
         <FormGroup>
           <InputGroup>
             <InputGroupAddon addonType="prepend">
-              <InputGroupText>Bank Name</InputGroupText>
+              <InputGroupText>NSSF Number</InputGroupText>
             </InputGroupAddon>
             <Input
-              placeholder="Bank Name"
+              placeholder="NSSF Number"
               type="text"
-              value={bankName}
+              value={nssfNumber}
               onChange={(e) => {
                 setSuccessFeedback('');
                 setError('');
-                setBankName(e.target.value);
+                setNssfNumber(e.target.value);
               }}
-              required
             />
           </InputGroup>
         </FormGroup>
@@ -315,18 +444,17 @@ function Register({ token }) {
         <FormGroup>
           <InputGroup>
             <InputGroupAddon addonType="prepend">
-              <InputGroupText>Bank Account Number</InputGroupText>
+              <InputGroupText>TIN Number</InputGroupText>
             </InputGroupAddon>
             <Input
-              placeholder="Bank Account Number"
+              placeholder="TIN Number"
               type="text"
-              value={accountNumber}
+              value={tinNumber}
               onChange={(e) => {
                 setSuccessFeedback('');
                 setError('');
-                setAccountNumber(e.target.value);
+                setTinNumber(e.target.value);
               }}
-              required
             />
           </InputGroup>
         </FormGroup>
@@ -376,12 +504,42 @@ function Register({ token }) {
               value={staffCategory}
               onChange={(e) => setStaffCategory(e.target.value)}
             >
-              <option value="local">local</option>
+              <option value="national">national</option>
               <option value="expat">expat</option>
               <option value="tcn">tcn</option>
             </CustomInput>
           </InputGroup>
         </FormGroup>
+
+        {
+          (staffCategory === 'tcn' || staffCategory === 'expat')
+          && (<>
+            <FormGroup>
+              <InputGroup>
+                <InputGroupAddon addonType="prepend">
+                  <InputGroupText>Work Permit Start Date</InputGroupText>
+                </InputGroupAddon>
+                <Calendar
+                  value={contractStartDate}
+                  onChange={(date) => setWorkPermitStartDate(date)}
+                />
+              </InputGroup>
+            </FormGroup>
+
+            <FormGroup>
+              <InputGroup>
+                <InputGroupAddon addonType="prepend">
+                  <InputGroupText>Work Permit End Date</InputGroupText>
+                </InputGroupAddon>
+                <Calendar
+                  value={contractEndDate}
+                  onChange={(date) => setWorkPermitEndDate(date)}
+                />
+              </InputGroup>
+            </FormGroup>
+          </>
+          )
+        }
 
         <FormGroup>
           <InputGroup>
@@ -413,9 +571,10 @@ function Register({ token }) {
               value={programme}
               onChange={(e) => setProgramme(e.target.value)}
             >
+              <option value=''>Not set</option>
               {
                 allProgrammes.map((prog) => (
-                  <option key={prog._id} value={prog.name}>{prog.name}</option>
+                  <option key={prog._id} value={prog._id}>{prog.name}</option>
                 ))
               }
             </CustomInput>
