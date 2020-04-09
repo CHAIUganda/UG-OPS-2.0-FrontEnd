@@ -65,7 +65,7 @@ const SpecificWorkPermitModal = ({ workPermit }) => {
             </div>
             <div className='col'>
               <p>Program: {`  ${workPermit.program}`}</p>
-              <p>Program Manager: </p>
+              <p>Program Manager: {`${workPermit.programManagerDetails.fName} ${workPermit.programManagerDetails.lName}`}</p>
               <p>Supervisor: {`  ${workPermit.supervisorDetails.fName} ${workPermit.supervisorDetails.lName}`}</p>
             </div>
           </div>

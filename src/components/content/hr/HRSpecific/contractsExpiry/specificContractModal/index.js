@@ -65,7 +65,7 @@ const SpecificContractModal = ({ contract }) => {
             </div>
             <div className='col'>
               <p>Program: {`  ${contract.program}`}</p>
-              <p>Program Manager: </p>
+              <p>Program Manager: {`${contract.programManagerDetails.fName} ${contract.programManagerDetails.lName}`}</p>
               <p>Supervisor: {`  ${contract.supervisorDetails.fName} ${contract.supervisorDetails.lName}`}</p>
             </div>
           </div>

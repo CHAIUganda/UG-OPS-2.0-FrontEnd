@@ -42,7 +42,7 @@ function EditUser(props) {
   }
 
   console.log(user);
-  debugger;
+  // debugger;
 
   const [email, setEmail] = useState(
     user.email

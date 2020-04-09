@@ -5,7 +5,7 @@ import axios from 'axios';
 import PropTypes from 'prop-types';
 
 import { BASE_URL } from '../../../../../config';
-import SpecificContractModal from './specificContractModal';
+import SpecificContractModal from './specificWorkPermitModal';
 
 const mapStateToProps = (state) => ({
   token: state.auth.token
@@ -66,7 +66,7 @@ function WorkPermitsExpiry({ token }) {
               <td>{ index + 1 }</td>
               <td>{`${workPermit.fName} ${workPermit.lName}`}</td>
               <td>{workPermit.programShortForm}</td>
-              <td></td>
+              <td>{`${workPermit.programManagerDetails.fName} ${workPermit.programManagerDetails.lName}`}</td>
               <td>{`${workPermit.daysLeftonWorkPermit} days`}</td>
               <td>
                 <SpecificContractModal
