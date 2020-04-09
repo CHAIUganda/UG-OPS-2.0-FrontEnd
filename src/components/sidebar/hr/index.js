@@ -95,14 +95,30 @@ function HR({
       <p className="sidebTopNav">
         <FaFileContract /> Contract
       </p>
-      <div className='showContent'></div>
+      <div className='showContent'>
+        <span onClick={() => handleChangeActive('ContractsExpiry')}>
+          <SubItem
+            link="/hr/ContractsExpiry"
+            textToSet="Contracts Expiry"
+            active={active === 'ContractsExpiry'}
+          />
+        </span>
+      </div>
 
       {(type === 'expat' || type === 'tcn' || hr || admin)
         && <>
           <p className="sidebTopNav">
             <FaLaptopCode /> Work Permit
           </p>
-          <div className='showContent'></div>
+          <div className='showContent'>
+            <span onClick={() => handleChangeActive('WorkPermitsExpiry')}>
+              <SubItem
+                link="/hr/WorkPermitsExpiry"
+                textToSet="Work Permits Expiry"
+                active={active === 'WorkPermitsExpiry'}
+              />
+            </span>
+          </div>
         </>
       }
 
@@ -145,20 +161,6 @@ function HR({
                 link="/hr/ManageProgrammes"
                 textToSet="Programmes"
                 active={active === 'ManageProgrammes'}
-              />
-            </span>
-            <span onClick={() => handleChangeActive('ContractsExpiry')}>
-              <SubItem
-                link="/hr/ContractsExpiry"
-                textToSet="Contracts Expiry"
-                active={active === 'ContractsExpiry'}
-              />
-            </span>
-            <span onClick={() => handleChangeActive('WorkPermitsExpiry')}>
-              <SubItem
-                link="/hr/WorkPermitsExpiry"
-                textToSet="Work Permits Expiry"
-                active={active === 'WorkPermitsExpiry'}
               />
             </span>
           </div>

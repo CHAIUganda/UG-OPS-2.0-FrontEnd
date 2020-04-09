@@ -85,6 +85,10 @@ function ProgramLeaveTracker({ token, program }) {
     const endPoint = `${BASE_URL}leaveApi/getAllStaffLeaves/all/all`;
     axios.get(endPoint)
       .then((res) => {
+        console.log(program);
+        console.log(res.data);
+        debugger;
+        debugger;
         const sortByProgram = res.data.filter((l) => l.program === program && (l.status === 'Planned' || l.status === 'Approved' || l.status === 'Taken'));
         // eslint-disable-next-line max-len
         const sortForFutureDates = sortByProgram.filter((l) => moment(l.startDate).isSameOrAfter(new Date()) || moment(l.endDate).isSameOrAfter(new Date()));
