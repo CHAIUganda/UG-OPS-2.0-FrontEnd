@@ -12,7 +12,7 @@ import PropTypes from 'prop-types';
 import Spinner from '../../../../../common/spinner';
 
 
-const SpecificContractModal = ({ contract }) => {
+const SpecificWorkPermitModal = ({ workPermit }) => {
   const [modal, setModal] = useState(false);
   const [dismissSpinner, setDismissSpiner] = useState(false);
   const [snoozeSpinner, setSnoozeSpinner] = useState(false);
@@ -55,18 +55,18 @@ const SpecificContractModal = ({ contract }) => {
         </IconContext.Provider>
       </span>
       <Modal isOpen={modal} toggle={toggle}>
-        <ModalHeader toggle={toggle}>Expiring contract</ModalHeader>
+        <ModalHeader toggle={toggle}>Expiring Work Permit</ModalHeader>
         <ModalBody>
           <div className='row'>
             <div className='col'>
-              <p>Name: {`  ${contract.fName} ${contract.lName}`}</p>
-              <p>Position: {`  ${contract.title}`}</p>
-              <p>Expires in: {`  ${contract.daysLeftonContract} days`}</p>
+              <p>Name: {`  ${workPermit.fName} ${workPermit.lName}`}</p>
+              <p>Position: {`  ${workPermit.title}`}</p>
+              <p>Expires in: {`  ${workPermit.daysLeftonWorkPermit} days`}</p>
             </div>
             <div className='col'>
-              <p>Program: {`  ${contract.program}`}</p>
+              <p>Program: {`  ${workPermit.program}`}</p>
               <p>Program Manager: </p>
-              <p>Supervisor: {`  ${contract.supervisorDetails.fName} ${contract.supervisorDetails.lName}`}</p>
+              <p>Supervisor: {`  ${workPermit.supervisorDetails.fName} ${workPermit.supervisorDetails.lName}`}</p>
             </div>
           </div>
           {/* buttons */}
@@ -86,8 +86,8 @@ const SpecificContractModal = ({ contract }) => {
   );
 };
 
-SpecificContractModal.propTypes = {
-  contract: PropTypes.object
+SpecificWorkPermitModal.propTypes = {
+  workPermit: PropTypes.object
 };
 
-export default SpecificContractModal;
+export default SpecificWorkPermitModal;

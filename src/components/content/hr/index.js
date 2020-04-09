@@ -16,6 +16,7 @@ import ViewAllUsers from '../auth/ViewAllUsers';
 import EditUser from '../auth/editUser';
 import ConsolidatedLeaveBalances from './HRSpecific/consolidatedLeaveBalances';
 import ContractsExpiry from './HRSpecific/contractsExpiry';
+import WorkPermitsExpiry from './HRSpecific/workPermitsExpiry';
 
 export default function HR(props) {
   const { componentToRender } = props.match.params;
@@ -44,6 +45,7 @@ export default function HR(props) {
     EditUser,
     ConsolidatedLeaveBalances,
     ContractsExpiry,
+    WorkPermitsExpiry
   };
 
   const Tag = ComponentsObject[componentToRender];
