@@ -22,7 +22,7 @@ const mapStateToProps = (state) => ({
 function HR({
   changeActive,
   active,
-  type,
+  // type,
   roles
 }) {
   let hr;
@@ -92,20 +92,25 @@ function HR({
         </span>
       </div>
 
-      <p className="sidebTopNav">
-        <FaFileContract /> Contract
-      </p>
-      <div className='showContent'>
-        <span onClick={() => handleChangeActive('ContractsExpiry')}>
-          <SubItem
-            link="/hr/ContractsExpiry"
-            textToSet="Contracts Expiry"
-            active={active === 'ContractsExpiry'}
-          />
-        </span>
-      </div>
+      {(hr || admin)
+      && <>
+        <p className="sidebTopNav">
+          <FaFileContract /> Contract
+        </p>
+        <div className='showContent'>
+          <span onClick={() => handleChangeActive('ContractsExpiry')}>
+            <SubItem
+              link="/hr/ContractsExpiry"
+              textToSet="Contracts Expiry"
+              active={active === 'ContractsExpiry'}
+            />
+          </span>
+        </div>
+      </>
+      }
 
-      {(type === 'expat' || type === 'tcn' || hr || admin)
+      {/* {(type === 'expat' || type === 'tcn' || hr || admin) */}
+      {(hr || admin)
         && <>
           <p className="sidebTopNav">
             <FaLaptopCode /> Work Permit
