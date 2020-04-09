@@ -142,7 +142,6 @@ function SignIn(props) {
               <InputGroupText>@ </InputGroupText>
             </InputGroupAddon>
             <Input
-              placeholder="email@clintonhealthaccess.org"
               type="email"
               name="email"
               value={email}
