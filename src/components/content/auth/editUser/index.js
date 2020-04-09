@@ -121,11 +121,13 @@ function EditUser(props) {
       ? user.type
       : ''
   );
-  const [programme, setProgramme] = useState(
-    user.program
-      ? user.program
+  const [programId, setProgramId] = useState(
+    user.programId
+      ? user.programId
       : ''
   );
+  // console.log(programId);
+  // debugger;
   const [countryDirector, setCountryDirector] = useState(
     user.roles.countryDirector
       ? user.roles.countryDirector
@@ -208,7 +210,7 @@ function EditUser(props) {
       supervisor,
       countryDirector,
       title: position,
-      program: programme === 'notSet' ? user.program : programme,
+      programId,
       type: staffCategory,
       team,
       supervisorEmail: supervisorsEmail,
@@ -270,7 +272,7 @@ function EditUser(props) {
       . then((res) => {
         setSpinner(false);
         setAllProgrammes(res.data);
-        setProgramme(res.data[0]);
+        setProgramId(res.data[0]);
         getUsers();
       })
       .catch((err) => {
@@ -680,13 +682,13 @@ function EditUser(props) {
               type="select"
               id="programmeCustomSelect"
               name="customSelect"
-              value={programme}
-              onChange={(e) => setProgramme(e.target.value)}
+              value={programId}
+              onChange={(e) => setProgramId(e.target.value)}
             >
               <option value=''>Not set</option>
               {
                 allProgrammes.map((prog) => (
-                  <option key={prog._id} value={prog.name}>{prog.name}</option>
+                  <option key={prog._id} value={prog._id}>{prog.name}</option>
                 ))
               }
             </CustomInput>

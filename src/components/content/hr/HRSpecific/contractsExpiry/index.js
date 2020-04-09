@@ -5,6 +5,7 @@ import axios from 'axios';
 import PropTypes from 'prop-types';
 
 import { BASE_URL } from '../../../../../config';
+import SpecificContractModal from './specificContractModal';
 
 const mapStateToProps = (state) => ({
   token: state.auth.token
@@ -66,8 +67,12 @@ function ContractsExpiry({ token }) {
               <td>{`${contract.fName} ${contract.lName}`}</td>
               <td>{contract.programShortForm}</td>
               <td></td>
-              <td>{contract.daysLeftonContract}</td>
-              <td>settings ...</td>
+              <td>{`${contract.daysLeftonContract} days`}</td>
+              <td>
+                <SpecificContractModal
+                  contract={contract}
+                />
+              </td>
             </tr>
           ))
         }
