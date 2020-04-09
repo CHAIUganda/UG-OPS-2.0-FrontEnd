@@ -55,7 +55,7 @@ function Register({ token }) {
   const [successFeedback, setSuccessFeedback] = useState('');
   const [bankName, setBankName] = useState('');
   const [accountNumber, setAccountNumber] = useState('');
-  const [currency, setCurrency] = useState('UGX');
+  const [Currency, setCurrency] = useState('UGX');
   const [bankAccounts, setBankAccounts] = useState([]);
   const [nssfNumber, setNssfNumber] = useState('');
   const [tinNumber, setTinNumber] = useState('');
@@ -223,7 +223,7 @@ function Register({ token }) {
         {
           bankName,
           accountNumber,
-          Currency: currency,
+          Currency,
           status: 'To be saved'
         }
       ]);
@@ -349,7 +349,7 @@ function Register({ token }) {
                     <td>{index + 1}</td>
                     <td>{bankAccount.bankName}</td>
                     <td>{bankAccount.accountNumber}</td>
-                    <td>{bankAccount.currency}</td>
+                    <td>{bankAccount.Currency}</td>
                     <td className={
                       returnStatusClass(bankAccount.status)
                     }>
@@ -406,7 +406,7 @@ function Register({ token }) {
                 type="select"
                 id="exampleCustomSelect"
                 name="customSelect"
-                value={currency}
+                value={Currency}
                 onChange={(e) => setCurrency(e.target.value)}
               >
                 <option value="UGx">UGX</option>

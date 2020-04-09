@@ -79,7 +79,7 @@ function ManageProgrammes({ token }) {
           {
             programmes.map((prog, index) => (
               <tr key={prog._id}>
-                <th scope="row">{index + 1}</th>
+                <td scope="row">{index + 1}</td>
                 <td>{prog.name}</td>
                 <td>{prog.shortForm}</td>
                 <td>{`${prog.programManagerDetails.fName} ${prog.programManagerDetails.lName}`}</td>
