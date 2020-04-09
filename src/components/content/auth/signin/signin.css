@@ -1,5 +1,5 @@
 .SigninFormStyle {
-  width: 45%;
+  width: 70%;
   margin: 3em auto 0em auto;
   border: 0.1em solid #003366;
   padding: 5em 5em 1em 5em;
@@ -32,4 +32,8 @@
 .cursorClass {
   cursor: pointer;
   color: #003366;
+}
+
+.signInAs{
+  margin-bottom: 25px;
 }

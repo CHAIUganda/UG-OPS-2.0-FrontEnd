@@ -26,7 +26,7 @@ const mapStateToProps = () => ({ });
 
 function SignIn(props) {
   const { logUserIn } = props;
-  const [email, setEmail] = useState('khyper2345@gmail.com');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('123456');
   const [spinner, setSpinner] = useState(false);
   const [loginError, setLoginError] = useState('');
@@ -104,6 +104,10 @@ function SignIn(props) {
       });
   };
 
+  const loginAs = (email2Set) => {
+    setEmail(email2Set);
+  };
+
   const handleChange = (event) => {
     setLoginError('');
     const { name, value } = event.target;
@@ -127,6 +131,9 @@ function SignIn(props) {
     <div className="SigninFormStyle">
       <Form onSubmit={handleSubmit}>
         <h3 className="signInHeading">Sign In</h3>
+        <p className="signInAs">HR, sys admin, supervisor (Ssebale Paul): <span className="submitButton pointerCursor" onClick={() => loginAs('spaul@clintonhealthaccess.org')}>set as Paul</span></p>
+        <p className="signInAs">sys admin, supervisor, national (Oboth Abel): <span className="submitButton pointerCursor" onClick={() => loginAs('aoboth@clintonhealthaccess.org')}>set as Abel</span></p>
+        <p className="signInAs">expat (Vanessa Karungi): <span className="submitButton pointerCursor" onClick={() => loginAs('vkarungi@clintonhealthaccess.org')}>set as Vanessa</span></p>
         <p>Just click submit to preview</p>
         {loginError && <div className="errorFeedback"> {loginError} </div>}
         <FormGroup>
