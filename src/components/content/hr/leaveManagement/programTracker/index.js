@@ -24,7 +24,6 @@ function ProgramLeaveTracker({ token, program }) {
   const [error, setError] = useState('');
   const [allLeaves, setallLeaves] = useState([]);
   const [filteredLeaves, setFilteredLeaves] = useState([]);
-  const [typeFilter, setTypeFilter] = useState('all');
   const [statusFilter, setStatusFilter] = useState('all');
   const [startDate, setStartDate] = useState('all');
   const [endDate, setEndDate] = useState('all');
@@ -85,10 +84,6 @@ function ProgramLeaveTracker({ token, program }) {
     const endPoint = `${BASE_URL}leaveApi/getAllStaffLeaves/all/all`;
     axios.get(endPoint)
       .then((res) => {
-        console.log(program);
-        console.log(res.data);
-        debugger;
-        debugger;
         const sortByProgram = res.data.filter((l) => l.program === program && (l.status === 'Planned' || l.status === 'Approved' || l.status === 'Taken'));
         // eslint-disable-next-line max-len
         const sortForFutureDates = sortByProgram.filter((l) => moment(l.startDate).isSameOrAfter(new Date()) || moment(l.endDate).isSameOrAfter(new Date()));
@@ -171,22 +166,6 @@ function ProgramLeaveTracker({ token, program }) {
     filter(allFilters);
   };
 
-  const returnTypeFilterHead = () => (
-    <th scope="col">
-            Type
-      <select className="dropdownFilter" value={typeFilter} onChange={(e) => handleChange(e, setTypeFilter, 'type')}>
-        <option value="all" className="optionTableStyle">all</option>
-        <option value="Annual" className="optionTableStyle">Annual</option>
-        <option value="Paternity" className="optionTableStyle">Paternity</option>
-        <option value="Home" className="optionTableStyle">Home</option>
-        <option value="Maternity" className="optionTableStyle">Maternity</option>
-        <option value="Sick" className="optionTableStyle">Sick</option>
-        <option value="Unpaid" className="optionTableStyle">Unpaid</option>
-        <option value="Study" className="optionTableStyle">Study</option>
-      </select>
-    </th>
-  );
-
   const returnStatusFilterHead = () => (
     <th scope="col">
             Status
@@ -240,8 +219,6 @@ function ProgramLeaveTracker({ token, program }) {
     </th>
   );
 
-  const returnEndProgramFilterHead = () => (<th scope="col">program</th>);
-
   const returnNameFilterHead = () => (
     <th scope="col">
       Name <span className="dontshowText">name name xx</span>
@@ -287,8 +264,6 @@ function ProgramLeaveTracker({ token, program }) {
       <thead>
         <tr>
           {returnNameFilterHead()}
-          {returnEndProgramFilterHead()}
-          {returnTypeFilterHead()}
           {returnStatusFilterHead()}
           <th scope="col">Days</th>
           {returnStartMonthFilterHead()}
@@ -300,8 +275,6 @@ function ProgramLeaveTracker({ token, program }) {
           filteredLeaves.map((leave) => (
             <tr key={leave._id}>
               <td>{`${leave.staff.fName} ${leave.staff.lName}`}</td>
-              <td>{leave.program}</td>
-              <td>{leave.type}</td>
               <td>
                 {returnStatus(leave.status)}
               </td>
@@ -340,7 +313,7 @@ function ProgramLeaveTracker({ token, program }) {
     <div className="row">
       <div className="col">
         <h3>
-            Program Consolidated Leave Tracker
+          {`${program} Consolidated Leave Tracker`}
           <button type="button" className="btn btn-secondary float-right" onClick={generatePDf}>
             Generate PDF
           </button>

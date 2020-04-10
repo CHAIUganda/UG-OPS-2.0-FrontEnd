@@ -41,9 +41,6 @@ function EditUser(props) {
     );
   }
 
-  console.log(user);
-  // debugger;
-
   const [email, setEmail] = useState(
     user.email
       ? user.email
