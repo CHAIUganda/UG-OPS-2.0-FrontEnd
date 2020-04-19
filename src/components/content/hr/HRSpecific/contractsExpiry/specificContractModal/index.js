@@ -66,7 +66,7 @@ const SpecificContractModal = ({ contract }) => {
               <p>Program Manager: {`${contract.programManagerDetails.fName} ${contract.programManagerDetails.lName}`}</p>
             </div>
             <div className='col'>
-              <p>Expires in: {`  ${contract.daysLeftonContract} days`}</p>
+              <p>Contract Expires in: {`  ${contract.daysLeftonContract} days`}</p>
               <p>Contract Start Date: {new Date(contract.contractStartDate).toDateString()}</p>
               <p>Contract End Date: {new Date(contract.contractEndDate).toDateString()}</p>
             </div>
