@@ -289,7 +289,7 @@ function ConsolidatedLeaveBalances({ token }) {
           ? pageWidth / imageWidth
           : pageHeight / imageHeight;
         pdf.addImage(imgData, 'JPEG', 0, 0, imageWidth * ratio, imageHeight * ratio);
-        pdf.save('invoice.pdf');
+        pdf.save('consolidated_leave_balances.pdf');
       });
   };
 
