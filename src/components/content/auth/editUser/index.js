@@ -317,7 +317,7 @@ function EditUser(props) {
           bankName,
           accountNumber,
           Currency,
-          status: 'active',
+          status: 'ACTIVE',
         }
       ]);
       setBankName('');

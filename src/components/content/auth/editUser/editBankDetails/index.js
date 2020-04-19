@@ -166,8 +166,8 @@ export default function EditBankDetailsModal({ bankDetails, editAction, index })
                       }
                     }
                   >
-                    <option value="archived">archive</option>
-                    <option value="active">active</option>
+                    <option value="ARCHIVE">ARCHIVE</option>
+                    <option value="ACTIVE">ACTIVE</option>
                   </CustomInput>
                 </InputGroup>
               </FormGroup>
