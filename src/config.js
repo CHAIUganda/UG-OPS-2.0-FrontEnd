@@ -7,25 +7,25 @@ export const returnStatusClass = (status) => {
     return 'approvedWords';
   } if (status === 'rejectedWords') {
     return 'rejectedWords';
-  } if (status.includes('Pending')) {
+  } if (status.toLowerCase().includes('pending')) {
     return 'pending';
-  } if (status.includes('Cancelled')) {
+  } if (status.toLowerCase().includes('cancelled')) {
     return 'cancelled';
-  } if (status.includes('Planned')) {
+  } if (status.toLowerCase().includes('planned')) {
     return 'planned';
-  } if (status.includes('Declined')) {
+  } if (status.toLowerCase().includes('declined')) {
     return 'rejected';
-  } if (status.includes('Approved')) {
+  } if (status.toLowerCase().includes('approved')) {
     return 'approved';
-  } if (status.includes('Taken')) {
+  } if (status.toLowerCase().includes('taken')) {
     return 'taken';
-  } if (status.includes('Not')) {
+  } if (status.toLowerCase().includes('not')) {
     return 'nottaken';
-  } if (status.includes('To be saved')) {
+  } if (status.includes('to be saved')) {
     return 'pending';
-  } if (status.includes('active')) {
+  } if (status.toLowerCase().includes('active')) {
     return 'approved';
-  } if (status.includes('archived')) {
+  } if (status.toLowerCase().includes('archive')) {
     return 'rejected';
   }
 
