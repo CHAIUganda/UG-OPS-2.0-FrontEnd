@@ -224,7 +224,7 @@ function Register({ token }) {
           bankName,
           accountNumber,
           Currency,
-          status: 'active'
+          status: 'ACTIVE'
         }
       ]);
       setBankName('');
