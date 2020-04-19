@@ -51,6 +51,9 @@ export default function ManageLeaveModal({
 
     if (status === 'Approved') {
       setApproveSpinner(true);
+    } else if (!(reason.length > 0)) {
+      setError('Please decline the leave with a reason.');
+      return;
     } else {
       setDeclineSpinner(true);
     }
