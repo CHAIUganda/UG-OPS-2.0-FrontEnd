@@ -37,6 +37,14 @@ function ViewAllUsers({ token }) {
     }
   };
 
+  const resetFilters = () => {
+    setFilteredUsers(allUsers);
+    setDisplayTIN('true');
+    setDisplayNssf('true');
+    setDisplayEmail('true');
+  };
+
+
   const returnNameFilterHead = () => (
     <th scope="col">
       Name
@@ -106,6 +114,9 @@ function ViewAllUsers({ token }) {
   const returnData = () => (
     <table className="table holidaysTable" id="hrConsolidatedTrackerTable">
       <thead>
+        <span className="resetFilters" onClick={resetFilters}>
+          Reset All Filters
+        </span>
         <tr>
           {returnNameFilterHead()}
           {returnEmailFilterHead()}
@@ -224,7 +235,7 @@ function ViewAllUsers({ token }) {
           ? pageWidth / imageWidth
           : pageHeight / imageHeight;
         pdf.addImage(imgData, 'JPEG', 0, 0, imageWidth * ratio, imageHeight * ratio);
-        pdf.save('invoice.pdf');
+        pdf.save('users.pdf');
       });
   };
 

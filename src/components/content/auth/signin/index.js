@@ -36,8 +36,6 @@ function SignIn(props) {
     const apiRoute = `${BASE_URL}auth/getLoggedInUser`;
     axios.get(apiRoute)
       . then((res) => {
-        console.log(res.data);
-        debugger;
         const {
           department,
           fName,

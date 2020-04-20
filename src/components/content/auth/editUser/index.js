@@ -41,9 +41,6 @@ function EditUser(props) {
     );
   }
 
-  console.log(user);
-  // debugger;
-
   const [email, setEmail] = useState(
     user.email
       ? user.email
@@ -320,7 +317,7 @@ function EditUser(props) {
           bankName,
           accountNumber,
           Currency,
-          status: 'active',
+          status: 'ACTIVE',
         }
       ]);
       setBankName('');

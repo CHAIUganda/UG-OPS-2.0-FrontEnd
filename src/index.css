@@ -128,3 +128,11 @@ code {
   padding: 1em
   /* border: 0.1em solid #003366; */
 }
+
+.input-group-text {
+  width:16em !important;
+}
+
+.resetFilters{
+  cursor: pointer;
+}

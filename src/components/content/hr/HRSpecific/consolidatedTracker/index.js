@@ -171,6 +171,34 @@ function ConsolidatedTracker({ token }) {
     filter(allFilters);
   };
 
+  const resetFilters = () => {
+    allFilters = {
+      type: 'all',
+      status: 'all',
+      startDate: 'all',
+      endDate: 'all',
+      program: 'all',
+      name: 'all'
+    };
+
+    setProgram('all');
+    setEndDate('all');
+    setStartDate('all');
+    setStatusFilter('all');
+    setTypeFilter('all');
+    setName('all');
+
+    setAllFiltersState({
+      type: 'all',
+      status: 'all',
+      startDate: 'all',
+      endDate: 'all',
+      program: 'all',
+      name: 'all'
+    });
+    filter(allFilters);
+  };
+
   const selectLibOnChange = (value, stateSetter, filterParam) => {
     stateSetter(value);
     allFilters = {
@@ -285,6 +313,9 @@ function ConsolidatedTracker({ token }) {
   const returnData = () => (
     <table className="table holidaysTable" id="hrConsolidatedTrackerTable">
       <thead>
+        <span className="resetFilters" onClick={resetFilters}>
+          Reset All Filters
+        </span>
         <tr>
           {returnNameFilterHead()}
           {returnEndProgramFilterHead()}
@@ -334,7 +365,7 @@ function ConsolidatedTracker({ token }) {
           ? pageWidth / imageWidth
           : pageHeight / imageHeight;
         pdf.addImage(imgData, 'JPEG', 0, 0, imageWidth * ratio, imageHeight * ratio);
-        pdf.save('invoice.pdf');
+        pdf.save('consolidated_leave_tracker.pdf');
       });
   };
 

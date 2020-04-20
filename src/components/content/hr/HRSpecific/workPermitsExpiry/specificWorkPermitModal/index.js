@@ -60,13 +60,19 @@ const SpecificWorkPermitModal = ({ workPermit }) => {
           <div className='row'>
             <div className='col'>
               <p>Name: {`  ${workPermit.fName} ${workPermit.lName}`}</p>
+              <p>Program: {`  ${workPermit.program}`}</p>
               <p>Position: {`  ${workPermit.title}`}</p>
-              <p>Expires in: {`  ${workPermit.daysLeftonWorkPermit} days`}</p>
+              <p>Supervisor: {`  ${workPermit.supervisorDetails.fName} ${workPermit.supervisorDetails.lName}`}</p>
+              <p>Program Manager: {`${workPermit.programManagerDetails.fName} ${workPermit.programManagerDetails.lName}`}</p>
             </div>
             <div className='col'>
-              <p>Program: {`  ${workPermit.program}`}</p>
-              <p>Program Manager: {`${workPermit.programManagerDetails.fName} ${workPermit.programManagerDetails.lName}`}</p>
-              <p>Supervisor: {`  ${workPermit.supervisorDetails.fName} ${workPermit.supervisorDetails.lName}`}</p>
+              <p>Work Permit Expires in: {`  ${workPermit.daysLeftonWorkPermit} days`}</p>
+              <p>
+                Work Permit Issue Date: {new Date(workPermit.workPermitStartDate).toDateString()}
+              </p>
+              <p>
+                Work Permit Expiry Date: {new Date(workPermit.workPermitEndDate).toDateString()}
+              </p>
             </div>
           </div>
           {/* buttons */}

@@ -38,7 +38,8 @@ function ConsolidatedLeaveBalances({ token }) {
 
   let allFilters = {
     program: 'all',
-    name: 'all'
+    name: 'all',
+    annualSort: 'all'
   };
 
   const getUsers = () => {
@@ -167,6 +168,23 @@ function ConsolidatedLeaveBalances({ token }) {
     filter(allFilters);
   };
 
+  const resetFilters = () => {
+    allFilters = {
+      program: 'all',
+      name: 'all',
+      annualSort: 'all'
+    };
+    setAllFiltersState({
+      program: 'all',
+      name: 'all',
+      annualSort: 'all'
+    });
+    setAnnualSort('all');
+    setProgram('all');
+    setName('all');
+    filter(allFilters);
+  };
+
   const selectLibOnChange = (value, stateSetter, filterParam) => {
     stateSetter(value);
     allFilters = {
@@ -217,6 +235,9 @@ function ConsolidatedLeaveBalances({ token }) {
   const returnData = () => (
     <table className="table holidaysTable">
       <thead>
+        <span className="resetFilters" onClick={resetFilters}>
+          Reset All Filters
+        </span>
         <tr>
           {returnNameFilterHead()}
           {returnEndProgramFilterHead()}
@@ -289,7 +310,7 @@ function ConsolidatedLeaveBalances({ token }) {
           ? pageWidth / imageWidth
           : pageHeight / imageHeight;
         pdf.addImage(imgData, 'JPEG', 0, 0, imageWidth * ratio, imageHeight * ratio);
-        pdf.save('invoice.pdf');
+        pdf.save('consolidated_leave_balances.pdf');
       });
   };
 

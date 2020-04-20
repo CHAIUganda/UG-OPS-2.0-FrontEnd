@@ -60,13 +60,15 @@ const SpecificContractModal = ({ contract }) => {
           <div className='row'>
             <div className='col'>
               <p>Name: {`  ${contract.fName} ${contract.lName}`}</p>
+              <p>Program: {`  ${contract.program}`}</p>
               <p>Position: {`  ${contract.title}`}</p>
-              <p>Expires in: {`  ${contract.daysLeftonContract} days`}</p>
+              <p>Supervisor: {`  ${contract.supervisorDetails.fName} ${contract.supervisorDetails.lName}`}</p>
+              <p>Program Manager: {`${contract.programManagerDetails.fName} ${contract.programManagerDetails.lName}`}</p>
             </div>
             <div className='col'>
-              <p>Program: {`  ${contract.program}`}</p>
-              <p>Program Manager: {`${contract.programManagerDetails.fName} ${contract.programManagerDetails.lName}`}</p>
-              <p>Supervisor: {`  ${contract.supervisorDetails.fName} ${contract.supervisorDetails.lName}`}</p>
+              <p>Contract Expires in: {`  ${contract.daysLeftonContract} days`}</p>
+              <p>Contract Start Date: {new Date(contract.contractStartDate).toDateString()}</p>
+              <p>Contract End Date: {new Date(contract.contractEndDate).toDateString()}</p>
             </div>
           </div>
           {/* buttons */}
