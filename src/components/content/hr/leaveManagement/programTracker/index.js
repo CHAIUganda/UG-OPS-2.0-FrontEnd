@@ -32,7 +32,6 @@ function ProgramLeaveTracker({ token, program }) {
   const [name, setName] = useState('all');
   const [allFiltersState, setAllFiltersState] = useState(
     {
-      type: 'all',
       status: 'all',
       startDate: 'all',
       endDate: 'all',
@@ -41,7 +40,6 @@ function ProgramLeaveTracker({ token, program }) {
   );
 
   let allFilters = {
-    type: 'all',
     status: 'all',
     startDate: 'all',
     endDate: 'all',
@@ -156,6 +154,27 @@ function ProgramLeaveTracker({ token, program }) {
     filter(allFilters);
   };
 
+  const resetFilters = () => {
+    allFilters = {
+      status: 'all',
+      startDate: 'all',
+      endDate: 'all',
+      name: 'all'
+    };
+
+    setAllFiltersState({
+      status: 'all',
+      startDate: 'all',
+      endDate: 'all',
+      name: 'all'
+    });
+    setStatusFilter('all');
+    setStartDate('all');
+    setEndDate('all');
+    setName('all');
+    filter(allFilters);
+  };
+
   const selectLibOnChange = (value, stateSetter, filterParam) => {
     stateSetter(value);
     allFilters = {
@@ -262,6 +281,9 @@ function ProgramLeaveTracker({ token, program }) {
   const returnData = () => (
     <table className="table holidaysTable" id="hrConsolidatedTrackerTable">
       <thead>
+        <span className="resetFilters" onClick={resetFilters}>
+          Reset All Filters
+        </span>
         <tr>
           {returnNameFilterHead()}
           {returnStatusFilterHead()}

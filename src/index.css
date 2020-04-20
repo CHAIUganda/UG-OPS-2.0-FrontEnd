@@ -132,3 +132,7 @@ code {
 .input-group-text {
   width:16em !important;
 }
+
+.resetFilters{
+  cursor: pointer;
+}
