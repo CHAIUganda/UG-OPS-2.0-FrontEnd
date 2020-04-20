@@ -28,11 +28,16 @@ function ViewAllUsers({ token }) {
   const [displayNssf, setDisplayNssf] = useState('true');
   const [displayTIN, setDisplayTIN] = useState('true');
 
-  const selectLibOnChange = (id) => {
-    if (id === 'all') {
+  const selectLibOnChange = (selectedUsers) => {
+    // console.log(selectedUsers);
+    // debugger;
+    if (selectedUsers[0].value === 'all') {
       setFilteredUsers(allUsers);
     } else {
-      const newArr = allUsers.filter((user) => user._id === id);
+      const newArr = selectedUsers.map((selectedUser) => {
+        const userPicked = allUsers.filter((user) => user._id === selectedUser.value);
+        return userPicked[0];
+      });
       setFilteredUsers(newArr);
     }
   };
@@ -51,7 +56,9 @@ function ViewAllUsers({ token }) {
       <span className="customSelectStyles">
         <Select
           options={selectLibArray}
-          onChange={(opt) => selectLibOnChange(opt.value)}
+          onChange={
+            (opt) => selectLibOnChange(opt)}
+          isMulti
         />
       </span>
     </th>
