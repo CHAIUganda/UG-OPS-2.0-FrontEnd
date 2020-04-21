@@ -32,14 +32,14 @@ function ConsolidatedLeaveBalances({ token }) {
   const [allFiltersState, setAllFiltersState] = useState(
     {
       program: 'all',
-      name: 'all',
+      name: [],
       annualSort: 'all'
     }
   );
 
   let allFilters = {
     program: 'all',
-    name: 'all',
+    name: [],
     annualSort: 'all'
   };
 

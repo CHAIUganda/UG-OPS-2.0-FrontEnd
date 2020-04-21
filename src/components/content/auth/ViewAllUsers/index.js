@@ -30,8 +30,6 @@ function ViewAllUsers({ token }) {
   const [selectLibValue, setSelectLibValue] = useState(null);
 
   const selectLibOnChange = (selectedUsers) => {
-    // console.log(selectedUsers);
-    // debugger;
     if (selectedUsers.length <= 0) {
       setFilteredUsers(allUsers);
       setSelectLibValue(null);

@@ -29,8 +29,9 @@ function ConsolidatedTracker({ token }) {
   const [allPrograms, setAllPRograms] = useState([]);
   const [program, setProgram] = useState('all');
   const [allUsers, setAllUsers] = useState([]);
+  const [selectLibValue, setSelectLibValue] = useState(null);
   // eslint-disable-next-line no-unused-vars
-  const [name, setName] = useState('all');
+  const [name, setName] = useState([]);
   const [allFiltersState, setAllFiltersState] = useState(
     {
       type: 'all',
@@ -38,7 +39,7 @@ function ConsolidatedTracker({ token }) {
       startDate: 'all',
       endDate: 'all',
       program: 'all',
-      name: 'all'
+      name: []
     }
   );
 
@@ -48,7 +49,7 @@ function ConsolidatedTracker({ token }) {
     startDate: 'all',
     endDate: 'all',
     program: 'all',
-    name: 'all'
+    name: []
   };
 
   const getUsers = () => {
@@ -62,10 +63,6 @@ function ConsolidatedTracker({ token }) {
           value: user.email
         }));
         setAllUsers([
-          {
-            label: 'all',
-            value: 'all'
-          },
           ...arrayToSet
         ]);
       })
@@ -142,16 +139,28 @@ function ConsolidatedTracker({ token }) {
     Object.keys(filterObj).forEach((fil) => {
       if (filterObj[fil] === 'all') {
         if (fil === 'name' && filterObj.name === 'all') {
-          array2Filter = array2Filter.filter((leave) => leave.staff);
+          // array2Filter = array2Filter.filter((leave) => leave.staff);
         } else {
           array2Filter = array2Filter.filter((leave) => leave[fil]);
         }
       } else if (fil === 'startDate' || fil === 'endDate') {
         array2Filter = array2Filter.filter((leave) => `${new Date(leave[fil]).getMonth()}` === allFilters[fil]);
-      } else if (fil === 'name' && filterObj.name === 'all') {
-        array2Filter = array2Filter.filter((leave) => leave.staff);
       } else if (fil === 'name') {
-        array2Filter = array2Filter.filter((leave) => `${leave.staff.fName} ${leave.staff.lName}` === allFilters.name);
+        if (filterObj.name.length <= 0) {
+          array2Filter = array2Filter.filter((leave) => leave.staff.email);
+          setSelectLibValue(null);
+        } else {
+          const arr = [];
+          filterObj.name.forEach((singleUser) => {
+            array2Filter.forEach((leave) => {
+              if (leave.staff.email === singleUser.value) {
+                arr.push(leave);
+              }
+            });
+          });
+          array2Filter = arr;
+          setSelectLibValue(filterObj.name);
+        }
       } else {
         array2Filter = array2Filter.filter((leave) => leave[fil] === allFilters[fil]);
       }
@@ -186,7 +195,8 @@ function ConsolidatedTracker({ token }) {
     setStartDate('all');
     setStatusFilter('all');
     setTypeFilter('all');
-    setName('all');
+    setName([]);
+    setSelectLibValue(null);
 
     setAllFiltersState({
       type: 'all',
@@ -194,16 +204,16 @@ function ConsolidatedTracker({ token }) {
       startDate: 'all',
       endDate: 'all',
       program: 'all',
-      name: 'all'
+      name: []
     });
     filter(allFilters);
   };
 
-  const selectLibOnChange = (value, stateSetter, filterParam) => {
-    stateSetter(value);
+  const selectLibOnChange = (selectedUsers, stateSetter, filterParam) => {
+    stateSetter(selectedUsers);
     allFilters = {
       ...allFiltersState,
-      [filterParam]: value
+      [filterParam]: selectedUsers
     };
     setAllFiltersState(allFilters);
     filter(allFilters);
@@ -304,7 +314,9 @@ function ConsolidatedTracker({ token }) {
       <span className="customSelectStyles">
         <Select
           options={allUsers}
-          onChange={(opt) => selectLibOnChange(opt.label, setName, 'name')}
+          onChange={(opt) => selectLibOnChange(opt, setName, 'name')}
+          isMulti
+          value={selectLibValue}
         />
       </span>
     </th>
@@ -313,9 +325,9 @@ function ConsolidatedTracker({ token }) {
   const returnData = () => (
     <table className="table holidaysTable" id="hrConsolidatedTrackerTable">
       <thead>
-        <span className="resetFilters" onClick={resetFilters}>
-          Reset All Filters
-        </span>
+        <td className="resetFilters" onClick={resetFilters}>
+            Reset All Filters
+        </td>
         <tr>
           {returnNameFilterHead()}
           {returnEndProgramFilterHead()}
