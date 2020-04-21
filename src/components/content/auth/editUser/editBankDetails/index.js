@@ -43,6 +43,7 @@ export default function EditBankDetailsModal({ bankDetails, editAction, index })
       );
     }
     setModal(!modal);
+    setFeedback('');
   };
 
   const modifyDetailsTxt = () => {
@@ -140,6 +141,7 @@ export default function EditBankDetailsModal({ bankDetails, editAction, index })
                     onChange={
                       (e) => {
                         setCurrency(e.target.value);
+                        setFeedback('');
                       }
                     }
                   >

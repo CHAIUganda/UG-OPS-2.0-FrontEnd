@@ -431,6 +431,9 @@ function EditUser(props) {
         <div className="bankDetailsSection">
           <h5>Bank Details</h5>
           {error && <div className="errorFeedback"> {error} </div>}
+          <div className="alert alert-primary" role="alert">
+            Note: changes to bank details will be effected when you submit the entire form.
+          </div>
           <table className="table holidaysTable">
             <thead>
               <tr>
