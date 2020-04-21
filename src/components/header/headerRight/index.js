@@ -4,6 +4,7 @@ import { IconContext } from 'react-icons';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import Cookies from 'js-cookie';
+import { Link } from 'react-router-dom';
 
 import {
   Dropdown,
@@ -59,7 +60,7 @@ function HeaderRight({ logUserOut, firstName, lastName }) {
           <DropdownToggle tag={'span'}>{returnIcon()}</DropdownToggle>
           <DropdownMenu>
             <DropdownItem header>{`${firstName} ${lastName}`}</DropdownItem>
-            <DropdownItem>Edit My Details</DropdownItem>
+            <Link to='/auth/ViewMyDetails'><DropdownItem>View My Details</DropdownItem></Link>
             <DropdownItem divider />
             <DropdownItem onClick={logOut}>Log Out</DropdownItem>
           </DropdownMenu>
