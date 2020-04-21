@@ -187,7 +187,7 @@ function ConsolidatedTracker({ token }) {
       startDate: 'all',
       endDate: 'all',
       program: 'all',
-      name: 'all'
+      name: []
     };
 
     setProgram('all');
