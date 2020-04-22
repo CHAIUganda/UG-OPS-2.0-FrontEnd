@@ -27,18 +27,25 @@ function ViewAllUsers({ token }) {
   const [displayEmail, setDisplayEmail] = useState('true');
   const [displayNssf, setDisplayNssf] = useState('true');
   const [displayTIN, setDisplayTIN] = useState('true');
+  const [selectLibValue, setSelectLibValue] = useState(null);
 
-  const selectLibOnChange = (id) => {
-    if (id === 'all') {
+  const selectLibOnChange = (selectedUsers) => {
+    if (selectedUsers.length <= 0) {
       setFilteredUsers(allUsers);
+      setSelectLibValue(null);
     } else {
-      const newArr = allUsers.filter((user) => user._id === id);
+      const newArr = selectedUsers.map((selectedUser) => {
+        const userPicked = allUsers.filter((user) => user._id === selectedUser.value);
+        return userPicked[0];
+      });
       setFilteredUsers(newArr);
+      setSelectLibValue([...selectedUsers]);
     }
   };
 
   const resetFilters = () => {
     setFilteredUsers(allUsers);
+    setSelectLibValue(null);
     setDisplayTIN('true');
     setDisplayNssf('true');
     setDisplayEmail('true');
@@ -51,7 +58,10 @@ function ViewAllUsers({ token }) {
       <span className="customSelectStyles">
         <Select
           options={selectLibArray}
-          onChange={(opt) => selectLibOnChange(opt.value)}
+          onChange={
+            (opt) => selectLibOnChange(opt)}
+          isMulti
+          value={selectLibValue}
         />
       </span>
     </th>
@@ -114,9 +124,9 @@ function ViewAllUsers({ token }) {
   const returnData = () => (
     <table className="table holidaysTable" id="hrConsolidatedTrackerTable">
       <thead>
-        <span className="resetFilters" onClick={resetFilters}>
-          Reset All Filters
-        </span>
+        <td className="resetFilters" onClick={resetFilters}>
+            Reset All Filters
+        </td>
         <tr>
           {returnNameFilterHead()}
           {returnEmailFilterHead()}
@@ -181,13 +191,7 @@ function ViewAllUsers({ token }) {
           label: `${user.fName} ${user.lName}`,
           value: user._id
         }));
-        setSelectLibArray([
-          {
-            label: 'all',
-            value: 'all'
-          },
-          ...arrayToSet
-        ]);
+        setSelectLibArray([...arrayToSet]);
       })
       .catch((err) => {
         setSpinner(false);

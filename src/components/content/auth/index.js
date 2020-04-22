@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import SignIn from './signin';
 import Register from './register';
 import ResetPassword from './resetPassword';
+import ViewMyDetails from './viewMyDetails';
 
 export default function Auth(props) {
   let componentToRender;
@@ -12,7 +13,8 @@ export default function Auth(props) {
   const ComponentsObject = {
     SignIn,
     Register,
-    ResetPassword
+    ResetPassword,
+    ViewMyDetails
   };
 
   if (props.location.pathname.includes('ResetPassword')) {

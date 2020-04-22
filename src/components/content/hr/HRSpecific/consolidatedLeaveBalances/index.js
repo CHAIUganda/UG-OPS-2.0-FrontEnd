@@ -28,17 +28,18 @@ function ConsolidatedLeaveBalances({ token }) {
   // eslint-disable-next-line no-unused-vars
   const [name, setName] = useState('all');
   const [annualSort, setAnnualSort] = useState('all');
+  const [selectLibValue, setSelectLibValue] = useState(null);
   const [allFiltersState, setAllFiltersState] = useState(
     {
       program: 'all',
-      name: 'all',
+      name: [],
       annualSort: 'all'
     }
   );
 
   let allFilters = {
     program: 'all',
-    name: 'all',
+    name: [],
     annualSort: 'all'
   };
 
@@ -52,13 +53,7 @@ function ConsolidatedLeaveBalances({ token }) {
           label: `${user.fName} ${user.lName}`,
           value: user.email
         }));
-        setAllUsers([
-          {
-            label: 'all',
-            value: 'all'
-          },
-          ...arrayToSet
-        ]);
+        setAllUsers([...arrayToSet]);
       })
       .catch((err) => {
         setSpinner(false);
@@ -133,16 +128,28 @@ function ConsolidatedLeaveBalances({ token }) {
     Object.keys(filterObj).forEach((fil) => {
       if (filterObj[fil] === 'all') {
         if (fil === 'name' && filterObj.name === 'all') {
-          array2Filter = array2Filter.filter((leave) => leave.fName);
+          // array2Filter = array2Filter.filter((leave) => leave.fName);
         } else if (fil === 'annualSort') {
           array2Filter = array2Filter.filter((leave) => leave.fName);
         } else {
           array2Filter = array2Filter.filter((leave) => leave[fil]);
         }
-      } else if (fil === 'name' && filterObj.name === 'all') {
-        array2Filter = array2Filter.filter((leave) => leave.fName);
       } else if (fil === 'name') {
-        array2Filter = array2Filter.filter((leave) => `${leave.fName} ${leave.lName}` === allFilters.name);
+        if (filterObj.name.length <= 0) {
+          array2Filter = array2Filter.filter((leave) => leave.fName);
+          setSelectLibValue(null);
+        } else {
+          const arr = [];
+          filterObj.name.forEach((singleUser) => {
+            array2Filter.forEach((leave) => {
+              if (leave.email === singleUser.value) {
+                arr.push(leave);
+              }
+            });
+          });
+          array2Filter = arr;
+          setSelectLibValue(filterObj.name);
+        }
       } else if (fil === 'annualSort') {
         if (filterObj[fil] === 'red') {
           array2Filter = array2Filter.filter((leave) => leave.leaveDetails.annualLeaveBal > 2);
@@ -171,25 +178,26 @@ function ConsolidatedLeaveBalances({ token }) {
   const resetFilters = () => {
     allFilters = {
       program: 'all',
-      name: 'all',
+      name: [],
       annualSort: 'all'
     };
     setAllFiltersState({
       program: 'all',
-      name: 'all',
+      name: [],
       annualSort: 'all'
     });
     setAnnualSort('all');
     setProgram('all');
-    setName('all');
+    setName([]);
+    setSelectLibValue(null);
     filter(allFilters);
   };
 
-  const selectLibOnChange = (value, stateSetter, filterParam) => {
-    stateSetter(value);
+  const selectLibOnChange = (selectedUsers, stateSetter, filterParam) => {
+    stateSetter(selectedUsers);
     allFilters = {
       ...allFiltersState,
-      [filterParam]: value
+      [filterParam]: selectedUsers
     };
     setAllFiltersState(allFilters);
     filter(allFilters);
@@ -226,7 +234,9 @@ function ConsolidatedLeaveBalances({ token }) {
       <span className="customSelectStyles">
         <Select
           options={allUsers}
-          onChange={(opt) => selectLibOnChange(opt.label, setName, 'name')}
+          onChange={(opt) => selectLibOnChange(opt, setName, 'name')}
+          isMulti
+          value={selectLibValue}
         />
       </span>
     </th>
@@ -235,9 +245,9 @@ function ConsolidatedLeaveBalances({ token }) {
   const returnData = () => (
     <table className="table holidaysTable">
       <thead>
-        <span className="resetFilters" onClick={resetFilters}>
-          Reset All Filters
-        </span>
+        <td className="resetFilters" onClick={resetFilters}>
+            Reset All Filters
+        </td>
         <tr>
           {returnNameFilterHead()}
           {returnEndProgramFilterHead()}

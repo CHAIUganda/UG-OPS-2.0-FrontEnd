@@ -1,3 +1,4 @@
+/* eslint-disable array-bracket-spacing */
 import React, { useState, useEffect } from 'react';
 // prettier-ignore
 import {
@@ -8,41 +9,37 @@ import {
   InputGroupAddon,
   InputGroupText,
   CustomInput,
-  Spinner
+  // Spinner
 } from 'reactstrap';
-import Calendar from 'react-calendar';
+// import Calendar from 'react-calendar';
 import { connect } from 'react-redux';
 import axios from 'axios';
 import PropTypes from 'prop-types';
 import Select from 'react-select';
 
 import CommonSpinner from '../../../common/spinner';
-import EditBankDetailsModal from './editBankDetails';
+// import EditBankDetailsModal from './editBankDetails';
 import { BASE_URL, returnStatusClass } from '../../../../config';
 import './editUser.css';
 
 const mapStateToProps = (state) => ({
-  token: state.auth.token
+  token: state.auth.token,
+  user: state.auth
 });
 
-function EditUser(props) {
+function ViewMyDetails(props) {
   let user;
-  let propsPassed;
   const { token } = props;
 
-  if (props && props.propsPassed && props.user) {
+  if (props && props.user) {
     user = props.user;
-    propsPassed = props.propsPassed;
   } else {
     return (
       <div className="alert alert-info text-center" role="alert">
-        <p>Please select a particular user.</p>
+        <p>Please reload the page, we are having trouble loading your details.</p>
       </div>
     );
   }
-
-  console.log('edit user');
-  console.log(user);
 
   const [email, setEmail] = useState(
     user.email
@@ -64,7 +61,7 @@ function EditUser(props) {
       ? user.oNames
       : ''
   );
-  const [birthDate, setBirthDate] = useState(
+  const [birthDate, /* setBirthDate */] = useState(
     user.birthDate
       ? new Date(user.birthDate)
       : ''
@@ -79,19 +76,19 @@ function EditUser(props) {
       ? user.contractType
       : ''
   );
-  const [contractStartDate, setContractStartDate] = useState(
+  const [contractStartDate, /* setContractStartDate */] = useState(
     user.contractStartDate
       ? new Date(user.contractStartDate)
       : ''
   );
-  const [contractEndDate, setContractEndDate] = useState(
+  const [contractEndDate, /* setContractEndDate */] = useState(
     user.contractEndDate
       ? new Date(user.contractEndDate)
       : ''
   );
   const [password, setPassword] = useState('123456');
   const [confirmPass, setConfirmPass] = useState('123456');
-  const [gender, setGender] = useState(
+  const [gender, /* setGender */] = useState(
     user.gender
       ? user.gender
       : ''
@@ -101,17 +98,17 @@ function EditUser(props) {
       ? user.title
       : ''
   );
-  const [admin, setAdmin] = useState(
+  const [admin, /* setAdmin */] = useState(
     user.roles.admin
       ? user.roles.admin
       : false
   );
-  const [supervisor, setSupervisor] = useState(
+  const [supervisor, /* setSupervisor */] = useState(
     user.roles.supervisor
       ? user.roles.supervisor
       : false
   );
-  const [humanResource, setHumanResource] = useState(
+  const [humanResource, /* setHumanResource */] = useState(
     user.roles.hr
       ? user.roles.hr
       : false
@@ -126,9 +123,7 @@ function EditUser(props) {
       ? user.programId
       : ''
   );
-  // console.log(programId);
-  // debugger;
-  const [countryDirector, setCountryDirector] = useState(
+  const [countryDirector, /* setCountryDirector */] = useState(
     user.roles.countryDirector
       ? user.roles.countryDirector
       : false
@@ -148,17 +143,17 @@ function EditUser(props) {
       ? user.tinNumber
       : ''
   );
-  const [workPermitStartDate, setWorkPermitStartDate] = useState(
+  const [workPermitStartDate, /* setWorkPermitStartDate */] = useState(
     user.workPermitStartDate
-      ? new Date(user.workPermitStartDate)
+      ? user.workPermitStartDate
       : ''
   );
-  const [workPermitEndDate, setWorkPermitEndDate] = useState(
+  const [workPermitEndDate, /* setWorkPermitEndDate */] = useState(
     user.workPermitEndDate
-      ? new Date(user.workPermitEndDate)
+      ? user.workPermitEndDate
       : ''
   );
-  const [bankAccounts, setBankAccounts] = useState(
+  const [bankAccounts, /* setBankAccounts */] = useState(
     user.bankAccounts.length > 0
       ? user.bankAccounts
       : []
@@ -167,11 +162,11 @@ function EditUser(props) {
   const [spinner, setSpinner] = useState(false);
   const [error, setError] = useState('');
   const [allUsers, setAllUsers] = useState([]);
-  const [submitSpinner, setSubmitSpinner] = useState(false);
+  const [/* submitSpinner */, setSubmitSpinner] = useState(false);
   const [successFeedback, setSuccessFeedback] = useState('');
-  const [bankName, setBankName] = useState('');
-  const [accountNumber, setAccountNumber] = useState('');
-  const [Currency, setCurrency] = useState('UGX');
+  // const [bankName, setBankName] = useState('');
+  // const [accountNumber, setAccountNumber] = useState('');
+  // const [Currency, setCurrency] = useState('UGX');
   const [defaultSupervisor, setDefaultSupervisor] = useState({
     label: `${user.supervisorDetails.fName ? user.supervisorDetails.fName : 'Not'} 
     ${user.supervisorDetails.lName ? user.supervisorDetails.lName : 'supplied'}`,
@@ -291,54 +286,46 @@ function EditUser(props) {
     setSupervisorsEmail(value);
   };
 
-  const buttonText = () => {
-    if (submitSpinner) {
-      return (
-        <Spinner color="primary" style={{ width: '3rem', height: '3rem' }} />
-      );
-    }
-    return 'Edit';
-  };
+  // const buttonText = () => {
+  //   if (submitSpinner) {
+  //     return (
+  //       <Spinner color="primary" style={{ width: '3rem', height: '3rem' }} />
+  //     );
+  //   }
+  //   return 'Edit';
+  // };
 
-  if (!propsPassed) {
-    return (
-      <div className="alert alert-info text-center" role="alert">
-        <p>Please select a particular user.</p>
-      </div>
-    );
-  }
+  // const handleNewBankAccount = (event) => {
+  //   event.preventDefault();
+  //   if (!bankName) {
+  //     setError('Please enter a bank to add account');
+  //   } else if (!accountNumber) {
+  //     setError('Please enter an account number to add account');
+  //   } else {
+  //     setBankAccounts([...bankAccounts,
+  //       {
+  //         bankName,
+  //         accountNumber,
+  //         Currency,
+  //         status: 'ACTIVE',
+  //       }
+  //     ]);
+  //     setBankName('');
+  //     setAccountNumber('');
+  //     setCurrency('UGX');
+  //   }
+  // };
 
-  const handleNewBankAccount = (event) => {
-    event.preventDefault();
-    if (!bankName) {
-      setError('Please enter a bank to add account');
-    } else if (!accountNumber) {
-      setError('Please enter an account number to add account');
-    } else {
-      setBankAccounts([...bankAccounts,
-        {
-          bankName,
-          accountNumber,
-          Currency,
-          status: 'ACTIVE',
-        }
-      ]);
-      setBankName('');
-      setAccountNumber('');
-      setCurrency('UGX');
-    }
-  };
-
-  const handleEditBankAccountAction = (index, modifiedAccountDetails) => {
-    const holder = [...bankAccounts];
-    holder[index] = modifiedAccountDetails;
-    setBankAccounts(holder);
-  };
+  // const handleEditBankAccountAction = (index, modifiedAccountDetails) => {
+  //   const holder = [...bankAccounts];
+  //   holder[index] = modifiedAccountDetails;
+  //   setBankAccounts(holder);
+  // };
 
   return (
     <div className="registerFormStyle">
       <Form onSubmit={handleSubmit}>
-        <h3 className="registerHeading">Edit User</h3>
+        <h3 className="registerHeading">My Details</h3>
         {
           spinner
           && <div className="alert alert-info text-center" role="alert">
@@ -363,6 +350,7 @@ function EditUser(props) {
                 setEmail(e.target.value);
               }}
               required
+              disabled
             />
           </InputGroup>
         </FormGroup>
@@ -382,6 +370,7 @@ function EditUser(props) {
                 setFirstName(e.target.value);
               }}
               required
+              disabled
             />
           </InputGroup>
         </FormGroup>
@@ -401,6 +390,7 @@ function EditUser(props) {
                 setLastName(e.target.value);
               }}
               required
+              disabled
             />
           </InputGroup>
         </FormGroup>
@@ -415,6 +405,7 @@ function EditUser(props) {
               type="text"
               value={otherNames}
               onChange={(e) => setOtherNames(e.target.value)}
+              disabled
             />
           </InputGroup>
         </FormGroup>
@@ -424,19 +415,25 @@ function EditUser(props) {
             <InputGroupAddon addonType="prepend">
               <InputGroupText>Birth Date</InputGroupText>
             </InputGroupAddon>
-            <Calendar
+            {/* <Calendar
               value={birthDate}
               onChange={(date) => setBirthDate(date)}
+            /> */}
+            <Input
+              placeholder="Optional"
+              type="text"
+              value={new Date(birthDate).toDateString()}
+              disabled
             />
           </InputGroup>
         </FormGroup>
 
         <div className="bankDetailsSection">
           <h5>Bank Details</h5>
-          {error && <div className="errorFeedback"> {error} </div>}
+          {/* {error && <div className="errorFeedback"> {error} </div>}
           <div className="alert alert-primary" role="alert">
             Note: changes to bank details will be effected when you submit the entire form.
-          </div>
+          </div> */}
           <table className="table holidaysTable">
             <thead>
               <tr>
@@ -460,7 +457,7 @@ function EditUser(props) {
                     }>
                       {bankAccount.status}
                     </td>
-                    <td>
+                    {/* <td>
                       <button
                         type="button">
                         <EditBankDetailsModal
@@ -469,13 +466,13 @@ function EditUser(props) {
                           index={index}
                         />
                       </button>
-                    </td>
+                    </td> */}
                   </tr>
                 ))
               }
             </tbody>
           </table>
-          <h6>Add a new bank account</h6>
+          {/* <h6>Add a new bank account</h6>
           <FormGroup>
             <InputGroup>
               <InputGroupAddon addonType="prepend">
@@ -535,7 +532,7 @@ function EditUser(props) {
             onClick={handleNewBankAccount}
           >
             Add New Account
-          </button>
+          </button> */}
         </div>
 
         <FormGroup>
@@ -552,6 +549,7 @@ function EditUser(props) {
                 setError('');
                 setNssfNumber(e.target.value);
               }}
+              disabled
             />
           </InputGroup>
         </FormGroup>
@@ -570,10 +568,11 @@ function EditUser(props) {
                 setError('');
                 setTinNumber(e.target.value);
               }}
+              disabled
             />
           </InputGroup>
         </FormGroup>
-        <FormGroup>
+        {/* <FormGroup>
           <InputGroup>
             <InputGroupAddon addonType="prepend">
               <InputGroupText>Gender</InputGroupText>
@@ -590,7 +589,7 @@ function EditUser(props) {
               <option value="Male">Male</option>
             </CustomInput>
           </InputGroup>
-        </FormGroup>
+        </FormGroup> */}
 
         <FormGroup>
           <InputGroup>
@@ -603,6 +602,7 @@ function EditUser(props) {
               value={position}
               onChange={(e) => setPosition(e.target.value)}
               required
+              disabled
             />
           </InputGroup>
         </FormGroup>
@@ -618,6 +618,7 @@ function EditUser(props) {
               name="customSelect"
               value={staffCategory}
               onChange={(e) => setStaffCategory(e.target.value)}
+              disabled
             >
               <option value="">Not set</option>
               <option value="national">national</option>
@@ -635,9 +636,15 @@ function EditUser(props) {
                 <InputGroupAddon addonType="prepend">
                   <InputGroupText>Work Permit Start Date</InputGroupText>
                 </InputGroupAddon>
-                <Calendar
+                {/* <Calendar
                   value={workPermitStartDate}
                   onChange={(date) => setWorkPermitStartDate(date)}
+                /> */}
+                <Input
+                  type="text"
+                  value={new Date(workPermitStartDate).toDateString()}
+                  required
+                  disabled
                 />
               </InputGroup>
             </FormGroup>
@@ -647,9 +654,15 @@ function EditUser(props) {
                 <InputGroupAddon addonType="prepend">
                   <InputGroupText>Work Permit End Date</InputGroupText>
                 </InputGroupAddon>
-                <Calendar
+                {/* <Calendar
                   value={workPermitEndDate}
                   onChange={(date) => setWorkPermitEndDate(date)}
+                /> */}
+                <Input
+                  type="text"
+                  value={new Date(workPermitEndDate).toDateString()}
+                  required
+                  disabled
                 />
               </InputGroup>
             </FormGroup>
@@ -668,6 +681,7 @@ function EditUser(props) {
               name="customSelect"
               value={team}
               onChange={(e) => setTeam(e.target.value)}
+              disabled
             >
               <option value="">Not set</option>
               <option value="Country Office">Country Office</option>
@@ -709,7 +723,7 @@ function EditUser(props) {
                 id="adminSwitch2"
                 name="customSwitch"
                 checked={admin}
-                onChange={(e) => setAdmin(e.target.checked)}
+                // onChange={(e) => setAdmin(e.target.checked)}
               />
             </div>
           </InputGroup>
@@ -726,7 +740,7 @@ function EditUser(props) {
                 id="supervisorSwitch2"
                 name="customSwitch"
                 checked={supervisor}
-                onChange={(e) => setSupervisor(e.target.checked)}
+                // onChange={(e) => setSupervisor(e.target.checked)}
               />
             </div>
           </InputGroup>
@@ -743,7 +757,7 @@ function EditUser(props) {
                 id="hrSwitch2"
                 name="customSwitch"
                 checked={humanResource}
-                onChange={(e) => setHumanResource(e.target.checked)}
+                // onChange={(e) => setHumanResource(e.target.checked)}
               />
             </div>
           </InputGroup>
@@ -760,7 +774,7 @@ function EditUser(props) {
                 id="cdSwitch2"
                 name="customSwitch"
                 checked={countryDirector}
-                onChange={(e) => setCountryDirector(e.target.checked)}
+                // onChange={(e) => setCountryDirector(e.target.checked)}
               />
             </div>
           </InputGroup>
@@ -777,6 +791,7 @@ function EditUser(props) {
               name="customSelect"
               value={contractType}
               onChange={(e) => setContractType(e.target.value)}
+              disabled
             >
               <option value="">Not set</option>
               <option value="Full-Time">Full-Time</option>
@@ -791,9 +806,15 @@ function EditUser(props) {
             <InputGroupAddon addonType="prepend">
               <InputGroupText>Contract Start Date</InputGroupText>
             </InputGroupAddon>
-            <Calendar
+            {/* <Calendar
               value={contractStartDate}
               onChange={(date) => setContractStartDate(date)}
+            /> */}
+            <Input
+              type="text"
+              value={new Date(contractStartDate).toDateString()}
+              required
+              disabled
             />
           </InputGroup>
         </FormGroup>
@@ -803,9 +824,11 @@ function EditUser(props) {
             <InputGroupAddon addonType="prepend">
               <InputGroupText>Contract End Date</InputGroupText>
             </InputGroupAddon>
-            <Calendar
-              value={contractEndDate}
-              onChange={(date) => setContractEndDate(date)}
+            <Input
+              type="text"
+              value={new Date(contractEndDate).toDateString()}
+              required
+              disabled
             />
           </InputGroup>
         </FormGroup>
@@ -820,6 +843,7 @@ function EditUser(props) {
                 options={allUsers}
                 onChange={(opt) => onSelectSupervisorEmail(opt.value)}
                 defaultValue={defaultSupervisor}
+                isDisabled={true}
               />
             </div>
           </InputGroup>
@@ -856,24 +880,25 @@ function EditUser(props) {
         </FormGroup>
 
         <p className="readThru alert alert-info">
-          Please read through and confirm the details provided before submitting
+          Please read through and confirm the details provided before submitting.
+          Contact the HR or System Admin to correct fields for which you have no edit rights.
         </p>
 
         {error && <div className="errorFeedback"> {error} </div>}
         {successFeedback && <div className="successFeedback"> {successFeedback} </div>}
 
-        <button className="submitButton" type="submit">
+        {/* <button className="submitButton" type="submit">
           {buttonText()}
-        </button>
+        </button> */}
       </Form>
     </div>
   );
 }
 
-EditUser.propTypes = {
+ViewMyDetails.propTypes = {
   token: PropTypes.string,
   propsPassed: PropTypes.bool,
   user: PropTypes.object
 };
 
-export default connect(mapStateToProps)(EditUser);
+export default connect(mapStateToProps)(ViewMyDetails);

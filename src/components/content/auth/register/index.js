@@ -17,6 +17,7 @@ import PropTypes from 'prop-types';
 import Select from 'react-select';
 
 import CommonSpinner from '../../../common/spinner';
+import EditBankDetailsModal from '../editUser/editBankDetails';
 import { BASE_URL, returnStatusClass } from '../../../../config';
 import './register.css';
 
@@ -233,6 +234,12 @@ function Register({ token }) {
     }
   };
 
+  const handleEditBankAccountAction = (index, modifiedAccountDetails) => {
+    const holder = [...bankAccounts];
+    holder[index] = modifiedAccountDetails;
+    setBankAccounts(holder);
+  };
+
   return (
     <div className="registerFormStyle">
       <Form onSubmit={handleSubmit}>
@@ -354,6 +361,16 @@ function Register({ token }) {
                       returnStatusClass(bankAccount.status)
                     }>
                       {bankAccount.status}
+                    </td>
+                    <td>
+                      <button
+                        type="button">
+                        <EditBankDetailsModal
+                          bankDetails={bankAccount}
+                          editAction={handleEditBankAccountAction}
+                          index={index}
+                        />
+                      </button>
                     </td>
                   </tr>
                 ))

@@ -28,14 +28,15 @@ function ProgramLeaveTracker({ token, program }) {
   const [startDate, setStartDate] = useState('all');
   const [endDate, setEndDate] = useState('all');
   const [allUsers, setAllUsers] = useState([]);
+  const [selectLibValue, setSelectLibValue] = useState(null);
   // eslint-disable-next-line no-unused-vars
-  const [name, setName] = useState('all');
+  const [name, setName] = useState([]);
   const [allFiltersState, setAllFiltersState] = useState(
     {
       status: 'all',
       startDate: 'all',
       endDate: 'all',
-      name: 'all'
+      name: []
     }
   );
 
@@ -43,7 +44,7 @@ function ProgramLeaveTracker({ token, program }) {
     status: 'all',
     startDate: 'all',
     endDate: 'all',
-    name: 'all'
+    name: []
   };
 
   const getUsers = () => {
@@ -57,13 +58,7 @@ function ProgramLeaveTracker({ token, program }) {
           label: `${user.fName} ${user.lName}`,
           value: user.email
         }));
-        setAllUsers([
-          {
-            label: 'all',
-            value: 'all'
-          },
-          ...arrayToSet
-        ]);
+        setAllUsers([...arrayToSet]);
       })
       .catch((err) => {
         setSpinner(false);
@@ -123,16 +118,28 @@ function ProgramLeaveTracker({ token, program }) {
     Object.keys(filterObj).forEach((fil) => {
       if (filterObj[fil] === 'all') {
         if (fil === 'name' && filterObj.name === 'all') {
-          array2Filter = array2Filter.filter((leave) => leave.staff);
+          // array2Filter = array2Filter.filter((leave) => leave.staff);
         } else {
           array2Filter = array2Filter.filter((leave) => leave[fil]);
         }
       } else if (fil === 'startDate' || fil === 'endDate') {
         array2Filter = array2Filter.filter((leave) => `${new Date(leave[fil]).getMonth()}` === allFilters[fil]);
-      } else if (fil === 'name' && filterObj.name === 'all') {
-        array2Filter = array2Filter.filter((leave) => leave.staff);
       } else if (fil === 'name') {
-        array2Filter = array2Filter.filter((leave) => `${leave.staff.fName} ${leave.staff.lName}` === allFilters.name);
+        if (filterObj.name.length <= 0) {
+          array2Filter = array2Filter.filter((leave) => leave.staff.email);
+          setSelectLibValue(null);
+        } else {
+          const arr = [];
+          filterObj.name.forEach((singleUser) => {
+            array2Filter.forEach((leave) => {
+              if (leave.staff.email === singleUser.value) {
+                arr.push(leave);
+              }
+            });
+          });
+          array2Filter = arr;
+          setSelectLibValue(filterObj.name);
+        }
       } else if (fil === 'status' && filterObj[fil] === 'On Leave') {
         array2Filter = array2Filter.filter((leave) => (leave.status === 'Approved' || leave.status === 'Taken'));
       } else {
@@ -159,27 +166,28 @@ function ProgramLeaveTracker({ token, program }) {
       status: 'all',
       startDate: 'all',
       endDate: 'all',
-      name: 'all'
+      name: []
     };
 
     setAllFiltersState({
       status: 'all',
       startDate: 'all',
       endDate: 'all',
-      name: 'all'
+      name: []
     });
     setStatusFilter('all');
     setStartDate('all');
     setEndDate('all');
-    setName('all');
+    setName([]);
+    setSelectLibValue(null);
     filter(allFilters);
   };
 
-  const selectLibOnChange = (value, stateSetter, filterParam) => {
-    stateSetter(value);
+  const selectLibOnChange = (selectedUsers, stateSetter, filterParam) => {
+    stateSetter(selectedUsers);
     allFilters = {
       ...allFiltersState,
-      [filterParam]: value
+      [filterParam]: selectedUsers
     };
     setAllFiltersState(allFilters);
     filter(allFilters);
@@ -244,7 +252,9 @@ function ProgramLeaveTracker({ token, program }) {
       <span className="customSelectStyles">
         <Select
           options={allUsers}
-          onChange={(opt) => selectLibOnChange(opt.label, setName, 'name')}
+          onChange={(opt) => selectLibOnChange(opt, setName, 'name')}
+          isMulti
+          value={selectLibValue}
         />
       </span>
     </th>
@@ -281,9 +291,9 @@ function ProgramLeaveTracker({ token, program }) {
   const returnData = () => (
     <table className="table holidaysTable" id="hrConsolidatedTrackerTable">
       <thead>
-        <span className="resetFilters" onClick={resetFilters}>
-          Reset All Filters
-        </span>
+        <td className="resetFilters" onClick={resetFilters}>
+            Reset All Filters
+        </td>
         <tr>
           {returnNameFilterHead()}
           {returnStatusFilterHead()}
