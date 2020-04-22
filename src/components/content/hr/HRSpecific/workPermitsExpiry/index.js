@@ -66,11 +66,18 @@ function WorkPermitsExpiry({ token }) {
               <td>{ index + 1 }</td>
               <td>{`${workPermit.fName} ${workPermit.lName}`}</td>
               <td>{workPermit.programShortForm}</td>
-              <td>{`${workPermit.programManagerDetails.fName} ${workPermit.programManagerDetails.lName}`}</td>
+              <td>
+                {
+                  (workPermit && workPermit.programManagerDetails)
+                  && `${workPermit.programManagerDetails.fName} ${workPermit.programManagerDetails.lName}`
+                }
+              </td>
               <td>{`${workPermit.daysLeftonWorkPermit} days`}</td>
               <td>
                 <SpecificContractModal
                   workPermit={workPermit}
+                  token={token}
+                  BASE_URL={BASE_URL}
                 />
               </td>
             </tr>

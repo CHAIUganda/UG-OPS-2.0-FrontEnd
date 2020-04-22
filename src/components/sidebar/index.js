@@ -49,7 +49,7 @@ function Sidebar({ token, section }) {
       })
       .catch((/* err */) => {
       });
-  });
+  }, []);
 
   return (
     <div className="setSideBarInline sidebgColor col-3 ml-3 position-fixed">

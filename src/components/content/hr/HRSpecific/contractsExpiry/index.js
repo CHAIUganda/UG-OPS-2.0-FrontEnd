@@ -66,11 +66,19 @@ function ContractsExpiry({ token }) {
               <td>{ index + 1 }</td>
               <td>{`${contract.fName} ${contract.lName}`}</td>
               <td>{contract.programShortForm}</td>
-              <td>{`${contract.programManagerDetails.fName} ${contract.programManagerDetails.lName}`}</td>
+              <td>
+                {
+                  (contract && contract.programManagerDetails)
+                    ? `${contract.programManagerDetails.fName} ${contract.programManagerDetails.lName}`
+                    : '_'
+                }
+              </td>
               <td>{`${contract.daysLeftonContract} days`}</td>
               <td>
                 <SpecificContractModal
                   contract={contract}
+                  token={token}
+                  BASE_URL={BASE_URL}
                 />
               </td>
             </tr>

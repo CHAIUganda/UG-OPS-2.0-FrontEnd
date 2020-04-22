@@ -123,6 +123,9 @@ function ViewMyDetails(props) {
       ? user.programId
       : ''
   );
+  console.log(programId);
+  console.log(user);
+  debugger;
   const [countryDirector, /* setCountryDirector */] = useState(
     user.roles.countryDirector
       ? user.roles.countryDirector
