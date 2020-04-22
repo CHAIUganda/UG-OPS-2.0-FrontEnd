@@ -41,6 +41,9 @@ function EditUser(props) {
     );
   }
 
+  console.log('edit user');
+  console.log(user);
+
   const [email, setEmail] = useState(
     user.email
       ? user.email
@@ -147,12 +150,12 @@ function EditUser(props) {
   );
   const [workPermitStartDate, setWorkPermitStartDate] = useState(
     user.workPermitStartDate
-      ? user.workPermitStartDate
+      ? new Date(user.workPermitStartDate)
       : ''
   );
   const [workPermitEndDate, setWorkPermitEndDate] = useState(
     user.workPermitEndDate
-      ? user.workPermitEndDate
+      ? new Date(user.workPermitEndDate)
       : ''
   );
   const [bankAccounts, setBankAccounts] = useState(
