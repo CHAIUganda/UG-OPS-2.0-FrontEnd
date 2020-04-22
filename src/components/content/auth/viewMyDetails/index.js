@@ -9,9 +9,9 @@ import {
   InputGroupAddon,
   InputGroupText,
   CustomInput,
-  Spinner
+  // Spinner
 } from 'reactstrap';
-import Calendar from 'react-calendar';
+// import Calendar from 'react-calendar';
 import { connect } from 'react-redux';
 import axios from 'axios';
 import PropTypes from 'prop-types';
@@ -33,7 +33,6 @@ function ViewMyDetails(props) {
 
   if (props && props.user) {
     user = props.user;
-    console.log(user);
   } else {
     return (
       <div className="alert alert-info text-center" role="alert">
@@ -77,12 +76,12 @@ function ViewMyDetails(props) {
       ? user.contractType
       : ''
   );
-  const [contractStartDate, setContractStartDate] = useState(
+  const [contractStartDate, /* setContractStartDate */] = useState(
     user.contractStartDate
       ? new Date(user.contractStartDate)
       : ''
   );
-  const [contractEndDate, setContractEndDate] = useState(
+  const [contractEndDate, /* setContractEndDate */] = useState(
     user.contractEndDate
       ? new Date(user.contractEndDate)
       : ''
@@ -99,22 +98,22 @@ function ViewMyDetails(props) {
       ? user.title
       : ''
   );
-  const [admin, setAdmin] = useState(
+  const [admin, /* setAdmin */] = useState(
     user.roles.admin
       ? user.roles.admin
       : false
   );
-  const [supervisor, setSupervisor] = useState(
+  const [supervisor, /* setSupervisor */] = useState(
     user.roles.supervisor
       ? user.roles.supervisor
       : false
   );
-  const [humanResource, setHumanResource] = useState(
+  const [humanResource, /* setHumanResource */] = useState(
     user.roles.hr
       ? user.roles.hr
       : false
   );
-  const [staffCategory, /* setStaffCategory */] = useState(
+  const [staffCategory, setStaffCategory] = useState(
     user.type
       ? user.type
       : ''
@@ -124,9 +123,7 @@ function ViewMyDetails(props) {
       ? user.programId
       : ''
   );
-  // console.log(programId);
-  // debugger;
-  const [countryDirector, setCountryDirector] = useState(
+  const [countryDirector, /* setCountryDirector */] = useState(
     user.roles.countryDirector
       ? user.roles.countryDirector
       : false
@@ -165,7 +162,7 @@ function ViewMyDetails(props) {
   const [spinner, setSpinner] = useState(false);
   const [error, setError] = useState('');
   const [allUsers, setAllUsers] = useState([]);
-  const [submitSpinner, setSubmitSpinner] = useState(false);
+  const [/* submitSpinner */, setSubmitSpinner] = useState(false);
   const [successFeedback, setSuccessFeedback] = useState('');
   // const [bankName, setBankName] = useState('');
   // const [accountNumber, setAccountNumber] = useState('');
@@ -289,14 +286,14 @@ function ViewMyDetails(props) {
     setSupervisorsEmail(value);
   };
 
-  const buttonText = () => {
-    if (submitSpinner) {
-      return (
-        <Spinner color="primary" style={{ width: '3rem', height: '3rem' }} />
-      );
-    }
-    return 'Edit';
-  };
+  // const buttonText = () => {
+  //   if (submitSpinner) {
+  //     return (
+  //       <Spinner color="primary" style={{ width: '3rem', height: '3rem' }} />
+  //     );
+  //   }
+  //   return 'Edit';
+  // };
 
   // const handleNewBankAccount = (event) => {
   //   event.preventDefault();
@@ -615,25 +612,19 @@ function ViewMyDetails(props) {
             <InputGroupAddon addonType="prepend">
               <InputGroupText>Category Of Staff</InputGroupText>
             </InputGroupAddon>
-            {/* <CustomInput
+            <CustomInput
               type="select"
               id="staffCategoryCustomSelect"
               name="customSelect"
               value={staffCategory}
               onChange={(e) => setStaffCategory(e.target.value)}
-              disbaled
+              disabled
             >
               <option value="">Not set</option>
               <option value="national">national</option>
               <option value="expat">expat</option>
               <option value="tcn">tcn</option>
-            </CustomInput> */}
-            <Input
-              type="text"
-              value={staffCategory}
-              required
-              disabled
-            />
+            </CustomInput>
           </InputGroup>
         </FormGroup>
 
@@ -690,6 +681,7 @@ function ViewMyDetails(props) {
               name="customSelect"
               value={team}
               onChange={(e) => setTeam(e.target.value)}
+              disabled
             >
               <option value="">Not set</option>
               <option value="Country Office">Country Office</option>
@@ -731,7 +723,7 @@ function ViewMyDetails(props) {
                 id="adminSwitch2"
                 name="customSwitch"
                 checked={admin}
-                onChange={(e) => setAdmin(e.target.checked)}
+                // onChange={(e) => setAdmin(e.target.checked)}
               />
             </div>
           </InputGroup>
@@ -748,7 +740,7 @@ function ViewMyDetails(props) {
                 id="supervisorSwitch2"
                 name="customSwitch"
                 checked={supervisor}
-                onChange={(e) => setSupervisor(e.target.checked)}
+                // onChange={(e) => setSupervisor(e.target.checked)}
               />
             </div>
           </InputGroup>
@@ -765,7 +757,7 @@ function ViewMyDetails(props) {
                 id="hrSwitch2"
                 name="customSwitch"
                 checked={humanResource}
-                onChange={(e) => setHumanResource(e.target.checked)}
+                // onChange={(e) => setHumanResource(e.target.checked)}
               />
             </div>
           </InputGroup>
@@ -782,7 +774,7 @@ function ViewMyDetails(props) {
                 id="cdSwitch2"
                 name="customSwitch"
                 checked={countryDirector}
-                onChange={(e) => setCountryDirector(e.target.checked)}
+                // onChange={(e) => setCountryDirector(e.target.checked)}
               />
             </div>
           </InputGroup>
@@ -799,6 +791,7 @@ function ViewMyDetails(props) {
               name="customSelect"
               value={contractType}
               onChange={(e) => setContractType(e.target.value)}
+              disabled
             >
               <option value="">Not set</option>
               <option value="Full-Time">Full-Time</option>
@@ -813,9 +806,15 @@ function ViewMyDetails(props) {
             <InputGroupAddon addonType="prepend">
               <InputGroupText>Contract Start Date</InputGroupText>
             </InputGroupAddon>
-            <Calendar
+            {/* <Calendar
               value={contractStartDate}
               onChange={(date) => setContractStartDate(date)}
+            /> */}
+            <Input
+              type="text"
+              value={new Date(contractStartDate).toDateString()}
+              required
+              disabled
             />
           </InputGroup>
         </FormGroup>
@@ -825,9 +824,11 @@ function ViewMyDetails(props) {
             <InputGroupAddon addonType="prepend">
               <InputGroupText>Contract End Date</InputGroupText>
             </InputGroupAddon>
-            <Calendar
-              value={contractEndDate}
-              onChange={(date) => setContractEndDate(date)}
+            <Input
+              type="text"
+              value={new Date(contractEndDate).toDateString()}
+              required
+              disabled
             />
           </InputGroup>
         </FormGroup>
@@ -842,6 +843,7 @@ function ViewMyDetails(props) {
                 options={allUsers}
                 onChange={(opt) => onSelectSupervisorEmail(opt.value)}
                 defaultValue={defaultSupervisor}
+                isDisabled={true}
               />
             </div>
           </InputGroup>
@@ -878,15 +880,16 @@ function ViewMyDetails(props) {
         </FormGroup>
 
         <p className="readThru alert alert-info">
-          Please read through and confirm the details provided before submitting
+          Please read through and confirm the details provided before submitting.
+          Contact the HR or System Admin to correct fields for which you have no edit rights.
         </p>
 
         {error && <div className="errorFeedback"> {error} </div>}
         {successFeedback && <div className="successFeedback"> {successFeedback} </div>}
 
-        <button className="submitButton" type="submit">
+        {/* <button className="submitButton" type="submit">
           {buttonText()}
-        </button>
+        </button> */}
       </Form>
     </div>
   );
