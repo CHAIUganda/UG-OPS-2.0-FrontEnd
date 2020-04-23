@@ -319,7 +319,11 @@ function Register({ token }) {
               placeholder="Optional"
               type="text"
               value={otherNames}
-              onChange={(e) => setOtherNames(e.target.value)}
+              onChange={(e) => {
+                setSuccessFeedback('');
+                setError('');
+                setOtherNames(e.target.value);
+              }}
             />
           </InputGroup>
         </FormGroup>
@@ -424,7 +428,11 @@ function Register({ token }) {
                 id="exampleCustomSelect"
                 name="customSelect"
                 value={Currency}
-                onChange={(e) => setCurrency(e.target.value)}
+                onChange={(e) => {
+                  setSuccessFeedback('');
+                  setError('');
+                  setCurrency(e.target.value);
+                }}
               >
                 <option value="UGx">UGX</option>
                 <option value="USD">USD</option>
@@ -486,7 +494,11 @@ function Register({ token }) {
               id="exampleCustomSelect"
               name="customSelect"
               value={gender}
-              onChange={(e) => setGender(e.target.value)}
+              onChange={(e) => {
+                setSuccessFeedback('');
+                setError('');
+                setGender(e.target.value);
+              }}
             >
               <option value="Female">Female</option>
               <option value="Male">Male</option>
@@ -503,7 +515,11 @@ function Register({ token }) {
               placeholder="Assistant Programme Officer"
               type="text"
               value={position}
-              onChange={(e) => setPosition(e.target.value)}
+              onChange={(e) => {
+                setSuccessFeedback('');
+                setError('');
+                setPosition(e.target.value);
+              }}
               required
             />
           </InputGroup>
@@ -538,7 +554,11 @@ function Register({ token }) {
                 </InputGroupAddon>
                 <Calendar
                   value={contractStartDate}
-                  onChange={(date) => setWorkPermitStartDate(date)}
+                  onChange={(date) => {
+                    setSuccessFeedback('');
+                    setError('');
+                    setWorkPermitStartDate(date);
+                  }}
                 />
               </InputGroup>
             </FormGroup>
@@ -550,7 +570,11 @@ function Register({ token }) {
                 </InputGroupAddon>
                 <Calendar
                   value={contractEndDate}
-                  onChange={(date) => setWorkPermitEndDate(date)}
+                  onChange={(date) => {
+                    setSuccessFeedback('');
+                    setError('');
+                    setWorkPermitEndDate(date);
+                  }}
                 />
               </InputGroup>
             </FormGroup>
@@ -568,7 +592,11 @@ function Register({ token }) {
               id="teamCustomSelect"
               name="customSelect"
               value={team}
-              onChange={(e) => setTeam(e.target.value)}
+              onChange={(e) => {
+                setSuccessFeedback('');
+                setError('');
+                setTeam(e.target.value);
+              }}
             >
               <option value="Country Office">Country Office</option>
               <option value="Global">Global</option>
@@ -586,7 +614,11 @@ function Register({ token }) {
               id="programmeCustomSelect"
               name="customSelect"
               value={programme}
-              onChange={(e) => setProgramme(e.target.value)}
+              onChange={(e) => {
+                setSuccessFeedback('');
+                setError('');
+                setProgramme(e.target.value);
+              }}
             >
               <option value=''>Not set</option>
               {
@@ -609,7 +641,11 @@ function Register({ token }) {
                 id="adminSwitch2"
                 name="customSwitch"
                 checked={admin}
-                onChange={(e) => setAdmin(e.target.checked)}
+                onChange={(e) => {
+                  setSuccessFeedback('');
+                  setError('');
+                  setAdmin(e.target.checked);
+                }}
               />
             </div>
           </InputGroup>
@@ -626,7 +662,11 @@ function Register({ token }) {
                 id="supervisorSwitch2"
                 name="customSwitch"
                 checked={supervisor}
-                onChange={(e) => setSupervisor(e.target.checked)}
+                onChange={(e) => {
+                  setSuccessFeedback('');
+                  setError('');
+                  setSupervisor(e.target.checked);
+                }}
               />
             </div>
           </InputGroup>
@@ -643,7 +683,11 @@ function Register({ token }) {
                 id="hrSwitch2"
                 name="customSwitch"
                 checked={humanResource}
-                onChange={(e) => setHumanResource(e.target.checked)}
+                onChange={(e) => {
+                  setSuccessFeedback('');
+                  setError('');
+                  setHumanResource(e.target.checked);
+                }}
               />
             </div>
           </InputGroup>
@@ -660,7 +704,11 @@ function Register({ token }) {
                 id="cdSwitch2"
                 name="customSwitch"
                 checked={countryDirector}
-                onChange={(e) => setCountryDirector(e.target.checked)}
+                onChange={(e) => {
+                  setSuccessFeedback('');
+                  setError('');
+                  setCountryDirector(e.target.checked);
+                }}
               />
             </div>
           </InputGroup>
@@ -676,7 +724,11 @@ function Register({ token }) {
               id="exampleCustomSelect"
               name="customSelect"
               value={contractType}
-              onChange={(e) => setContractType(e.target.value)}
+              onChange={(e) => {
+                setSuccessFeedback('');
+                setError('');
+                setContractType(e.target.value);
+              }}
             >
               <option value="Full-Time">Full-Time</option>
               <option value="Part-Time">Part-Time</option>
@@ -692,7 +744,11 @@ function Register({ token }) {
             </InputGroupAddon>
             <Calendar
               value={contractStartDate}
-              onChange={(date) => setContractStartDate(date)}
+              onChange={(date) => {
+                setSuccessFeedback('');
+                setError('');
+                setContractStartDate(date);
+              }}
             />
           </InputGroup>
         </FormGroup>
@@ -704,7 +760,11 @@ function Register({ token }) {
             </InputGroupAddon>
             <Calendar
               value={contractEndDate}
-              onChange={(date) => setContractEndDate(date)}
+              onChange={(date) => {
+                setSuccessFeedback('');
+                setError('');
+                setContractEndDate(date);
+              }}
             />
           </InputGroup>
         </FormGroup>
@@ -717,7 +777,11 @@ function Register({ token }) {
             <div className="selectCustomStyle">
               <Select
                 options={allUsers}
-                onChange={(opt) => onSelectSupervisorEmail(opt.value)}
+                onChange={(opt) => {
+                  setSuccessFeedback('');
+                  setError('');
+                  onSelectSupervisorEmail(opt.value);
+                }}
               />
             </div>
           </InputGroup>
@@ -732,7 +796,11 @@ function Register({ token }) {
               placeholder="password"
               type="password"
               value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              onChange={(e) => {
+                setSuccessFeedback('');
+                setError('');
+                setPassword(e.target.value);
+              }}
               required
             />
           </InputGroup>
@@ -747,7 +815,11 @@ function Register({ token }) {
               placeholder="Confirm Password"
               type="password"
               value={confirmPass}
-              onChange={(e) => setConfirmPass(e.target.value)}
+              onChange={(e) => {
+                setSuccessFeedback('');
+                setError('');
+                setConfirmPass(e.target.value);
+              }}
               required
             />
           </InputGroup>
