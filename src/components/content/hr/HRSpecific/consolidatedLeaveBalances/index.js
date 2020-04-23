@@ -152,9 +152,9 @@ function ConsolidatedLeaveBalances({ token }) {
         }
       } else if (fil === 'annualSort') {
         if (filterObj[fil] === 'red') {
-          array2Filter = array2Filter.filter((leave) => leave.leaveDetails.annualLeaveBal > 2);
+          array2Filter = array2Filter.filter((leave) => leave.leaveDetails.annualLeaveBal > 10);
         } else {
-          array2Filter = array2Filter.filter((leave) => leave.leaveDetails.annualLeaveBal <= 2);
+          array2Filter = array2Filter.filter((leave) => leave.leaveDetails.annualLeaveBal <= 10);
         }
       } else {
         array2Filter = array2Filter.filter((leave) => leave[fil] === allFilters[fil]);
@@ -267,7 +267,7 @@ function ConsolidatedLeaveBalances({ token }) {
               <td>{`${l.fName} ${l.lName}`}</td>
               <td>{l.program}</td>
               <td className={
-                l.leaveDetails.annualLeaveBal > 2
+                l.leaveDetails.annualLeaveBal > 10
                   ? returnStatusClass('rejectedWords')
                   : returnStatusClass('approvedWords')
               }>

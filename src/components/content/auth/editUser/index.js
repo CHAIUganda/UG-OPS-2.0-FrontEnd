@@ -41,9 +41,6 @@ function EditUser(props) {
     );
   }
 
-  console.log('edit user');
-  console.log(user);
-
   const [email, setEmail] = useState(
     user.email
       ? user.email
@@ -413,7 +410,11 @@ function EditUser(props) {
               placeholder="Optional"
               type="text"
               value={otherNames}
-              onChange={(e) => setOtherNames(e.target.value)}
+              onChange={(e) => {
+                setSuccessFeedback('');
+                setError('');
+                setOtherNames(e.target.value);
+              }}
             />
           </InputGroup>
         </FormGroup>
@@ -425,7 +426,11 @@ function EditUser(props) {
             </InputGroupAddon>
             <Calendar
               value={birthDate}
-              onChange={(date) => setBirthDate(date)}
+              onChange={(date) => {
+                setSuccessFeedback('');
+                setError('');
+                setBirthDate(date);
+              }}
             />
           </InputGroup>
         </FormGroup>
@@ -582,7 +587,11 @@ function EditUser(props) {
               id="exampleCustomSelect"
               name="customSelect"
               value={gender}
-              onChange={(e) => setGender(e.target.value)}
+              onChange={(e) => {
+                setSuccessFeedback('');
+                setError('');
+                setGender(e.target.value);
+              }}
             >
               <option value="">Not set</option>
               <option value="Female">Female</option>
@@ -600,7 +609,11 @@ function EditUser(props) {
               placeholder="Assistant Programme Officer"
               type="text"
               value={position}
-              onChange={(e) => setPosition(e.target.value)}
+              onChange={(e) => {
+                setSuccessFeedback('');
+                setError('');
+                setPosition(e.target.value);
+              }}
               required
             />
           </InputGroup>
@@ -636,7 +649,11 @@ function EditUser(props) {
                 </InputGroupAddon>
                 <Calendar
                   value={workPermitStartDate}
-                  onChange={(date) => setWorkPermitStartDate(date)}
+                  onChange={(date) => {
+                    setSuccessFeedback('');
+                    setError('');
+                    setWorkPermitStartDate(date);
+                  }}
                 />
               </InputGroup>
             </FormGroup>
@@ -648,7 +665,11 @@ function EditUser(props) {
                 </InputGroupAddon>
                 <Calendar
                   value={workPermitEndDate}
-                  onChange={(date) => setWorkPermitEndDate(date)}
+                  onChange={(date) => {
+                    setSuccessFeedback('');
+                    setError('');
+                    setWorkPermitEndDate(date);
+                  }}
                 />
               </InputGroup>
             </FormGroup>
@@ -666,7 +687,11 @@ function EditUser(props) {
               id="teamCustomSelect"
               name="customSelect"
               value={team}
-              onChange={(e) => setTeam(e.target.value)}
+              onChange={(e) => {
+                setSuccessFeedback('');
+                setError('');
+                setTeam(e.target.value);
+              }}
             >
               <option value="">Not set</option>
               <option value="Country Office">Country Office</option>
@@ -685,7 +710,11 @@ function EditUser(props) {
               id="programmeCustomSelect"
               name="customSelect"
               value={programId}
-              onChange={(e) => setProgramId(e.target.value)}
+              onChange={(e) => {
+                setSuccessFeedback('');
+                setError('');
+                setProgramId(e.target.value);
+              }}
             >
               <option value=''>Not set</option>
               {
@@ -708,7 +737,11 @@ function EditUser(props) {
                 id="adminSwitch2"
                 name="customSwitch"
                 checked={admin}
-                onChange={(e) => setAdmin(e.target.checked)}
+                onChange={(e) => {
+                  setSuccessFeedback('');
+                  setError('');
+                  setAdmin(e.target.checked);
+                }}
               />
             </div>
           </InputGroup>
@@ -725,7 +758,11 @@ function EditUser(props) {
                 id="supervisorSwitch2"
                 name="customSwitch"
                 checked={supervisor}
-                onChange={(e) => setSupervisor(e.target.checked)}
+                onChange={(e) => {
+                  setSuccessFeedback('');
+                  setError('');
+                  setSupervisor(e.target.checked);
+                }}
               />
             </div>
           </InputGroup>
@@ -742,7 +779,11 @@ function EditUser(props) {
                 id="hrSwitch2"
                 name="customSwitch"
                 checked={humanResource}
-                onChange={(e) => setHumanResource(e.target.checked)}
+                onChange={(e) => {
+                  setSuccessFeedback('');
+                  setError('');
+                  setHumanResource(e.target.checked);
+                }}
               />
             </div>
           </InputGroup>
@@ -759,7 +800,11 @@ function EditUser(props) {
                 id="cdSwitch2"
                 name="customSwitch"
                 checked={countryDirector}
-                onChange={(e) => setCountryDirector(e.target.checked)}
+                onChange={(e) => {
+                  setSuccessFeedback('');
+                  setError('');
+                  setCountryDirector(e.target.checked);
+                }}
               />
             </div>
           </InputGroup>
@@ -775,7 +820,11 @@ function EditUser(props) {
               id="exampleCustomSelect"
               name="customSelect"
               value={contractType}
-              onChange={(e) => setContractType(e.target.value)}
+              onChange={(e) => {
+                setSuccessFeedback('');
+                setError('');
+                setContractType(e.target.value);
+              }}
             >
               <option value="">Not set</option>
               <option value="Full-Time">Full-Time</option>
@@ -792,7 +841,11 @@ function EditUser(props) {
             </InputGroupAddon>
             <Calendar
               value={contractStartDate}
-              onChange={(date) => setContractStartDate(date)}
+              onChange={(date) => {
+                setSuccessFeedback('');
+                setError('');
+                setContractStartDate(date);
+              }}
             />
           </InputGroup>
         </FormGroup>
@@ -804,7 +857,11 @@ function EditUser(props) {
             </InputGroupAddon>
             <Calendar
               value={contractEndDate}
-              onChange={(date) => setContractEndDate(date)}
+              onChange={(date) => {
+                setSuccessFeedback('');
+                setError('');
+                setContractEndDate(date);
+              }}
             />
           </InputGroup>
         </FormGroup>
@@ -817,7 +874,11 @@ function EditUser(props) {
             <div className="selectCustomStyle">
               <Select
                 options={allUsers}
-                onChange={(opt) => onSelectSupervisorEmail(opt.value)}
+                onChange={(opt) => {
+                  setSuccessFeedback('');
+                  setError('');
+                  onSelectSupervisorEmail(opt.value);
+                }}
                 defaultValue={defaultSupervisor}
               />
             </div>
