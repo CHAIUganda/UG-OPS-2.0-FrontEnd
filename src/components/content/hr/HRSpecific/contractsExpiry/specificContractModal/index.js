@@ -9,24 +9,72 @@ import {
 import { IconContext } from 'react-icons';
 import { IoMdSettings } from 'react-icons/io';
 import PropTypes from 'prop-types';
+import axios from 'axios';
+
 import Spinner from '../../../../../common/spinner';
 
 
-const SpecificContractModal = ({ contract }) => {
+const SpecificContractModal = ({ BASE_URL, contract, token }) => {
   const [modal, setModal] = useState(false);
   const [dismissSpinner, setDismissSpiner] = useState(false);
   const [snoozeSpinner, setSnoozeSpinner] = useState(false);
+  const [successMessage, setSuccessMessage] = useState('');
+  const [error, setError] = useState('');
 
   const toggle = () => setModal(!modal);
 
   const handleClickDismiss = () => {
+    setError('');
+    setSuccessMessage('');
     setDismissSpiner(true);
-    setDismissSpiner(false);
+    const endPoint = `${BASE_URL}hrApi/handleContractNotifications`;
+    axios.defaults.headers.common = { token };
+    const contractToDismiss = {
+      contractId: contract.contractId,
+      contractDismiss: true,
+      contractSnooze: false
+    };
+
+    axios.post(endPoint, contractToDismiss)
+      .then((res) => {
+        setDismissSpiner(false);
+        setSuccessMessage(res.data.message);
+      })
+      .catch((err) => {
+        setDismissSpiner(false);
+        if (err && err.response && err.response.data && err.response.data.message) {
+          setError(err.response.data.message);
+        } else {
+          setError(err.message);
+        }
+      });
   };
 
   const handleClickSnooze = () => {
+    setError('');
+    setSuccessMessage('');
     setSnoozeSpinner(true);
-    setSnoozeSpinner(false);
+    const endPoint = `${BASE_URL}hrApi/handleContractNotifications`;
+    axios.defaults.headers.common = { token };
+    const contractToSnooze = {
+      contractId: contract.contractId,
+      contractDismiss: false,
+      contractSnooze: true
+    };
+
+    axios.post(endPoint, contractToSnooze)
+      .then((res) => {
+        setSnoozeSpinner(false);
+        setSuccessMessage(res.data.message);
+      })
+      .catch((err) => {
+        setSnoozeSpinner(false);
+        if (err && err.response && err.response.data && err.response.data.message) {
+          setError(err.response.data.message);
+        } else {
+          setError(err.message);
+        }
+      });
   };
 
   const returnDismissText = () => {
@@ -55,15 +103,34 @@ const SpecificContractModal = ({ contract }) => {
         </IconContext.Provider>
       </span>
       <Modal isOpen={modal} toggle={toggle}>
-        <ModalHeader toggle={toggle}>Expiring contract</ModalHeader>
+        <ModalHeader>
+          Expiring contract
+        </ModalHeader>
         <ModalBody>
+          {
+            error
+                && <div className="alert alert-danger" role="alert">
+                  { error }
+                </div>
+          }
+          {
+            successMessage
+                && <div className="alert alert-success" role="alert">
+                  {successMessage}
+                </div>
+          }
           <div className='row'>
             <div className='col'>
               <p>Name: {`  ${contract.fName} ${contract.lName}`}</p>
               <p>Program: {`  ${contract.program}`}</p>
               <p>Position: {`  ${contract.title}`}</p>
               <p>Supervisor: {`  ${contract.supervisorDetails.fName} ${contract.supervisorDetails.lName}`}</p>
-              <p>Program Manager: {`${contract.programManagerDetails.fName} ${contract.programManagerDetails.lName}`}</p>
+              <p>Program Manager:
+                {
+                  (contract && contract.programManagerDetails)
+                    ? `${contract.programManagerDetails.fName} ${contract.programManagerDetails.lName}`
+                    : '_'
+                }</p>
             </div>
             <div className='col'>
               <p>Contract Expires in: {`  ${contract.daysLeftonContract} days`}</p>
@@ -89,7 +156,9 @@ const SpecificContractModal = ({ contract }) => {
 };
 
 SpecificContractModal.propTypes = {
-  contract: PropTypes.object
+  contract: PropTypes.object,
+  token: PropTypes.string,
+  BASE_URL: PropTypes.string
 };
 
 export default SpecificContractModal;

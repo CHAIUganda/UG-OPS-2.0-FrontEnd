@@ -272,7 +272,6 @@ function EditUser(props) {
       . then((res) => {
         setSpinner(false);
         setAllProgrammes(res.data);
-        setProgramId(res.data[0]);
         getUsers();
       })
       .catch((err) => {

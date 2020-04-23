@@ -9,24 +9,72 @@ import {
 import { IconContext } from 'react-icons';
 import { IoMdSettings } from 'react-icons/io';
 import PropTypes from 'prop-types';
+import axios from 'axios';
+
 import Spinner from '../../../../../common/spinner';
 
 
-const SpecificWorkPermitModal = ({ workPermit }) => {
+const SpecificWorkPermitModal = ({ BASE_URL, workPermit, token }) => {
   const [modal, setModal] = useState(false);
   const [dismissSpinner, setDismissSpiner] = useState(false);
   const [snoozeSpinner, setSnoozeSpinner] = useState(false);
+  const [successMessage, setSuccessMessage] = useState('');
+  const [error, setError] = useState('');
 
   const toggle = () => setModal(!modal);
 
   const handleClickDismiss = () => {
+    setError('');
+    setSuccessMessage('');
     setDismissSpiner(true);
-    setDismissSpiner(false);
+    const endPoint = `${BASE_URL}hrApi/handleWPNotifications`;
+    axios.defaults.headers.common = { token };
+    const workpermitToDismiss = {
+      workPermitId: workPermit.workPermitId,
+      wpDismiss: true,
+      wpSnooze: false
+    };
+
+    axios.post(endPoint, workpermitToDismiss)
+      .then((res) => {
+        setDismissSpiner(false);
+        setSuccessMessage(res.data.message);
+      })
+      .catch((err) => {
+        setDismissSpiner(false);
+        if (err && err.response && err.response.data && err.response.data.message) {
+          setError(err.response.data.message);
+        } else {
+          setError(err.message);
+        }
+      });
   };
 
   const handleClickSnooze = () => {
     setSnoozeSpinner(true);
-    setSnoozeSpinner(false);
+    setError('');
+    setSuccessMessage('');
+    const endPoint = `${BASE_URL}hrApi/handleWPNotifications`;
+    axios.defaults.headers.common = { token };
+    const workpermitToSnooze = {
+      workPermitId: workPermit.workPermitId,
+      wpDismiss: false,
+      wpSnooze: true
+    };
+
+    axios.post(endPoint, workpermitToSnooze)
+      .then((res) => {
+        setSnoozeSpinner(false);
+        setSuccessMessage(res.data.message);
+      })
+      .catch((err) => {
+        setSnoozeSpinner(false);
+        if (err && err.response && err.response.data && err.response.data.message) {
+          setError(err.response.data.message);
+        } else {
+          setError(err.message);
+        }
+      });
   };
 
   const returnDismissText = () => {
@@ -55,15 +103,35 @@ const SpecificWorkPermitModal = ({ workPermit }) => {
         </IconContext.Provider>
       </span>
       <Modal isOpen={modal} toggle={toggle}>
-        <ModalHeader toggle={toggle}>Expiring Work Permit</ModalHeader>
+        <ModalHeader>
+          Expiring Work Permit
+        </ModalHeader>
         <ModalBody>
+          {
+            error
+                && <div className="alert alert-danger" role="alert">
+                  { error }
+                </div>
+          }
+          {
+            successMessage
+                && <div className="alert alert-success" role="alert">
+                  {successMessage}
+                </div>
+          }
           <div className='row'>
             <div className='col'>
               <p>Name: {`  ${workPermit.fName} ${workPermit.lName}`}</p>
               <p>Program: {`  ${workPermit.program}`}</p>
               <p>Position: {`  ${workPermit.title}`}</p>
               <p>Supervisor: {`  ${workPermit.supervisorDetails.fName} ${workPermit.supervisorDetails.lName}`}</p>
-              <p>Program Manager: {`${workPermit.programManagerDetails.fName} ${workPermit.programManagerDetails.lName}`}</p>
+              <p>Program Manager:
+                {
+                  (workPermit && workPermit.programManagerDetails)
+                    ? `${workPermit.programManagerDetails.fName} ${workPermit.programManagerDetails.lName}`
+                    : '_'
+                }
+              </p>
             </div>
             <div className='col'>
               <p>Work Permit Expires in: {`  ${workPermit.daysLeftonWorkPermit} days`}</p>
@@ -93,7 +161,9 @@ const SpecificWorkPermitModal = ({ workPermit }) => {
 };
 
 SpecificWorkPermitModal.propTypes = {
-  workPermit: PropTypes.object
+  workPermit: PropTypes.object,
+  token: PropTypes.string,
+  BASE_URL: PropTypes.string
 };
 
 export default SpecificWorkPermitModal;

@@ -1,8 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import ContractRenewal from './contractRenewal';
-import WorkPermitRenewal from './workPermitRenewal';
 import Plan4Leave from './leaveManagement/planForLeave';
 import Apply4Leave from './leaveManagement/applyForLeave';
 import ManagePublicHolidays from './HRSpecific/publicHolidays';
@@ -30,8 +28,6 @@ export default function HR(props) {
   }
 
   const ComponentsObject = {
-    ContractRenewal,
-    WorkPermitRenewal,
     Plan4Leave,
     Apply4Leave,
     ManagePublicHolidays,

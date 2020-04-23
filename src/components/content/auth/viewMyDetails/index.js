@@ -267,7 +267,6 @@ function ViewMyDetails(props) {
       . then((res) => {
         setSpinner(false);
         setAllProgrammes(res.data);
-        setProgramId(res.data[0]);
         getUsers();
       })
       .catch((err) => {
@@ -701,6 +700,7 @@ function ViewMyDetails(props) {
               name="customSelect"
               value={programId}
               onChange={(e) => setProgramId(e.target.value)}
+              disabled
             >
               <option value=''>Not set</option>
               {
