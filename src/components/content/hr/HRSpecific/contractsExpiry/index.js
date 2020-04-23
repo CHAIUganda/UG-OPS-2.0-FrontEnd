@@ -48,6 +48,12 @@ function ContractsExpiry({ token }) {
     return <div className="errorFeedback">{ error }</div>;
   }
 
+  const modifyContractsList = (index) => {
+    const arr = [...contracts];
+    arr.splice(index, 1);
+    setContracts(arr);
+  };
+
   const returnTable = () => (
     <table className="table holidaysTable">
       <thead>
@@ -79,6 +85,8 @@ function ContractsExpiry({ token }) {
                   contract={contract}
                   token={token}
                   BASE_URL={BASE_URL}
+                  modifyContractsList={modifyContractsList}
+                  index={index}
                 />
               </td>
             </tr>

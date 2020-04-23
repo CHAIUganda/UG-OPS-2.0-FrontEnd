@@ -14,14 +14,26 @@ import axios from 'axios';
 import Spinner from '../../../../../common/spinner';
 
 
-const SpecificWorkPermitModal = ({ BASE_URL, workPermit, token }) => {
+const SpecificWorkPermitModal = ({
+  BASE_URL,
+  workPermit,
+  token,
+  modifyWorkPermitList,
+  index
+}) => {
   const [modal, setModal] = useState(false);
   const [dismissSpinner, setDismissSpiner] = useState(false);
   const [snoozeSpinner, setSnoozeSpinner] = useState(false);
   const [successMessage, setSuccessMessage] = useState('');
   const [error, setError] = useState('');
+  const [removeFromList, setRemoveFromList] = useState(false);
 
-  const toggle = () => setModal(!modal);
+  const toggle = () => {
+    if (removeFromList) {
+      modifyWorkPermitList(index);
+    }
+    setModal(!modal);
+  };
 
   const handleClickDismiss = () => {
     setError('');
@@ -39,6 +51,7 @@ const SpecificWorkPermitModal = ({ BASE_URL, workPermit, token }) => {
       .then((res) => {
         setDismissSpiner(false);
         setSuccessMessage(res.data.message);
+        setRemoveFromList(true);
       })
       .catch((err) => {
         setDismissSpiner(false);
@@ -66,6 +79,7 @@ const SpecificWorkPermitModal = ({ BASE_URL, workPermit, token }) => {
       .then((res) => {
         setSnoozeSpinner(false);
         setSuccessMessage(res.data.message);
+        setRemoveFromList(true);
       })
       .catch((err) => {
         setSnoozeSpinner(false);
@@ -163,7 +177,9 @@ const SpecificWorkPermitModal = ({ BASE_URL, workPermit, token }) => {
 SpecificWorkPermitModal.propTypes = {
   workPermit: PropTypes.object,
   token: PropTypes.string,
-  BASE_URL: PropTypes.string
+  BASE_URL: PropTypes.string,
+  modifyWorkPermitList: PropTypes.func,
+  index: PropTypes.number
 };
 
 export default SpecificWorkPermitModal;

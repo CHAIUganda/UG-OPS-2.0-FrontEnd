@@ -48,6 +48,12 @@ function WorkPermitsExpiry({ token }) {
     return <div className="errorFeedback">{ error }</div>;
   }
 
+  const modifyWorkPermitList = (index) => {
+    const arr = [...workPermits];
+    arr.splice(index, 1);
+    setWorkPermits(arr);
+  };
+
   const returnTable = () => (
     <table className="table holidaysTable">
       <thead>
@@ -78,6 +84,8 @@ function WorkPermitsExpiry({ token }) {
                   workPermit={workPermit}
                   token={token}
                   BASE_URL={BASE_URL}
+                  modifyWorkPermitList={modifyWorkPermitList}
+                  index={index}
                 />
               </td>
             </tr>

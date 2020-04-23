@@ -14,14 +14,26 @@ import axios from 'axios';
 import Spinner from '../../../../../common/spinner';
 
 
-const SpecificContractModal = ({ BASE_URL, contract, token }) => {
+const SpecificContractModal = ({
+  BASE_URL,
+  contract,
+  token,
+  modifyContractsList,
+  index
+}) => {
   const [modal, setModal] = useState(false);
   const [dismissSpinner, setDismissSpiner] = useState(false);
   const [snoozeSpinner, setSnoozeSpinner] = useState(false);
   const [successMessage, setSuccessMessage] = useState('');
   const [error, setError] = useState('');
+  const [removeFromList, setRemoveFromList] = useState(false);
 
-  const toggle = () => setModal(!modal);
+  const toggle = () => {
+    if (removeFromList) {
+      modifyContractsList(index);
+    }
+    setModal(!modal);
+  };
 
   const handleClickDismiss = () => {
     setError('');
@@ -39,6 +51,7 @@ const SpecificContractModal = ({ BASE_URL, contract, token }) => {
       .then((res) => {
         setDismissSpiner(false);
         setSuccessMessage(res.data.message);
+        setRemoveFromList(true);
       })
       .catch((err) => {
         setDismissSpiner(false);
@@ -66,6 +79,7 @@ const SpecificContractModal = ({ BASE_URL, contract, token }) => {
       .then((res) => {
         setSnoozeSpinner(false);
         setSuccessMessage(res.data.message);
+        setRemoveFromList(true);
       })
       .catch((err) => {
         setSnoozeSpinner(false);
@@ -158,7 +172,9 @@ const SpecificContractModal = ({ BASE_URL, contract, token }) => {
 SpecificContractModal.propTypes = {
   contract: PropTypes.object,
   token: PropTypes.string,
-  BASE_URL: PropTypes.string
+  BASE_URL: PropTypes.string,
+  modifyContractsList: PropTypes.func,
+  index: PropTypes.number
 };
 
 export default SpecificContractModal;
