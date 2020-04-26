@@ -99,17 +99,17 @@ function EditUser(props) {
       : ''
   );
   const [admin, setAdmin] = useState(
-    user.roles.admin
+    (user.roles && user.roles.admin)
       ? user.roles.admin
       : false
   );
   const [supervisor, setSupervisor] = useState(
-    user.roles.supervisor
+    (user.roles && user.roles.supervisor)
       ? user.roles.supervisor
       : false
   );
   const [humanResource, setHumanResource] = useState(
-    user.roles.hr
+    (user.roles && user.roles.hr)
       ? user.roles.hr
       : false
   );
