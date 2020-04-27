@@ -322,16 +322,6 @@ function ConsolidatedTracker({ token }) {
   const returnData = () => (
     <table className="table holidaysTable" id="hrConsolidatedTrackerTable">
       <thead>
-        <td className="resetFilters" onClick={resetFilters}>
-            Reset All Filters
-        </td>
-        {
-          name.map((n, index) => (
-            <td key={`${index}${n.value}`}>
-              <FilterNameButton />
-            </td>
-          ))
-        }
         <tr>
           {returnNameFilterHead()}
           {returnEndProgramFilterHead()}
@@ -364,6 +354,36 @@ function ConsolidatedTracker({ token }) {
     </table>
   );
 
+  const removePerson = (email) => {
+    const arr = name.filter((u) => u.value !== email);
+    setName(arr);
+    allFilters = {
+      ...allFiltersState,
+      name: arr
+    };
+    setAllFiltersState(allFilters);
+    filter(allFilters);
+  };
+
+  const generateFilterRibbon = () => (
+    <div className="row">
+      <div className="col text-left filterRibbon">
+        <span className="resetFilters" onClick={resetFilters}>
+        Reset All Filters
+        </span>
+        {
+          name.map((n, index) => (
+            <FilterNameButton
+              key={`${index}${n.value}`}
+              person={n}
+              removePerson={removePerson}
+            />
+          ))
+        }
+      </div>
+    </div>
+  );
+
   const generatePDf = (event) => {
     event.preventDefault();
     const input = document.getElementById('hrConsolidatedTrackerTable');
@@ -394,6 +414,7 @@ function ConsolidatedTracker({ token }) {
             Generate PDF
           </button>
         </h3>
+        {generateFilterRibbon()}
         <div className="row">
           <div className="col">
             {returnData() }
