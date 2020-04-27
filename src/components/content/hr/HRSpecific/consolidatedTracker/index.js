@@ -7,6 +7,7 @@ import JSPDF from 'jspdf';
 import Select from 'react-select';
 
 import CommonSpinner from '../../../../common/spinner';
+import FilterNameButton from '../../../../common/filterNameButton';
 import { BASE_URL, returnStatusClass } from '../../../../../config';
 import './consolidatedTracker.css';
 
@@ -29,8 +30,6 @@ function ConsolidatedTracker({ token }) {
   const [allPrograms, setAllPRograms] = useState([]);
   const [program, setProgram] = useState('all');
   const [allUsers, setAllUsers] = useState([]);
-  const [selectLibValue, setSelectLibValue] = useState(null);
-  // eslint-disable-next-line no-unused-vars
   const [name, setName] = useState([]);
   const [allFiltersState, setAllFiltersState] = useState(
     {
@@ -138,17 +137,12 @@ function ConsolidatedTracker({ token }) {
     let array2Filter = [...allLeaves];
     Object.keys(filterObj).forEach((fil) => {
       if (filterObj[fil] === 'all') {
-        if (fil === 'name' && filterObj.name === 'all') {
-          // array2Filter = array2Filter.filter((leave) => leave.staff);
-        } else {
-          array2Filter = array2Filter.filter((leave) => leave[fil]);
-        }
+        array2Filter = array2Filter.filter((leave) => leave[fil]);
       } else if (fil === 'startDate' || fil === 'endDate') {
         array2Filter = array2Filter.filter((leave) => `${new Date(leave[fil]).getMonth()}` === allFilters[fil]);
       } else if (fil === 'name') {
         if (filterObj.name.length <= 0) {
           array2Filter = array2Filter.filter((leave) => leave.staff.email);
-          setSelectLibValue(null);
         } else {
           const arr = [];
           filterObj.name.forEach((singleUser) => {
@@ -159,7 +153,6 @@ function ConsolidatedTracker({ token }) {
             });
           });
           array2Filter = arr;
-          setSelectLibValue(filterObj.name);
         }
       } else {
         array2Filter = array2Filter.filter((leave) => leave[fil] === allFilters[fil]);
@@ -196,7 +189,6 @@ function ConsolidatedTracker({ token }) {
     setStatusFilter('all');
     setTypeFilter('all');
     setName([]);
-    setSelectLibValue(null);
 
     setAllFiltersState({
       type: 'all',
@@ -209,11 +201,17 @@ function ConsolidatedTracker({ token }) {
     filter(allFilters);
   };
 
-  const selectLibOnChange = (selectedUsers, stateSetter, filterParam) => {
-    stateSetter(selectedUsers);
+  const selectLibOnChange = (email, stateSetter, filterParam) => {
+    const oneUser = allUsers.find((u) => u.value === email);
+    const alreadyFiltered = name.some((u) => u.value === email);
+    const arr = [...name];
+    if (!alreadyFiltered) {
+      arr.push(oneUser);
+    }
+    stateSetter(arr);
     allFilters = {
       ...allFiltersState,
-      [filterParam]: selectedUsers
+      [filterParam]: arr
     };
     setAllFiltersState(allFilters);
     filter(allFilters);
@@ -314,9 +312,8 @@ function ConsolidatedTracker({ token }) {
       <span className="customSelectStyles">
         <Select
           options={allUsers}
-          onChange={(opt) => selectLibOnChange(opt, setName, 'name')}
-          isMulti
-          value={selectLibValue}
+          onChange={(opt) => selectLibOnChange(opt.value, setName, 'name')}
+          value={null}
         />
       </span>
     </th>
@@ -328,6 +325,13 @@ function ConsolidatedTracker({ token }) {
         <td className="resetFilters" onClick={resetFilters}>
             Reset All Filters
         </td>
+        {
+          name.map((n, index) => (
+            <td key={`${index}${n.value}`}>
+              <FilterNameButton />
+            </td>
+          ))
+        }
         <tr>
           {returnNameFilterHead()}
           {returnEndProgramFilterHead()}

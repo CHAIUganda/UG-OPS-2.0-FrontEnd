@@ -99,17 +99,17 @@ function EditUser(props) {
       : ''
   );
   const [admin, setAdmin] = useState(
-    user.roles.admin
+    (user.roles && user.roles.admin)
       ? user.roles.admin
       : false
   );
   const [supervisor, setSupervisor] = useState(
-    user.roles.supervisor
+    (user.roles && user.roles.supervisor)
       ? user.roles.supervisor
       : false
   );
   const [humanResource, setHumanResource] = useState(
-    user.roles.hr
+    (user.roles && user.roles.hr)
       ? user.roles.hr
       : false
   );
@@ -126,12 +126,12 @@ function EditUser(props) {
   // console.log(programId);
   // debugger;
   const [countryDirector, setCountryDirector] = useState(
-    user.roles.countryDirector
+    (user.roles && user.roles.countryDirector)
       ? user.roles.countryDirector
       : false
   );
   const [supervisorsEmail, setSupervisorsEmail] = useState(
-    user.supervisorDetails.email
+    (user.supervisorDetails && user.supervisorDetails.email)
       ? user.supervisorDetails.email
       : ''
   );
@@ -150,13 +150,14 @@ function EditUser(props) {
       ? new Date(user.workPermitStartDate)
       : ''
   );
+
   const [workPermitEndDate, setWorkPermitEndDate] = useState(
     user.workPermitEndDate
       ? new Date(user.workPermitEndDate)
       : ''
   );
   const [bankAccounts, setBankAccounts] = useState(
-    user.bankAccounts.length > 0
+    (user.bankAccounts && user.bankAccounts.length > 0)
       ? user.bankAccounts
       : []
   );
@@ -169,11 +170,24 @@ function EditUser(props) {
   const [bankName, setBankName] = useState('');
   const [accountNumber, setAccountNumber] = useState('');
   const [Currency, setCurrency] = useState('UGX');
-  const [defaultSupervisor, setDefaultSupervisor] = useState({
-    label: `${user.supervisorDetails.fName ? user.supervisorDetails.fName : 'Not'} 
-    ${user.supervisorDetails.lName ? user.supervisorDetails.lName : 'supplied'}`,
-    value: user.supervisorDetails.email ? user.supervisorDetails.email : ''
-  });
+
+  const returnDefaultSupervisor = () => {
+    if (user.supervisorDetails
+        && user.supervisorDetails.fName
+        && user.supervisorDetails.lName
+        && user.supervisorDetails.email) {
+      return {
+        label: `${user.supervisorDetails.fName} ${user.supervisorDetails.lName}`,
+        value: user.supervisorDetails.email
+      };
+    }
+    return {
+      label: 'Not Supplied',
+      value: ''
+    };
+  };
+
+  const [defaultSupervisor, setDefaultSupervisor] = useState(returnDefaultSupervisor());
 
   const handleSubmit = (event) => {
     event.preventDefault();
