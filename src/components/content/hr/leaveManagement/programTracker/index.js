@@ -28,8 +28,6 @@ function ProgramLeaveTracker({ token, program }) {
   const [startDate, setStartDate] = useState('all');
   const [endDate, setEndDate] = useState('all');
   const [allUsers, setAllUsers] = useState([]);
-  const [selectLibValue, setSelectLibValue] = useState(null);
-  // eslint-disable-next-line no-unused-vars
   const [name, setName] = useState([]);
   const [allFiltersState, setAllFiltersState] = useState(
     {
@@ -117,17 +115,12 @@ function ProgramLeaveTracker({ token, program }) {
     let array2Filter = [...allLeaves];
     Object.keys(filterObj).forEach((fil) => {
       if (filterObj[fil] === 'all') {
-        if (fil === 'name' && filterObj.name === 'all') {
-          // array2Filter = array2Filter.filter((leave) => leave.staff);
-        } else {
-          array2Filter = array2Filter.filter((leave) => leave[fil]);
-        }
+        array2Filter = array2Filter.filter((leave) => leave[fil]);
       } else if (fil === 'startDate' || fil === 'endDate') {
         array2Filter = array2Filter.filter((leave) => `${new Date(leave[fil]).getMonth()}` === allFilters[fil]);
       } else if (fil === 'name') {
         if (filterObj.name.length <= 0) {
           array2Filter = array2Filter.filter((leave) => leave.staff.email);
-          setSelectLibValue(null);
         } else {
           const arr = [];
           filterObj.name.forEach((singleUser) => {
@@ -138,7 +131,6 @@ function ProgramLeaveTracker({ token, program }) {
             });
           });
           array2Filter = arr;
-          setSelectLibValue(filterObj.name);
         }
       } else if (fil === 'status' && filterObj[fil] === 'On Leave') {
         array2Filter = array2Filter.filter((leave) => (leave.status === 'Approved' || leave.status === 'Taken'));
@@ -179,15 +171,20 @@ function ProgramLeaveTracker({ token, program }) {
     setStartDate('all');
     setEndDate('all');
     setName([]);
-    setSelectLibValue(null);
     filter(allFilters);
   };
 
-  const selectLibOnChange = (selectedUsers, stateSetter, filterParam) => {
-    stateSetter(selectedUsers);
+  const selectLibOnChange = (email, stateSetter, filterParam) => {
+    const oneUser = allUsers.find((u) => u.value === email);
+    const alreadyFiltered = name.some((u) => u.value === email);
+    const arr = [...name];
+    if (!alreadyFiltered) {
+      arr.push(oneUser);
+    }
+    stateSetter(arr);
     allFilters = {
       ...allFiltersState,
-      [filterParam]: selectedUsers
+      [filterParam]: arr
     };
     setAllFiltersState(allFilters);
     filter(allFilters);
@@ -252,9 +249,8 @@ function ProgramLeaveTracker({ token, program }) {
       <span className="customSelectStyles">
         <Select
           options={allUsers}
-          onChange={(opt) => selectLibOnChange(opt, setName, 'name')}
-          isMulti
-          value={selectLibValue}
+          onChange={(opt) => selectLibOnChange(opt.value, setName, 'name')}
+          value={null}
         />
       </span>
     </th>
