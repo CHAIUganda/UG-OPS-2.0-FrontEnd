@@ -8,6 +8,7 @@ import Select from 'react-select';
 import moment from 'moment';
 
 import CommonSpinner from '../../../../common/spinner';
+import FilterNameButton from '../../../../common/filterNameButton';
 import { BASE_URL, returnStatusClass } from '../../../../../config';
 import './programTracker.css';
 
@@ -287,9 +288,6 @@ function ProgramLeaveTracker({ token, program }) {
   const returnData = () => (
     <table className="table holidaysTable" id="hrConsolidatedTrackerTable">
       <thead>
-        <td className="resetFilters" onClick={resetFilters}>
-            Reset All Filters
-        </td>
         <tr>
           {returnNameFilterHead()}
           {returnStatusFilterHead()}
@@ -314,6 +312,36 @@ function ProgramLeaveTracker({ token, program }) {
         }
       </tbody>
     </table>
+  );
+
+  const removePerson = (email) => {
+    const arr = name.filter((u) => u.value !== email);
+    setName(arr);
+    allFilters = {
+      ...allFiltersState,
+      name: arr
+    };
+    setAllFiltersState(allFilters);
+    filter(allFilters);
+  };
+
+  const generateFilterRibbon = () => (
+    <div className="row">
+      <div className="col text-left filterRibbon">
+        <span className="resetFilters" onClick={resetFilters}>
+        Reset All Filters
+        </span>
+        {
+          name.map((n, index) => (
+            <FilterNameButton
+              key={`${index}${n.value}`}
+              person={n}
+              removePerson={removePerson}
+            />
+          ))
+        }
+      </div>
+    </div>
   );
 
   const generatePDf = (event) => {
@@ -346,6 +374,7 @@ function ProgramLeaveTracker({ token, program }) {
             Generate PDF
           </button>
         </h3>
+        {generateFilterRibbon()}
         <div className="row">
           <div className="col">
             {returnData() }

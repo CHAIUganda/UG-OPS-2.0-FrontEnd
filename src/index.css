@@ -1,3 +1,8 @@
+/* 
+ #003366
+*/
+
+
 * {
   margin: 0;
   padding: 0;
@@ -135,4 +140,19 @@ code {
 
 .resetFilters{
   cursor: pointer;
+  color: white;
+  background-color: #003366;
+  padding: 0.3em;
+  border: 0.01em solid #003366;
+}
+
+.resetFilters:hover{
+  color:  #003366;
+  background-color:white;
+  border: 0.01em solid #003366;
+  border-radius: 0.3em;
+}
+
+.filterRibbon{
+  margin-bottom: -0.8%;
 }
