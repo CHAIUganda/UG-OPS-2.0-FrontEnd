@@ -7,6 +7,7 @@ import JSPDF from 'jspdf';
 import Select from 'react-select';
 
 import CommonSpinner from '../../../../common/spinner';
+import FilterNameButton from '../../../../common/filterNameButton';
 import { BASE_URL, returnStatusClass } from '../../../../../config';
 import './consolidatedLeaveBalances.css';
 
@@ -26,9 +27,8 @@ function ConsolidatedLeaveBalances({ token }) {
   const [program, setProgram] = useState('all');
   const [allUsers, setAllUsers] = useState([]);
   // eslint-disable-next-line no-unused-vars
-  const [name, setName] = useState('all');
+  const [name, setName] = useState([]);
   const [annualSort, setAnnualSort] = useState('all');
-  const [selectLibValue, setSelectLibValue] = useState(null);
   const [allFiltersState, setAllFiltersState] = useState(
     {
       program: 'all',
@@ -127,9 +127,7 @@ function ConsolidatedLeaveBalances({ token }) {
     let array2Filter = [...allLeaves];
     Object.keys(filterObj).forEach((fil) => {
       if (filterObj[fil] === 'all') {
-        if (fil === 'name' && filterObj.name === 'all') {
-          // array2Filter = array2Filter.filter((leave) => leave.fName);
-        } else if (fil === 'annualSort') {
+        if (fil === 'annualSort') {
           array2Filter = array2Filter.filter((leave) => leave.fName);
         } else {
           array2Filter = array2Filter.filter((leave) => leave[fil]);
@@ -137,7 +135,6 @@ function ConsolidatedLeaveBalances({ token }) {
       } else if (fil === 'name') {
         if (filterObj.name.length <= 0) {
           array2Filter = array2Filter.filter((leave) => leave.fName);
-          setSelectLibValue(null);
         } else {
           const arr = [];
           filterObj.name.forEach((singleUser) => {
@@ -148,7 +145,6 @@ function ConsolidatedLeaveBalances({ token }) {
             });
           });
           array2Filter = arr;
-          setSelectLibValue(filterObj.name);
         }
       } else if (fil === 'annualSort') {
         if (filterObj[fil] === 'red') {
@@ -189,15 +185,20 @@ function ConsolidatedLeaveBalances({ token }) {
     setAnnualSort('all');
     setProgram('all');
     setName([]);
-    setSelectLibValue(null);
     filter(allFilters);
   };
 
-  const selectLibOnChange = (selectedUsers, stateSetter, filterParam) => {
-    stateSetter(selectedUsers);
+  const selectLibOnChange = (email, stateSetter, filterParam) => {
+    const oneUser = allUsers.find((u) => u.value === email);
+    const alreadyFiltered = name.some((u) => u.value === email);
+    const arr = [...name];
+    if (!alreadyFiltered) {
+      arr.push(oneUser);
+    }
+    stateSetter(arr);
     allFilters = {
       ...allFiltersState,
-      [filterParam]: selectedUsers
+      [filterParam]: arr
     };
     setAllFiltersState(allFilters);
     filter(allFilters);
@@ -234,9 +235,8 @@ function ConsolidatedLeaveBalances({ token }) {
       <span className="customSelectStyles">
         <Select
           options={allUsers}
-          onChange={(opt) => selectLibOnChange(opt, setName, 'name')}
-          isMulti
-          value={selectLibValue}
+          onChange={(opt) => selectLibOnChange(opt.value, setName, 'name')}
+          value={null}
         />
       </span>
     </th>
@@ -245,9 +245,6 @@ function ConsolidatedLeaveBalances({ token }) {
   const returnData = () => (
     <table className="table holidaysTable">
       <thead>
-        <td className="resetFilters" onClick={resetFilters}>
-            Reset All Filters
-        </td>
         <tr>
           {returnNameFilterHead()}
           {returnEndProgramFilterHead()}
@@ -303,6 +300,36 @@ function ConsolidatedLeaveBalances({ token }) {
     </table>
   );
 
+  const removePerson = (email) => {
+    const arr = name.filter((u) => u.value !== email);
+    setName(arr);
+    allFilters = {
+      ...allFiltersState,
+      name: arr
+    };
+    setAllFiltersState(allFilters);
+    filter(allFilters);
+  };
+
+  const generateFilterRibbon = () => (
+    <div className="row">
+      <div className="col text-left filterRibbon">
+        <span className="resetFilters" onClick={resetFilters}>
+        Reset All Filters
+        </span>
+        {
+          name.map((n, index) => (
+            <FilterNameButton
+              key={`${index}${n.value}`}
+              person={n}
+              removePerson={removePerson}
+            />
+          ))
+        }
+      </div>
+    </div>
+  );
+
   const generatePDf = (event) => {
     event.preventDefault();
     const input = document.getElementById('hrConsolidatedTrackerTable');
@@ -337,6 +364,7 @@ function ConsolidatedLeaveBalances({ token }) {
             Generate PDF
             </button>
           </h3>
+          {generateFilterRibbon()}
           <div className="row">
             <div className="col">
               {returnData() }
