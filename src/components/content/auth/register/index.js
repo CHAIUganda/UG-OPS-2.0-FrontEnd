@@ -112,11 +112,11 @@ function Register({ token }) {
     const newUSer = {
       fName: firstName,
       lName: lastName,
-      birthDate,
+      birthDate: `${birthDate.getFullYear()}-${birthDate.getMonth() + 1}-${birthDate.getDate()}`,
       bankName,
       accountNumber,
-      contractStartDate,
-      contractEndDate,
+      contractStartDate: `${contractStartDate.getFullYear()}-${contractStartDate.getMonth() + 1}-${contractStartDate.getDate()}`,
+      contractEndDate: `${contractEndDate.getFullYear()}-${contractEndDate.getMonth() + 1}-${contractEndDate.getDate()}`,
       contractType,
       gender,
       admin,
@@ -134,8 +134,8 @@ function Register({ token }) {
       password,
       nssfNumber,
       tinNumber,
-      workPermitStartDate,
-      workPermitEndDate
+      workPermitStartDate: `${workPermitStartDate.getFullYear()}-${workPermitStartDate.getMonth() + 1}-${workPermitStartDate.getDate()}`,
+      workPermitEndDate: `${workPermitEndDate.getFullYear()}-${workPermitEndDate.getMonth() + 1}-${workPermitEndDate.getDate()}`
     };
 
     axios.defaults.headers.common = { token };

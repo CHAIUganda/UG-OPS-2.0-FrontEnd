@@ -210,10 +210,10 @@ function EditUser(props) {
       ...user,
       fName: firstName,
       lName: lastName,
-      birthDate,
+      birthDate: `${birthDate.getFullYear()}-${birthDate.getMonth() + 1}-${birthDate.getDate()}`,
       bankAccounts,
-      contractStartDate,
-      contractEndDate,
+      contractStartDate: `${contractStartDate.getFullYear()}-${contractStartDate.getMonth() + 1}-${contractStartDate.getDate()}`,
+      contractEndDate: `${contractEndDate.getFullYear()}-${contractEndDate.getMonth() + 1}-${contractEndDate.getDate()}`,,
       contractType,
       gender,
       admin,
@@ -231,8 +231,8 @@ function EditUser(props) {
       contractId: user.contractId,
       nssfNumber,
       tinNumber,
-      workPermitStartDate,
-      workPermitEndDate
+      workPermitStartDate: `${workPermitStartDate.getFullYear()}-${workPermitStartDate.getMonth() + 1}-${workPermitStartDate.getDate()}`,
+      workPermitEndDate: `${workPermitEndDate.getFullYear()}-${workPermitEndDate.getMonth() + 1}-${workPermitEndDate.getDate()}`
     };
 
     axios.defaults.headers.common = { token };
