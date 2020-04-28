@@ -77,7 +77,6 @@ function Apply4LeaveModal({
       You have used ${leaveDetails.annualLeaveTaken} annual leave days so far.
       You have ${availableDays} annual leave day(s), 
       and you have selected ${leaveDaysArray.length} ${leaveWord} day(s).
-      You are good to go.
       `);
     } else {
       setRedContraintsFeedback(`
@@ -97,7 +96,6 @@ function Apply4LeaveModal({
       You have used ${leaveDetails.maternityLeaveTaken} maternity leave days so far.
       You have ${availableDays} maternity leave day(s), 
       and you have selected ${leaveDaysArray.length} leave day(s).
-      You are good to go.
       `);
     } else {
       setRedContraintsFeedback(`
@@ -114,7 +112,7 @@ function Apply4LeaveModal({
     if (availableDays >= leaveDaysArray.length) {
       setGreenContraintsFeedback(`
       You have selected ${leaveDaysArray.length} paternity leave day(s).
-      You are good to go.
+      .
       `);
     } else {
       setRedContraintsFeedback(`
@@ -132,7 +130,7 @@ function Apply4LeaveModal({
       You have used ${leaveDetails.studyLeaveTaken} study leave days so far.
       You have ${availableDays} study leave day(s), 
       and you have selected ${leaveDaysArray.length} study leave day(s).
-      You are good to go.
+      .
       `);
     } else {
       setRedContraintsFeedback(`
@@ -151,7 +149,7 @@ function Apply4LeaveModal({
       You have used ${leaveDetails.studyLeaveTaken} unpaid leave days so far.
       You have ${availableDays} unpaid leave day(s), 
       and you have selected ${leaveDaysArray.length} unpaid leave day(s).
-      You are good to go.
+      .
       `);
     } else {
       setRedContraintsFeedback(`
@@ -170,7 +168,7 @@ function Apply4LeaveModal({
       You have used ${leaveDetails.sickLeaveTaken} sick leave days so far.
       You have ${availableDays} sick leave day(s), 
       and you have selected ${leaveDaysArray.length} sick leave day(s).
-      You are good to go.
+      .
       `);
     } else {
       setRedContraintsFeedback(`
@@ -283,7 +281,7 @@ function Apply4LeaveModal({
   const handleSubmit = (event) => {
     event.preventDefault();
     setSpinner(true);
-    if (!leaveDates || leaveDates.length < 1) {
+    if (!leaveDates || leaveDates.length < 1 || arrayOfLeaveDays.length < 1) {
       setError('Please select atleast a day to continue.');
       setSpinner(false);
       return;
