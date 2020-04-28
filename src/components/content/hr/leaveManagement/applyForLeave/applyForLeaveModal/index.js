@@ -20,6 +20,7 @@ import { connect } from 'react-redux';
 import axios from 'axios';
 import moment from 'moment';
 
+import getDatesInBetween from '../../../../../common/getDatesBetween';
 import { BASE_URL } from '../../../../../../config';
 import './apply4LeaveModal.css';
 
@@ -43,7 +44,7 @@ function Apply4LeaveModal({
   const [supervisorName] = useState(`${supervisor.fName} ${supervisor.lName}`);
   const [category, setCategory] = useState('Annual');
   const [comment, setComment] = useState('');
-  const [leaveDates, setLeaveDate] = useState();
+  const [leaveDates, setLeaveDates] = useState();
   const [arrayOfLeaveDays, setArrayOfLeaveDays] = useState([]);
   const [arrayOfWeekends, setArrayOfWeekends] = useState([]);
   const [arrayOfHolidays, setArrayOfHolidays] = useState([]);
@@ -56,7 +57,7 @@ function Apply4LeaveModal({
     setError('');
     setCategory('Annual');
     setComment('');
-    setLeaveDate();
+    setLeaveDates();
     setArrayOfLeaveDays([]);
     setArrayOfWeekends([]);
     setArrayOfHolidays([]);
@@ -242,21 +243,12 @@ function Apply4LeaveModal({
     setRedContraintsFeedback('');
     setSuccessFeedback('');
     setError('');
-    const arrayOfDays = [];
     if (leaveDates) {
-      arrayOfDays.push(leaveDates[0]);
-      let start = leaveDates[0];
-      const end = leaveDates[1];
-      const firstDate = start.setDate(start.getDate());
-      /* wierd but works */
-      leaveDates[0] = new Date(firstDate);
-      start = new Date(firstDate);
-      while (start < end) {
-        arrayOfDays.push(start);
-        const newDate = start.setDate(start.getDate() + 1);
-        start = new Date(newDate);
+      if (!leaveDates[0] || !leaveDates[1]) {
+        setError('FE: Error setting the dates!');
+        return;
       }
-      arrayOfDays.pop();
+      const arrayOfDays = getDatesInBetween(leaveDates[0], leaveDates[1]);
       const daysDetails = filterLeaveDays(arrayOfDays);
       setArrayOfLeaveDays(daysDetails.leaveDays);
       setArrayOfWeekends(daysDetails.weekendDays);
@@ -297,8 +289,8 @@ function Apply4LeaveModal({
       return;
     }
     const leaveObject = {
-      startDate: leaveDates[0],
-      endDate: leaveDates[1],
+      startDate: `${leaveDates[0].getFullYear()}-${leaveDates[0].getMonth() + 1}-${leaveDates[0].getDate()}`,
+      endDate: `${leaveDates[1].getFullYear()}-${leaveDates[1].getMonth() + 1}-${leaveDates[1].getDate()}`,
       type: category,
       staffEmail: email,
       leaveDays: arrayOfLeaveDays,
@@ -416,7 +408,7 @@ function Apply4LeaveModal({
                 setRedContraintsFeedback('');
                 setSuccessFeedback('');
                 setError('');
-                setLeaveDate(date);
+                setLeaveDates(date);
               }
               } />
           </InputGroup>
