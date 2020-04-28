@@ -213,7 +213,7 @@ function EditUser(props) {
       birthDate: `${birthDate.getFullYear()}-${birthDate.getMonth() + 1}-${birthDate.getDate()}`,
       bankAccounts,
       contractStartDate: `${contractStartDate.getFullYear()}-${contractStartDate.getMonth() + 1}-${contractStartDate.getDate()}`,
-      contractEndDate: `${contractEndDate.getFullYear()}-${contractEndDate.getMonth() + 1}-${contractEndDate.getDate()}`,,
+      contractEndDate: `${contractEndDate.getFullYear()}-${contractEndDate.getMonth() + 1}-${contractEndDate.getDate()}`,
       contractType,
       gender,
       admin,
