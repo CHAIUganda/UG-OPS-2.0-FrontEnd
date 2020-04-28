@@ -194,10 +194,10 @@ function ProgramLeaveTracker({ token, program }) {
   const returnStatusFilterHead = () => (
     <th scope="col">
             Status
-      <select className="dropdownFilter" value={statusFilter} onChange={(e) => handleChange(e, setStatusFilter, 'status')}>
-        <option value="all" className="optionTableStyle">all</option>
-        <option value="Planned" className="optionTableStyle">Planned</option>
-        <option value="On Leave" className="optionTableStyle">On Leave</option>
+      <select className="form-control" value={statusFilter} onChange={(e) => handleChange(e, setStatusFilter, 'status')}>
+        <option value="all">all</option>
+        <option value="Planned">Planned</option>
+        <option value="On Leave">On Leave</option>
       </select>
     </th>
   );
@@ -205,20 +205,20 @@ function ProgramLeaveTracker({ token, program }) {
   const returnStartMonthFilterHead = () => (
     <th scope="col">
             Starts
-      <select className="dropdownFilter" value={startDate} onChange={(e) => handleChange(e, setStartDate, 'startDate')}>
-        <option value="all" className="optionTableStyle">all</option>
-        <option value="0" className="optionTableStyle">Jan</option>
-        <option value="1" className="optionTableStyle">Feb</option>
-        <option value="2" className="optionTableStyle">Mar</option>
-        <option value="3" className="optionTableStyle">Apr</option>
-        <option value="4" className="optionTableStyle">May</option>
-        <option value="5" className="optionTableStyle">Jun</option>
-        <option value="6" className="optionTableStyle">Jul </option>
-        <option value="7" className="optionTableStyle">Aug </option>
-        <option value="8" className="optionTableStyle">Sep </option>
-        <option value="9" className="optionTableStyle">Oct </option>
-        <option value="10" className="optionTableStyle">Nov </option>
-        <option value="11" className="optionTableStyle">Dec</option>
+      <select className="form-control" value={startDate} onChange={(e) => handleChange(e, setStartDate, 'startDate')}>
+        <option value="all">all</option>
+        <option value="0">Jan</option>
+        <option value="1">Feb</option>
+        <option value="2">Mar</option>
+        <option value="3">Apr</option>
+        <option value="4">May</option>
+        <option value="5">Jun</option>
+        <option value="6">Jul </option>
+        <option value="7">Aug </option>
+        <option value="8">Sep </option>
+        <option value="9">Oct </option>
+        <option value="10">Nov </option>
+        <option value="11">Dec</option>
       </select>
     </th>
   );
@@ -226,20 +226,20 @@ function ProgramLeaveTracker({ token, program }) {
   const returnEndMonthFilterHead = () => (
     <th scope="col">
             Ends
-      <select className="dropdownFilter" value={endDate} onChange={(e) => handleChange(e, setEndDate, 'endDate')}>
-        <option value="all" className="optionTableStyle">all</option>
-        <option value="0" className="optionTableStyle">Jan</option>
-        <option value="1" className="optionTableStyle">Feb</option>
-        <option value="2" className="optionTableStyle">Mar</option>
-        <option value="3" className="optionTableStyle">Apr</option>
-        <option value="4" className="optionTableStyle">May</option>
-        <option value="5" className="optionTableStyle">Jun</option>
-        <option value="6" className="optionTableStyle">Jul </option>
-        <option value="7" className="optionTableStyle">Aug </option>
-        <option value="8" className="optionTableStyle">Sep </option>
-        <option value="9" className="optionTableStyle">Oct </option>
-        <option value="10" className="optionTableStyle">Nov </option>
-        <option value="11" className="optionTableStyle">Dec</option>
+      <select className="form-control" value={endDate} onChange={(e) => handleChange(e, setEndDate, 'endDate')}>
+        <option value="all">all</option>
+        <option value="0">Jan</option>
+        <option value="1">Feb</option>
+        <option value="2">Mar</option>
+        <option value="3">Apr</option>
+        <option value="4">May</option>
+        <option value="5">Jun</option>
+        <option value="6">Jul </option>
+        <option value="7">Aug </option>
+        <option value="8">Sep </option>
+        <option value="9">Oct </option>
+        <option value="10">Nov </option>
+        <option value="11">Dec</option>
       </select>
     </th>
   );

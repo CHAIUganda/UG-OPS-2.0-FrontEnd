@@ -207,11 +207,11 @@ function ConsolidatedLeaveBalances({ token }) {
   const returnEndProgramFilterHead = () => (
     <th scope="col">
             program
-      <select className="dropdownFilter form-control" value={program} onChange={(e) => handleChange(e, setProgram, 'program')}>
+      <select className="form-control" value={program} onChange={(e) => handleChange(e, setProgram, 'programShortForm')}>
         <option value="all">all</option>
         {
           allPrograms.map((prog) => (
-            <option key={prog._id} value={prog.name}>{prog.name}</option>
+            <option key={prog._id} value={prog.shortForm}>{prog.shortForm}</option>
           ))
         }
       </select>
@@ -221,10 +221,10 @@ function ConsolidatedLeaveBalances({ token }) {
   const returnAnnualLeaveFilterHead = () => (
     <th scope="col">
             Annual
-      <select className="dropdownFilter" value={annualSort} onChange={(e) => handleChange(e, setAnnualSort, 'annualSort')}>
-        <option value="all" className="optionTableStyle">all</option>
-        <option value="green" className="optionTableStyle">green</option>
-        <option value="red" className="optionTableStyle">red</option>
+      <select className="form-control" value={annualSort} onChange={(e) => handleChange(e, setAnnualSort, 'annualSort')}>
+        <option value="all" >all</option>
+        <option value="green" >green</option>
+        <option value="red" >red</option>
       </select>
     </th>
   );
@@ -262,7 +262,7 @@ function ConsolidatedLeaveBalances({ token }) {
           filteredLeaves.map((l) => (
             <tr key={l._id}>
               <td>{`${l.fName} ${l.lName}`}</td>
-              <td>{l.program}</td>
+              <td>{l.programShortForm}</td>
               <td className={
                 l.leaveDetails.annualLeaveBal > 10
                   ? returnStatusClass('rejectedWords')
