@@ -54,7 +54,8 @@ export default function ManageLeaveModal({
           type: category,
           startDate: leaveDates[0],
           endDate: leaveDates[1],
-          comment
+          comment,
+          status: leaveStatus
         });
       setModal(bool);
       return;
