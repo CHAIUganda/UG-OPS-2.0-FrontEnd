@@ -12,6 +12,8 @@ import { CustomInput } from 'reactstrap';
 
 import { BASE_URL } from '../../../../config';
 import CommonSpinner from '../../../common/spinner';
+import FilterNameButton from '../../../common/filterNameButton';
+
 import './viewAllUsers.css';
 
 const mapStateToProps = (state) => ({
@@ -27,25 +29,32 @@ function ViewAllUsers({ token }) {
   const [displayEmail, setDisplayEmail] = useState('true');
   const [displayNssf, setDisplayNssf] = useState('true');
   const [displayTIN, setDisplayTIN] = useState('true');
-  const [selectLibValue, setSelectLibValue] = useState(null);
+  const [name, setName] = useState([]);
 
-  const selectLibOnChange = (selectedUsers) => {
-    if (selectedUsers.length <= 0) {
-      setFilteredUsers(allUsers);
-      setSelectLibValue(null);
-    } else {
-      const newArr = selectedUsers.map((selectedUser) => {
-        const userPicked = allUsers.filter((user) => user._id === selectedUser.value);
-        return userPicked[0];
+  const selectLibOnChange = (selectedUser) => {
+    const alreadyFiltered = name.some((u) => u.value === selectedUser.value);
+    const arr = [...name];
+    let filter = [...filteredUsers];
+
+    if (!alreadyFiltered) {
+      arr.push(selectedUser);
+      filter = [];
+
+      allUsers.forEach((u) => {
+        arr.forEach((pickedUser) => {
+          if (u._id === pickedUser.value) {
+            filter.push(u);
+          }
+        });
       });
-      setFilteredUsers(newArr);
-      setSelectLibValue([...selectedUsers]);
     }
+    setName(arr);
+    setFilteredUsers(filter);
   };
 
   const resetFilters = () => {
     setFilteredUsers(allUsers);
-    setSelectLibValue(null);
+    setName([]);
     setDisplayTIN('true');
     setDisplayNssf('true');
     setDisplayEmail('true');
@@ -60,8 +69,7 @@ function ViewAllUsers({ token }) {
           options={selectLibArray}
           onChange={
             (opt) => selectLibOnChange(opt)}
-          isMulti
-          value={selectLibValue}
+          value={null}
         />
       </span>
     </th>
@@ -124,9 +132,6 @@ function ViewAllUsers({ token }) {
   const returnData = () => (
     <table className="table holidaysTable" id="hrConsolidatedTrackerTable">
       <thead>
-        <td className="resetFilters" onClick={resetFilters}>
-            Reset All Filters
-        </td>
         <tr>
           {returnNameFilterHead()}
           {returnEmailFilterHead()}
@@ -222,6 +227,38 @@ function ViewAllUsers({ token }) {
     );
   }
 
+  const removePerson = (email) => {
+    const removeName = name.filter((n) => n.value !== email);
+    const removeRecord = filteredUsers.filter((u) => u._id !== email);
+
+    if (removePerson.length <= 0) {
+      setName([]);
+      setFilteredUsers(allUsers);
+    } else {
+      setName(removeName);
+      setFilteredUsers(removeRecord);
+    }
+  };
+
+  const generateFilterRibbon = () => (
+    <div className="row">
+      <div className="col text-left filterRibbon">
+        <span className="resetFilters" onClick={resetFilters}>
+        Reset All Filters
+        </span>
+        {
+          name.map((n, index) => (
+            <FilterNameButton
+              key={`${index}${n.value}`}
+              person={n}
+              removePerson={removePerson}
+            />
+          ))
+        }
+      </div>
+    </div>
+  );
+
   const generatePDf = (event) => {
     event.preventDefault();
     const input = document.getElementById('allUSersContent');
@@ -252,6 +289,7 @@ function ViewAllUsers({ token }) {
             Generate PDF
           </button>
         </h3>
+        {generateFilterRibbon()}
         {returnData()}
       </div>
     </div>
