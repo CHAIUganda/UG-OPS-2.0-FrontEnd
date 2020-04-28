@@ -68,6 +68,7 @@ function HRHome({
         <tr>
           <th scope="col">Leave Type</th>
           <th scope="col">Used</th>
+          <th scope="col">Planned</th>
           <th scope="col">Balance</th>
           <th scope="col" className="text-left">Notes</th>
         </tr>
@@ -76,6 +77,7 @@ function HRHome({
         <tr>
           <td>Annual Leave</td>
           <td>{leaveBalances.annualLeaveTaken}</td>
+          <td>{leaveBalances.annualLeavePlanned}</td>
           <td>{leaveBalances.annualLeaveBal}</td>
           <td className="text-left">You accrue 1.75 annual leave days per month</td>
         </tr>
@@ -84,6 +86,7 @@ function HRHome({
           && <tr>
             <td>Home Leave</td>
             <td>{leaveBalances.homeLeaveTaken}</td>
+            <td>{leaveBalances.homeLeavePlanned}</td>
             {
               leaveBalances.homeLeaveTaken === 0
               && <td>
@@ -102,6 +105,7 @@ function HRHome({
           && <tr>
             <td>Maternity</td>
             <td>{leaveBalances.maternityLeaveTaken}</td>
+            <td>{leaveBalances.maternityLeavePlanned}</td>
             <td>{leaveBalances.maternityLeaveBal}</td>
             <td className="text-left" >
               You are entitled to 60 days of maternity leave days
@@ -113,6 +117,7 @@ function HRHome({
           && <tr>
             <td>Paternity</td>
             <td>{leaveBalances.paternityLeaveTaken}</td>
+            <td>{leaveBalances.paternityLeavePlanned}</td>
             <td>-</td>
             <td className="text-left">You are entitled to 7 paternity leave days per occurence</td>
           </tr>
@@ -120,6 +125,7 @@ function HRHome({
         <tr>
           <td>Sick Leave</td>
           <td>{leaveBalances.sickLeaveTaken}</td>
+          <td>{leaveBalances.sickLeavePlanned}</td>
           <td>{leaveBalances.sickLeaveBal}</td>
           <td className="text-left">
             You are entitled to 42 sick leave days.
@@ -129,6 +135,7 @@ function HRHome({
         <tr>
           <td>Study Leave</td>
           <td>{leaveBalances.studyLeaveTaken}</td>
+          <td>{leaveBalances.studyLeavePlanned}</td>
           <td>{leaveBalances.studyLeaveBal}</td>
           <td className="text-left">You are entitled to 4 study leave days</td>
         </tr>
@@ -136,12 +143,19 @@ function HRHome({
           <td>Unpaid Leave</td>
           <td>{leaveBalances.unPaidLeaveTaken}</td>
           <td>{leaveBalances.unpaidLeaveBal}</td>
+          <td>{leaveBalances.unPaidLeavePlanned}</td>
           <td className="text-left">
             You can have up to 60 unpaid leave days.
             You should have exhausted all other leave entitlements
           </td>
         </tr>
       </tbody>
+      <caption>
+        Please be informed that when you plan for leave,
+        those planned leave days are used to compute your leave balance.
+        You can always cancel any planned leave, that will avail more leave days.
+        This applies for all leave types.
+      </caption>
     </table>
   );
 

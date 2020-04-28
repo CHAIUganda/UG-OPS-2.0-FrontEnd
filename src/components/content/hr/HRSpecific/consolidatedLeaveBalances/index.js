@@ -207,7 +207,7 @@ function ConsolidatedLeaveBalances({ token }) {
   const returnEndProgramFilterHead = () => (
     <th scope="col">
             program
-      <select className="dropdownFilter form-control" value={program} onChange={(e) => handleChange(e, setProgram, 'program')}>
+      <select className="form-control" value={program} onChange={(e) => handleChange(e, setProgram, 'program')}>
         <option value="all">all</option>
         {
           allPrograms.map((prog) => (
