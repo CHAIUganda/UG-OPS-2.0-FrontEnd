@@ -295,11 +295,11 @@ function ConsolidatedTracker({ token }) {
   const returnEndProgramFilterHead = () => (
     <th scope="col">
             program
-      <select className="form-control" value={program} onChange={(e) => handleChange(e, setProgram, 'program')}>
+      <select className="form-control" value={program} onChange={(e) => handleChange(e, setProgram, 'programShortForm')}>
         <option value="all" className="optionTableStyle">all</option>
         {
           allPrograms.map((prog) => (
-            <option key={prog._id} value={prog.name}>{prog.name}</option>
+            <option key={prog._id} value={prog.shortForm}>{prog.shortForm}</option>
           ))
         }
       </select>
@@ -337,7 +337,7 @@ function ConsolidatedTracker({ token }) {
           filteredLeaves.map((leave) => (
             <tr key={leave._id}>
               <td>{`${leave.staff.fName} ${leave.staff.lName}`}</td>
-              <td>{leave.program}</td>
+              <td>{leave.programShortForm}</td>
               <td>{leave.type}</td>
               <td>
                 <button className={returnStatusClass(leave.status)}>
