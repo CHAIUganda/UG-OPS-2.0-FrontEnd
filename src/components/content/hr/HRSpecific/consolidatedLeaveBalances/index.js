@@ -221,10 +221,10 @@ function ConsolidatedLeaveBalances({ token }) {
   const returnAnnualLeaveFilterHead = () => (
     <th scope="col">
             Annual
-      <select className="dropdownFilter" value={annualSort} onChange={(e) => handleChange(e, setAnnualSort, 'annualSort')}>
-        <option value="all" className="optionTableStyle">all</option>
-        <option value="green" className="optionTableStyle">green</option>
-        <option value="red" className="optionTableStyle">red</option>
+      <select className="form-control" value={annualSort} onChange={(e) => handleChange(e, setAnnualSort, 'annualSort')}>
+        <option value="all" >all</option>
+        <option value="green" >green</option>
+        <option value="red" >red</option>
       </select>
     </th>
   );
