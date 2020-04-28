@@ -220,15 +220,15 @@ function ConsolidatedTracker({ token }) {
   const returnTypeFilterHead = () => (
     <th scope="col">
             Type
-      <select className="dropdownFilter" value={typeFilter} onChange={(e) => handleChange(e, setTypeFilter, 'type')}>
-        <option value="all" className="optionTableStyle">all</option>
-        <option value="Annual" className="optionTableStyle">Annual</option>
-        <option value="Paternity" className="optionTableStyle">Paternity</option>
-        <option value="Home" className="optionTableStyle">Home</option>
-        <option value="Maternity" className="optionTableStyle">Maternity</option>
-        <option value="Sick" className="optionTableStyle">Sick</option>
-        <option value="Unpaid" className="optionTableStyle">Unpaid</option>
-        <option value="Study" className="optionTableStyle">Study</option>
+      <select className="form-control" value={typeFilter} onChange={(e) => handleChange(e, setTypeFilter, 'type')}>
+        <option value="all">all</option>
+        <option value="Annual">Annual</option>
+        <option value="Paternity">Paternity</option>
+        <option value="Home">Home</option>
+        <option value="Maternity">Maternity</option>
+        <option value="Sick">Sick</option>
+        <option value="Unpaid">Unpaid</option>
+        <option value="Study">Study</option>
       </select>
     </th>
   );
@@ -236,16 +236,16 @@ function ConsolidatedTracker({ token }) {
   const returnStatusFilterHead = () => (
     <th scope="col">
             Status
-      <select className="dropdownFilter" value={statusFilter} onChange={(e) => handleChange(e, setStatusFilter, 'status')}>
-        <option value="all" className="optionTableStyle">all</option>
-        <option value="Planned" className="optionTableStyle">Planned</option>
-        <option value="Pending Supervisor" className="optionTableStyle">Pending Supervisor</option>
-        <option value="Cancelled" className="optionTableStyle">Cancelled</option>
-        <option value="Supervisor Declined" className="optionTableStyle">Supervisor Declined</option>
-        <option value="Country Director Declined" className="optionTableStyle">Country Director Declined</option>
-        <option value="Approved" className="optionTableStyle">Approved</option>
-        <option value="Taken" className="optionTableStyle">Taken </option>
-        <option value="Not taken" className="optionTableStyle">Not taken </option>
+      <select className="form-control" value={statusFilter} onChange={(e) => handleChange(e, setStatusFilter, 'status')}>
+        <option value="all">all</option>
+        <option value="Planned">Planned</option>
+        <option value="Pending Supervisor">Pending Supervisor</option>
+        <option value="Cancelled">Cancelled</option>
+        <option value="Supervisor Declined">Supervisor Declined</option>
+        <option value="Country Director Declined">Country Director Declined</option>
+        <option value="Approved">Approved</option>
+        <option value="Taken">Taken </option>
+        <option value="Not taken">Not taken </option>
       </select>
     </th>
   );
@@ -253,20 +253,20 @@ function ConsolidatedTracker({ token }) {
   const returnStartMonthFilterHead = () => (
     <th scope="col">
             Starts
-      <select className="dropdownFilter" value={startDate} onChange={(e) => handleChange(e, setStartDate, 'startDate')}>
-        <option value="all" className="optionTableStyle">all</option>
-        <option value="0" className="optionTableStyle">Jan</option>
-        <option value="1" className="optionTableStyle">Feb</option>
-        <option value="2" className="optionTableStyle">Mar</option>
-        <option value="3" className="optionTableStyle">Apr</option>
-        <option value="4" className="optionTableStyle">May</option>
-        <option value="5" className="optionTableStyle">Jun</option>
-        <option value="6" className="optionTableStyle">Jul </option>
-        <option value="7" className="optionTableStyle">Aug </option>
-        <option value="8" className="optionTableStyle">Sep </option>
-        <option value="9" className="optionTableStyle">Oct </option>
-        <option value="10" className="optionTableStyle">Nov </option>
-        <option value="11" className="optionTableStyle">Dec</option>
+      <select className="form-control" value={startDate} onChange={(e) => handleChange(e, setStartDate, 'startDate')}>
+        <option value="all">all</option>
+        <option value="0">Jan</option>
+        <option value="1">Feb</option>
+        <option value="2">Mar</option>
+        <option value="3">Apr</option>
+        <option value="4">May</option>
+        <option value="5">Jun</option>
+        <option value="6">Jul </option>
+        <option value="7">Aug </option>
+        <option value="8">Sep </option>
+        <option value="9">Oct </option>
+        <option value="10">Nov </option>
+        <option value="11">Dec</option>
       </select>
     </th>
   );
@@ -274,20 +274,20 @@ function ConsolidatedTracker({ token }) {
   const returnEndMonthFilterHead = () => (
     <th scope="col">
             Ends
-      <select className="dropdownFilter" value={endDate} onChange={(e) => handleChange(e, setEndDate, 'endDate')}>
-        <option value="all" className="optionTableStyle">all</option>
-        <option value="0" className="optionTableStyle">Jan</option>
-        <option value="1" className="optionTableStyle">Feb</option>
-        <option value="2" className="optionTableStyle">Mar</option>
-        <option value="3" className="optionTableStyle">Apr</option>
-        <option value="4" className="optionTableStyle">May</option>
-        <option value="5" className="optionTableStyle">Jun</option>
-        <option value="6" className="optionTableStyle">Jul </option>
-        <option value="7" className="optionTableStyle">Aug </option>
-        <option value="8" className="optionTableStyle">Sep </option>
-        <option value="9" className="optionTableStyle">Oct </option>
-        <option value="10" className="optionTableStyle">Nov </option>
-        <option value="11" className="optionTableStyle">Dec</option>
+      <select className="form-control" value={endDate} onChange={(e) => handleChange(e, setEndDate, 'endDate')}>
+        <option value="all">all</option>
+        <option value="0">Jan</option>
+        <option value="1">Feb</option>
+        <option value="2">Mar</option>
+        <option value="3">Apr</option>
+        <option value="4">May</option>
+        <option value="5">Jun</option>
+        <option value="6">Jul </option>
+        <option value="7">Aug </option>
+        <option value="8">Sep </option>
+        <option value="9">Oct </option>
+        <option value="10">Nov </option>
+        <option value="11">Dec</option>
       </select>
     </th>
   );
@@ -295,11 +295,11 @@ function ConsolidatedTracker({ token }) {
   const returnEndProgramFilterHead = () => (
     <th scope="col">
             program
-      <select className="dropdownFilter" value={program} onChange={(e) => handleChange(e, setProgram, 'program')}>
+      <select className="form-control" value={program} onChange={(e) => handleChange(e, setProgram, 'program')}>
         <option value="all" className="optionTableStyle">all</option>
         {
           allPrograms.map((prog) => (
-            <option key={prog._id} value={prog.name} className="optionTableStyle">{prog.name}</option>
+            <option key={prog._id} value={prog.name}>{prog.name}</option>
           ))
         }
       </select>
