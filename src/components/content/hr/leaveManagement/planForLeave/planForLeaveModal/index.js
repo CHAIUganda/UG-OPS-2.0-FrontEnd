@@ -76,6 +76,7 @@ function Plan4LeaveModal({
     if (availableDays >= leaveDaysArray.length) {
       setGreenContraintsFeedback(`
       You have ${leaveDetails.annualLeaveBF} annual leave days brought forward.
+      You have planned for ${leaveDetails.annualLeavePlanned} annual leave days.
       You have used ${leaveDetails.annualLeaveTaken} annual leave days so far.
       You will have ${availableDays} annual leave day(s) by then, 
       and you have selected ${leaveDaysArray.length} ${leaveWord} day(s).
@@ -84,10 +85,12 @@ function Plan4LeaveModal({
     } else {
       setRedContraintsFeedback(`
         You have ${leaveDetails.annualLeaveBF} annual leave days brought forward.
+        You have planned for ${leaveDetails.annualLeavePlanned} annual leave days.
         You have used ${leaveDetails.annualLeaveTaken} annual leave days so far.
         You will have ${availableDays} annual leave day(s) by then, 
         However, you have selected ${leaveDaysArray.length} ${leaveWord} leave day(s)!
         Please reduce by ${leaveDaysArray.length - availableDays}
+        You can cancel some planned annual leaves if any to avail more days.
       `);
     }
   };
@@ -97,6 +100,7 @@ function Plan4LeaveModal({
     if (availableDays >= leaveDaysArray.length) {
       setGreenContraintsFeedback(`
       You have used ${leaveDetails.maternityLeaveTaken} maternity leave days so far.
+      You have planned for ${leaveDetails.maternityLeavePlanned} maternity leave days.
       You will have ${availableDays} maternity leave day(s) by then, 
       and you have selected ${leaveDaysArray.length} leave day(s).
       You are good to go.
@@ -104,9 +108,11 @@ function Plan4LeaveModal({
     } else {
       setRedContraintsFeedback(`
         You have used ${leaveDetails.maternityLeaveTaken} maternity leave days so far.
+        You have planned for ${leaveDetails.maternityLeavePlanned} maternity leave days.
         You will have ${availableDays} maternity leave day(s) by then, 
         However, you have selected ${leaveDaysArray.length} day(s)!
         Please reduce by ${leaveDaysArray.length - availableDays}
+        You can cancel some planned maternity leaves if any to avail more days.
       `);
     }
   };
@@ -132,6 +138,7 @@ function Plan4LeaveModal({
     if (availableDays >= leaveDaysArray.length) {
       setGreenContraintsFeedback(`
       You have used ${leaveDetails.studyLeaveTaken} study leave days so far.
+      You have planned for ${leaveDetails.studyLeavePlanned} study leave days.
       You will have ${availableDays} study leave day(s) by then, 
       and you have selected ${leaveDaysArray.length} study leave day(s).
       You are good to go.
@@ -140,8 +147,9 @@ function Plan4LeaveModal({
       setRedContraintsFeedback(`
         You have used ${leaveDetails.studyLeaveTaken} study leave days so far.
         You will have ${availableDays} study leave day(s) by then, 
-        However, you have selected ${leaveDaysArray.length} sturdy leave day(s)!
-        Please reduce by ${leaveDaysArray.length - availableDays}
+        However, you have selected ${leaveDaysArray.length} study leave day(s)!
+        Please reduce by ${leaveDaysArray.length - availableDays}.
+        You can cancel some planned study leaves if any to avail more days.
       `);
     }
   };
@@ -151,16 +159,17 @@ function Plan4LeaveModal({
     if (availableDays >= leaveDaysArray.length) {
       setGreenContraintsFeedback(`
       You have used ${leaveDetails.studyLeaveTaken} unpaid leave days so far.
+      You have planned for ${leaveDetails.unPaidLeavePlanned} unpaid leave days.
       You will have ${availableDays} unpaid leave day(s) by then, 
       and you have selected ${leaveDaysArray.length} unpaid leave day(s).
-      You are good to go.
       `);
     } else {
       setRedContraintsFeedback(`
         You have used ${leaveDetails.studyLeaveTaken} unpaid leave days so far.
         You will have ${availableDays} unpaid leave day(s) by then, 
         However, you have selected ${leaveDaysArray.length} unpaid leave day(s)!
-        Please reduce by ${leaveDaysArray.length - availableDays}
+        Please reduce by ${leaveDaysArray.length - availableDays}.
+        You can cancel some planned unpaid leaves if any to avail more days.
       `);
     }
   };
