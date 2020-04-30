@@ -30,6 +30,65 @@ function ViewAllUsers({ token }) {
   const [displayNssf, setDisplayNssf] = useState('true');
   const [displayTIN, setDisplayTIN] = useState('true');
   const [name, setName] = useState([]);
+  const [allPrograms, setAllPRograms] = useState([]);
+  const [program, setProgram] = useState('all');
+
+  const filterRecords = (users, programToFilterBy) => {
+    let filtered = [];
+    if (programToFilterBy) {
+      if (programToFilterBy === 'all' && name.length < 1) {
+        filtered = [...allUsers];
+      } else if (programToFilterBy === 'all' && name.length > 1) {
+        name.forEach((n) => {
+          allUsers.forEach((u) => {
+            if (n.value === u._id) {
+              filtered.push(u);
+            }
+          });
+        });
+      } else if (name.length < 1 && programToFilterBy !== 'all') {
+        filtered = allUsers.filter((u) => u.programShortForm === programToFilterBy);
+      } else {
+        name.forEach((n) => {
+          allUsers.forEach((u) => {
+            if (n.value === u._id) {
+              filtered.push(u);
+            }
+          });
+        });
+        filtered = filtered.filter((f) => f.programShortForm === programToFilterBy);
+      }
+      // set filtered docs
+      setFilteredUsers(filtered);
+    }
+
+    if (users) {
+      if (users.length < 1 && program === 'all') {
+        filtered = [...allUsers];
+      } else if (users.length < 1 && program !== 'all') {
+        filtered = allUsers.filter((u) => u.programShortForm === program);
+      } else if (users.length > 0 && program === 'all') {
+        users.forEach((n) => {
+          allUsers.forEach((u) => {
+            if (n.value === u._id) {
+              filtered.push(u);
+            }
+          });
+        });
+      } else if (users.length > 0 && program !== 'all') {
+        users.forEach((n) => {
+          allUsers.forEach((u) => {
+            if (n.value === u._id) {
+              filtered.push(u);
+            }
+          });
+        });
+        filtered = filtered.filter((f) => f.programShortForm === program);
+      }
+      //
+      setFilteredUsers(filtered);
+    }
+  };
 
   const selectLibOnChange = (selectedUser) => {
     const alreadyFiltered = name.some((u) => u.value === selectedUser.value);
@@ -47,9 +106,10 @@ function ViewAllUsers({ token }) {
           }
         });
       });
+      setName(arr);
+      filterRecords(arr, false);
+      // setFilteredUsers(filter);
     }
-    setName(arr);
-    setFilteredUsers(filter);
   };
 
   const resetFilters = () => {
@@ -71,6 +131,34 @@ function ViewAllUsers({ token }) {
             (opt) => selectLibOnChange(opt)}
           value={null}
         />
+      </span>
+    </th>
+  );
+
+  const filterByPrograms = (value) => {
+    setProgram(value);
+    //
+    filterRecords(false, value);
+  };
+
+  const returnProgramFilterHead = () => (
+    <th scope="col">
+      Program
+      <span className="customSelectStyles">
+        <CustomInput
+          type="select"
+          id="programCustomSelect"
+          name="customSelect"
+          value={program}
+          onChange={(e) => filterByPrograms(e.target.value)}
+        >
+          <option value="all" className="optionTableStyle">all</option>
+          {
+            allPrograms.map((prog) => (
+              <option key={prog._id} value={prog.shortForm}>{prog.shortForm}</option>
+            ))
+          }
+        </CustomInput>
       </span>
     </th>
   );
@@ -134,6 +222,7 @@ function ViewAllUsers({ token }) {
       <thead>
         <tr>
           {returnNameFilterHead()}
+          {returnProgramFilterHead()}
           {returnEmailFilterHead()}
           {returnNSSFFilterHead()}
           {returnTINFilterHead()}
@@ -145,6 +234,7 @@ function ViewAllUsers({ token }) {
           filteredUsers.map((user) => (
             <tr key={user._id}>
               <td>{`${user.fName} ${user.lName}`}</td>
+              <td>{user.programShortForm}</td>
               <td>{
                 displayEmail === 'true'
                   ? user.email
@@ -182,6 +272,24 @@ function ViewAllUsers({ token }) {
     </table>
   );
 
+  const getProgrammes = () => {
+    const endPoint = `${BASE_URL}hrApi/getPrograms`;
+    axios.defaults.headers.common = { token };
+    axios.get(endPoint)
+      .then((res) => {
+        setSpinner(false);
+        setAllPRograms(res.data);
+      })
+      .catch((err) => {
+        setSpinner(false);
+        if (err && err.response && err.response.data && err.response.data.message) {
+          setError(err.response.data.message);
+        } else {
+          setError(err.message);
+        }
+      });
+  };
+
   useEffect(() => {
     setSpinner(true);
     axios.defaults.headers.common = { token };
@@ -189,7 +297,6 @@ function ViewAllUsers({ token }) {
 
     axios.get(apiRoute)
       . then((res) => {
-        setSpinner(false);
         setAllUsers(res.data);
         setFilteredUsers(res.data);
         const arrayToSet = res.data.map((user) => ({
@@ -197,6 +304,7 @@ function ViewAllUsers({ token }) {
           value: user._id
         }));
         setSelectLibArray([...arrayToSet]);
+        getProgrammes();
       })
       .catch((err) => {
         setSpinner(false);
@@ -229,14 +337,13 @@ function ViewAllUsers({ token }) {
 
   const removePerson = (email) => {
     const removeName = name.filter((n) => n.value !== email);
-    const removeRecord = filteredUsers.filter((u) => u._id !== email);
 
-    if (removePerson.length <= 0) {
+    if (removeName.length <= 0) {
       setName([]);
       setFilteredUsers(allUsers);
     } else {
       setName(removeName);
-      setFilteredUsers(removeRecord);
+      filterRecords(removeName, false);
     }
   };
 
