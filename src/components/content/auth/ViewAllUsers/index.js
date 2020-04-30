@@ -337,14 +337,12 @@ function ViewAllUsers({ token }) {
 
   const removePerson = (email) => {
     const removeName = name.filter((n) => n.value !== email);
-    // const removeRecord = filteredUsers.filter((u) => u._id !== email);
 
     if (removeName.length <= 0) {
       setName([]);
       setFilteredUsers(allUsers);
     } else {
       setName(removeName);
-      // setFilteredUsers(removeRecord);
       filterRecords(removeName, false);
     }
   };
