@@ -75,16 +75,19 @@ function Apply4LeaveModal({
       setGreenContraintsFeedback(`
       You have ${leaveDetails.annualLeaveBF} annual leave days brought forward.
       You have used ${leaveDetails.annualLeaveTaken} annual leave days so far.
+      You have planned for ${leaveDetails.annualLeavePlanned} annual leave days.
       You have ${availableDays} annual leave day(s), 
       and you have selected ${leaveDaysArray.length} ${leaveWord} day(s).
       `);
     } else {
       setRedContraintsFeedback(`
         You have ${leaveDetails.annualLeaveBF} annual leave days brought forward.
+        You have planned for ${leaveDetails.annualLeavePlanned} annual leave days.
         You have used ${leaveDetails.annualLeaveTaken} annual leave days so far.
         You have ${availableDays} annual leave day(s), 
         However, you have selected ${leaveDaysArray.length} ${leaveWord} leave day(s)!
         Please reduce by ${leaveDaysArray.length - availableDays}
+        You can cancel some planned annual leaves if any to avail more days.
       `);
     }
   };
@@ -94,15 +97,18 @@ function Apply4LeaveModal({
     if (availableDays >= leaveDaysArray.length) {
       setGreenContraintsFeedback(`
       You have used ${leaveDetails.maternityLeaveTaken} maternity leave days so far.
+      You have planned for ${leaveDetails.maternityLeavePlanned} maternity leave days.
       You have ${availableDays} maternity leave day(s), 
       and you have selected ${leaveDaysArray.length} leave day(s).
       `);
     } else {
       setRedContraintsFeedback(`
         You have used ${leaveDetails.maternityLeaveTaken} maternity leave days so far.
+        You have planned for ${leaveDetails.maternityLeavePlanned} maternity leave days.
         You have ${availableDays} maternity leave day(s), 
         However, you have selected ${leaveDaysArray.length} day(s)!
         Please reduce by ${leaveDaysArray.length - availableDays}
+        You can cancel some planned maternity leaves if any to avail more days.
       `);
     }
   };
@@ -128,16 +134,18 @@ function Apply4LeaveModal({
     if (availableDays >= leaveDaysArray.length) {
       setGreenContraintsFeedback(`
       You have used ${leaveDetails.studyLeaveTaken} study leave days so far.
+      You have planned for ${leaveDetails.studyLeavePlanned} study leave days.
       You have ${availableDays} study leave day(s), 
       and you have selected ${leaveDaysArray.length} study leave day(s).
       .
       `);
     } else {
       setRedContraintsFeedback(`
-        You have used ${leaveDetails.studyLeaveTaken} sturdy leave days so far.
-        You have ${availableDays} sturdy leave day(s), 
-        However, you have selected ${leaveDaysArray.length} sturdy leave day(s)!
+        You have used ${leaveDetails.studyLeaveTaken} study leave days so far.
+        You have ${availableDays} study leave day(s), 
+        However, you have selected ${leaveDaysArray.length} study leave day(s)!
         Please reduce by ${leaveDaysArray.length - availableDays}
+        You can cancel some planned study leaves if any to avail more days.
       `);
     }
   };
@@ -147,16 +155,17 @@ function Apply4LeaveModal({
     if (availableDays >= leaveDaysArray.length) {
       setGreenContraintsFeedback(`
       You have used ${leaveDetails.studyLeaveTaken} unpaid leave days so far.
+      You have planned for ${leaveDetails.unPaidLeavePlanned} unpaid leave days.
       You have ${availableDays} unpaid leave day(s), 
       and you have selected ${leaveDaysArray.length} unpaid leave day(s).
-      .
       `);
     } else {
       setRedContraintsFeedback(`
         You have used ${leaveDetails.studyLeaveTaken} unpaid leave days so far.
         You have ${availableDays} unpaid leave day(s), 
         However, you have selected ${leaveDaysArray.length} unpaid leave day(s)!
-        Please reduce by ${leaveDaysArray.length - availableDays}
+        Please reduce by ${leaveDaysArray.length - availableDays}.
+        You can cancel some planned unpaid leaves if any to avail more days.
       `);
     }
   };
