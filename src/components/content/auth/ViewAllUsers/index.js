@@ -17,10 +17,11 @@ import FilterNameButton from '../../../common/filterNameButton';
 import './viewAllUsers.css';
 
 const mapStateToProps = (state) => ({
-  token: state.auth.token
+  token: state.auth.token,
+  roles: state.auth.roles
 });
 
-function ViewAllUsers({ token }) {
+function ViewAllUsers({ token, roles }) {
   const [allUsers, setAllUsers] = useState([]);
   const [filteredUsers, setFilteredUsers] = useState([]);
   const [spinner, setSpinner] = useState(false);
@@ -32,6 +33,23 @@ function ViewAllUsers({ token }) {
   const [name, setName] = useState([]);
   const [allPrograms, setAllPRograms] = useState([]);
   const [program, setProgram] = useState('all');
+
+  if (roles) {
+    if (!roles.hr && !roles.admin) {
+      return (
+        <div className="alert alert-danger text-center" role="alert">
+          <p>{'FE: You have no access rights for this resource.'}</p>
+        </div>
+      );
+    }
+  } else {
+    return (
+      <div className="alert alert-danger text-center" role="alert">
+        <p>{'FE: You seem to have no roles.'}</p>
+        <p>Please contact the system admin to rectify this.</p>
+      </div>
+    );
+  }
 
   const filterRecords = (users, programToFilterBy) => {
     let filtered = [];
@@ -405,7 +423,8 @@ function ViewAllUsers({ token }) {
 }
 
 ViewAllUsers.propTypes = {
-  token: PropTypes.string
+  token: PropTypes.string,
+  roles: PropTypes.object
 };
 
 export default connect(mapStateToProps)(ViewAllUsers);
