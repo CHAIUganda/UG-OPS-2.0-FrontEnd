@@ -15,16 +15,35 @@ import './superviseLeave.css';
 const mapStateToProps = (state) => ({
   gender: state.auth.gender,
   email: state.auth.email,
-  token: state.auth.token
+  token: state.auth.token,
+  roles: state.auth.roles
 });
 
 function SuperviseLeave({
   email,
-  token
+  token,
+  roles
 }) {
   const [spinner, setSpinner] = useState(false);
   const [leavesToApprove, setLeavesToApprove] = useState(null);
   const [error, setError] = useState('');
+
+  if (roles) {
+    if (!roles.supervisor) {
+      return (
+        <div className="alert alert-danger text-center" role="alert">
+          <p>{'FE: You have no access rights for this resource.'}</p>
+        </div>
+      );
+    }
+  } else {
+    return (
+      <div className="alert alert-danger text-center" role="alert">
+        <p>{'FE: You seem to have no roles.'}</p>
+        <p>Please contact the system admin to rectify this.</p>
+      </div>
+    );
+  }
 
   useEffect(() => {
     setSpinner(true);
@@ -119,7 +138,8 @@ function SuperviseLeave({
 SuperviseLeave.propTypes = {
   gender: PropTypes.string,
   email: PropTypes.string,
-  token: PropTypes.string
+  token: PropTypes.string,
+  roles: PropTypes.object
 };
 
 export default connect(mapStateToProps)(SuperviseLeave);

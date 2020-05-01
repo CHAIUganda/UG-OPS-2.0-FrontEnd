@@ -8,13 +8,31 @@ import { BASE_URL } from '../../../../../config';
 import SpecificContractModal from './specificContractModal';
 
 const mapStateToProps = (state) => ({
-  token: state.auth.token
+  token: state.auth.token,
+  roles: state.auth.roles
 });
 
-function ContractsExpiry({ token }) {
+function ContractsExpiry({ token, roles }) {
   const [tableSpinner, setTableSpinner] = useState(false);
   const [contracts, setContracts] = useState([]);
   const [error, setError] = useState('');
+
+  if (roles) {
+    if (!roles.hr && !roles.admin) {
+      return (
+        <div className="alert alert-danger text-center" role="alert">
+          <p>{'FE: You have no access rights for this resource.'}</p>
+        </div>
+      );
+    }
+  } else {
+    return (
+      <div className="alert alert-danger text-center" role="alert">
+        <p>{'FE: You seem to have no roles.'}</p>
+        <p>Please contact the system admin to rectify this.</p>
+      </div>
+    );
+  }
 
   useEffect(() => {
     setTableSpinner(true);
@@ -104,7 +122,8 @@ function ContractsExpiry({ token }) {
 }
 
 ContractsExpiry.propTypes = {
-  token: PropTypes.string
+  token: PropTypes.string,
+  roles: PropTypes.object
 };
 
 export default connect(mapStateToProps)(ContractsExpiry);

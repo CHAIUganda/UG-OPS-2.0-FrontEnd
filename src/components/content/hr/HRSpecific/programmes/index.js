@@ -17,14 +17,32 @@ const mapStateToProps = (state) => ({
   email: state.auth.email,
   gender: state.auth.gender,
   type: state.auth.type,
-  program: state.auth.program
+  program: state.auth.program,
+  roles: state.auth.roles
 });
 
-function ManageProgrammes({ token }) {
+function ManageProgrammes({ token, roles }) {
   const [programmes, setProgrammes] = useState([]);
   const [allUsers, setAllUsers] = useState([]);
   const [tableSpinner, setTableSpinner] = useState(false);
   const [tableError, setTableError] = useState('');
+
+  if (roles) {
+    if (!roles.hr && !roles.admin) {
+      return (
+        <div className="alert alert-danger text-center" role="alert">
+          <p>{'FE: You have no access rights for this resource.'}</p>
+        </div>
+      );
+    }
+  } else {
+    return (
+      <div className="alert alert-danger text-center" role="alert">
+        <p>{'FE: You seem to have no roles.'}</p>
+        <p>Please contact the system admin to rectify this.</p>
+      </div>
+    );
+  }
 
   const handleprogramme = (event, id) => {
     event.preventDefault();
@@ -172,7 +190,8 @@ function ManageProgrammes({ token }) {
 }
 
 ManageProgrammes.propTypes = {
-  token: PropTypes.string
+  token: PropTypes.string,
+  roles: PropTypes.object
 };
 
 export default connect(mapStateToProps)(ManageProgrammes);
