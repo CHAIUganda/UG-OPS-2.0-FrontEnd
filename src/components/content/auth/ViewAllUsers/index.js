@@ -114,6 +114,7 @@ function ViewAllUsers({ token }) {
 
   const resetFilters = () => {
     setFilteredUsers(allUsers);
+    setProgram('all');
     setName([]);
     setDisplayTIN('true');
     setDisplayNssf('true');
@@ -221,6 +222,7 @@ function ViewAllUsers({ token }) {
     <table className="table holidaysTable" id="hrConsolidatedTrackerTable">
       <thead>
         <tr>
+          <th scope="col">#</th>
           {returnNameFilterHead()}
           {returnProgramFilterHead()}
           {returnEmailFilterHead()}
@@ -231,8 +233,9 @@ function ViewAllUsers({ token }) {
       </thead>
       <tbody>
         {
-          filteredUsers.map((user) => (
+          filteredUsers.map((user, index) => (
             <tr key={user._id}>
+              <td>{index + 1}</td>
               <td>{`${user.fName} ${user.lName}`}</td>
               <td>{user.programShortForm}</td>
               <td>{
