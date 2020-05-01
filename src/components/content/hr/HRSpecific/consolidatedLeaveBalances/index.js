@@ -15,10 +15,11 @@ const mapStateToProps = (state) => ({
   token: state.auth.token,
   email: state.auth.email,
   gender: state.auth.gender,
-  type: state.auth.type
+  type: state.auth.type,
+  roles: state.auth.type
 });
 
-function ConsolidatedLeaveBalances({ token }) {
+function ConsolidatedLeaveBalances({ token, roles }) {
   const [spinner, setSpinner] = useState(false);
   const [error, setError] = useState('');
   const [allLeaves, setallLeaves] = useState([]);
@@ -36,6 +37,23 @@ function ConsolidatedLeaveBalances({ token }) {
       annualSort: 'all'
     }
   );
+
+  if (roles) {
+    if (!roles.hr && !roles.admin) {
+      return (
+        <div className="alert alert-danger text-center" role="alert">
+          <p>{'FE: You have no access rights for this resource.'}</p>
+        </div>
+      );
+    }
+  } else {
+    return (
+      <div className="alert alert-danger text-center" role="alert">
+        <p>{'FE: You seem to have no roles.'}</p>
+        <p>Please contact the system admin to rectify this.</p>
+      </div>
+    );
+  }
 
   let allFilters = {
     program: 'all',
@@ -381,6 +399,7 @@ ConsolidatedLeaveBalances.propTypes = {
   email: PropTypes.string,
   gender: PropTypes.string,
   type: PropTypes.string,
+  roles: PropTypes.object
 };
 
 export default connect(mapStateToProps)(ConsolidatedLeaveBalances);
