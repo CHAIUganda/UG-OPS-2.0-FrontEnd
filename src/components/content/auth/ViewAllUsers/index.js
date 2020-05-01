@@ -85,7 +85,6 @@ function ViewAllUsers({ token }) {
         });
         filtered = filtered.filter((f) => f.programShortForm === program);
       }
-      //
       setFilteredUsers(filtered);
     }
   };
@@ -138,7 +137,6 @@ function ViewAllUsers({ token }) {
 
   const filterByPrograms = (value) => {
     setProgram(value);
-    //
     filterRecords(false, value);
   };
 
