@@ -22,10 +22,11 @@ import { BASE_URL, returnStatusClass } from '../../../../config';
 import './register.css';
 
 const mapStateToProps = (state) => ({
-  token: state.auth.token
+  token: state.auth.token,
+  roles: state.auth.roles
 });
 
-function Register({ token }) {
+function Register({ token, roles }) {
   const [email, setEmail] = useState('@clintonhealthaccess.org');
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
@@ -60,6 +61,23 @@ function Register({ token }) {
   const [bankAccounts, setBankAccounts] = useState([]);
   const [nssfNumber, setNssfNumber] = useState('');
   const [tinNumber, setTinNumber] = useState('');
+
+  if (roles) {
+    if (!roles.hr && !roles.admin) {
+      return (
+        <div className="alert alert-danger text-center" role="alert">
+          <p>{'FE: You have no access rights for this resource.'}</p>
+        </div>
+      );
+    }
+  } else {
+    return (
+      <div className="alert alert-danger text-center" role="alert">
+        <p>{'FE: You seem to have no roles.'}</p>
+        <p>Please contact the system admin to rectify this.</p>
+      </div>
+    );
+  }
 
   const reset = () => {
     setEmail('@clintonhealthaccess.org');
@@ -841,7 +859,8 @@ function Register({ token }) {
 }
 
 Register.propTypes = {
-  token: PropTypes.string
+  token: PropTypes.string,
+  roles: PropTypes.object
 };
 
 export default connect(mapStateToProps)(Register);

@@ -16,7 +16,7 @@ const mapStateToProps = (state) => ({
   email: state.auth.email,
   gender: state.auth.gender,
   type: state.auth.type,
-  roles: state.auth.type
+  roles: state.auth.roles
 });
 
 function ConsolidatedLeaveBalances({ token, roles }) {
