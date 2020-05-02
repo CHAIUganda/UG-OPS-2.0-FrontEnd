@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-// prettier-ignore
 import {
   Form,
   FormGroup,
@@ -16,17 +15,28 @@ import axios from 'axios';
 import PropTypes from 'prop-types';
 import Select from 'react-select';
 
+import * as sideBarActions from '../../../../redux/actions/sideBarActions';
 import CommonSpinner from '../../../common/spinner';
 import EditBankDetailsModal from '../editUser/editBankDetails';
 import { BASE_URL, returnStatusClass } from '../../../../config';
 import './register.css';
+
+const matchDispatchToProps = {
+  changeSection: sideBarActions.changeSection,
+  changeActive: sideBarActions.changeActive
+};
 
 const mapStateToProps = (state) => ({
   token: state.auth.token,
   roles: state.auth.roles
 });
 
-function Register({ token, roles }) {
+function Register({
+  token,
+  roles,
+  changeSection,
+  changeActive
+}) {
   const [email, setEmail] = useState('@clintonhealthaccess.org');
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
@@ -78,6 +88,9 @@ function Register({ token, roles }) {
       </div>
     );
   }
+
+  changeSection('Human Resource');
+  changeActive('Register');
 
   const reset = () => {
     setEmail('@clintonhealthaccess.org');
@@ -860,7 +873,9 @@ function Register({ token, roles }) {
 
 Register.propTypes = {
   token: PropTypes.string,
-  roles: PropTypes.object
+  roles: PropTypes.object,
+  changeSection: PropTypes.func,
+  changeActive: PropTypes.func
 };
 
-export default connect(mapStateToProps)(Register);
+export default connect(mapStateToProps, matchDispatchToProps)(Register);

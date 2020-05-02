@@ -10,18 +10,29 @@ import html2canvas from 'html2canvas';
 import JSPDF from 'jspdf';
 import { CustomInput } from 'reactstrap';
 
+import * as sideBarActions from '../../../../redux/actions/sideBarActions';
 import { BASE_URL } from '../../../../config';
 import CommonSpinner from '../../../common/spinner';
 import FilterNameButton from '../../../common/filterNameButton';
 
 import './viewAllUsers.css';
 
+const matchDispatchToProps = {
+  changeSection: sideBarActions.changeSection,
+  changeActive: sideBarActions.changeActive
+};
+
 const mapStateToProps = (state) => ({
   token: state.auth.token,
   roles: state.auth.roles
 });
 
-function ViewAllUsers({ token, roles }) {
+function ViewAllUsers({
+  token,
+  roles,
+  changeSection,
+  changeActive
+}) {
   const [allUsers, setAllUsers] = useState([]);
   const [filteredUsers, setFilteredUsers] = useState([]);
   const [spinner, setSpinner] = useState(false);
@@ -50,6 +61,9 @@ function ViewAllUsers({ token, roles }) {
       </div>
     );
   }
+
+  changeSection('Human Resource');
+  changeActive('ViewAllUsers');
 
   const filterRecords = (users, programToFilterBy) => {
     let filtered = [];
@@ -424,7 +438,9 @@ function ViewAllUsers({ token, roles }) {
 
 ViewAllUsers.propTypes = {
   token: PropTypes.string,
-  roles: PropTypes.object
+  roles: PropTypes.object,
+  changeSection: PropTypes.func,
+  changeActive: PropTypes.func
 };
 
-export default connect(mapStateToProps)(ViewAllUsers);
+export default connect(mapStateToProps, matchDispatchToProps)(ViewAllUsers);

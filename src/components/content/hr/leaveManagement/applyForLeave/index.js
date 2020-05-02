@@ -3,12 +3,17 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import axios from 'axios';
 
-
+import * as sideBarActions from '../../../../../redux/actions/sideBarActions';
 import CommonSpinner from '../../../../common/spinner';
 import { BASE_URL, returnStatusClass } from '../../../../../config';
 import Apply4LeaveModal from './applyForLeaveModal';
 import ManageLeaveModal from './manageLeaveModal';
 import './apply4Leave.css';
+
+const matchDispatchToProps = {
+  changeSection: sideBarActions.changeSection,
+  changeActive: sideBarActions.changeActive
+};
 
 const mapStateToProps = (state) => ({
   supervisor: state.auth.supervisor,
@@ -23,12 +28,17 @@ function Apply4Leave({
   gender,
   email,
   token,
-  type
+  type,
+  changeSection,
+  changeActive
 }) {
   const [spinner, setSpinner] = useState(false);
   const [leaveDetails, setLeaveDetails] = useState(null);
   const [error, setError] = useState('');
   const [personsLeaves, setPersonsLeaves] = useState([]);
+
+  changeSection('Human Resource');
+  changeActive('Apply4Leave');
 
   const getPersonsLeaves = () => {
     const endPoint = `${BASE_URL}leaveApi/getStaffLeaves/${email}/all`;
@@ -163,7 +173,9 @@ Apply4Leave.propTypes = {
   gender: PropTypes.string,
   email: PropTypes.string,
   token: PropTypes.string,
-  type: PropTypes.string
+  type: PropTypes.string,
+  changeSection: PropTypes.func,
+  changeActive: PropTypes.func
 };
 
-export default connect(mapStateToProps)(Apply4Leave);
+export default connect(mapStateToProps, matchDispatchToProps)(Apply4Leave);

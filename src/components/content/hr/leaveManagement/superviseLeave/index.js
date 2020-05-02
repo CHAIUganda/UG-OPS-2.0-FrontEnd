@@ -1,16 +1,18 @@
 import React, { useState, useEffect } from 'react';
-// prettier-ignore
-// import {
-//   Spinner
-// } from 'reactstrap';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import axios from 'axios';
 import ManageLeaveModal from './manageLeaveModal';
 
+import * as sideBarActions from '../../../../../redux/actions/sideBarActions';
 import CommonSpinner from '../../../../common/spinner';
 import { BASE_URL } from '../../../../../config';
 import './superviseLeave.css';
+
+const matchDispatchToProps = {
+  changeSection: sideBarActions.changeSection,
+  changeActive: sideBarActions.changeActive
+};
 
 const mapStateToProps = (state) => ({
   gender: state.auth.gender,
@@ -22,7 +24,9 @@ const mapStateToProps = (state) => ({
 function SuperviseLeave({
   email,
   token,
-  roles
+  roles,
+  changeSection,
+  changeActive
 }) {
   const [spinner, setSpinner] = useState(false);
   const [leavesToApprove, setLeavesToApprove] = useState(null);
@@ -44,6 +48,9 @@ function SuperviseLeave({
       </div>
     );
   }
+
+  changeSection('Human Resource');
+  changeActive('SuperviseLeave');
 
   useEffect(() => {
     setSpinner(true);
@@ -139,7 +146,9 @@ SuperviseLeave.propTypes = {
   gender: PropTypes.string,
   email: PropTypes.string,
   token: PropTypes.string,
-  roles: PropTypes.object
+  roles: PropTypes.object,
+  changeSection: PropTypes.func,
+  changeActive: PropTypes.func
 };
 
-export default connect(mapStateToProps)(SuperviseLeave);
+export default connect(mapStateToProps, matchDispatchToProps)(SuperviseLeave);

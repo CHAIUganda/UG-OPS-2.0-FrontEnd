@@ -3,8 +3,14 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import axios from 'axios';
 
+import * as sideBarActions from '../../../../redux/actions/sideBarActions';
 import CommonSpinner from '../../../common/spinner';
 import { BASE_URL } from '../../../../config';
+
+const matchDispatchToProps = {
+  changeSection: sideBarActions.changeSection,
+  changeActive: sideBarActions.changeActive
+};
 
 const mapStateToProps = (state) => ({
   token: state.auth.token,
@@ -17,11 +23,16 @@ function HRHome({
   token,
   email,
   gender,
-  type
+  type,
+  changeSection,
+  changeActive
 }) {
   const [spinner, setSpinner] = useState(false);
   const [error, setError] = useState('');
   const [leaveBalances, setLeaveBalances] = useState(false);
+
+  changeSection('Human Resource');
+  changeActive(null);
 
   useEffect(() => {
     setSpinner(true);
@@ -176,6 +187,8 @@ HRHome.propTypes = {
   email: PropTypes.string,
   gender: PropTypes.string,
   type: PropTypes.string,
+  changeSection: PropTypes.func,
+  changeActive: PropTypes.func
 };
 
-export default connect(mapStateToProps)(HRHome);
+export default connect(mapStateToProps, matchDispatchToProps)(HRHome);

@@ -1,16 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-// prettier-ignore
-import {
-  Spinner,
-} from 'reactstrap';
+import { Spinner } from 'reactstrap';
 import axios from 'axios';
 
+import * as sideBarActions from '../../../../../redux/actions/sideBarActions';
 import { BASE_URL } from '../../../../../config';
 import CreateNewProgramme from './createProgrammeModal';
 import EditProgram from './editProgramModal';
 import './programmes.css';
+
+const matchDispatchToProps = {
+  changeSection: sideBarActions.changeSection,
+  changeActive: sideBarActions.changeActive
+};
 
 const mapStateToProps = (state) => ({
   token: state.auth.token,
@@ -21,7 +24,12 @@ const mapStateToProps = (state) => ({
   roles: state.auth.roles
 });
 
-function ManageProgrammes({ token, roles }) {
+function ManageProgrammes({
+  token,
+  roles,
+  changeSection,
+  changeActive
+}) {
   const [programmes, setProgrammes] = useState([]);
   const [allUsers, setAllUsers] = useState([]);
   const [tableSpinner, setTableSpinner] = useState(false);
@@ -43,6 +51,9 @@ function ManageProgrammes({ token, roles }) {
       </div>
     );
   }
+
+  changeSection('Human Resource');
+  changeActive('ManageProgrammes');
 
   const handleprogramme = (event, id) => {
     event.preventDefault();
@@ -191,7 +202,9 @@ function ManageProgrammes({ token, roles }) {
 
 ManageProgrammes.propTypes = {
   token: PropTypes.string,
-  roles: PropTypes.object
+  roles: PropTypes.object,
+  changeSection: PropTypes.func,
+  changeActive: PropTypes.func
 };
 
-export default connect(mapStateToProps)(ManageProgrammes);
+export default connect(mapStateToProps, matchDispatchToProps)(ManageProgrammes);

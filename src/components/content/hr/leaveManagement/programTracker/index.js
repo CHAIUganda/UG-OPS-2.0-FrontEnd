@@ -7,10 +7,16 @@ import JSPDF from 'jspdf';
 import Select from 'react-select';
 import moment from 'moment';
 
+import * as sideBarActions from '../../../../../redux/actions/sideBarActions';
 import CommonSpinner from '../../../../common/spinner';
 import FilterNameButton from '../../../../common/filterNameButton';
 import { BASE_URL, returnStatusClass } from '../../../../../config';
 import './programTracker.css';
+
+const matchDispatchToProps = {
+  changeSection: sideBarActions.changeSection,
+  changeActive: sideBarActions.changeActive
+};
 
 const mapStateToProps = (state) => ({
   token: state.auth.token,
@@ -20,7 +26,12 @@ const mapStateToProps = (state) => ({
   program: state.auth.program
 });
 
-function ProgramLeaveTracker({ token, program }) {
+function ProgramLeaveTracker({
+  token,
+  program,
+  changeSection,
+  changeActive
+}) {
   const [spinner, setSpinner] = useState(false);
   const [error, setError] = useState('');
   const [allLeaves, setallLeaves] = useState([]);
@@ -38,6 +49,9 @@ function ProgramLeaveTracker({ token, program }) {
       name: []
     }
   );
+
+  changeSection('Human Resource');
+  changeActive('ProgramLeaveTracker');
 
   let allFilters = {
     status: 'all',
@@ -390,7 +404,9 @@ ProgramLeaveTracker.propTypes = {
   email: PropTypes.string,
   gender: PropTypes.string,
   type: PropTypes.string,
-  program: PropTypes.string
+  program: PropTypes.string,
+  changeSection: PropTypes.func,
+  changeActive: PropTypes.func
 };
 
-export default connect(mapStateToProps)(ProgramLeaveTracker);
+export default connect(mapStateToProps, matchDispatchToProps)(ProgramLeaveTracker);

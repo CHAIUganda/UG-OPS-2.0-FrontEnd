@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-// prettier-ignore
 import {
   Form,
   FormGroup,
@@ -16,19 +15,51 @@ import axios from 'axios';
 import PropTypes from 'prop-types';
 import Select from 'react-select';
 
+import * as sideBarActions from '../../../../redux/actions/sideBarActions';
 import CommonSpinner from '../../../common/spinner';
 import EditBankDetailsModal from './editBankDetails';
 import { BASE_URL, returnStatusClass } from '../../../../config';
 import './editUser.css';
 
+const matchDispatchToProps = {
+  changeSection: sideBarActions.changeSection,
+  changeActive: sideBarActions.changeActive
+};
+
 const mapStateToProps = (state) => ({
-  token: state.auth.token
+  token: state.auth.token,
+  roles: state.auth.roles
 });
 
 function EditUser(props) {
   let user;
   let propsPassed;
-  const { token } = props;
+  const {
+    token,
+    changeSection,
+    changeActive,
+    roles
+  } = props;
+
+  if (roles) {
+    if (!roles.hr && !roles.admin) {
+      return (
+        <div className="alert alert-danger text-center" role="alert">
+          <p>{'FE: You have no access rights for this resource.'}</p>
+        </div>
+      );
+    }
+  } else {
+    return (
+      <div className="alert alert-danger text-center" role="alert">
+        <p>{'FE: You seem to have no roles.'}</p>
+        <p>Please contact the system admin to rectify this.</p>
+      </div>
+    );
+  }
+
+  changeSection('Human Resource');
+  changeActive(null);
 
   if (props && props.propsPassed && props.user) {
     user = props.user;
@@ -946,8 +977,11 @@ function EditUser(props) {
 
 EditUser.propTypes = {
   token: PropTypes.string,
+  roles: PropTypes.object,
   propsPassed: PropTypes.bool,
-  user: PropTypes.object
+  user: PropTypes.object,
+  changeSection: PropTypes.func,
+  changeActive: PropTypes.func
 };
 
-export default connect(mapStateToProps)(EditUser);
+export default connect(mapStateToProps, matchDispatchToProps)(EditUser);

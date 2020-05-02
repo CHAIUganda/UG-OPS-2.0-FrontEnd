@@ -6,10 +6,16 @@ import html2canvas from 'html2canvas';
 import JSPDF from 'jspdf';
 import Select from 'react-select';
 
+import * as sideBarActions from '../../../../../redux/actions/sideBarActions';
 import CommonSpinner from '../../../../common/spinner';
 import FilterNameButton from '../../../../common/filterNameButton';
 import { BASE_URL, returnStatusClass } from '../../../../../config';
 import './consolidatedTracker.css';
+
+const matchDispatchToProps = {
+  changeSection: sideBarActions.changeSection,
+  changeActive: sideBarActions.changeActive
+};
 
 const mapStateToProps = (state) => ({
   token: state.auth.token,
@@ -19,7 +25,12 @@ const mapStateToProps = (state) => ({
   roles: state.auth.roles
 });
 
-function ConsolidatedTracker({ token, roles }) {
+function ConsolidatedTracker({
+  token,
+  roles,
+  changeSection,
+  changeActive
+}) {
   const [spinner, setSpinner] = useState(false);
   const [error, setError] = useState('');
   const [allLeaves, setallLeaves] = useState([]);
@@ -59,6 +70,9 @@ function ConsolidatedTracker({ token, roles }) {
       </div>
     );
   }
+
+  changeSection('Human Resource');
+  changeActive('ConsolidatedTracker');
 
   let allFilters = {
     type: 'all',
@@ -448,7 +462,9 @@ ConsolidatedTracker.propTypes = {
   email: PropTypes.string,
   gender: PropTypes.string,
   type: PropTypes.string,
-  roles: PropTypes.object
+  roles: PropTypes.object,
+  changeSection: PropTypes.func,
+  changeActive: PropTypes.func
 };
 
-export default connect(mapStateToProps)(ConsolidatedTracker);
+export default connect(mapStateToProps, matchDispatchToProps)(ConsolidatedTracker);
