@@ -4,15 +4,26 @@ import { connect } from 'react-redux';
 import axios from 'axios';
 import PropTypes from 'prop-types';
 
+import * as sideBarActions from '../../../../../redux/actions/sideBarActions';
 import { BASE_URL } from '../../../../../config';
 import SpecificContractModal from './specificWorkPermitModal';
+
+const matchDispatchToProps = {
+  changeSection: sideBarActions.changeSection,
+  changeActive: sideBarActions.changeActive
+};
 
 const mapStateToProps = (state) => ({
   token: state.auth.token,
   roles: state.auth.roles
 });
 
-function WorkPermitsExpiry({ token, roles }) {
+function WorkPermitsExpiry({
+  token,
+  roles,
+  changeSection,
+  changeActive
+}) {
   const [tableSpinner, setTableSpinner] = useState(false);
   const [workPermits, setWorkPermits] = useState([]);
   const [error, setError] = useState('');
@@ -33,6 +44,9 @@ function WorkPermitsExpiry({ token, roles }) {
       </div>
     );
   }
+
+  changeSection('Human Resource');
+  changeActive('WorkPermitsExpiry');
 
   useEffect(() => {
     setTableSpinner(true);
@@ -122,7 +136,9 @@ function WorkPermitsExpiry({ token, roles }) {
 
 WorkPermitsExpiry.propTypes = {
   token: PropTypes.string,
-  roles: PropTypes.object
+  roles: PropTypes.object,
+  changeSection: PropTypes.func,
+  changeActive: PropTypes.func
 };
 
-export default connect(mapStateToProps)(WorkPermitsExpiry);
+export default connect(mapStateToProps, matchDispatchToProps)(WorkPermitsExpiry);
