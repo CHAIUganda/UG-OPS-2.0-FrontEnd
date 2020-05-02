@@ -1,25 +1,35 @@
 import React, { useState, useEffect } from 'react';
-// prettier-ignore
-import {
-  Spinner,
-} from 'reactstrap';
+import { Spinner } from 'reactstrap';
 import axios from 'axios';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
+import * as sideBarActions from '../../../../../redux/actions/sideBarActions';
 import { BASE_URL } from '../../../../../config';
 import CreateNewPublicHoliday from './createPublicHolidayModal';
 import './publicHolidays.css';
+
+const matchDispatchToProps = {
+  changeSection: sideBarActions.changeSection,
+  changeActive: sideBarActions.changeActive
+};
 
 const mapStateToProps = (state) => ({
   roles: state.auth.roles,
 });
 
-function ManagePublicHolidays({ roles }) {
+function ManagePublicHolidays({
+  roles,
+  changeSection,
+  changeActive
+}) {
   const { hr, admin } = roles;
   const [publicHolidays, setPublicHolidays] = useState([]);
   const [tableSpinner, setTableSpinner] = useState(false);
   const [tableError, setTableError] = useState('');
+
+  changeSection('Human Resource');
+  changeActive('ManagePublicHolidays');
 
   const handleDeleteHoliday = (event, id) => {
     event.preventDefault();
@@ -127,6 +137,8 @@ function ManagePublicHolidays({ roles }) {
 
 ManagePublicHolidays.propTypes = {
   roles: PropTypes.object,
+  changeSection: PropTypes.func,
+  changeActive: PropTypes.func
 };
 
-export default connect(mapStateToProps)(ManagePublicHolidays);
+export default connect(mapStateToProps, matchDispatchToProps)(ManagePublicHolidays);
