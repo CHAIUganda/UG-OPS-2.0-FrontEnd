@@ -1,6 +1,5 @@
 /* eslint-disable array-bracket-spacing */
 import React, { useState, useEffect } from 'react';
-// prettier-ignore
 import {
   Form,
   FormGroup,
@@ -17,10 +16,16 @@ import axios from 'axios';
 import PropTypes from 'prop-types';
 import Select from 'react-select';
 
+import * as sideBarActions from '../../../../redux/actions/sideBarActions';
 import CommonSpinner from '../../../common/spinner';
 // import EditBankDetailsModal from './editBankDetails';
 import { BASE_URL, returnStatusClass } from '../../../../config';
 import './editUser.css';
+
+const matchDispatchToProps = {
+  changeSection: sideBarActions.changeSection,
+  changeActive: sideBarActions.changeActive
+};
 
 const mapStateToProps = (state) => ({
   token: state.auth.token,
@@ -29,7 +34,14 @@ const mapStateToProps = (state) => ({
 
 function ViewMyDetails(props) {
   let user;
-  const { token } = props;
+  const {
+    token,
+    changeSection,
+    changeActive
+  } = props;
+
+  changeSection(null);
+  changeActive(null);
 
   if (props && props.user) {
     user = props.user;
@@ -911,7 +923,9 @@ function ViewMyDetails(props) {
 ViewMyDetails.propTypes = {
   token: PropTypes.string,
   propsPassed: PropTypes.bool,
-  user: PropTypes.object
+  user: PropTypes.object,
+  changeSection: PropTypes.func,
+  changeActive: PropTypes.func
 };
 
-export default connect(mapStateToProps)(ViewMyDetails);
+export default connect(mapStateToProps, matchDispatchToProps)(ViewMyDetails);
