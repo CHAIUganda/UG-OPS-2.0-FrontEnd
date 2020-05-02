@@ -4,15 +4,26 @@ import { connect } from 'react-redux';
 import axios from 'axios';
 import PropTypes from 'prop-types';
 
+import * as sideBarActions from '../../../../../redux/actions/sideBarActions';
 import { BASE_URL } from '../../../../../config';
 import SpecificContractModal from './specificContractModal';
+
+const matchDispatchToProps = {
+  changeSection: sideBarActions.changeSection,
+  changeActive: sideBarActions.changeActive
+};
 
 const mapStateToProps = (state) => ({
   token: state.auth.token,
   roles: state.auth.roles
 });
 
-function ContractsExpiry({ token, roles }) {
+function ContractsExpiry({
+  token,
+  roles,
+  changeSection,
+  changeActive
+}) {
   const [tableSpinner, setTableSpinner] = useState(false);
   const [contracts, setContracts] = useState([]);
   const [error, setError] = useState('');
@@ -33,6 +44,9 @@ function ContractsExpiry({ token, roles }) {
       </div>
     );
   }
+
+  changeSection('Human Resource');
+  changeActive('ContractsExpiry');
 
   useEffect(() => {
     setTableSpinner(true);
@@ -123,7 +137,9 @@ function ContractsExpiry({ token, roles }) {
 
 ContractsExpiry.propTypes = {
   token: PropTypes.string,
-  roles: PropTypes.object
+  roles: PropTypes.object,
+  changeSection: PropTypes.func,
+  changeActive: PropTypes.func
 };
 
-export default connect(mapStateToProps)(ContractsExpiry);
+export default connect(mapStateToProps, matchDispatchToProps)(ContractsExpiry);
