@@ -18,6 +18,7 @@ import HR from './components/content/hr';
 import Auth from './components/content/auth/index';
 
 import * as authActions from './redux/actions/authActions';
+import * as notificationActions from './redux/actions/notificationsActions';
 import { BASE_URL } from './config';
 import CommonSpinner from './components/common/spinner';
 import './App.css';
@@ -27,10 +28,11 @@ const mapStateToProps = (state) => ({
 });
 
 const matchDispatchToProps = {
-  logUserIn: authActions.logUserIn
+  logUserIn: authActions.logUserIn,
+  setInitialNotifications: notificationActions.setInitialNotifications
 };
 
-function App({ token, logUserIn }) {
+function App({ token, logUserIn, setInitialNotifications }) {
   const [spinner, setSpinner] = useState(false);
 
   const setUpUser = (tokenToSet) => {
@@ -48,7 +50,8 @@ function App({ token, logUserIn }) {
           email,
           _id,
           leaveDetails,
-          supervisorDetails
+          supervisorDetails,
+          notifications
         } = res.data;
 
         const userObject = {
@@ -65,6 +68,7 @@ function App({ token, logUserIn }) {
           leaveDetails,
           supervisor: supervisorDetails
         };
+        setInitialNotifications(notifications);
         logUserIn(userObject);
         setSpinner(false);
       })
@@ -119,7 +123,8 @@ function App({ token, logUserIn }) {
 
 App.propTypes = {
   token: PropTypes.string,
-  logUserIn: PropTypes.func
+  logUserIn: PropTypes.func,
+  setInitialNotifications: PropTypes.func
 };
 
 export default connect(mapStateToProps, matchDispatchToProps)(App);
