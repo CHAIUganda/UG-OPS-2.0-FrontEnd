@@ -6,10 +6,16 @@ import {
   DropdownMenu,
   DropdownItem
 } from 'reactstrap';
+import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
 
 import './notifications.css';
 
-function Notifications() {
+const mapStateToProps = (state) => ({
+  notifications: state.notifications,
+});
+
+function Notifications({ notifications }) {
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
   const toggle = () => setDropdownOpen((prevState) => !prevState);
@@ -18,7 +24,7 @@ function Notifications() {
     <Dropdown tag={'span'} isOpen={dropdownOpen} toggle={toggle}>
       <DropdownToggle tag={'span'}>
         <span className='pr-1'>notifications</span>
-        <Badge color="info">5</Badge>
+        <Badge color="info">{notifications.length}</Badge>
       </DropdownToggle>
       <DropdownMenu>
         <DropdownItem header>Header</DropdownItem>
@@ -38,4 +44,9 @@ function Notifications() {
   );
 }
 
-export default Notifications;
+
+Notifications.propTypes = {
+  notifications: PropTypes.array,
+};
+
+export default connect(mapStateToProps)(Notifications);
