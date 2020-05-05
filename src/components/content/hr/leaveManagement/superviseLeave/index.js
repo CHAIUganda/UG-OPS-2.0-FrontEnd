@@ -56,7 +56,7 @@ function SuperviseLeave({
     setSpinner(true);
     setError('');
     axios.defaults.headers.common = { token };
-    const endPoint = `${BASE_URL}leaveApi/getSupervisorLeaves/${email}/Pending Supervisor`;
+    const endPoint = `${BASE_URL}leaveApi/getSupervisorLeaves/${email}/Pending`;
     axios.get(endPoint)
       .then((res) => {
         setLeavesToApprove(res.data);

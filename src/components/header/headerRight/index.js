@@ -52,10 +52,13 @@ function HeaderRight({ logUserOut, firstName, lastName }) {
 
   return (
     <div className="headerRight  float-right">
+      {/* <span className="name mr-5 mt-2">
+        notifications 4
+      </span> */}
       <span className="name mr-2 mt-2">
         {`${firstName} ${lastName[0]}.`}
       </span>
-      <div className="customDropdown  float-right mr-2">
+      <div className="float-right mr-2">
         <Dropdown isOpen={dropdownOpen} toggle={toggle}>
           <DropdownToggle tag={'span'}>{returnIcon()}</DropdownToggle>
           <DropdownMenu>
