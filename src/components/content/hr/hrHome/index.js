@@ -153,8 +153,8 @@ function HRHome({
         <tr>
           <td>Unpaid Leave</td>
           <td>{leaveBalances.unPaidLeaveTaken}</td>
-          <td>{leaveBalances.unpaidLeaveBal}</td>
           <td>{leaveBalances.unPaidLeavePlanned}</td>
+          <td>{leaveBalances.unpaidLeaveBal}</td>
           <td className="text-left">
             You can have up to 60 unpaid leave days.
             You should have exhausted all other leave entitlements

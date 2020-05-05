@@ -21,5 +21,6 @@ export default {
     active: null,
     section: null
   },
+  notifications: [],
   courses: []
 };
