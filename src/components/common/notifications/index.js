@@ -8,7 +8,9 @@ import {
 } from 'reactstrap';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
+import { AiOutlineNotification } from 'react-icons/ai';
 
+import Icon from '../icon';
 import './notifications.css';
 
 const mapStateToProps = (state) => ({
@@ -27,13 +29,20 @@ function Notifications({ notifications }) {
         <Badge color="info">{notifications.length}</Badge>
       </DropdownToggle>
       <DropdownMenu>
-        <DropdownItem header>Header</DropdownItem>
-        <DropdownItem>Some Action</DropdownItem>
-        <DropdownItem disabled>Action (disabled)</DropdownItem>
-        <DropdownItem divider />
-        <DropdownItem>Foo Action</DropdownItem>
-        <DropdownItem>Bar Action</DropdownItem>
-        <DropdownItem>Quo Action</DropdownItem>
+        {
+          notifications.map((not) => (
+            <>
+              <DropdownItem key={not._id}>
+                <Icon
+                  Icon2Render={AiOutlineNotification}
+                  color={'#003366'}
+                />
+                {not.title}
+              </DropdownItem>
+              <DropdownItem divider />
+            </>
+          ))
+        }
       </DropdownMenu>
     </Dropdown>
   );

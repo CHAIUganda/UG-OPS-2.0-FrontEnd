@@ -262,8 +262,14 @@ function EditUser(props) {
       contractId: user.contractId,
       nssfNumber,
       tinNumber,
-      workPermitStartDate: `${workPermitStartDate.getFullYear()}-${workPermitStartDate.getMonth() + 1}-${workPermitStartDate.getDate()}`,
-      workPermitEndDate: `${workPermitEndDate.getFullYear()}-${workPermitEndDate.getMonth() + 1}-${workPermitEndDate.getDate()}`
+      workPermitStartDate:
+        workPermitStartDate
+          ? `${workPermitStartDate.getFullYear()}-${workPermitStartDate.getMonth() + 1}-${workPermitStartDate.getDate()}`
+          : null,
+      workPermitEndDate:
+        workPermitEndDate
+          ? `${workPermitEndDate.getFullYear()}-${workPermitEndDate.getMonth() + 1}-${workPermitEndDate.getDate()}`
+          : null
     };
 
     axios.defaults.headers.common = { token };

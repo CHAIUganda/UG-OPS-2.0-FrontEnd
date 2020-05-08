@@ -16,16 +16,18 @@ import Cookies from 'js-cookie';
 
 import { BASE_URL } from '../../../../config';
 import * as authActions from '../../../../redux/actions/authActions';
+import * as notificationActions from '../../../../redux/actions/notificationsActions';
 import './signin.css';
 
 const matchDispatchToProps = {
-  logUserIn: authActions.logUserIn
+  logUserIn: authActions.logUserIn,
+  setInitialNotifications: notificationActions.setInitialNotifications
 };
 
 const mapStateToProps = () => ({ });
 
 function SignIn(props) {
-  const { logUserIn } = props;
+  const { logUserIn, setInitialNotifications } = props;
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('123456');
   const [spinner, setSpinner] = useState(false);
@@ -45,7 +47,8 @@ function SignIn(props) {
           position,
           leaveDetails,
           _id,
-          supervisorDetails
+          supervisorDetails,
+          notifications
         } = res.data;
 
         const userObject = {
@@ -62,6 +65,7 @@ function SignIn(props) {
           id: _id,
           supervisor: supervisorDetails
         };
+        setInitialNotifications(notifications);
         logUserIn(userObject);
         setSpinner(false);
       })
@@ -172,7 +176,8 @@ function SignIn(props) {
 }
 
 SignIn.propTypes = {
-  logUserIn: PropTypes.func
+  logUserIn: PropTypes.func,
+  setInitialNotifications: PropTypes.func
 };
 
 export default connect(mapStateToProps, matchDispatchToProps)(SignIn);
