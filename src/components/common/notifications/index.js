@@ -25,7 +25,7 @@ function Notifications({ notifications }) {
   const returnDropdown = () => (
     <Dropdown tag={'span'} isOpen={dropdownOpen} toggle={toggle}>
       <DropdownToggle tag={'span'}>
-        <span className='pr-1'>notifications</span>
+        <span className='pr-1'>Notifications</span>
         <Badge color="info">{notifications.length}</Badge>
       </DropdownToggle>
       <DropdownMenu>
