@@ -164,8 +164,8 @@ function HR({
             <span onClick={() => handleChangeActive('ManageProgrammes')}>
               <SubItem
                 link="/hr/ManageProgrammes"
-                textToSet="Programmes"
-                active={active === 'ManageProgrammes'}
+                textToSet="Programs"
+                active={active === 'ManagePrograms'}
               />
             </span>
           </div>

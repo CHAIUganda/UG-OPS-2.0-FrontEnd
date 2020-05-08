@@ -53,7 +53,7 @@ function ManageProgrammes({
   }
 
   changeSection('Human Resource');
-  changeActive('ManageProgrammes');
+  changeActive('ManagePrograms');
 
   const handleprogramme = (event, id) => {
     event.preventDefault();
@@ -98,7 +98,7 @@ function ManageProgrammes({
         <thead>
           <tr>
             <th scope="col">#</th>
-            <th scope="col">Programme</th>
+            <th scope="col">Program</th>
             <th scope="col">Shortform</th>
             <th scope="col">Program Manager</th>
             <th scope="col">Edit</th>

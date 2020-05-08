@@ -107,10 +107,10 @@ const CreateNewProgramme = ({ onNewProgramme, token, allUsers }) => {
         <FormGroup>
           <InputGroup>
             <InputGroupAddon addonType="prepend">
-              <InputGroupText>Programme Name</InputGroupText>
+              <InputGroupText>Program Name</InputGroupText>
             </InputGroupAddon>
             <Input
-              placeholder="Name of the Programme"
+              placeholder="Name of the Program"
               type="text"
               name="programmeName"
               value={programmeName}
@@ -122,7 +122,7 @@ const CreateNewProgramme = ({ onNewProgramme, token, allUsers }) => {
         <FormGroup>
           <InputGroup>
             <InputGroupAddon addonType="prepend">
-              <InputGroupText>Programme Short Form</InputGroupText>
+              <InputGroupText>Program Short Form</InputGroupText>
             </InputGroupAddon>
             <Input
               placeholder="Can be Program name if its short"
@@ -159,10 +159,10 @@ const CreateNewProgramme = ({ onNewProgramme, token, allUsers }) => {
     <div className="inlineItem">
       <button className="submitButton positionBtn" onClick={toggle}>
         < IoMdAdd />
-          Create New Programme
+          Create New Program
       </button>
       <Modal isOpen={modal} toggle={toggle}>
-        <ModalHeader toggle={toggle}>Create a new Programme</ModalHeader>
+        <ModalHeader toggle={toggle}>Create a new Program</ModalHeader>
         <ModalBody>
           {returnForm()}
         </ModalBody>

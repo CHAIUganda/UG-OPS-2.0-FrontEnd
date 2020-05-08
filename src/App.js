@@ -69,7 +69,6 @@ function App({ token, logUserIn, setInitialNotifications }) {
           supervisor: supervisorDetails
         };
         setInitialNotifications(notifications);
-        debugger;
         logUserIn(userObject);
         setSpinner(false);
       })
