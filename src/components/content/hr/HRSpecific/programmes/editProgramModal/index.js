@@ -125,7 +125,7 @@ export default function EditProgram({
         <FormGroup>
           <InputGroup>
             <InputGroupAddon addonType="prepend">
-              <InputGroupText>Programme Name</InputGroupText>
+              <InputGroupText>Program Name</InputGroupText>
             </InputGroupAddon>
             <Input
               placeholder="Name of the Programme"
@@ -140,7 +140,7 @@ export default function EditProgram({
         <FormGroup>
           <InputGroup>
             <InputGroupAddon addonType="prepend">
-              <InputGroupText>Programme Short Form</InputGroupText>
+              <InputGroupText>Program Short Form</InputGroupText>
             </InputGroupAddon>
             <Input
               placeholder="Can be Program name if its short"
