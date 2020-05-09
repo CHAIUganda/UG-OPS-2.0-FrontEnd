@@ -6,6 +6,7 @@ import axios from 'axios';
 import * as sideBarActions from '../../../../redux/actions/sideBarActions';
 import CommonSpinner from '../../../common/spinner';
 import { BASE_URL } from '../../../../config';
+import './hrhome.css';
 
 const matchDispatchToProps = {
   changeSection: sideBarActions.changeSection,
@@ -161,7 +162,7 @@ function HRHome({
           </td>
         </tr>
       </tbody>
-      <caption>
+      <caption className="beautifyCaption">
         Please be informed that when you plan for leave,
         those planned leave days are used to compute your leave balance.
         You can always cancel any planned leave, that will avail more leave days.
