@@ -74,8 +74,8 @@ export default function ManageLeaveModal({
       action: 'cancelLeave',
       staffEmail: leave.staff.email,
       type: category,
-      startDate: leaveDates[0],
-      endDate: leaveDates[1],
+      startDate: `${leaveDates[0].getFullYear()}-${leaveDates[0].getMonth() + 1}-${leaveDates[0].getDate()}`,
+      endDate: `${leaveDates[1].getFullYear()}-${leaveDates[1].getMonth() + 1}-${leaveDates[1].getDate()}`,
       comment,
       status: leave.status
     };
