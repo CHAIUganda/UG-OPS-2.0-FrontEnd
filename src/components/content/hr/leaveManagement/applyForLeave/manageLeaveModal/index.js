@@ -42,21 +42,26 @@ export default function ManageLeaveModal({
   const [comment, setComment] = useState('');
   const [leaveDates, setLeaveDate] = useState([new Date(leave.startDate), new Date(leave.endDate)]);
   const [modifyArray, setModifyArray] = useState(false);
+  const [leaveObjFromServer, setLeaveObjectFromServer] = useState(false);
 
 
   const toggle = () => {
     const bool = !modal;
 
     if (!bool && modifyArray) {
-      propToModifyArray(indexOfLeave,
-        {
-          ...leave,
-          type: category,
-          startDate: leaveDates[0],
-          endDate: leaveDates[1],
-          comment,
-          status: leaveStatus
-        });
+      if (leaveObjFromServer) {
+        propToModifyArray(indexOfLeave, { ...leaveObjFromServer });
+      } else {
+        propToModifyArray(indexOfLeave,
+          {
+            ...leave,
+            type: category,
+            startDate: leaveDates[0],
+            endDate: leaveDates[1],
+            comment,
+            status: leaveStatus
+          });
+      }
       setModal(bool);
       return;
     }
@@ -74,8 +79,8 @@ export default function ManageLeaveModal({
       action: 'cancelLeave',
       staffEmail: leave.staff.email,
       type: category,
-      startDate: leaveDates[0],
-      endDate: leaveDates[1],
+      startDate: `${leaveDates[0].getFullYear()}-${leaveDates[0].getMonth() + 1}-${leaveDates[0].getDate()}`,
+      endDate: `${leaveDates[1].getFullYear()}-${leaveDates[1].getMonth() + 1}-${leaveDates[1].getDate()}`,
       comment,
       status: leave.status
     };
@@ -122,6 +127,7 @@ export default function ManageLeaveModal({
       .then((res) => {
         setModifyLeaveSpinner(false);
         setModifyArray(true);
+        setLeaveObjectFromServer(res.data.leave);
         setSuccessFeedback(res.data.message);
       })
       .catch((err) => {
