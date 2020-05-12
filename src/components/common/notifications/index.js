@@ -1,3 +1,4 @@
+/* eslint-disable arrow-body-style */
 import React, { useState } from 'react';
 import {
   Badge,
@@ -9,6 +10,7 @@ import {
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { AiOutlineNotification } from 'react-icons/ai';
+import { Link } from 'react-router-dom';
 
 import Icon from '../icon';
 import './notifications.css';
@@ -22,6 +24,41 @@ function Notifications({ notifications }) {
 
   const toggle = () => setDropdownOpen((prevState) => !prevState);
 
+  const returnNotificationItems = () => {
+    const addLinkToNotification = (notification) => {
+      if (notification.linkTo) {
+        return (
+          <Link to={notification.linkTo}>
+            <DropdownItem key={notification._id}>
+              <Icon
+                Icon2Render={AiOutlineNotification}
+                color={'#003366'}
+              />
+              {notification.title}
+            </DropdownItem>
+          </Link>
+        );
+      }
+      return (
+        <DropdownItem key={notification._id}>
+          <Icon
+            Icon2Render={AiOutlineNotification}
+            color={'#003366'}
+          />
+          {notification.title}
+          <button type="button" className="btn btn-outline-info btn-sm ml-1">Mark as read</button>
+        </DropdownItem>
+      );
+    };
+
+    return notifications.map((not) => (
+      <>
+        { addLinkToNotification(not) }
+        <DropdownItem divider />
+      </>
+    ));
+  };
+
   const returnDropdown = () => (
     <Dropdown tag={'span'} isOpen={dropdownOpen} toggle={toggle}>
       <DropdownToggle tag={'span'}>
@@ -29,20 +66,7 @@ function Notifications({ notifications }) {
         <Badge color="info">{notifications.length}</Badge>
       </DropdownToggle>
       <DropdownMenu>
-        {
-          notifications.map((not) => (
-            <>
-              <DropdownItem key={not._id}>
-                <Icon
-                  Icon2Render={AiOutlineNotification}
-                  color={'#003366'}
-                />
-                {not.title}
-              </DropdownItem>
-              <DropdownItem divider />
-            </>
-          ))
-        }
+        { returnNotificationItems() }
       </DropdownMenu>
     </Dropdown>
   );

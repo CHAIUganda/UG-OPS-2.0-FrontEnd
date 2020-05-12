@@ -3,11 +3,16 @@ import initialState from './initialState';
 
 const notificationsReducer = (state = initialState.notifications, action) => {
   switch (action.type) {
-  case types.INITIAL_NOTIFICATIONS:
+  case types.INITIAL_NOTIFICATIONS: {
     return action.notifications;
-
-  default:
+  }
+  case types.REMOVE_NOTIFICATION: {
+    const newNotifications = state.filter((n) => n._id !== action.notificationId);
+    return newNotifications;
+  }
+  default: {
     return state;
+  }
   }
 };
 
