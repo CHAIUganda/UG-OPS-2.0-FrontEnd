@@ -1,7 +1,5 @@
 export const BASE_URL = 'http://45.79.187.217:3040/';
 
-// axios.defaults.headers.common = { token: tokenToSet };
-
 export const returnStatusClass = (status) => {
   if (status === 'approvedWords') {
     return 'approvedWords';
@@ -31,3 +29,21 @@ export const returnStatusClass = (status) => {
 
   return '';
 };
+
+// axios.defaults.headers.common = { token: tokenToSet };
+
+/*
+const turnOffNotification = () => {
+  axios.defaults.headers.common = { token };
+  const endPoint = `${BASE_URL}leaveApi/supervisorHandleLeave`;
+  axios.post(endPoint, manageLeaveObject)
+    .then((res) => {})
+    .catch((err) => {
+      if (err && err.response && err.response.data && err.response.data.message) {
+        setError(err.response.data.message);
+      } else {
+        setError(err.message);
+      }
+    });
+};
+*/

@@ -14,15 +14,24 @@ import { IoMdSettings } from 'react-icons/io';
 import { IconContext } from 'react-icons';
 import PropTypes from 'prop-types';
 import axios from 'axios';
+import { connect } from 'react-redux';
 
 import CommonSpinner from '../../../../../common/spinner';
+import * as notificationActions from '../../../../../../redux/actions/notificationsActions';
 import { BASE_URL, returnStatusClass } from '../../../../../../config';
 
-export default function ManageLeaveModal({
+const matchDispatchToProps = {
+  removeNotification: notificationActions.removeNotification
+};
+
+const mapStateToProps = () => ({ });
+
+function ManageLeaveModal({
   leave,
   staff,
   token,
-  removeLeaveFromList
+  removeLeaveFromList,
+  removeNotification
 }) {
   const [modal, setModal] = useState(false);
   const [error, setError] = useState('');
@@ -42,6 +51,33 @@ export default function ManageLeaveModal({
       return;
     }
     setModal(bool);
+  };
+
+  const turnOffNotifications = () => {
+    const handleSingleNotification = (n) => {
+      axios.defaults.headers.common = { token };
+      const endPoint = `${BASE_URL}auth/handleNotifications`;
+      const notificationToDismiss = {
+        staffEmail: leave.staff.email,
+        notificationId: n._id
+      };
+
+      axios.post(endPoint, notificationToDismiss)
+        .then(() => {
+          removeNotification(n._id);
+        })
+        .catch((err) => {
+          if (err && err.response && err.response.data && err.response.data.message) {
+            setError(err.response.data.message);
+          } else {
+            setError(err.message);
+          }
+        });
+    };
+
+    leave.notificationDetails.forEach((n) => {
+      handleSingleNotification(n);
+    });
   };
 
   const handleManageLeave = (event, status) => {
@@ -78,6 +114,7 @@ export default function ManageLeaveModal({
         setId2Remove(leave._id);
         setLeaveStatus(status);
         setSuccessFeedback(res.data.message);
+        turnOffNotifications();
       })
       .catch((err) => {
         if (status === 'Approved') {
@@ -203,5 +240,8 @@ ManageLeaveModal.propTypes = {
   leave: PropTypes.object,
   staff: PropTypes.string,
   token: PropTypes.string,
-  removeLeaveFromList: PropTypes.func
+  removeLeaveFromList: PropTypes.func,
+  removeNotification: PropTypes.func
 };
+
+export default connect(mapStateToProps, matchDispatchToProps)(ManageLeaveModal);

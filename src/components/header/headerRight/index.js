@@ -13,7 +13,7 @@ import {
   DropdownItem
 } from 'reactstrap';
 
-// import Notifications from '../../common/notifications';
+import Notifications from '../../common/notifications';
 import * as authActions from '../../../redux/actions/authActions';
 import './headerRight.css';
 
@@ -53,7 +53,7 @@ function HeaderRight({ logUserOut, firstName, lastName }) {
 
   return (
     <div className="headerRight  float-right">
-      {/* <Notifications /> */}
+      <Notifications />
       <span className="name mr-2 mt-2">
         {`${firstName} ${lastName[0]}.`}
       </span>
