@@ -69,7 +69,7 @@ function Plan4LeaveModal({
 
 
   const processAnnualLeaveFeedback = (leaveDaysArray, home = false) => {
-    const daysAccruedByThen = leaveDates[1].getMonth() * 1.75;
+    const daysAccruedByThen = leaveDetails.annualLeaveBal;
     const availableDays = (Math.trunc(daysAccruedByThen) + leaveDetails.annualLeaveBF)
     - leaveDetails.annualLeaveTaken;
     const leaveWord = home ? 'Home' : 'Annual';
@@ -96,7 +96,7 @@ function Plan4LeaveModal({
   };
 
   const processMaternityLeaveFeedback = (leaveDaysArray) => {
-    const availableDays = 60 - leaveDetails.maternityLeaveTaken;
+    const availableDays = leaveDetails.maternityLeaveBal;
     if (availableDays >= leaveDaysArray.length) {
       setGreenContraintsFeedback(`
       You have used ${leaveDetails.maternityLeaveTaken} maternity leave days so far.
@@ -122,8 +122,7 @@ function Plan4LeaveModal({
     if (availableDays >= leaveDaysArray.length) {
       setGreenContraintsFeedback(`
       You have selected ${leaveDaysArray.length} paternity leave day(s).
-      You are good to go.
-      `);
+      You are good to go.`);
     } else {
       setRedContraintsFeedback(`
         You are entitled to 7 paternity leave days per occurrence.
@@ -134,7 +133,7 @@ function Plan4LeaveModal({
   };
 
   const processStudyLeaveFeedback = (leaveDaysArray) => {
-    const availableDays = 4 - leaveDetails.studyLeaveTaken;
+    const availableDays = leaveDetails.studyLeaveBal;
     if (availableDays >= leaveDaysArray.length) {
       setGreenContraintsFeedback(`
       You have used ${leaveDetails.studyLeaveTaken} study leave days so far.
@@ -155,7 +154,7 @@ function Plan4LeaveModal({
   };
 
   const processUnpaidLeaveFeedback = (leaveDaysArray) => {
-    const availableDays = 60 - leaveDetails.unPaidLeaveTaken;
+    const availableDays = leaveDetails.unpaidLeaveBal;
     if (availableDays >= leaveDaysArray.length) {
       setGreenContraintsFeedback(`
       You have used ${leaveDetails.studyLeaveTaken} unpaid leave days so far.
@@ -357,7 +356,7 @@ function Plan4LeaveModal({
             >
               <option value="Annual">Annual Leave</option>
               {gender === 'Female'
-              && <option value="Maternatiy">Maternity Leave</option>
+              && <option value="Maternity">Maternity Leave</option>
               }
               {(gender === 'Male' || gender === 'male')
               && <option value="Paternity">Paternity Leave</option>
