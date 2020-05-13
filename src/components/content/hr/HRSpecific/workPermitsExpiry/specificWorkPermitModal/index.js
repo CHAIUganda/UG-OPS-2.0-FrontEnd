@@ -10,16 +10,27 @@ import { IconContext } from 'react-icons';
 import { IoMdSettings } from 'react-icons/io';
 import PropTypes from 'prop-types';
 import axios from 'axios';
+import { connect } from 'react-redux';
 
 import Spinner from '../../../../../common/spinner';
+import * as notificationActions from '../../../../../../redux/actions/notificationsActions';
 
+const matchDispatchToProps = {
+  removeNotification: notificationActions.removeNotification
+};
+
+const mapStateToProps = (state) => ({
+  email: state.auth.email
+});
 
 const SpecificWorkPermitModal = ({
   BASE_URL,
   workPermit,
   token,
   modifyWorkPermitList,
-  index
+  index,
+  email,
+  removeNotification
 }) => {
   const [modal, setModal] = useState(false);
   const [dismissSpinner, setDismissSpiner] = useState(false);
@@ -33,6 +44,33 @@ const SpecificWorkPermitModal = ({
       modifyWorkPermitList(index);
     }
     setModal(!modal);
+  };
+
+  const turnOffNotifications = () => {
+    const handleSingleNotification = (wp) => {
+      axios.defaults.headers.common = { token };
+      const endPoint = `${BASE_URL}auth/handleNotifications`;
+      const notificationToDismiss = {
+        staffEmail: email,
+        notificationId: wp._id
+      };
+
+      axios.post(endPoint, notificationToDismiss)
+        .then(() => {
+          removeNotification(wp._id);
+        })
+        .catch((err) => {
+          if (err && err.response && err.response.data && err.response.data.message) {
+            setError(err.response.data.message);
+          } else {
+            setError(err.message);
+          }
+        });
+    };
+
+    workPermit.notificationDetails.forEach((wp) => {
+      handleSingleNotification(wp);
+    });
   };
 
   const handleClickDismiss = () => {
@@ -52,6 +90,7 @@ const SpecificWorkPermitModal = ({
         setDismissSpiner(false);
         setSuccessMessage(res.data.message);
         setRemoveFromList(true);
+        turnOffNotifications();
       })
       .catch((err) => {
         setDismissSpiner(false);
@@ -80,6 +119,7 @@ const SpecificWorkPermitModal = ({
         setSnoozeSpinner(false);
         setSuccessMessage(res.data.message);
         setRemoveFromList(true);
+        turnOffNotifications();
       })
       .catch((err) => {
         setSnoozeSpinner(false);
@@ -179,7 +219,9 @@ SpecificWorkPermitModal.propTypes = {
   token: PropTypes.string,
   BASE_URL: PropTypes.string,
   modifyWorkPermitList: PropTypes.func,
-  index: PropTypes.number
+  index: PropTypes.number,
+  email: PropTypes.string,
+  removeNotification: PropTypes.func
 };
 
-export default SpecificWorkPermitModal;
+export default connect(mapStateToProps, matchDispatchToProps)(SpecificWorkPermitModal);
