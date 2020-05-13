@@ -10,16 +10,27 @@ import { IconContext } from 'react-icons';
 import { IoMdSettings } from 'react-icons/io';
 import PropTypes from 'prop-types';
 import axios from 'axios';
+import { connect } from 'react-redux';
 
+import * as notificationActions from '../../../../../../redux/actions/notificationsActions';
 import Spinner from '../../../../../common/spinner';
 
+const matchDispatchToProps = {
+  removeNotification: notificationActions.removeNotification
+};
+
+const mapStateToProps = (state) => ({
+  email: state.auth.email
+});
 
 const SpecificContractModal = ({
   BASE_URL,
   contract,
   token,
   modifyContractsList,
-  index
+  index,
+  email,
+  removeNotification
 }) => {
   const [modal, setModal] = useState(false);
   const [dismissSpinner, setDismissSpiner] = useState(false);
@@ -27,6 +38,33 @@ const SpecificContractModal = ({
   const [successMessage, setSuccessMessage] = useState('');
   const [error, setError] = useState('');
   const [removeFromList, setRemoveFromList] = useState(false);
+
+  const turnOffNotifications = () => {
+    const handleSingleNotification = (c) => {
+      axios.defaults.headers.common = { token };
+      const endPoint = `${BASE_URL}auth/handleNotifications`;
+      const notificationToDismiss = {
+        staffEmail: email,
+        notificationId: c._id
+      };
+
+      axios.post(endPoint, notificationToDismiss)
+        .then(() => {
+          removeNotification(c._id);
+        })
+        .catch((err) => {
+          if (err && err.response && err.response.data && err.response.data.message) {
+            setError(err.response.data.message);
+          } else {
+            setError(err.message);
+          }
+        });
+    };
+
+    contract.notificationDetails.forEach((c) => {
+      handleSingleNotification(c);
+    });
+  };
 
   const toggle = () => {
     if (removeFromList) {
@@ -52,6 +90,7 @@ const SpecificContractModal = ({
         setDismissSpiner(false);
         setSuccessMessage(res.data.message);
         setRemoveFromList(true);
+        turnOffNotifications();
       })
       .catch((err) => {
         setDismissSpiner(false);
@@ -80,6 +119,7 @@ const SpecificContractModal = ({
         setSnoozeSpinner(false);
         setSuccessMessage(res.data.message);
         setRemoveFromList(true);
+        turnOffNotifications();
       })
       .catch((err) => {
         setSnoozeSpinner(false);
@@ -174,7 +214,9 @@ SpecificContractModal.propTypes = {
   token: PropTypes.string,
   BASE_URL: PropTypes.string,
   modifyContractsList: PropTypes.func,
-  index: PropTypes.number
+  index: PropTypes.number,
+  email: PropTypes.string,
+  removeNotification: PropTypes.func
 };
 
-export default SpecificContractModal;
+export default connect(mapStateToProps, matchDispatchToProps)(SpecificContractModal);
