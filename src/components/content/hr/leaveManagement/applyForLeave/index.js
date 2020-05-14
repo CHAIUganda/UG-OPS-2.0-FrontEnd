@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import axios from 'axios';
 
 import * as sideBarActions from '../../../../../redux/actions/sideBarActions';
+import * as notificationActions from '../../../../../redux/actions/notificationsActions';
 import CommonSpinner from '../../../../common/spinner';
 import { BASE_URL, returnStatusClass } from '../../../../../config';
 import Apply4LeaveModal from './applyForLeaveModal';
@@ -12,7 +13,8 @@ import './apply4Leave.css';
 
 const matchDispatchToProps = {
   changeSection: sideBarActions.changeSection,
-  changeActive: sideBarActions.changeActive
+  changeActive: sideBarActions.changeActive,
+  removeNotification: notificationActions.removeNotification
 };
 
 const mapStateToProps = (state) => ({
@@ -30,7 +32,8 @@ function Apply4Leave({
   token,
   type,
   changeSection,
-  changeActive
+  changeActive,
+  removeNotification
 }) {
   const [spinner, setSpinner] = useState(false);
   const [leaveDetails, setLeaveDetails] = useState(null);
@@ -41,12 +44,83 @@ function Apply4Leave({
   changeActive('Apply4Leave');
 
   const getPersonsLeaves = () => {
+    const turnOffNotifications = (leavesToNotify) => {
+      const handleSingleNotification = (n) => {
+        axios.defaults.headers.common = { token };
+        const endPoint = `${BASE_URL}auth/handleNotifications`;
+        const notificationToDismiss = {
+          staffEmail: email,
+          notificationId: n._id
+        };
+
+        axios.post(endPoint, notificationToDismiss)
+          .then(() => {
+            removeNotification(n._id);
+          })
+          .catch((err) => {
+            if (err && err.response && err.response.data && err.response.data.message) {
+              setError(err.response.data.message);
+            } else {
+              setError(err.message);
+            }
+          });
+      };
+
+      leavesToNotify.forEach((l) => {
+        l.notificationDetails.forEach((n) => {
+          handleSingleNotification(n);
+        });
+      });
+    };
+
+    const addHighlightProperty = (leaves) => {
+      const newArray = [];
+
+      const recursivelyHandleaves = (i) => {
+        if (i > leaves.length - 1) {
+          return newArray;
+        }
+
+        if (leaves[i].notificationDetails) {
+          const hasUnread = leaves[i].notificationDetails.some((n) => n.status === 'unRead');
+          if (hasUnread) {
+            /* Hit end point */
+            newArray.push({
+              ...leaves[i],
+              highlightNotification: true
+            });
+            recursivelyHandleaves(i + 1);
+          } else {
+            newArray.push({
+              ...leaves[i],
+              highlightNotification: false
+            });
+            recursivelyHandleaves(i + 1);
+          }
+        } else {
+          newArray.push({
+            ...leaves[i],
+            highlightNotification: false
+          });
+          recursivelyHandleaves(i + 1);
+        }
+
+        return newArray;
+      };
+
+      return recursivelyHandleaves(0);
+    };
+
     const endPoint = `${BASE_URL}leaveApi/getStaffLeaves/${email}/all`;
     axios.defaults.headers.common = { token };
     axios.get(endPoint)
       .then((res) => {
+        const leavesToSet = addHighlightProperty(res.data.filter((l) => l.status !== 'Planned'));
+        const x = leavesToSet.filter((l) => l.highlightNotification === true);
+        const y = leavesToSet.filter((l) => l.highlightNotification === false);
+        setPersonsLeaves([...y, ...x]);
+        turnOffNotifications(x);
         setSpinner(false);
-        setPersonsLeaves(res.data.filter((l) => l.status !== 'Planned'));
       })
       .catch((err) => {
         if (err && err.response && err.response.data && err.response.data.message) {
@@ -121,7 +195,10 @@ function Apply4Leave({
       <tbody>
         {
           personsLeaves.reverse().map((leave, index) => (
-            <tr key={leave._id}>
+            <tr
+              key={leave._id}
+              className={`${leave.highlightNotification ? 'highlightNotification' : ''}`}
+            >
               <td>{leave.type}</td>
               <td>{leave.daysTaken}</td>
               <td>{new Date(leave.startDate).toDateString()}</td>
@@ -175,7 +252,8 @@ Apply4Leave.propTypes = {
   token: PropTypes.string,
   type: PropTypes.string,
   changeSection: PropTypes.func,
-  changeActive: PropTypes.func
+  changeActive: PropTypes.func,
+  removeNotification: PropTypes.func,
 };
 
 export default connect(mapStateToProps, matchDispatchToProps)(Apply4Leave);

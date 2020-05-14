@@ -36,7 +36,8 @@ function Apply4LeaveModal({
   leaveDetails,
   email,
   addLeave,
-  type
+  type,
+  token
 }) {
   const [modal, setModal] = useState(false);
   const [spinner, setSpinner] = useState(false);
@@ -306,6 +307,7 @@ function Apply4LeaveModal({
     };
 
     const endPoint = `${BASE_URL}leaveApi/leave`;
+    axios.defaults.headers.common = { token };
     axios.post(endPoint, leaveObject)
       .then((res) => {
         reset();
@@ -468,6 +470,7 @@ function Apply4LeaveModal({
 
   useEffect(() => {
     setPublicHolidaysFeedback('Retrieving Public Holidays, Please wait ..... ');
+    axios.defaults.headers.common = { token };
     const endPoint = `${BASE_URL}hrApi/getPublicHolidays`;
     axios.get(endPoint)
       .then((res) => {
@@ -515,7 +518,8 @@ Apply4LeaveModal.propTypes = {
   email: PropTypes.string,
   addLeave: PropTypes.func,
   roles: PropTypes.object,
-  type: PropTypes.string
+  type: PropTypes.string,
+  token: PropTypes.string
 };
 
 export default connect(mapStateToProps)(Apply4LeaveModal);

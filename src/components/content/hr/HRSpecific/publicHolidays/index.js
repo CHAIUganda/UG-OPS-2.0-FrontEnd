@@ -16,12 +16,14 @@ const matchDispatchToProps = {
 
 const mapStateToProps = (state) => ({
   roles: state.auth.roles,
+  token: state.auth.token
 });
 
 function ManagePublicHolidays({
   roles,
   changeSection,
-  changeActive
+  changeActive,
+  token
 }) {
   const { hr, admin } = roles;
   const [publicHolidays, setPublicHolidays] = useState([]);
@@ -105,6 +107,7 @@ function ManagePublicHolidays({
 
   useEffect(() => {
     setTableSpinner(true);
+    axios.defaults.headers.common = { token };
     const endPoint = `${BASE_URL}hrApi/getPublicHolidays`;
     axios.get(endPoint)
       .then((res) => {
@@ -138,7 +141,8 @@ function ManagePublicHolidays({
 ManagePublicHolidays.propTypes = {
   roles: PropTypes.object,
   changeSection: PropTypes.func,
-  changeActive: PropTypes.func
+  changeActive: PropTypes.func,
+  token: PropTypes.string
 };
 
 export default connect(mapStateToProps, matchDispatchToProps)(ManagePublicHolidays);

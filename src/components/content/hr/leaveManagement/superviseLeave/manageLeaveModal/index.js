@@ -24,12 +24,15 @@ const matchDispatchToProps = {
   removeNotification: notificationActions.removeNotification
 };
 
-const mapStateToProps = () => ({ });
+const mapStateToProps = (state) => ({
+  email: state.auth.email
+});
 
 function ManageLeaveModal({
   leave,
   staff,
   token,
+  email,
   removeLeaveFromList,
   removeNotification
 }) {
@@ -58,7 +61,7 @@ function ManageLeaveModal({
       axios.defaults.headers.common = { token };
       const endPoint = `${BASE_URL}auth/handleNotifications`;
       const notificationToDismiss = {
-        staffEmail: leave.staff.email,
+        staffEmail: email,
         notificationId: n._id
       };
 
@@ -240,6 +243,7 @@ ManageLeaveModal.propTypes = {
   leave: PropTypes.object,
   staff: PropTypes.string,
   token: PropTypes.string,
+  email: PropTypes.string,
   removeLeaveFromList: PropTypes.func,
   removeNotification: PropTypes.func
 };

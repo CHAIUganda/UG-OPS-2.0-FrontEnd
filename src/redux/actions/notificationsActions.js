@@ -13,3 +13,10 @@ export const removeNotification = (notificationId) => (dispatch) => {
     notificationId
   });
 };
+
+export const AddNotification = (newNotification) => (dispatch) => {
+  dispatch({
+    type: types.ADD_NOTIFICATION,
+    newNotification
+  });
+};

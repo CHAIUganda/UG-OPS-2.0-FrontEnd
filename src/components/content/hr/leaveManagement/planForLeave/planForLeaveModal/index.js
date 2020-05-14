@@ -459,6 +459,7 @@ function Plan4LeaveModal({
 
   useEffect(() => {
     setPublicHolidaysFeedback('Retrieving Public Holidays, Please wait ..... ');
+    axios.defaults.headers.common = { token };
     const endPoint = `${BASE_URL}hrApi/getPublicHolidays`;
     axios.get(endPoint)
       .then((res) => {

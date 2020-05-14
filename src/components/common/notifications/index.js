@@ -24,6 +24,10 @@ function Notifications({ notifications }) {
 
   const toggle = () => setDropdownOpen((prevState) => !prevState);
 
+  const handleMarkAsRead = (notificationId) => {
+    console.log(notificationId);
+  };
+
   const returnNotificationItems = () => {
     const addLinkToNotification = (notification) => {
       if (notification.linkTo) {
@@ -46,7 +50,9 @@ function Notifications({ notifications }) {
             color={'#003366'}
           />
           {notification.title}
-          <button type="button" className="btn btn-outline-info btn-sm ml-1">Mark as read</button>
+          <button type="button" onClick={() => handleMarkAsRead(notification._id)} className="btn btn-outline-info btn-sm ml-1">
+            Mark as read
+          </button>
         </DropdownItem>
       );
     };

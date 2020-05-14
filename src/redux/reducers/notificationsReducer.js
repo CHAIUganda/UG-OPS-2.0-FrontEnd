@@ -10,6 +10,10 @@ const notificationsReducer = (state = initialState.notifications, action) => {
     const newNotifications = state.filter((n) => n._id !== action.notificationId);
     return newNotifications;
   }
+  case types.ADD_NOTIFICATION: {
+    const newNotifications = [...state, action.newNotification];
+    return newNotifications;
+  }
   default: {
     return state;
   }
