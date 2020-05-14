@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-// prettier-ignore
 import {
   HashRouter,
   Route,
@@ -29,10 +28,15 @@ const mapStateToProps = (state) => ({
 
 const matchDispatchToProps = {
   logUserIn: authActions.logUserIn,
-  setInitialNotifications: notificationActions.setInitialNotifications
+  setInitialNotifications: notificationActions.setInitialNotifications,
+  AddNotification: notificationActions.AddNotification
 };
 
-function App({ token, logUserIn, setInitialNotifications }) {
+function App({
+  token,
+  logUserIn,
+  setInitialNotifications,
+}) {
   const [spinner, setSpinner] = useState(false);
 
   const setUpUser = (tokenToSet) => {
@@ -124,7 +128,8 @@ function App({ token, logUserIn, setInitialNotifications }) {
 App.propTypes = {
   token: PropTypes.string,
   logUserIn: PropTypes.func,
-  setInitialNotifications: PropTypes.func
+  setInitialNotifications: PropTypes.func,
+  AddNotification: PropTypes.func
 };
 
 export default connect(mapStateToProps, matchDispatchToProps)(App);
