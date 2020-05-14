@@ -26,6 +26,12 @@ function MainApp({ AddNotification, email }) {
         AddNotification(data);
       }
     });
+
+    return function cleanUp() {
+      if (channel) {
+        channel.unbind('ugops2');
+      }
+    };
   }, []);
 
   return (
