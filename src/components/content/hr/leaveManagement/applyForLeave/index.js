@@ -119,7 +119,7 @@ function Apply4Leave({
         const x = leavesToSet.filter((l) => l.highlightNotification === true);
         const y = leavesToSet.filter((l) => l.highlightNotification === false);
         setPersonsLeaves([...y, ...x]);
-        setTimeout(() => turnOffNotifications(x), 10000);
+        turnOffNotifications(x);
         setSpinner(false);
       })
       .catch((err) => {
