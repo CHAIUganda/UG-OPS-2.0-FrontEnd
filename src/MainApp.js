@@ -6,13 +6,15 @@ import Pusher from 'pusher-js';
 import App from './App';
 import * as notificationActions from './redux/actions/notificationsActions';
 
-const mapStateToProps = () => ({});
+const mapStateToProps = (state) => ({
+  email: state.auth.email
+});
 
 const matchDispatchToProps = {
   AddNotification: notificationActions.AddNotification
 };
 
-function MainApp({ AddNotification }) {
+function MainApp({ AddNotification, email }) {
   useEffect(() => {
     const pusher = new Pusher('afacc8c93d042f2ec024', {
       cluster: 'ap2',
@@ -20,7 +22,9 @@ function MainApp({ AddNotification }) {
     });
     const channel = pusher.subscribe('notifications');
     channel.bind('ugops2', (data) => {
-      AddNotification(data);
+      if (email.trim() === data.staffEmail.trim()) {
+        AddNotification(data);
+      }
     });
   }, []);
 
@@ -30,7 +34,8 @@ function MainApp({ AddNotification }) {
 }
 
 MainApp.propTypes = {
-  AddNotification: PropTypes.func
+  AddNotification: PropTypes.func,
+  email: PropTypes.string
 };
 
 export default connect(mapStateToProps, matchDispatchToProps)(MainApp);
