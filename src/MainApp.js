@@ -24,11 +24,9 @@ function MainApp({ AddNotification, email }) {
   if (email) {
     useEffect(() => {
       const handleNotifications = (data) => {
-        if (email === data.staffEmail) {
-          toast(data.title);
-          beep.play();
-          AddNotification(data);
-        }
+        toast(data.title);
+        beep.play();
+        AddNotification(data);
       };
 
       const pusher = new Pusher('afacc8c93d042f2ec024', {
@@ -36,7 +34,7 @@ function MainApp({ AddNotification, email }) {
         encrypted: true
       });
       const channel = pusher.subscribe('notifications');
-      channel.bind('ugops2', (data) => handleNotifications(data));
+      channel.bind(email, (data) => handleNotifications(data));
 
       return function cleanUp() {
         if (channel) {
