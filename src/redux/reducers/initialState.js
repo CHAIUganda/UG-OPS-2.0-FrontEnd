@@ -22,5 +22,5 @@ export default {
     section: null
   },
   notifications: [],
-  courses: []
+  subscriptionLocked: false
 };

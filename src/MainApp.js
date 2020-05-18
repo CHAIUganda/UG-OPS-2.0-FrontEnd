@@ -9,26 +9,31 @@ import notificationSound from './when.mp3';
 
 import App from './App';
 import * as notificationActions from './redux/actions/notificationsActions';
+import * as subscriptionLockActions from './redux/actions/subscriptionLockActions';
 
 const mapStateToProps = (state) => ({
-  email: state.auth.email
+  email: state.auth.email,
+  subscriptionLock: state.subscriptionLock
 });
 
 const matchDispatchToProps = {
-  AddNotification: notificationActions.AddNotification
+  AddNotification: notificationActions.AddNotification,
+  changeLock: subscriptionLockActions.changeLock
 };
 
-function MainApp({ AddNotification, email }) {
-  // debugger;
+function MainApp({
+  AddNotification,
+  email,
+  changeLock,
+  subscriptionLock
+}) {
   const beep = new UIfx({ asset: notificationSound });
-  if (email) {
+  if (email && !subscriptionLock) {
     useEffect(() => {
       const handleNotifications = (data) => {
-        if (email === data.staffEmail) {
-          toast(data.title);
-          beep.play();
-          AddNotification(data);
-        }
+        toast(data.title);
+        beep.play();
+        AddNotification(data);
       };
 
       const pusher = new Pusher('afacc8c93d042f2ec024', {
@@ -36,11 +41,13 @@ function MainApp({ AddNotification, email }) {
         encrypted: true
       });
       const channel = pusher.subscribe('notifications');
-      channel.bind('ugops2', (data) => handleNotifications(data));
+      channel.bind(email, (data) => handleNotifications(data));
+      changeLock(true);
 
       return function cleanUp() {
         if (channel) {
-          channel.unbind('ugops2');
+          channel.unbind(email);
+          changeLock(false);
         }
       };
     }, []);
@@ -56,7 +63,9 @@ function MainApp({ AddNotification, email }) {
 
 MainApp.propTypes = {
   AddNotification: PropTypes.func,
-  email: PropTypes.string
+  changeLock: PropTypes.func,
+  email: PropTypes.string,
+  subscriptionLock: PropTypes.bool
 };
 
 export default connect(mapStateToProps, matchDispatchToProps)(MainApp);
