@@ -6,6 +6,7 @@ import axios from 'axios';
 
 import { BASE_URL } from '../../config';
 import HR from './hr';
+import Procurement from './procurement';
 import './sidebar.css';
 import 'react-day-picker/lib/style.css';
 
@@ -61,6 +62,11 @@ function Sidebar({ token, section }) {
             {section === 'Human Resource'
               && <div className="navContainer">
                 <HR />
+              </div>
+            }
+            {section === 'Procurement'
+              && <div className="navContainer">
+                <Procurement />
               </div>
             }
           </div>
