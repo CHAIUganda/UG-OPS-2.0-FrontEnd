@@ -7,6 +7,8 @@ import * as sideBarActions from '../../../../redux/actions/sideBarActions';
 import CommonSpinner from '../../../common/spinner';
 import ProcurementInitialDetails from './procurementInitialDetails';
 import CategoryOfProcurement from './categoryOfProcurement';
+import GeneralDetails from './generalProcurementDetails';
+import PrintingSpecs from './printingSpecs';
 
 import './createProcurement.css';
 
@@ -63,6 +65,15 @@ function CreateProcurement({
   const [computersAndAccessories, setComputersAndAccessories] = useState(false);
   const [other, setOther] = useState(false);
   const [describeOther, setDescribeOther] = useState('');
+  const [minPrice, setMinPrice] = useState(0);
+  const [maxPrice, setMaxPrice] = useState(0);
+  const [leaveDates, setLeaveDates] = useState();
+  const [keyObjectiveAsPerCostedWorkPlan, setKeyObjectiveAsPerCostedWorkPlan] = useState('');
+  const [keyActivitiesAsPerCostedWorkPlan, setKeyActivitiesAsPerCostedWorkPlan] = useState('');
+  const [qualityToBePrinted, setQualityToBePrinted] = useState('');
+  const [detailedDescriptionOfPrint, setDetailedDescriptionOfPrint] = useState('');
+  const [moreDetails, setMoreDetails] = useState('');
+  const [accountCode, setAccountCode] = useState('');
 
   changeSection('Procurement');
   changeActive('CreateProcurement');
@@ -118,6 +129,34 @@ function CreateProcurement({
           setOther={setOther}
           describeOther={describeOther}
           setDescribeOther={setDescribeOther}
+        />
+
+        <GeneralDetails
+          setSuccessFeedback={setSuccessFeedback}
+          setError={setError}
+          minPrice={minPrice}
+          setMinPrice={setMinPrice}
+          maxPrice={maxPrice}
+          setMaxPrice={setMaxPrice}
+          leaveDates={leaveDates}
+          setLeaveDates={setLeaveDates}
+          keyObjectiveAsPerCostedWorkPlan={keyObjectiveAsPerCostedWorkPlan}
+          setKeyObjectiveAsPerCostedWorkPlan={setKeyObjectiveAsPerCostedWorkPlan}
+          keyActivitiesAsPerCostedWorkPlan={keyActivitiesAsPerCostedWorkPlan}
+          setKeyActivitiesAsPerCostedWorkPlan={setKeyActivitiesAsPerCostedWorkPlan}
+        />
+
+        <PrintingSpecs
+          setSuccessFeedback={setSuccessFeedback}
+          setError={setError}
+          qualityToBePrinted={qualityToBePrinted}
+          setQualityToBePrinted={setQualityToBePrinted}
+          detailedDescriptionOfPrint={detailedDescriptionOfPrint}
+          setDetailedDescriptionOfPrint={setDetailedDescriptionOfPrint}
+          moreDetails={moreDetails}
+          setMoreDetails={setMoreDetails}
+          accountCode={accountCode}
+          setAccountCode={setAccountCode}
         />
 
       </Form>

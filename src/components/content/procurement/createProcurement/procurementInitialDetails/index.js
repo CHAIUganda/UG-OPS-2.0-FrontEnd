@@ -8,8 +8,8 @@ import {
 } from 'reactstrap';
 import PropTypes from 'prop-types';
 
-import NextButton from '../../../../common/nextButton';
-import BackButton from '../../../../common/backButton';
+// import NextButton from '../../../../common/nextButton';
+// import BackButton from '../../../../common/backButton';
 
 function ProcurementInitialDetails({
   setSuccessFeedback,
@@ -84,8 +84,8 @@ function ProcurementInitialDetails({
         </InputGroup>
       </FormGroup>
 
-      <BackButton />
-      <NextButton />
+      {/* <BackButton />
+      <NextButton /> */}
     </>
   );
 }
