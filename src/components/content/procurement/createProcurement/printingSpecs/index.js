@@ -278,7 +278,7 @@ const PrintingSpecs = ({
           <InputGroupAddon addonType="prepend">
             <InputGroupText>Additional documations</InputGroupText>
           </InputGroupAddon>
-          <div ref={dropzoneNode} id='d' className='dropzone'> </div>
+          <div ref={dropzoneNode} id='d' className='dropzone'></div>
         </InputGroup>
         <FormText>
           Attach any additional suppporting documations.
