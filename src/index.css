@@ -162,3 +162,21 @@ code {
 	font-size: 1.4em;
   color: grey
 }
+
+/* dropzone css */
+.dropzone {
+  border: 2px dashed #0087F7 !important;
+  border-radius: 5px;
+  width: 32.5em;
+}
+
+/* .dz-filename{
+  font-family: sans-serif;
+  font-size: large;
+  margin-left: 20px
+} */
+
+.dz-progress{
+  /* margin-left: 40% !important; */
+  display: none;
+}

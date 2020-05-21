@@ -74,6 +74,11 @@ function CreateProcurement({
   const [detailedDescriptionOfPrint, setDetailedDescriptionOfPrint] = useState('');
   const [moreDetails, setMoreDetails] = useState('');
   const [accountCode, setAccountCode] = useState('');
+  const [sampleNeeded, setSampleNeeded] = useState('No');
+  const [colourNeeded, setColourNeeded] = useState('Black/White');
+  const [typeOfBinding, setTypeOfBinding] = useState('');
+  const [typeOfPaper, setTypeOfPaper] = useState('');
+  const [paperSize, setPaperSize] = useState('');
 
   changeSection('Procurement');
   changeActive('CreateProcurement');
@@ -157,6 +162,16 @@ function CreateProcurement({
           setMoreDetails={setMoreDetails}
           accountCode={accountCode}
           setAccountCode={setAccountCode}
+          sampleNeeded={sampleNeeded}
+          setSampleNeeded={setSampleNeeded}
+          colourNeeded={colourNeeded}
+          setColourNeeded={setColourNeeded}
+          typeOfBinding={typeOfBinding}
+          setTypeOfBinding={setTypeOfBinding}
+          typeOfPaper={typeOfPaper}
+          setTypeOfPaper={setTypeOfPaper}
+          paperSize={paperSize}
+          setPaperSize={setPaperSize}
         />
 
       </Form>
