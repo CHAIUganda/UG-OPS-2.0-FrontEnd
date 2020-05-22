@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { Form } from 'reactstrap';
+// import { moment } from 'moment';
 
 import * as sideBarActions from '../../../../redux/actions/sideBarActions';
 import CommonSpinner from '../../../common/spinner';
@@ -9,6 +10,8 @@ import ProcurementInitialDetails from './procurementInitialDetails';
 import CategoryOfProcurement from './categoryOfProcurement';
 import GeneralDetails from './generalProcurementDetails';
 import PrintingSpecs from './printingSpecs';
+import CarHireSpecifications from './carHireSpecs';
+import StationarySpecs from './stationarySpecs';
 
 import './createProcurement.css';
 
@@ -79,6 +82,15 @@ function CreateProcurement({
   const [typeOfBinding, setTypeOfBinding] = useState('');
   const [typeOfPaper, setTypeOfPaper] = useState('');
   const [paperSize, setPaperSize] = useState('');
+  const [typeOfCar, setTypeOfCar] = useState('');
+  const [districtsToBeVisited, setDistrictsToBeVisited] = useState('');
+  const [numberOfCars, setNumberOfCars] = useState(0);
+  const [numberOfDays, setNumberOfDays] = useState(0);
+  const [numberOfNights, setNumberOfNights] = useState(0);
+  const [pickUpTime, setPickUpTime] = useState();
+  const [pickUpLocation, setPickUpLocation] = useState('');
+  const [itemRequests, setItemRequests] = useState('');
+  const [quantitiesRequired, setQuantitiesRequired] = useState('');
 
   changeSection('Procurement');
   changeActive('CreateProcurement');
@@ -172,6 +184,32 @@ function CreateProcurement({
           setTypeOfPaper={setTypeOfPaper}
           paperSize={paperSize}
           setPaperSize={setPaperSize}
+        />
+
+        <CarHireSpecifications
+          setSuccessFeedback={setSuccessFeedback}
+          setError={setError}
+          typeOfCar={typeOfCar}
+          setTypeOfCar={setTypeOfCar}
+          districtsToBeVisited={districtsToBeVisited}
+          setDistrictsToBeVisited={setDistrictsToBeVisited}
+          numberOfCars={numberOfCars}
+          setNumberOfCars={setNumberOfCars}
+          numberOfDays={numberOfDays}
+          setNumberOfDays={setNumberOfDays}
+          numberOfNights={numberOfNights}
+          setNumberOfNights={setNumberOfNights}
+          pickUpTime={pickUpTime}
+          setPickUpTime={setPickUpTime}
+          pickUpLocation={pickUpLocation}
+          setPickUpLocation={setPickUpLocation}
+        />
+
+        <StationarySpecs
+          itemRequests={itemRequests}
+          setItemRequests={setItemRequests}
+          quantitiesRequired={quantitiesRequired}
+          setQuantitiesRequired={setQuantitiesRequired}
         />
 
       </Form>

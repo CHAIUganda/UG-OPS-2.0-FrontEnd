@@ -42,7 +42,6 @@ const PrintingSpecs = ({
 
   // eslint-disable-next-line no-unused-vars
   const onFileError = (file, message) => {
-    console.log(message);
     setError(`${file.name} :: message`);
   };
 
