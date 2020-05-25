@@ -21,21 +21,21 @@ function Procurement({
   changeActive,
   active,
   // type,
-  // roles
+  roles
 }) {
   // let procurement;
-  // let admin;
+  let admin;
   // let supervisor;
   // let countryDirector;
-  // if (roles) {
-  //   procurement = roles.procurement;
-  //   admin = roles.admin;
-  //   supervisor = roles.supervisor;
-  //   countryDirector = roles.countryDirector;
-  // } else {
-  //   procurement = false;
-  //   admin = false;
-  // }
+  if (roles) {
+    // procurement = roles.procurement;
+    admin = roles.admin;
+    // supervisor = roles.supervisor;
+    // countryDirector = roles.countryDirector;
+  } else {
+    // procurement = false;
+    admin = false;
+  }
 
   const handleChangeActive = (toMakeActive) => {
     changeActive(toMakeActive);
@@ -46,7 +46,9 @@ function Procurement({
       <p className="sidebTopNav">
         {/* <FaPlaneDeparture /> Manage */}
       </p>
-      <div className='showContent'>
+      {
+        admin
+      && <div className='showContent'>
         <span onClick={() => handleChangeActive('CreateProcurement')}>
           <SubItem
             link="/procurement/CreateProcurement"
@@ -55,6 +57,7 @@ function Procurement({
           />
         </span>
       </div>
+      }
     </div>
   );
 }

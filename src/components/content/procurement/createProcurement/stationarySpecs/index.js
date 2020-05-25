@@ -16,7 +16,9 @@ const StationarySpecs = ({
   itemRequests,
   setItemRequests,
   quantitiesRequired,
-  setQuantitiesRequired
+  setQuantitiesRequired,
+  describeItems,
+  setDescribeItems
 // eslint-disable-next-line arrow-body-style
 }) => {
   return (
@@ -62,6 +64,26 @@ const StationarySpecs = ({
           />
         </InputGroup>
       </FormGroup>
+
+      {/*  Describe items */}
+      <FormGroup>
+        <InputGroup>
+          <InputGroupAddon addonType="prepend">
+            <InputGroupText>Describe Items</InputGroupText>
+          </InputGroupAddon>
+          <Input
+            placeholder='Describe items.'
+            type="text"
+            value={describeItems}
+            onChange={(e) => {
+              setSuccessFeedback('');
+              setError('');
+              setDescribeItems(e.target.value);
+            }}
+            required
+          />
+        </InputGroup>
+      </FormGroup>
     </>
   );
 };
@@ -73,6 +95,8 @@ StationarySpecs.propTypes = {
   setItemRequests: PropTypes.func,
   quantitiesRequired: PropTypes.string,
   setQuantitiesRequired: PropTypes.func,
+  describeItems: PropTypes.string,
+  setDescribeItems: PropTypes.func
 };
 
 export default StationarySpecs;

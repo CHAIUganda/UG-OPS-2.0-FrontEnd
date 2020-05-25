@@ -91,6 +91,7 @@ function CreateProcurement({
   const [pickUpLocation, setPickUpLocation] = useState('');
   const [itemRequests, setItemRequests] = useState('');
   const [quantitiesRequired, setQuantitiesRequired] = useState('');
+  const [describeItems, setDescribeItems] = useState('');
 
   changeSection('Procurement');
   changeActive('CreateProcurement');
@@ -206,10 +207,14 @@ function CreateProcurement({
         />
 
         <StationarySpecs
+          setError={setError}
+          setSuccessFeedback={setSuccessFeedback}
           itemRequests={itemRequests}
           setItemRequests={setItemRequests}
           quantitiesRequired={quantitiesRequired}
           setQuantitiesRequired={setQuantitiesRequired}
+          describeItems={describeItems}
+          setDescribeItems={setDescribeItems}
         />
 
       </Form>

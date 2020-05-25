@@ -7,7 +7,8 @@ import {
   InputGroupAddon,
   InputGroupText,
   CustomInput,
-  Spinner
+  Spinner,
+  FormText
 } from 'reactstrap';
 import Calendar from 'react-calendar';
 import { connect } from 'react-redux';
@@ -375,6 +376,9 @@ function Register({
               onChange={(date) => setBirthDate(date)}
             />
           </InputGroup>
+          <FormText>
+            To select a single date, double click on that date.
+          </FormText>
         </FormGroup>
 
         <div className="bankDetailsSection">
@@ -598,6 +602,9 @@ function Register({
                   }}
                 />
               </InputGroup>
+              <FormText>
+            To select a single date, double click on that date.
+              </FormText>
             </FormGroup>
 
             <FormGroup>
@@ -614,6 +621,9 @@ function Register({
                   }}
                 />
               </InputGroup>
+              <FormText>
+            To select a single date, double click on that date.
+              </FormText>
             </FormGroup>
           </>
           )
@@ -788,6 +798,9 @@ function Register({
               }}
             />
           </InputGroup>
+          <FormText>
+            To select a single date, double click on that date.
+          </FormText>
         </FormGroup>
 
         <FormGroup>
@@ -804,6 +817,9 @@ function Register({
               }}
             />
           </InputGroup>
+          <FormText>
+            To select a single date, double click on that date.
+          </FormText>
         </FormGroup>
 
         <FormGroup>

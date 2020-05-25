@@ -13,6 +13,7 @@ import {
   Spinner,
   CustomInput,
   Button,
+  FormText
 } from 'reactstrap';
 import PropTypes from 'prop-types';
 import Calendar from 'react-calendar';
@@ -408,6 +409,11 @@ function Plan4LeaveModal({
               }
               } />
           </InputGroup>
+          <FormText>
+            To select a single date, double click on that date.
+              To select a range of dates,
+              single click on the first date and single click on the last date as well.
+          </FormText>
         </FormGroup>
         <div className="alert alert-info text-center" role="alert">
           { arrayOfLeaveDays.length > 0
