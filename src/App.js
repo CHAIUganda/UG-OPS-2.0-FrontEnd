@@ -14,6 +14,7 @@ import Sidebar from './components/sidebar';
 import Welcome from './components/content/welcome';
 import PageNotFound from './components/content/pageNotFound';
 import HR from './components/content/hr';
+import Procurement from './components/content/procurement';
 import Auth from './components/content/auth/index';
 
 import * as authActions from './redux/actions/authActions';
@@ -115,6 +116,7 @@ function App({
           )}
           <Route exact path="/" component={Welcome} />
           <Route path="/hr/:componentToRender" component={HR} />
+          <Route path="/procurement/:componentToRender" component={Procurement} />
           <Route exact path="/auth/:componentToRender" component={Auth} />
 
           <Route component={Welcome} />
