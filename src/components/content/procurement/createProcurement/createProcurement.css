@@ -1,7 +1,8 @@
 .createProcformContainer{
   width: 98%;
-  margin: 0.1em auto 2em auto;
+  margin: 0.01em auto 0.1em auto;
   border: 0.1em solid #003366;
   border-radius: 0.3em;
   padding: 3% 10%;
+  min-height: 33em;
 }
