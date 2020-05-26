@@ -179,3 +179,13 @@ code {
   /* margin-left: 40% !important; */
   display: none;
 }
+
+.containerPositionRelative {
+  position: relative
+}
+
+.pushChildToBottom {
+  width: 78%;
+  position: absolute;
+  bottom: 0;
+}
