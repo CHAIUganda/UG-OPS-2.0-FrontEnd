@@ -1,16 +1,37 @@
 import React from 'react';
 import { IoIosArrowBack } from 'react-icons/io';
+import PropTypes from 'prop-types';
 
 import Icon from '../icon';
 
-const BackButton = () => (
-  <span className='pointerCursor float-left nextButton'>
-    <Icon
-      Icon2Render={IoIosArrowBack}
-      color={'#003366'}
-    />
+const BackButton = ({
+  activeSections,
+  currentComponent,
+  setCurrentComponent
+}) => {
+  const handleClick = (event) => {
+    event.preventDefault();
+    const currentIndex = activeSections.indexOf(currentComponent[0]);
+    if (currentIndex !== -1 && currentIndex < activeSections.length) {
+      setCurrentComponent([activeSections[currentIndex - 1]]);
+    }
+  };
+
+  return (
+    <span className='pointerCursor float-left nextButton' onClick={handleClick}>
+      <Icon
+        Icon2Render={IoIosArrowBack}
+        color={'#003366'}
+      />
     Back
-  </span>
-);
+    </span>
+  );
+};
+
+BackButton.propTypes = {
+  setCurrentComponent: PropTypes.func,
+  currentComponent: PropTypes.object,
+  activeSections: PropTypes.array,
+};
 
 export default BackButton;
