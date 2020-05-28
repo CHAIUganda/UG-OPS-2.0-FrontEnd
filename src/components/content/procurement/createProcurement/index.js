@@ -78,16 +78,7 @@ function CreateProcurement({
   const [maxPrice, setMaxPrice] = useState(0);
   const [keyObjectiveAsPerCostedWorkPlan, setKeyObjectiveAsPerCostedWorkPlan] = useState('');
   const [keyActivitiesAsPerCostedWorkPlan, setKeyActivitiesAsPerCostedWorkPlan] = useState('');
-  const [qualityToBePrinted, setQualityToBePrinted] = useState('');
-  const [detailedDescriptionOfPrint, setDetailedDescriptionOfPrint] = useState('');
-  const [moreDetails, setMoreDetails] = useState('');
-  const [accountCode, setAccountCode] = useState('');
-  const [sampleNeeded, setSampleNeeded] = useState('No');
-  const [colourNeeded, setColourNeeded] = useState('Black/White');
-  const [typeOfBinding, setTypeOfBinding] = useState('');
-  const [typeOfPaper, setTypeOfPaper] = useState('');
-  const [paperSize, setPaperSize] = useState('');
-  const [printingDatesRange, setPrintingDatesRange] = useState();
+
   const [typeOfCar, setTypeOfCar] = useState('');
   const [districtsToBeVisited, setDistrictsToBeVisited] = useState('');
   const [numberOfCars, setNumberOfCars] = useState(0);
@@ -195,26 +186,6 @@ function CreateProcurement({
         <PrintingSpecs
           setSuccessFeedback={setSuccessFeedback}
           setError={setError}
-          qualityToBePrinted={qualityToBePrinted}
-          setQualityToBePrinted={setQualityToBePrinted}
-          detailedDescriptionOfPrint={detailedDescriptionOfPrint}
-          setDetailedDescriptionOfPrint={setDetailedDescriptionOfPrint}
-          moreDetails={moreDetails}
-          setMoreDetails={setMoreDetails}
-          accountCode={accountCode}
-          setAccountCode={setAccountCode}
-          sampleNeeded={sampleNeeded}
-          setSampleNeeded={setSampleNeeded}
-          colourNeeded={colourNeeded}
-          setColourNeeded={setColourNeeded}
-          typeOfBinding={typeOfBinding}
-          setTypeOfBinding={setTypeOfBinding}
-          typeOfPaper={typeOfPaper}
-          setTypeOfPaper={setTypeOfPaper}
-          paperSize={paperSize}
-          setPaperSize={setPaperSize}
-          printingDatesRange={printingDatesRange}
-          setPrintingDatesRange={setPrintingDatesRange}
           setCurrentComponent={setCurrentComponent}
           activeSections={activeSections}
           currentComponent={currentComponent}
