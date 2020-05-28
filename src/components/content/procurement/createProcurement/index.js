@@ -138,6 +138,7 @@ function CreateProcurement({
     if (currentComponent[0] === CategoryOfProcurement) {
       return (
         <CategoryOfProcurement
+          error={error}
           printing={printing}
           setSuccessFeedback={setSuccessFeedback}
           setError={setError}
@@ -164,6 +165,7 @@ function CreateProcurement({
           activeSections={activeSections}
           setActiveSections={setActiveSections}
           currentComponent={currentComponent}
+
         />
       );
     }

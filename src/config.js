@@ -1,4 +1,4 @@
-export const BASE_URL = 'http://45.79.187.217:3040/';
+export const BASE_URL = 'http://45.79.187.217:3041/';
 
 export const returnStatusClass = (status) => {
   if (status === 'approvedWords') {

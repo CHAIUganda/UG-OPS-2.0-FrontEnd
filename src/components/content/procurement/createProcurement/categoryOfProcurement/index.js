@@ -42,7 +42,8 @@ const CategoryOfProcurement = ({
   setCurrentComponent,
   activeSections,
   currentComponent,
-  setActiveSections
+  setActiveSections,
+  error
 }) => {
   const errorProps = () => {
     const arr = [];
@@ -76,6 +77,16 @@ const CategoryOfProcurement = ({
     <>
       <div className='mb-5'>
         <h3>Category Of Procurement</h3>
+        <div className="alert alert-info m-3" role="alert">
+          <p>
+            Please note that all categories selected in a single procurement request
+            should be addressed to the same vendor.
+          </p>
+          <p>
+            For categories addressed to different vendors you will have to fill in
+            different procurement requests.
+          </p>
+        </div>
         {/*  Printing */}
         <FormGroup>
           <InputGroup>
@@ -297,6 +308,7 @@ const CategoryOfProcurement = ({
     </InputGroup>
   </FormGroup>
         }
+        {error && <div className="errorFeedback m-2"> {error} </div>}
       </div>
       <div className='pushChildToBottom mb-2'>
         <BackButton
@@ -342,6 +354,7 @@ CategoryOfProcurement.propTypes = {
   activeSections: PropTypes.array,
   setActiveSections: PropTypes.func,
   currentComponent: PropTypes.array,
+  error: PropTypes.string
 };
 
 export default CategoryOfProcurement;
