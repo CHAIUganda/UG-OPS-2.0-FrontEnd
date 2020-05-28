@@ -41,6 +41,26 @@ code {
     monospace;
 }
 
+/* dev defined styles */
+.submitButton {
+  background-color: #003366;
+  color: white;
+  padding: 0.5em;
+  border-radius: 0.3em;
+  border: 0.1em solid #003366;
+}
+
+.submitButton:hover {
+  background-color: white;
+  color: #003366;
+  border: 0.1em solid #003366;
+}
+
+
+.inlineItem{
+  display: inline;
+}
+
 .errorFeedback {
   /* background-color: rgba(206, 17, 38, 0.05); */
   background-color: #fc7d74;

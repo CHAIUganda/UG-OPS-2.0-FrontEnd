@@ -9,6 +9,13 @@ import {
   CustomInput,
 } from 'reactstrap';
 
+import NextButton from '../../../../common/nextButton';
+import BackButton from '../../../../common/backButton';
+
+import CarHireSpecifications from '../carHireSpecs';
+
+import PrintingSpecs from '../printingSpecs';
+
 const CategoryOfProcurement = ({
   printing,
   setSuccessFeedback,
@@ -31,210 +38,257 @@ const CategoryOfProcurement = ({
   other,
   setOther,
   describeOther,
-  setDescribeOther
-}) => (
-  <>
-    <h3>Category Of Procurement</h3>
-    {/*  Printing */}
-    <FormGroup>
-      <InputGroup>
-        <InputGroupAddon addonType="prepend">
-          <InputGroupText>Printing</InputGroupText>
-        </InputGroupAddon>
-        <div className="intSwitch">
-          <CustomInput
-            type="switch"
-            id="printingSwitch"
-            name="customSwitch"
-            checked={printing}
-            onChange={(e) => {
-              setSuccessFeedback('');
-              setError('');
-              setPrinting(e.target.checked);
-            }}
-          />
-        </div>
-      </InputGroup>
-    </FormGroup>
+  setDescribeOther,
+  setCurrentComponent,
+  activeSections,
+  currentComponent,
+  setActiveSections,
+  error
+}) => {
+  const errorProps = () => {
+    const arr = [];
+    const masterBool = (printing || carHire || conferenceFacilities || stationery
+      || dataCollectors || accomodation || medicalEquipment || computersAndAccessories || other);
 
-    {/*  car hire */}
-    <FormGroup>
-      <InputGroup>
-        <InputGroupAddon addonType="prepend">
-          <InputGroupText>Car Hire</InputGroupText>
-        </InputGroupAddon>
-        <div className="intSwitch">
-          <CustomInput
-            type="switch"
-            id="carHireSwitch"
-            name="customSwitch"
-            checked={carHire}
-            onChange={(e) => {
-              setSuccessFeedback('');
-              setError('');
-              setCarHire(e.target.checked);
-            }}
-          />
-        </div>
-      </InputGroup>
-    </FormGroup>
+    if (!masterBool) {
+      arr.push({
+        err: 'Please select atleast 1 category to continue.',
+        setter: setError
+      });
+    }
 
-    {/*  conference facilities */}
-    <FormGroup>
-      <InputGroup>
-        <InputGroupAddon addonType="prepend">
-          <InputGroupText>Conference Facilities</InputGroupText>
-        </InputGroupAddon>
-        <div className="intSwitch">
-          <CustomInput
-            type="switch"
-            id="ConferenceFacilitiesSwitch"
-            name="customSwitch"
-            checked={conferenceFacilities}
-            onChange={(e) => {
-              setSuccessFeedback('');
-              setError('');
-              setConferenceFacilities(e.target.checked);
-            }}
-          />
-        </div>
-      </InputGroup>
-    </FormGroup>
+    return arr;
+  };
 
-    {/* Stationery */}
-    <FormGroup>
-      <InputGroup>
-        <InputGroupAddon addonType="prepend">
-          <InputGroupText>Stationery</InputGroupText>
-        </InputGroupAddon>
-        <div className="intSwitch">
-          <CustomInput
-            type="switch"
-            id="StationerySwitch"
-            name="customSwitch"
-            checked={stationery}
-            onChange={(e) => {
-              setSuccessFeedback('');
-              setError('');
-              setStationery(e.target.checked);
-            }}
-          />
-        </div>
-      </InputGroup>
-    </FormGroup>
+  const handleSections = (componentToUpdate, boolValue) => {
+    const first3Items = [activeSections[0], activeSections[1], activeSections[2]];
+    const otherSections = activeSections.slice(3);
+    if (boolValue) {
+      otherSections.push(componentToUpdate);
+    } else {
+      const indexOfComp = otherSections.indexOf(componentToUpdate);
+      otherSections.splice(indexOfComp, 1);
+    }
 
-    {/* Data Collectors */}
-    <FormGroup>
-      <InputGroup>
-        <InputGroupAddon addonType="prepend">
-          <InputGroupText>Data Collectors</InputGroupText>
-        </InputGroupAddon>
-        <div className="intSwitch">
-          <CustomInput
-            type="switch"
-            id="DataCollectorsSwitch"
-            name="customSwitch"
-            checked={dataCollectors}
-            onChange={(e) => {
-              setSuccessFeedback('');
-              setError('');
-              setDataCollectors(e.target.checked);
-            }}
-          />
-        </div>
-      </InputGroup>
-    </FormGroup>
+    setActiveSections(first3Items.concat(otherSections));
+  };
 
-    {/* Accomodation */}
-    <FormGroup>
-      <InputGroup>
-        <InputGroupAddon addonType="prepend">
-          <InputGroupText>Accomodation</InputGroupText>
-        </InputGroupAddon>
-        <div className="intSwitch">
-          <CustomInput
-            type="switch"
-            id="AccomodationSwitch"
-            name="customSwitch"
-            checked={accomodation}
-            onChange={(e) => {
-              setSuccessFeedback('');
-              setError('');
-              setAccomodation(e.target.checked);
-            }}
-          />
+  return (
+    <>
+      <div className='mb-5'>
+        <h3>Category Of Procurement</h3>
+        <div className="alert alert-info m-3" role="alert">
+          <p>
+            Please note that all categories selected in a single procurement request
+            should be addressed to the same vendor.
+          </p>
+          <p>
+            For categories addressed to different vendors you will have to fill in
+            different procurement requests.
+          </p>
         </div>
-      </InputGroup>
-    </FormGroup>
+        {/*  Printing */}
+        <FormGroup>
+          <InputGroup>
+            <InputGroupAddon addonType="prepend">
+              <InputGroupText>Printing</InputGroupText>
+            </InputGroupAddon>
+            <div className="intSwitch">
+              <CustomInput
+                type="switch"
+                id="printingSwitch"
+                name="customSwitch"
+                checked={printing}
+                onChange={(e) => {
+                  setSuccessFeedback('');
+                  setError('');
+                  setPrinting(e.target.checked);
+                  handleSections(PrintingSpecs, e.target.checked);
+                }}
+              />
+            </div>
+          </InputGroup>
+        </FormGroup>
 
-    {/* Medical equipment */}
-    <FormGroup>
-      <InputGroup>
-        <InputGroupAddon addonType="prepend">
-          <InputGroupText>Medical Equipment</InputGroupText>
-        </InputGroupAddon>
-        <div className="intSwitch">
-          <CustomInput
-            type="switch"
-            id="MedicalEquipmentSwitch"
-            name="customSwitch"
-            checked={medicalEquipment}
-            onChange={(e) => {
-              setSuccessFeedback('');
-              setError('');
-              setMedicalEquipment(e.target.checked);
-            }}
-          />
-        </div>
-      </InputGroup>
-    </FormGroup>
+        {/*  car hire */}
+        <FormGroup>
+          <InputGroup>
+            <InputGroupAddon addonType="prepend">
+              <InputGroupText>Car Hire</InputGroupText>
+            </InputGroupAddon>
+            <div className="intSwitch">
+              <CustomInput
+                type="switch"
+                id="carHireSwitch"
+                name="customSwitch"
+                checked={carHire}
+                onChange={(e) => {
+                  setSuccessFeedback('');
+                  setError('');
+                  setCarHire(e.target.checked);
+                  handleSections(CarHireSpecifications, e.target.checked);
+                }}
+              />
+            </div>
+          </InputGroup>
+        </FormGroup>
 
-    {/* Computers & Accessories */}
-    <FormGroup>
-      <InputGroup>
-        <InputGroupAddon addonType="prepend">
-          <InputGroupText>Computers And Accessories</InputGroupText>
-        </InputGroupAddon>
-        <div className="intSwitch">
-          <CustomInput
-            type="switch"
-            id="ComputersAndAccessoriesSwitch"
-            name="customSwitch"
-            checked={computersAndAccessories}
-            onChange={(e) => {
-              setSuccessFeedback('');
-              setError('');
-              setComputersAndAccessories(e.target.checked);
-            }}
-          />
-        </div>
-      </InputGroup>
-    </FormGroup>
+        {/*  conference facilities */}
+        <FormGroup>
+          <InputGroup>
+            <InputGroupAddon addonType="prepend">
+              <InputGroupText>Conference Facilities</InputGroupText>
+            </InputGroupAddon>
+            <div className="intSwitch">
+              <CustomInput
+                type="switch"
+                id="ConferenceFacilitiesSwitch"
+                name="customSwitch"
+                checked={conferenceFacilities}
+                onChange={(e) => {
+                  setSuccessFeedback('');
+                  setError('');
+                  setConferenceFacilities(e.target.checked);
+                }}
+              />
+            </div>
+          </InputGroup>
+        </FormGroup>
 
-    {/* Other */}
-    <FormGroup>
-      <InputGroup>
-        <InputGroupAddon addonType="prepend">
-          <InputGroupText>Other</InputGroupText>
-        </InputGroupAddon>
-        <div className="intSwitch">
-          <CustomInput
-            type="switch"
-            id="otherSwitch"
-            name="customSwitch"
-            checked={other}
-            onChange={(e) => {
-              setSuccessFeedback('');
-              setError('');
-              setOther(e.target.checked);
-            }}
-          />
-        </div>
-      </InputGroup>
-    </FormGroup>
+        {/* Stationery */}
+        <FormGroup>
+          <InputGroup>
+            <InputGroupAddon addonType="prepend">
+              <InputGroupText>Stationery</InputGroupText>
+            </InputGroupAddon>
+            <div className="intSwitch">
+              <CustomInput
+                type="switch"
+                id="StationerySwitch"
+                name="customSwitch"
+                checked={stationery}
+                onChange={(e) => {
+                  setSuccessFeedback('');
+                  setError('');
+                  setStationery(e.target.checked);
+                }}
+              />
+            </div>
+          </InputGroup>
+        </FormGroup>
 
-    {
-      other
+        {/* Data Collectors */}
+        <FormGroup>
+          <InputGroup>
+            <InputGroupAddon addonType="prepend">
+              <InputGroupText>Data Collectors</InputGroupText>
+            </InputGroupAddon>
+            <div className="intSwitch">
+              <CustomInput
+                type="switch"
+                id="DataCollectorsSwitch"
+                name="customSwitch"
+                checked={dataCollectors}
+                onChange={(e) => {
+                  setSuccessFeedback('');
+                  setError('');
+                  setDataCollectors(e.target.checked);
+                }}
+              />
+            </div>
+          </InputGroup>
+        </FormGroup>
+
+        {/* Accomodation */}
+        <FormGroup>
+          <InputGroup>
+            <InputGroupAddon addonType="prepend">
+              <InputGroupText>Accomodation</InputGroupText>
+            </InputGroupAddon>
+            <div className="intSwitch">
+              <CustomInput
+                type="switch"
+                id="AccomodationSwitch"
+                name="customSwitch"
+                checked={accomodation}
+                onChange={(e) => {
+                  setSuccessFeedback('');
+                  setError('');
+                  setAccomodation(e.target.checked);
+                }}
+              />
+            </div>
+          </InputGroup>
+        </FormGroup>
+
+        {/* Medical equipment */}
+        <FormGroup>
+          <InputGroup>
+            <InputGroupAddon addonType="prepend">
+              <InputGroupText>Medical Equipment</InputGroupText>
+            </InputGroupAddon>
+            <div className="intSwitch">
+              <CustomInput
+                type="switch"
+                id="MedicalEquipmentSwitch"
+                name="customSwitch"
+                checked={medicalEquipment}
+                onChange={(e) => {
+                  setSuccessFeedback('');
+                  setError('');
+                  setMedicalEquipment(e.target.checked);
+                }}
+              />
+            </div>
+          </InputGroup>
+        </FormGroup>
+
+        {/* Computers & Accessories */}
+        <FormGroup>
+          <InputGroup>
+            <InputGroupAddon addonType="prepend">
+              <InputGroupText>Computers And Accessories</InputGroupText>
+            </InputGroupAddon>
+            <div className="intSwitch">
+              <CustomInput
+                type="switch"
+                id="ComputersAndAccessoriesSwitch"
+                name="customSwitch"
+                checked={computersAndAccessories}
+                onChange={(e) => {
+                  setSuccessFeedback('');
+                  setError('');
+                  setComputersAndAccessories(e.target.checked);
+                }}
+              />
+            </div>
+          </InputGroup>
+        </FormGroup>
+
+        {/* Other */}
+        <FormGroup>
+          <InputGroup>
+            <InputGroupAddon addonType="prepend">
+              <InputGroupText>Other</InputGroupText>
+            </InputGroupAddon>
+            <div className="intSwitch">
+              <CustomInput
+                type="switch"
+                id="otherSwitch"
+                name="customSwitch"
+                checked={other}
+                onChange={(e) => {
+                  setSuccessFeedback('');
+                  setError('');
+                  setOther(e.target.checked);
+                }}
+              />
+            </div>
+          </InputGroup>
+        </FormGroup>
+
+        {
+          other
   && <FormGroup>
     <InputGroup>
       <InputGroupAddon addonType="prepend">
@@ -253,9 +307,25 @@ const CategoryOfProcurement = ({
       />
     </InputGroup>
   </FormGroup>
-    }
-  </>
-);
+        }
+        {error && <div className="errorFeedback m-2"> {error} </div>}
+      </div>
+      <div className='pushChildToBottom mb-2'>
+        <BackButton
+          activeSections={activeSections}
+          currentComponent={currentComponent}
+          setCurrentComponent={setCurrentComponent}
+        />
+        <NextButton
+          activeSections={activeSections}
+          currentComponent={currentComponent}
+          setCurrentComponent={setCurrentComponent}
+          errorProps={errorProps()}
+        />
+      </div>
+    </>
+  );
+};
 
 CategoryOfProcurement.propTypes = {
   printing: PropTypes.bool,
@@ -279,7 +349,12 @@ CategoryOfProcurement.propTypes = {
   other: PropTypes.bool,
   setOther: PropTypes.func,
   describeOther: PropTypes.string,
-  setDescribeOther: PropTypes.func
+  setDescribeOther: PropTypes.func,
+  setCurrentComponent: PropTypes.func,
+  activeSections: PropTypes.array,
+  setActiveSections: PropTypes.func,
+  currentComponent: PropTypes.array,
+  error: PropTypes.string
 };
 
 export default CategoryOfProcurement;

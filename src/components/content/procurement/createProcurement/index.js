@@ -2,15 +2,15 @@ import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { Form } from 'reactstrap';
-// import { moment } from 'moment';
 
 import * as sideBarActions from '../../../../redux/actions/sideBarActions';
 import CommonSpinner from '../../../common/spinner';
 import ProcurementInitialDetails from './procurementInitialDetails';
 import CategoryOfProcurement from './categoryOfProcurement';
-// import GeneralDetails from './generalProcurementDetails';
-// import PrintingSpecs from './printingSpecs';
-// import CarHireSpecifications from './carHireSpecs';
+import GeneralDetails from './generalProcurementDetails';
+import PrintingSpecs from './printingSpecs';
+import FinishCreateProcurement from './finish';
+import CarHireSpecifications from './carHireSpecs';
 // import StationarySpecs from './stationarySpecs';
 
 import './createProcurement.css';
@@ -58,10 +58,11 @@ function CreateProcurement({
   const [currentComponent, setCurrentComponent] = useState([ProcurementInitialDetails]);
   const [activeSections, setActiveSections] = useState([
     ProcurementInitialDetails,
-    CategoryOfProcurement
+    CategoryOfProcurement,
+    GeneralDetails
   ]);
-  const [gid, setGid] = useState('');
-  const [pid, setPid] = useState('');
+  const [gid, setGid] = useState('GID01');
+  const [pid, setPid] = useState('PID01');
   const [objectiveCode, setObjectiveCode] = useState('');
   const [printing, setPrinting] = useState(false);
   const [carHire, setCarHire] = useState(false);
@@ -73,27 +74,19 @@ function CreateProcurement({
   const [computersAndAccessories, setComputersAndAccessories] = useState(false);
   const [other, setOther] = useState(false);
   const [describeOther, setDescribeOther] = useState('');
-  // const [minPrice, setMinPrice] = useState(0);
-  // const [maxPrice, setMaxPrice] = useState(0);
-  // const [leaveDates, setLeaveDates] = useState();
-  // const [keyObjectiveAsPerCostedWorkPlan, setKeyObjectiveAsPerCostedWorkPlan] = useState('');
-  // const [keyActivitiesAsPerCostedWorkPlan, setKeyActivitiesAsPerCostedWorkPlan] = useState('');
-  // const [qualityToBePrinted, setQualityToBePrinted] = useState('');
-  // const [detailedDescriptionOfPrint, setDetailedDescriptionOfPrint] = useState('');
-  // const [moreDetails, setMoreDetails] = useState('');
-  // const [accountCode, setAccountCode] = useState('');
-  // const [sampleNeeded, setSampleNeeded] = useState('No');
-  // const [colourNeeded, setColourNeeded] = useState('Black/White');
-  // const [typeOfBinding, setTypeOfBinding] = useState('');
-  // const [typeOfPaper, setTypeOfPaper] = useState('');
-  // const [paperSize, setPaperSize] = useState('');
-  // const [typeOfCar, setTypeOfCar] = useState('');
-  // const [districtsToBeVisited, setDistrictsToBeVisited] = useState('');
-  // const [numberOfCars, setNumberOfCars] = useState(0);
-  // const [numberOfDays, setNumberOfDays] = useState(0);
-  // const [numberOfNights, setNumberOfNights] = useState(0);
-  // const [pickUpTime, setPickUpTime] = useState();
-  // const [pickUpLocation, setPickUpLocation] = useState('');
+  const [minPrice, setMinPrice] = useState(0);
+  const [maxPrice, setMaxPrice] = useState(0);
+  const [keyObjectiveAsPerCostedWorkPlan, setKeyObjectiveAsPerCostedWorkPlan] = useState('');
+  const [keyActivitiesAsPerCostedWorkPlan, setKeyActivitiesAsPerCostedWorkPlan] = useState('');
+
+  const [typeOfCar, setTypeOfCar] = useState('');
+  const [districtsToBeVisited, setDistrictsToBeVisited] = useState('');
+  const [numberOfCars, setNumberOfCars] = useState(0);
+  const [numberOfDays, setNumberOfDays] = useState(0);
+  const [numberOfNights, setNumberOfNights] = useState(0);
+  const [pickUpTime, setPickUpTime] = useState();
+  const [pickUpLocation, setPickUpLocation] = useState('');
+  const [carHireDatesRange, setcarHireDatesRange] = useState();
   // const [itemRequests, setItemRequests] = useState('');
   // const [quantitiesRequired, setQuantitiesRequired] = useState('');
   // const [describeItems, setDescribeItems] = useState('');
@@ -106,6 +99,14 @@ function CreateProcurement({
   };
 
   const returnComponent = () => {
+    if (currentComponent[0] === 'finish') {
+      return <FinishCreateProcurement
+        setCurrentComponent={setCurrentComponent}
+        activeSections={activeSections}
+        currentComponent={currentComponent}
+      />;
+    }
+
     if (currentComponent[0] === ProcurementInitialDetails) {
       return (
         <ProcurementInitialDetails
@@ -128,6 +129,7 @@ function CreateProcurement({
     if (currentComponent[0] === CategoryOfProcurement) {
       return (
         <CategoryOfProcurement
+          error={error}
           printing={printing}
           setSuccessFeedback={setSuccessFeedback}
           setError={setError}
@@ -150,10 +152,75 @@ function CreateProcurement({
           setOther={setOther}
           describeOther={describeOther}
           setDescribeOther={setDescribeOther}
+          setCurrentComponent={setCurrentComponent}
+          activeSections={activeSections}
+          setActiveSections={setActiveSections}
+          currentComponent={currentComponent}
 
         />
       );
     }
+
+    if (currentComponent[0] === GeneralDetails) {
+      return (
+        <GeneralDetails
+          setSuccessFeedback={setSuccessFeedback}
+          setError={setError}
+          minPrice={minPrice}
+          setMinPrice={setMinPrice}
+          maxPrice={maxPrice}
+          setMaxPrice={setMaxPrice}
+          keyObjectiveAsPerCostedWorkPlan={keyObjectiveAsPerCostedWorkPlan}
+          setKeyObjectiveAsPerCostedWorkPlan={setKeyObjectiveAsPerCostedWorkPlan}
+          keyActivitiesAsPerCostedWorkPlan={keyActivitiesAsPerCostedWorkPlan}
+          setKeyActivitiesAsPerCostedWorkPlan={setKeyActivitiesAsPerCostedWorkPlan}
+          setCurrentComponent={setCurrentComponent}
+          activeSections={activeSections}
+          currentComponent={currentComponent}
+        />
+      );
+    }
+
+    if (currentComponent[0] === PrintingSpecs) {
+      return (
+        <PrintingSpecs
+          setSuccessFeedback={setSuccessFeedback}
+          setError={setError}
+          setCurrentComponent={setCurrentComponent}
+          activeSections={activeSections}
+          currentComponent={currentComponent}
+        />
+      );
+    }
+
+    if (currentComponent[0] === CarHireSpecifications) {
+      return (
+        <CarHireSpecifications
+          setSuccessFeedback={setSuccessFeedback}
+          setError={setError}
+          typeOfCar={typeOfCar}
+          setTypeOfCar={setTypeOfCar}
+          districtsToBeVisited={districtsToBeVisited}
+          setDistrictsToBeVisited={setDistrictsToBeVisited}
+          numberOfCars={numberOfCars}
+          setNumberOfCars={setNumberOfCars}
+          numberOfDays={numberOfDays}
+          setNumberOfDays={setNumberOfDays}
+          numberOfNights={numberOfNights}
+          setNumberOfNights={setNumberOfNights}
+          pickUpTime={pickUpTime}
+          setPickUpTime={setPickUpTime}
+          pickUpLocation={pickUpLocation}
+          setPickUpLocation={setPickUpLocation}
+          carHireDatesRange={carHireDatesRange}
+          setcarHireDatesRange={setcarHireDatesRange}
+          setCurrentComponent={setCurrentComponent}
+          activeSections={activeSections}
+          currentComponent={currentComponent}
+        />
+      );
+    }
+
     return <></>;
   };
 
@@ -172,63 +239,6 @@ function CreateProcurement({
         {returnComponent()}
       </Form>
     </div>
-
-  //     <GeneralDetails
-  //       setSuccessFeedback={setSuccessFeedback}
-  //       setError={setError}
-  //       minPrice={minPrice}
-  //       setMinPrice={setMinPrice}
-  //       maxPrice={maxPrice}
-  //       setMaxPrice={setMaxPrice}
-  //       leaveDates={leaveDates}
-  //       setLeaveDates={setLeaveDates}
-  //       keyObjectiveAsPerCostedWorkPlan={keyObjectiveAsPerCostedWorkPlan}
-  //       setKeyObjectiveAsPerCostedWorkPlan={setKeyObjectiveAsPerCostedWorkPlan}
-  //       keyActivitiesAsPerCostedWorkPlan={keyActivitiesAsPerCostedWorkPlan}
-  //       setKeyActivitiesAsPerCostedWorkPlan={setKeyActivitiesAsPerCostedWorkPlan}
-  //     />
-
-  //     <PrintingSpecs
-  //       setSuccessFeedback={setSuccessFeedback}
-  //       setError={setError}
-  //       qualityToBePrinted={qualityToBePrinted}
-  //       setQualityToBePrinted={setQualityToBePrinted}
-  //       detailedDescriptionOfPrint={detailedDescriptionOfPrint}
-  //       setDetailedDescriptionOfPrint={setDetailedDescriptionOfPrint}
-  //       moreDetails={moreDetails}
-  //       setMoreDetails={setMoreDetails}
-  //       accountCode={accountCode}
-  //       setAccountCode={setAccountCode}
-  //       sampleNeeded={sampleNeeded}
-  //       setSampleNeeded={setSampleNeeded}
-  //       colourNeeded={colourNeeded}
-  //       setColourNeeded={setColourNeeded}
-  //       typeOfBinding={typeOfBinding}
-  //       setTypeOfBinding={setTypeOfBinding}
-  //       typeOfPaper={typeOfPaper}
-  //       setTypeOfPaper={setTypeOfPaper}
-  //       paperSize={paperSize}
-  //       setPaperSize={setPaperSize}
-  //     />
-
-  //     <CarHireSpecifications
-  //       setSuccessFeedback={setSuccessFeedback}
-  //       setError={setError}
-  //       typeOfCar={typeOfCar}
-  //       setTypeOfCar={setTypeOfCar}
-  //       districtsToBeVisited={districtsToBeVisited}
-  //       setDistrictsToBeVisited={setDistrictsToBeVisited}
-  //       numberOfCars={numberOfCars}
-  //       setNumberOfCars={setNumberOfCars}
-  //       numberOfDays={numberOfDays}
-  //       setNumberOfDays={setNumberOfDays}
-  //       numberOfNights={numberOfNights}
-  //       setNumberOfNights={setNumberOfNights}
-  //       pickUpTime={pickUpTime}
-  //       setPickUpTime={setPickUpTime}
-  //       pickUpLocation={pickUpLocation}
-  //       setPickUpLocation={setPickUpLocation}
-  //     />
 
   //     <StationarySpecs
   //       setError={setError}
