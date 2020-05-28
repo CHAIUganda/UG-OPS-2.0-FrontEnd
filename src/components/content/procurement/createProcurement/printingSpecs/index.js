@@ -88,7 +88,6 @@ const PrintingSpecs = ({
   };
 
   const returnNextButton = () => {
-    debugger;
     const currentIndex = activeSections.indexOf(currentComponent[0]);
     if (currentIndex !== -1 && currentIndex < activeSections.length) {
       if (currentIndex === activeSections.length - 1) {
@@ -117,6 +116,9 @@ const PrintingSpecs = ({
 
   useEffect(() => {
     dropzone = setupDropzone();
+    return function destroyDropZone() {
+      dropzone.destroy();
+    };
   }, []);
 
   return (

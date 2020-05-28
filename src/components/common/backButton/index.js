@@ -11,6 +11,13 @@ const BackButton = ({
 }) => {
   const handleClick = (event) => {
     event.preventDefault();
+    if (currentComponent[0] === 'finish') {
+      const nextIndex = activeSections.length - 1;
+      const element = activeSections[nextIndex];
+      setCurrentComponent([element]);
+      return;
+    }
+
     const currentIndex = activeSections.indexOf(currentComponent[0]);
     if (currentIndex !== -1 && currentIndex < activeSections.length) {
       setCurrentComponent([activeSections[currentIndex - 1]]);

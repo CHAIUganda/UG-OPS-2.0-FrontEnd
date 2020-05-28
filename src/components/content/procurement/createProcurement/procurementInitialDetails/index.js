@@ -5,7 +5,8 @@ import {
   InputGroupAddon,
   InputGroupText,
   FormFeedback,
-  CustomInput
+  CustomInput,
+  FormText
 } from 'reactstrap';
 import PropTypes from 'prop-types';
 
@@ -44,14 +45,6 @@ function ProcurementInitialDetails({
         setter: setPidError
       });
     }
-
-    if (!objectiveCode) {
-      arr.push({
-        err: 'Please set an objective code to continue.',
-        setter: setObjectiveCodeError
-      });
-    }
-
     return arr;
   };
 
@@ -149,7 +142,6 @@ function ProcurementInitialDetails({
                 invalid
               >
                 <option value="">Not Set</option>
-                <option value="UNALLOCATED">UNALLOCATED</option>
                 <option value="PID01">PID01</option>
                 <option value="PID02">PID02</option>
                 <option value="PID03">PID03</option>
@@ -183,7 +175,6 @@ function ProcurementInitialDetails({
               }}
             >
               <option value="">Not Set</option>
-              <option value="UNALLOCATED">UNALLOCATED</option>
               <option value="PID01">PID01</option>
               <option value="PID02">PID02</option>
               <option value="PID03">PID03</option>
@@ -219,7 +210,6 @@ function ProcurementInitialDetails({
                 invalid
               >
                 <option value="">Not Set</option>
-                <option value="UNALLOCATED">UNALLOCATED</option>
                 <option value="OBJ01">OBJ01</option>
                 <option value="OBJ02">OBJ02</option>
                 <option value="OBJ03">OBJ03</option>
@@ -227,6 +217,7 @@ function ProcurementInitialDetails({
               </CustomInput>
               <FormFeedback>{objectiveCodeError}</FormFeedback>
             </InputGroup>
+            <FormText>Objective code is not mandatory for all programs</FormText>
           </FormGroup>
         </>
       );
@@ -253,13 +244,13 @@ function ProcurementInitialDetails({
               }}
             >
               <option value="">Not Set</option>
-              <option value="UNALLOCATED">UNALLOCATED</option>
               <option value="OBJ01">OBJ01</option>
               <option value="OBJ02">OBJ02</option>
               <option value="OBJ03">OBJ03</option>
               <option value="OBJ04">OBJ04</option>
             </CustomInput>
           </InputGroup>
+          <FormText>Objective code is not mandatory for all programs</FormText>
         </FormGroup>
       </>
     );

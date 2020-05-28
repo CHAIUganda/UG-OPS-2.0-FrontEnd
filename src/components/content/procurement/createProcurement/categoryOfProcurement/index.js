@@ -58,7 +58,6 @@ const CategoryOfProcurement = ({
   };
 
   const handleSections = (componentToUpdate, boolValue) => {
-    debugger;
     const first2Items = [activeSections[0], activeSections[1], activeSections[2]];
     const otherSections = activeSections.slice(3);
     if (boolValue) {

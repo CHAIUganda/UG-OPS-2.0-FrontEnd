@@ -22,7 +22,6 @@ export default function HR(props) {
   let propsPassed;
 
   if (props && props.location && props.location.state && props.location.state.propsPassed) {
-    // debugger;
     user = props.location.state.user;
     propsPassed = props.location.state.propsPassed;
   }

@@ -154,8 +154,7 @@ function EditUser(props) {
       ? user.programId
       : ''
   );
-  // console.log(programId);
-  // debugger;
+
   const [countryDirector, setCountryDirector] = useState(
     (user.roles && user.roles.countryDirector)
       ? user.roles.countryDirector

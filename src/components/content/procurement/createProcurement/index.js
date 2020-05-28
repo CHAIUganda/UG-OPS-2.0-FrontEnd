@@ -63,7 +63,7 @@ function CreateProcurement({
   ]);
   const [gid, setGid] = useState('GID01');
   const [pid, setPid] = useState('PID01');
-  const [objectiveCode, setObjectiveCode] = useState('OBJ01');
+  const [objectiveCode, setObjectiveCode] = useState('');
   const [printing, setPrinting] = useState(false);
   const [carHire, setCarHire] = useState(false);
   const [conferenceFacilities, setConferenceFacilities] = useState(false);
@@ -76,7 +76,6 @@ function CreateProcurement({
   const [describeOther, setDescribeOther] = useState('');
   const [minPrice, setMinPrice] = useState(0);
   const [maxPrice, setMaxPrice] = useState(0);
-  // const [leaveDates, setLeaveDates] = useState();
   const [keyObjectiveAsPerCostedWorkPlan, setKeyObjectiveAsPerCostedWorkPlan] = useState('');
   const [keyActivitiesAsPerCostedWorkPlan, setKeyActivitiesAsPerCostedWorkPlan] = useState('');
   const [qualityToBePrinted, setQualityToBePrinted] = useState('');
@@ -213,7 +212,11 @@ function CreateProcurement({
     }
 
     if (currentComponent[0] === 'finish') {
-      return <FinishCreateProcurement />;
+      return <FinishCreateProcurement
+        setCurrentComponent={setCurrentComponent}
+        activeSections={activeSections}
+        currentComponent={currentComponent}
+      />;
     }
 
     return <></>;
