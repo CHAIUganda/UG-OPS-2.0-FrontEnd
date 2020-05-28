@@ -111,7 +111,7 @@ const PrintingSpecs = ({
       );
     }
 
-    return <p>nothing</p>;
+    return <></>;
   };
 
   useEffect(() => {

@@ -10,7 +10,7 @@ import CategoryOfProcurement from './categoryOfProcurement';
 import GeneralDetails from './generalProcurementDetails';
 import PrintingSpecs from './printingSpecs';
 import FinishCreateProcurement from './finish';
-// import CarHireSpecifications from './carHireSpecs';
+import CarHireSpecifications from './carHireSpecs';
 // import StationarySpecs from './stationarySpecs';
 
 import './createProcurement.css';
@@ -88,13 +88,14 @@ function CreateProcurement({
   const [typeOfPaper, setTypeOfPaper] = useState('');
   const [paperSize, setPaperSize] = useState('');
   const [printingDatesRange, setPrintingDatesRange] = useState();
-  // const [typeOfCar, setTypeOfCar] = useState('');
-  // const [districtsToBeVisited, setDistrictsToBeVisited] = useState('');
-  // const [numberOfCars, setNumberOfCars] = useState(0);
-  // const [numberOfDays, setNumberOfDays] = useState(0);
-  // const [numberOfNights, setNumberOfNights] = useState(0);
-  // const [pickUpTime, setPickUpTime] = useState();
-  // const [pickUpLocation, setPickUpLocation] = useState('');
+  const [typeOfCar, setTypeOfCar] = useState('');
+  const [districtsToBeVisited, setDistrictsToBeVisited] = useState('');
+  const [numberOfCars, setNumberOfCars] = useState(0);
+  const [numberOfDays, setNumberOfDays] = useState(0);
+  const [numberOfNights, setNumberOfNights] = useState(0);
+  const [pickUpTime, setPickUpTime] = useState();
+  const [pickUpLocation, setPickUpLocation] = useState('');
+  const [carHireDatesRange, setcarHireDatesRange] = useState();
   // const [itemRequests, setItemRequests] = useState('');
   // const [quantitiesRequired, setQuantitiesRequired] = useState('');
   // const [describeItems, setDescribeItems] = useState('');
@@ -107,6 +108,14 @@ function CreateProcurement({
   };
 
   const returnComponent = () => {
+    if (currentComponent[0] === 'finish') {
+      return <FinishCreateProcurement
+        setCurrentComponent={setCurrentComponent}
+        activeSections={activeSections}
+        currentComponent={currentComponent}
+      />;
+    }
+
     if (currentComponent[0] === ProcurementInitialDetails) {
       return (
         <ProcurementInitialDetails
@@ -211,12 +220,32 @@ function CreateProcurement({
       );
     }
 
-    if (currentComponent[0] === 'finish') {
-      return <FinishCreateProcurement
-        setCurrentComponent={setCurrentComponent}
-        activeSections={activeSections}
-        currentComponent={currentComponent}
-      />;
+    if (currentComponent[0] === CarHireSpecifications) {
+      return (
+        <CarHireSpecifications
+          setSuccessFeedback={setSuccessFeedback}
+          setError={setError}
+          typeOfCar={typeOfCar}
+          setTypeOfCar={setTypeOfCar}
+          districtsToBeVisited={districtsToBeVisited}
+          setDistrictsToBeVisited={setDistrictsToBeVisited}
+          numberOfCars={numberOfCars}
+          setNumberOfCars={setNumberOfCars}
+          numberOfDays={numberOfDays}
+          setNumberOfDays={setNumberOfDays}
+          numberOfNights={numberOfNights}
+          setNumberOfNights={setNumberOfNights}
+          pickUpTime={pickUpTime}
+          setPickUpTime={setPickUpTime}
+          pickUpLocation={pickUpLocation}
+          setPickUpLocation={setPickUpLocation}
+          carHireDatesRange={carHireDatesRange}
+          setcarHireDatesRange={setcarHireDatesRange}
+          setCurrentComponent={setCurrentComponent}
+          activeSections={activeSections}
+          currentComponent={currentComponent}
+        />
+      );
     }
 
     return <></>;
@@ -237,25 +266,6 @@ function CreateProcurement({
         {returnComponent()}
       </Form>
     </div>
-
-  //     <CarHireSpecifications
-  //       setSuccessFeedback={setSuccessFeedback}
-  //       setError={setError}
-  //       typeOfCar={typeOfCar}
-  //       setTypeOfCar={setTypeOfCar}
-  //       districtsToBeVisited={districtsToBeVisited}
-  //       setDistrictsToBeVisited={setDistrictsToBeVisited}
-  //       numberOfCars={numberOfCars}
-  //       setNumberOfCars={setNumberOfCars}
-  //       numberOfDays={numberOfDays}
-  //       setNumberOfDays={setNumberOfDays}
-  //       numberOfNights={numberOfNights}
-  //       setNumberOfNights={setNumberOfNights}
-  //       pickUpTime={pickUpTime}
-  //       setPickUpTime={setPickUpTime}
-  //       pickUpLocation={pickUpLocation}
-  //       setPickUpLocation={setPickUpLocation}
-  //     />
 
   //     <StationarySpecs
   //       setError={setError}

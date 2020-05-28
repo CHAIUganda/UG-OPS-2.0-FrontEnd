@@ -12,6 +12,8 @@ import {
 import NextButton from '../../../../common/nextButton';
 import BackButton from '../../../../common/backButton';
 
+import CarHireSpecifications from '../carHireSpecs';
+
 import PrintingSpecs from '../printingSpecs';
 
 const CategoryOfProcurement = ({
@@ -58,7 +60,7 @@ const CategoryOfProcurement = ({
   };
 
   const handleSections = (componentToUpdate, boolValue) => {
-    const first2Items = [activeSections[0], activeSections[1], activeSections[2]];
+    const first3Items = [activeSections[0], activeSections[1], activeSections[2]];
     const otherSections = activeSections.slice(3);
     if (boolValue) {
       otherSections.push(componentToUpdate);
@@ -67,7 +69,7 @@ const CategoryOfProcurement = ({
       otherSections.splice(indexOfComp, 1);
     }
 
-    setActiveSections(first2Items.concat(otherSections));
+    setActiveSections(first3Items.concat(otherSections));
   };
 
   return (
@@ -113,6 +115,7 @@ const CategoryOfProcurement = ({
                   setSuccessFeedback('');
                   setError('');
                   setCarHire(e.target.checked);
+                  handleSections(CarHireSpecifications, e.target.checked);
                 }}
               />
             </div>
