@@ -74,8 +74,8 @@ function CreateProcurement({
   const [computersAndAccessories, setComputersAndAccessories] = useState(false);
   const [other, setOther] = useState(false);
   const [describeOther, setDescribeOther] = useState('');
-  const [keyObjectiveAsPerCostedWorkPlan, setKeyObjectiveAsPerCostedWorkPlan] = useState('');
-  const [keyActivitiesAsPerCostedWorkPlan, setKeyActivitiesAsPerCostedWorkPlan] = useState('');
+  const [keyObjectiveAsPerCostedWorkPlan, setKeyObjectiveAsPerCostedWorkPlan] = useState('Reaching out to the community');
+  const [keyActivitiesAsPerCostedWorkPlan, setKeyActivitiesAsPerCostedWorkPlan] = useState('Mulching, marathon');
   const [printingSpecs, setPrintingSpecs] = useState([]);
   const [typeOfCar, setTypeOfCar] = useState('');
   const [districtsToBeVisited, setDistrictsToBeVisited] = useState('');

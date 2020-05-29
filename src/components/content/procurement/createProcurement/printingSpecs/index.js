@@ -9,11 +9,25 @@ import 'dropzone/dist/dropzone.css';
 
 const PrintingSpecs = ({
   // setSuccessFeedback,
-  // setError,
+  setError,
   setCurrentComponent,
   activeSections,
   currentComponent,
+  printingSpecs,
+  // setPrintingSpecs,
 }) => {
+  const errorProps = () => {
+    const arr = [];
+    if (printingSpecs.length < 1) {
+      arr.push({
+        err: 'Please add atleast a specification to continue.',
+        setter: setError
+      });
+    }
+
+    return arr;
+  };
+
   const returnNextButton = () => {
     const currentIndex = activeSections.indexOf(currentComponent[0]);
     if (currentIndex !== -1 && currentIndex < activeSections.length) {
@@ -24,7 +38,7 @@ const PrintingSpecs = ({
             setCurrentComponent={setCurrentComponent}
             // activeSections={activeSections}
             // currentComponent={currentComponent}
-          // errorProps={errorProps()}
+            errorProps={errorProps()}
           />
         );
       }
@@ -33,7 +47,7 @@ const PrintingSpecs = ({
           activeSections={activeSections}
           currentComponent={currentComponent}
           setCurrentComponent={setCurrentComponent}
-          // errorProps={errorProps()}
+          errorProps={errorProps()}
         />
       );
     }
@@ -41,12 +55,24 @@ const PrintingSpecs = ({
     return <></>;
   };
 
+  const returnTableData = () => {
+    if (printingSpecs.length < 1) {
+      return (
+        <div className="alert alert-info mt-5" role="alert">
+          You haven&apos;t added any specifications yet.
+        </div>
+      );
+    }
+
+    return <></>;
+  };
 
   return (
     <>
       <div>
         <h3 className="inlineItem">Printing, Art and Design Specifications</h3>
         <AddPrintingSpec />
+        {returnTableData()}
       </div>
 
       <div className='pushChildToBottom mb-2'>
@@ -67,6 +93,8 @@ PrintingSpecs.propTypes = {
   setCurrentComponent: PropTypes.func,
   activeSections: PropTypes.array,
   currentComponent: PropTypes.array,
+  printingSpecs: PropTypes.array,
+  setPrintingSpecs: PropTypes.func,
 };
 
 export default PrintingSpecs;
