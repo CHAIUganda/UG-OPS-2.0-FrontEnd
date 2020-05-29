@@ -43,13 +43,13 @@ const DropzoneComponent = () => {
 
   useEffect(() => {
     dropzone = setupDropzone();
-    // return function destroyDropZone() {
-    //   dropzone.destroy();
-    // };
+    return function destroyDropZone() {
+      dropzone.destroy();
+    };
   }, []);
 
   return (
-    <div ref={dropzoneNode} id='d' className='dropzone DZContainer'></div>
+    <div ref={dropzoneNode} id='d' className='dropzone'></div>
   );
 };
 
