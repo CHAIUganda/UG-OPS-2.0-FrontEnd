@@ -42,7 +42,7 @@ const AddPrintingSpec = () => {
     event.preventDefault();
   };
 
-  const dropzoneNode = React.createRef();
+  // const dropzoneNode = React.createRef();
   // eslint-disable-next-line no-unused-vars
   let dropzone;
   const filesArray = [];
@@ -66,6 +66,7 @@ const AddPrintingSpec = () => {
   };
 
   const setupDropzone = () => {
+    debugger;
     const dropzoneArea = new DropzoneLib('div#d', {
       url: '/not/required/',
       dictDefaultMessage: 'Drop files or click to upload',
@@ -85,12 +86,16 @@ const AddPrintingSpec = () => {
   };
 
   useEffect(() => {
+    console.log('dropzone');
+    console.log(dropzone);
+    debugger;
     dropzone = setupDropzone();
-    return function destroyDropZone() {
-      dropzone.destroy();
-    };
+    // return function destroyDropZone() {
+    //   dropzone.destroy();
+    // };
   }, []);
 
+  debugger;
   return (
     <div className="inlineItem">
       <button className="submitButton positionBtn" onClick={toggle}>
@@ -314,10 +319,11 @@ const AddPrintingSpec = () => {
                 <InputGroupAddon addonType="prepend">
                   <InputGroupText>Additional documations</InputGroupText>
                 </InputGroupAddon>
-                <div ref={dropzoneNode} id='d' className='dropzone'></div>
+                {/* <div ref={dropzoneNode} id='d' className='dropzone'></div> */}
+                <div id='d' className='dropzone'></div>
               </InputGroup>
               <FormText>
-          Attach any additional suppporting documations.
+                  Attach any additional suppporting documations.
               </FormText>
             </FormGroup>
           </Form>
