@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 // import Calendar from 'react-calendar';
 import {
@@ -7,7 +7,8 @@ import {
   InputGroup,
   InputGroupAddon,
   InputGroupText,
-  FormText
+  FormText,
+  FormFeedback
 } from 'reactstrap';
 
 import NextButton from '../../../../common/nextButton';
@@ -16,12 +17,6 @@ import BackButton from '../../../../common/backButton';
 const GeneralDetails = ({
   setSuccessFeedback,
   setError,
-  minPrice,
-  setMinPrice,
-  maxPrice,
-  setMaxPrice,
-  // leaveDates,
-  // setLeaveDates,
   keyObjectiveAsPerCostedWorkPlan,
   setKeyObjectiveAsPerCostedWorkPlan,
   keyActivitiesAsPerCostedWorkPlan,
@@ -29,138 +24,173 @@ const GeneralDetails = ({
   setCurrentComponent,
   activeSections,
   currentComponent,
-}) => (
-  <>
-    <div>
-      <h3>General Procurement Details</h3>
-      <h6>Price range of procurement</h6>
-      {/*  Minimum Price */}
-      <FormGroup>
-        <InputGroup>
-          <InputGroupAddon addonType="prepend">
-            <InputGroupText>Minimum Price</InputGroupText>
-          </InputGroupAddon>
-          <Input
-            placeholder='0'
-            type="number"
-            value={minPrice}
-            onChange={(e) => {
-              setSuccessFeedback('');
-              setError('');
-              setMinPrice(e.target.value);
-            }}
-            required
-          />
-        </InputGroup>
-      </FormGroup>
+}) => {
+  const [objectiveInputInvalid, setObjectiveInputInvalid] = useState('');
+  const [keyActivitiesInvalid, setKeyActivitiesInvalid] = useState('');
 
-      {/* Maximum Price */}
-      <FormGroup>
-        <InputGroup>
-          <InputGroupAddon addonType="prepend">
-            <InputGroupText>Maximum Price</InputGroupText>
-          </InputGroupAddon>
-          <Input
-            placeholder='0'
-            type="number"
-            value={maxPrice}
-            onChange={(e) => {
-              setSuccessFeedback('');
-              setError('');
-              setMaxPrice(e.target.value);
-            }}
-            required
-          />
-        </InputGroup>
-      </FormGroup>
+  const errorProps = () => {
+    const arr = [];
+    if (!keyObjectiveAsPerCostedWorkPlan) {
+      arr.push({
+        err: 'Please add the key objective to continue.',
+        setter: setObjectiveInputInvalid
+      });
+    }
 
-      {/* Range of dates */}
-      {/* <FormGroup>
-      <InputGroup>
-        <InputGroupAddon addonType="prepend">
-          <InputGroupText>Range of dates needed</InputGroupText>
-        </InputGroupAddon>
-        <Calendar
-          value={leaveDates}
-          selectRange={true}
-          onChange={(date) => {
-            setSuccessFeedback('');
-            setError('');
-            setLeaveDates(date);
-          }
-          } />
-      </InputGroup>
-    </FormGroup> */}
+    if (!keyActivitiesAsPerCostedWorkPlan) {
+      arr.push({
+        err: 'Please add at least an acitivity',
+        setter: setKeyActivitiesInvalid
+      });
+    }
 
-      {/* costed work plan objective */}
-      <FormGroup>
-        <InputGroup>
-          <InputGroupAddon addonType="prepend">
-            <InputGroupText>Key Objective as Per Costed Work Plan</InputGroupText>
-          </InputGroupAddon>
-          <Input
-            placeholder='Key Objective as Per Costed Work Plan'
-            type="text"
-            value={keyObjectiveAsPerCostedWorkPlan}
-            onChange={(e) => {
-              setSuccessFeedback('');
-              setError('');
-              setKeyObjectiveAsPerCostedWorkPlan(e.target.value);
-            }}
-            required
-          />
-        </InputGroup>
-      </FormGroup>
+    return arr;
+  };
 
-      {/* key activities as per costed work plan */}
+  const returnObjectiveInput = () => {
+    if (objectiveInputInvalid) {
+      return (
+        <>
+          {/* costed work plan objective */}
+          <FormGroup>
+            <InputGroup>
+              <InputGroupAddon addonType="prepend">
+                <InputGroupText>Key Objective as Per Costed Work Plan</InputGroupText>
+              </InputGroupAddon>
+              <Input
+                placeholder='Key Objective as Per Costed Work Plan'
+                type="text"
+                value={keyObjectiveAsPerCostedWorkPlan}
+                onChange={(e) => {
+                  setSuccessFeedback('');
+                  setError('');
+                  setKeyObjectiveAsPerCostedWorkPlan(e.target.value);
+                  setObjectiveInputInvalid('');
+                }}
+                invalid
+              />
+              <FormFeedback>{objectiveInputInvalid}</FormFeedback>
+            </InputGroup>
+          </FormGroup>
+        </>
+      );
+    }
 
-      <FormGroup>
-        <InputGroup>
-          <InputGroupAddon addonType="prepend">
-            <InputGroupText>
+    return (
+      <>
+        {/* costed work plan objective */}
+        <FormGroup>
+          <InputGroup>
+            <InputGroupAddon addonType="prepend">
+              <InputGroupText>Key Objective as Per Costed Work Plan</InputGroupText>
+            </InputGroupAddon>
+            <Input
+              placeholder='Key Objective as Per Costed Work Plan'
+              type="text"
+              value={keyObjectiveAsPerCostedWorkPlan}
+              onChange={(e) => {
+                setSuccessFeedback('');
+                setError('');
+                setKeyObjectiveAsPerCostedWorkPlan(e.target.value);
+                setObjectiveInputInvalid('');
+              }}
+              required
+            />
+            <FormFeedback>{objectiveInputInvalid}</FormFeedback>
+          </InputGroup>
+        </FormGroup>
+      </>
+    );
+  };
+
+  const returnKeyActivitiesInput = () => {
+    if (keyActivitiesInvalid) {
+      return (
+        <>
+          {/* key activities as per costed work plan */}
+          <FormGroup>
+            <InputGroup>
+              <InputGroupAddon addonType="prepend">
+                <InputGroupText>
             Key Activities as Per Costed Work Plan
-            </InputGroupText>
-          </InputGroupAddon>
-          <Input
-            placeholder='Key Activities as Per Costed Work Plan'
-            type="text"
-            value={keyActivitiesAsPerCostedWorkPlan}
-            onChange={(e) => {
-              setSuccessFeedback('');
-              setError('');
-              setKeyActivitiesAsPerCostedWorkPlan(e.target.value);
-            }}
-            required
-          />
-        </InputGroup>
-        <FormText>Enter comma seperated list of activities.</FormText>
-      </FormGroup>
-    </div>
-    <div className='pushChildToBottom mb-2'>
-      <BackButton
-        activeSections={activeSections}
-        currentComponent={currentComponent}
-        setCurrentComponent={setCurrentComponent}
-      />
-      <NextButton
-        activeSections={activeSections}
-        currentComponent={currentComponent}
-        setCurrentComponent={setCurrentComponent}
-        // errorProps={errorProps()}
-      />
-    </div>
-  </>
-);
+                </InputGroupText>
+              </InputGroupAddon>
+              <Input
+                placeholder='Key Activities as Per Costed Work Plan'
+                type="text"
+                value={keyActivitiesAsPerCostedWorkPlan}
+                onChange={(e) => {
+                  setSuccessFeedback('');
+                  setError('');
+                  setKeyActivitiesAsPerCostedWorkPlan(e.target.value);
+                  setKeyActivitiesInvalid();
+                }}
+                invalid
+              />
+              <FormFeedback>{keyActivitiesInvalid}</FormFeedback>
+            </InputGroup>
+            <FormText>Enter comma seperated list of activities.</FormText>
+          </FormGroup>
+        </>
+      );
+    }
+
+    return (
+      <>
+        {/* key activities as per costed work plan */}
+        <FormGroup>
+          <InputGroup>
+            <InputGroupAddon addonType="prepend">
+              <InputGroupText>
+            Key Activities as Per Costed Work Plan
+              </InputGroupText>
+            </InputGroupAddon>
+            <Input
+              placeholder='Key Activities as Per Costed Work Plan'
+              type="text"
+              value={keyActivitiesAsPerCostedWorkPlan}
+              onChange={(e) => {
+                setSuccessFeedback('');
+                setError('');
+                setKeyActivitiesAsPerCostedWorkPlan(e.target.value);
+                setKeyActivitiesInvalid();
+              }}
+              required
+            />
+          </InputGroup>
+          <FormText>Enter comma seperated list of activities.</FormText>
+        </FormGroup>
+      </>
+    );
+  };
+
+  return (
+    <>
+      <div>
+        <h3>General Procurement Details</h3>
+        {returnObjectiveInput()}
+        {returnKeyActivitiesInput()}
+      </div>
+      <div className='pushChildToBottom mb-2'>
+        <BackButton
+          activeSections={activeSections}
+          currentComponent={currentComponent}
+          setCurrentComponent={setCurrentComponent}
+        />
+        <NextButton
+          activeSections={activeSections}
+          currentComponent={currentComponent}
+          setCurrentComponent={setCurrentComponent}
+          errorProps={errorProps()}
+        />
+      </div>
+    </>
+  );
+};
 
 GeneralDetails.propTypes = {
   setSuccessFeedback: PropTypes.func,
   setError: PropTypes.func,
-  minPrice: PropTypes.number,
-  setMinPrice: PropTypes.func,
-  maxPrice: PropTypes.number,
-  setMaxPrice: PropTypes.func,
-  leaveDates: PropTypes.any,
-  setLeaveDates: PropTypes.func,
   keyObjectiveAsPerCostedWorkPlan: PropTypes.string,
   setKeyObjectiveAsPerCostedWorkPlan: PropTypes.func,
   keyActivitiesAsPerCostedWorkPlan: PropTypes.string,

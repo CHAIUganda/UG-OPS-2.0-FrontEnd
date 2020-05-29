@@ -74,11 +74,9 @@ function CreateProcurement({
   const [computersAndAccessories, setComputersAndAccessories] = useState(false);
   const [other, setOther] = useState(false);
   const [describeOther, setDescribeOther] = useState('');
-  const [minPrice, setMinPrice] = useState(0);
-  const [maxPrice, setMaxPrice] = useState(0);
   const [keyObjectiveAsPerCostedWorkPlan, setKeyObjectiveAsPerCostedWorkPlan] = useState('');
   const [keyActivitiesAsPerCostedWorkPlan, setKeyActivitiesAsPerCostedWorkPlan] = useState('');
-
+  const [printingSpecs, setPrintingSpecs] = useState([]);
   const [typeOfCar, setTypeOfCar] = useState('');
   const [districtsToBeVisited, setDistrictsToBeVisited] = useState('');
   const [numberOfCars, setNumberOfCars] = useState(0);
@@ -166,10 +164,6 @@ function CreateProcurement({
         <GeneralDetails
           setSuccessFeedback={setSuccessFeedback}
           setError={setError}
-          minPrice={minPrice}
-          setMinPrice={setMinPrice}
-          maxPrice={maxPrice}
-          setMaxPrice={setMaxPrice}
           keyObjectiveAsPerCostedWorkPlan={keyObjectiveAsPerCostedWorkPlan}
           setKeyObjectiveAsPerCostedWorkPlan={setKeyObjectiveAsPerCostedWorkPlan}
           keyActivitiesAsPerCostedWorkPlan={keyActivitiesAsPerCostedWorkPlan}
@@ -189,6 +183,8 @@ function CreateProcurement({
           setCurrentComponent={setCurrentComponent}
           activeSections={activeSections}
           currentComponent={currentComponent}
+          printingSpecs={printingSpecs}
+          setPrintingSpecs={setPrintingSpecs}
         />
       );
     }

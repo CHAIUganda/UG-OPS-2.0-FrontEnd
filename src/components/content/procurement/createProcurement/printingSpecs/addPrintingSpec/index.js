@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { IoMdAdd } from 'react-icons/io';
 import {
   Button,
@@ -16,7 +16,7 @@ import {
   FormGroup
 } from 'reactstrap';
 import Calendar from 'react-calendar';
-import * as DropzoneLib from 'dropzone';
+import DropzoneComponent from '../../../../../common/dropzone';
 
 // import PropTypes from 'prop-types';
 
@@ -33,6 +33,8 @@ const AddPrintingSpec = () => {
   const [printingDatesRange, setPrintingDatesRange] = useState();
   const [success, setSuccess] = useState('');
   const [err, setErr] = useState('');
+  const [minPrice, setMinPrice] = useState(0);
+  const [maxPrice, setMaxPrice] = useState(0);
 
   const [modal, setModal] = useState(false);
 
@@ -42,60 +44,6 @@ const AddPrintingSpec = () => {
     event.preventDefault();
   };
 
-  // const dropzoneNode = React.createRef();
-  // eslint-disable-next-line no-unused-vars
-  let dropzone;
-  const filesArray = [];
-
-  // eslint-disable-next-line no-unused-vars
-  const onFileError = (file, message) => {
-    setErr(`${file.name} :: message`);
-  };
-
-  const onAddFile = (file) => {
-    filesArray.push(file);
-    setErr('');
-    setSuccess('');
-  };
-
-  const onRemoveFile = (file) => {
-    const indexOfFile = filesArray.indexOf(file);
-    filesArray.splice(indexOfFile, 1);
-    setErr('');
-    setSuccess('');
-  };
-
-  const setupDropzone = () => {
-    debugger;
-    const dropzoneArea = new DropzoneLib('div#d', {
-      url: '/not/required/',
-      dictDefaultMessage: 'Drop files or click to upload',
-      uploadMultiple: true,
-      autoProcessQueue: false,
-      addRemoveLinks: true,
-      createImageThumbnails: true,
-    });
-
-    dropzoneArea.on('error', (file, message) => console.log(message));
-
-    dropzoneArea.on('addedfile', onAddFile);
-
-    dropzoneArea.on('removedfile', onRemoveFile);
-
-    return dropzoneArea;
-  };
-
-  useEffect(() => {
-    console.log('dropzone');
-    console.log(dropzone);
-    debugger;
-    dropzone = setupDropzone();
-    // return function destroyDropZone() {
-    //   dropzone.destroy();
-    // };
-  }, []);
-
-  debugger;
   return (
     <div className="inlineItem">
       <button className="submitButton positionBtn" onClick={toggle}>
@@ -108,6 +56,46 @@ const AddPrintingSpec = () => {
           <Form onsubmit={handleSubmit}>
             {err && <div className="errorFeedback m-2"> {err} </div>}
             {success && <div className="errorFeedback m-2"> {success} </div>}
+            <h6>Price range of procurement</h6>
+            {/*  Minimum Price */}
+            <FormGroup>
+              <InputGroup>
+                <InputGroupAddon addonType="prepend">
+                  <InputGroupText>Minimum Price</InputGroupText>
+                </InputGroupAddon>
+                <Input
+                  placeholder='0'
+                  type="number"
+                  value={minPrice}
+                  onChange={(e) => {
+                    setSuccess('');
+                    setErr('');
+                    setMinPrice(e.target.value);
+                  }}
+                  required
+                />
+              </InputGroup>
+            </FormGroup>
+
+            {/* Maximum Price */}
+            <FormGroup>
+              <InputGroup>
+                <InputGroupAddon addonType="prepend">
+                  <InputGroupText>Maximum Price</InputGroupText>
+                </InputGroupAddon>
+                <Input
+                  placeholder='0'
+                  type="number"
+                  value={maxPrice}
+                  onChange={(e) => {
+                    setSuccess('');
+                    setErr('');
+                    setMaxPrice(e.target.value);
+                  }}
+                  required
+                />
+              </InputGroup>
+            </FormGroup>
             {/*  Quality to be printed */}
             <FormGroup>
               <InputGroup>
@@ -319,8 +307,9 @@ const AddPrintingSpec = () => {
                 <InputGroupAddon addonType="prepend">
                   <InputGroupText>Additional documations</InputGroupText>
                 </InputGroupAddon>
-                {/* <div ref={dropzoneNode} id='d' className='dropzone'></div> */}
-                <div id='d' className='dropzone'></div>
+                <div>
+                  <DropzoneComponent />
+                </div>
               </InputGroup>
               <FormText>
                   Attach any additional suppporting documations.
