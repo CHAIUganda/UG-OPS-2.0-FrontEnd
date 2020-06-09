@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 
 import NextButton from '../../../../common/nextButton';
@@ -9,19 +9,20 @@ import 'dropzone/dist/dropzone.css';
 
 const PrintingSpecs = ({
   // setSuccessFeedback,
-  setError,
+  // setError,
   setCurrentComponent,
   activeSections,
   currentComponent,
   printingSpecs,
   // setPrintingSpecs,
 }) => {
+  const [printingSpecError, setPrintingSpecError] = useState('');
   const errorProps = () => {
     const arr = [];
     if (printingSpecs.length < 1) {
       arr.push({
         err: 'Please add atleast a specification to continue.',
-        setter: setError
+        setter: setPrintingSpecError
       });
     }
 
@@ -72,6 +73,7 @@ const PrintingSpecs = ({
       <div>
         <h3 className="inlineItem">Printing, Art and Design Specifications</h3>
         <AddPrintingSpec />
+        {printingSpecError && <div className="errorFeedback m-3"> {printingSpecError} </div>}
         {returnTableData()}
       </div>
 
@@ -89,7 +91,6 @@ const PrintingSpecs = ({
 
 PrintingSpecs.propTypes = {
   setSuccessFeedback: PropTypes.func,
-  setError: PropTypes.func,
   setCurrentComponent: PropTypes.func,
   activeSections: PropTypes.array,
   currentComponent: PropTypes.array,

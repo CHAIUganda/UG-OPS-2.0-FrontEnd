@@ -1,3 +1,4 @@
+/* eslint-disable no-restricted-globals */
 import React, { useState } from 'react';
 import { IoMdAdd } from 'react-icons/io';
 import {
@@ -13,7 +14,8 @@ import {
   InputGroupAddon,
   InputGroupText,
   FormText,
-  FormGroup
+  FormGroup,
+  FormFeedback
 } from 'reactstrap';
 import Calendar from 'react-calendar';
 import DropzoneComponent from '../../../../../common/dropzone';
@@ -35,6 +37,8 @@ const AddPrintingSpec = () => {
   const [err, setErr] = useState('');
   const [minPrice, setMinPrice] = useState(0);
   const [maxPrice, setMaxPrice] = useState(0);
+  const [minPriceError, setMinimumPriceError] = useState('');
+  const [maxPRiceError, setMaxPriceError] = useState('');
 
   const [modal, setModal] = useState(false);
 
@@ -42,6 +46,150 @@ const AddPrintingSpec = () => {
 
   const handleSubmit = (event) => {
     event.preventDefault();
+
+    if (isNaN(parseFloat(minPrice))) {
+      setMinimumPriceError('Enter a valid decimal number.');
+      setErr('Enter a valid decimal number  for minimum price.');
+      return;
+    }
+
+    if (parseFloat(minPrice) < 1) {
+      setErr('Set a minimum price higher than 1.');
+      setMinimumPriceError('Set a minimum price higher than 1.');
+      return;
+    }
+
+    if (isNaN(parseFloat(maxPrice))) {
+      setErr('Enter a valid decimal number for maximum price.');
+      setMaxPriceError('Enter a valid decimal number.');
+      return;
+    }
+
+    if (parseFloat(maxPrice) < 1) {
+      setErr('Set a maximum price higher than 1.');
+      setMaxPriceError('Set a maximum price higher than 1.');
+      return;
+    }
+
+    if (parseFloat(maxPrice) < parseFloat(minPrice)) {
+      setErr('Set a maximum price higher than the minimum price.');
+      setMaxPriceError('Set a maximum price higher the minimum price.');
+      return;
+    }
+
+    const newSpec = {
+      minPrice,
+      maxPrice
+    };
+
+    // toggle();
+    console.log(newSpec);
+    debugger;
+  };
+
+  const minPriceInput = () => {
+    if (minPriceError) {
+      return (
+        <>
+          {/*  Minimum Price */}
+          <FormGroup>
+            <InputGroup>
+              <InputGroupAddon addonType="prepend">
+                <InputGroupText>Minimum Price</InputGroupText>
+              </InputGroupAddon>
+              <Input
+                type="number"
+                value={minPrice}
+                onChange={(e) => {
+                  setSuccess('');
+                  setErr('');
+                  setMinPrice(e.target.value);
+                  setMinimumPriceError('');
+                }}
+                invalid
+              />
+              <FormFeedback>{minPriceError}</FormFeedback>
+            </InputGroup>
+          </FormGroup>
+        </>
+      );
+    }
+
+    return (
+      <>
+        {/*  Minimum Price */}
+        <FormGroup>
+          <InputGroup>
+            <InputGroupAddon addonType="prepend">
+              <InputGroupText>Minimum Price</InputGroupText>
+            </InputGroupAddon>
+            <Input
+              type="number"
+              value={minPrice}
+              onChange={(e) => {
+                setSuccess('');
+                setErr('');
+                setMinPrice(e.target.value);
+                setMinimumPriceError('');
+              }}
+            />
+          </InputGroup>
+        </FormGroup>
+      </>
+    );
+  };
+
+  const maxPriceInput = () => {
+    if (maxPRiceError) {
+      return (
+        <>
+          {/* Maximum Price invalid */}
+          <FormGroup>
+            <InputGroup>
+              <InputGroupAddon addonType="prepend">
+                <InputGroupText>Maximum Price</InputGroupText>
+              </InputGroupAddon>
+              <Input
+                type="number"
+                value={maxPrice}
+                onChange={(e) => {
+                  setSuccess('');
+                  setErr('');
+                  setMaxPriceError('');
+                  setMaxPrice(e.target.value);
+                }}
+                invalid
+              />
+              <FormFeedback>{maxPRiceError}</FormFeedback>
+            </InputGroup>
+          </FormGroup>
+        </>
+      );
+    }
+
+    return (
+      <>
+        {/* Maximum Price valid */}
+        <FormGroup>
+          <InputGroup>
+            <InputGroupAddon addonType="prepend">
+              <InputGroupText>Maximum Price</InputGroupText>
+            </InputGroupAddon>
+            <Input
+              type="number"
+              value={maxPrice}
+              onChange={(e) => {
+                setSuccess('');
+                setErr('');
+                setMaxPriceError('');
+                setMaxPrice(e.target.value);
+              }}
+              required
+            />
+          </InputGroup>
+        </FormGroup>
+      </>
+    );
   };
 
   return (
@@ -53,49 +201,12 @@ const AddPrintingSpec = () => {
       <Modal isOpen={modal} toggle={toggle}>
         <ModalHeader toggle={toggle}>Printing Specifications</ModalHeader>
         <ModalBody>
-          <Form onsubmit={handleSubmit}>
+          <Form>
             {err && <div className="errorFeedback m-2"> {err} </div>}
             {success && <div className="errorFeedback m-2"> {success} </div>}
             <h6>Price range of procurement</h6>
-            {/*  Minimum Price */}
-            <FormGroup>
-              <InputGroup>
-                <InputGroupAddon addonType="prepend">
-                  <InputGroupText>Minimum Price</InputGroupText>
-                </InputGroupAddon>
-                <Input
-                  placeholder='0'
-                  type="number"
-                  value={minPrice}
-                  onChange={(e) => {
-                    setSuccess('');
-                    setErr('');
-                    setMinPrice(e.target.value);
-                  }}
-                  required
-                />
-              </InputGroup>
-            </FormGroup>
-
-            {/* Maximum Price */}
-            <FormGroup>
-              <InputGroup>
-                <InputGroupAddon addonType="prepend">
-                  <InputGroupText>Maximum Price</InputGroupText>
-                </InputGroupAddon>
-                <Input
-                  placeholder='0'
-                  type="number"
-                  value={maxPrice}
-                  onChange={(e) => {
-                    setSuccess('');
-                    setErr('');
-                    setMaxPrice(e.target.value);
-                  }}
-                  required
-                />
-              </InputGroup>
-            </FormGroup>
+            {minPriceInput()}
+            {maxPriceInput()}
             {/*  Quality to be printed */}
             <FormGroup>
               <InputGroup>
@@ -131,6 +242,7 @@ const AddPrintingSpec = () => {
                     setErr('');
                     setDetailedDescriptionOfPrint(e.target.value);
                   }}
+                  required
                 />
               </InputGroup>
             </FormGroup>
@@ -153,7 +265,7 @@ const AddPrintingSpec = () => {
                 />
               </InputGroup>
               <FormText>
-        This is optional, you can provide more details if there is a need to design.
+                This is optional, you can provide more details if there is a need to design.
               </FormText>
             </FormGroup>
 
@@ -163,17 +275,23 @@ const AddPrintingSpec = () => {
                 <InputGroupAddon addonType="prepend">
                   <InputGroupText>Account code</InputGroupText>
                 </InputGroupAddon>
-                <Input
-                  placeholder='Account Code'
-                  type="text"
+                <CustomInput
+                  type="select"
+                  id="exampleCustomSelect"
+                  name="customSelect"
                   value={accountCode}
                   onChange={(e) => {
                     setSuccess('');
                     setErr('');
                     setAccountCode(e.target.value);
                   }}
-                  required
-                />
+                >
+                  <option value="">Not Set</option>
+                  <option value="PID01">AC01</option>
+                  <option value="PID02">AC02</option>
+                  <option value="PID03">AC03</option>
+                  <option value="PID04">AC04</option>
+                </CustomInput>
               </InputGroup>
             </FormGroup>
 
@@ -315,10 +433,17 @@ const AddPrintingSpec = () => {
                   Attach any additional suppporting documations.
               </FormText>
             </FormGroup>
+            {err && <div className="errorFeedback m-2"> {err} </div>}
+            {success && <div className="errorFeedback m-2"> {success} </div>}
+            <div>
+              <button className="submitButton positionBtn pull-left" type='submit' onClick={handleSubmit}>
+                <IoMdAdd />
+              Add Specification
+              </button>
+            </div>
           </Form>
         </ModalBody>
         <ModalFooter>
-          <Button color="primary" onClick={toggle}>Do Something</Button>{' '}
           <Button color="secondary" onClick={toggle}>Cancel</Button>
         </ModalFooter>
       </Modal>

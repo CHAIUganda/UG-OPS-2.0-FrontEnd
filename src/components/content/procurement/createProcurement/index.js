@@ -179,7 +179,6 @@ function CreateProcurement({
       return (
         <PrintingSpecs
           setSuccessFeedback={setSuccessFeedback}
-          setError={setError}
           setCurrentComponent={setCurrentComponent}
           activeSections={activeSections}
           currentComponent={currentComponent}
