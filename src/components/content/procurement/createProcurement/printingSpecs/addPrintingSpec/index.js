@@ -26,12 +26,12 @@ const AddPrintingSpec = () => {
   const [qualityToBePrinted, setQualityToBePrinted] = useState('good quality');
   const [detailedDescriptionOfPrint, setDetailedDescriptionOfPrint] = useState('The print should not be long lasting.');
   const [moreDetails, setMoreDetails] = useState('');
-  const [accountCode, setAccountCode] = useState('');
-  const [sampleNeeded, setSampleNeeded] = useState('No');
-  const [colourNeeded, setColourNeeded] = useState('Black/White');
-  const [typeOfBinding, setTypeOfBinding] = useState('');
-  const [typeOfPaper, setTypeOfPaper] = useState('');
-  const [paperSize, setPaperSize] = useState('');
+  const [accountCode, setAccountCode] = useState('AC01');
+  const [sampleNeeded, setSampleNeeded] = useState('No'); // deafult needed
+  const [colourNeeded, setColourNeeded] = useState('Black/White'); // default needed
+  const [typeOfBinding, setTypeOfBinding] = useState('leather binding.');
+  const [typeOfPaper, setTypeOfPaper] = useState('Shinny Paper.');
+  const [paperSize, setPaperSize] = useState('A4');
   const [printingDatesRange, setPrintingDatesRange] = useState();
   const [success, setSuccess] = useState('');
   const [err, setErr] = useState('');
@@ -42,6 +42,9 @@ const AddPrintingSpec = () => {
   const [qualityToBePrintedError, setQualityToBePrintedError] = useState('');
   const [detailedDescError, setDetailedDescError] = useState('');
   const [accountCodeErr, setAccountCodeErr] = useState('');
+  const [typeOfBindingErr, setTypeOfBindingErr] = useState('');
+  const [typeOfPaperErr, setTypeOfPaperErr] = useState('');
+  const [paperSizeErr, setPaperSizeErr] = useState('');
 
   const [modal, setModal] = useState(false);
 
@@ -49,65 +52,84 @@ const AddPrintingSpec = () => {
 
   const handleSubmit = (event) => {
     event.preventDefault();
+    let addEntry = true;
 
     if (!minPrice || !minPrice.trim()) {
       setMinimumPriceError('Enter a valid number.');
       setErr('Enter a valid number  for minimum price.');
-      return;
+      addEntry = false;
     }
 
     if (isNaN(minPrice)) {
       setMinimumPriceError('Enter a valid decimal number.');
       setErr('Enter a valid decimal number  for minimum price.');
-      return;
+      addEntry = false;
     }
 
     if (parseFloat(minPrice) < 1) {
       setErr('Set a minimum price higher than 1.');
       setMinimumPriceError('Set a minimum price higher than 1.');
-      return;
+      addEntry = false;
     }
 
     if (!maxPrice || !maxPrice.trim()) {
       setErr('Enter a valid number for maximum price.');
       setMaxPriceError('Enter a valid number.');
-      return;
+      addEntry = false;
     }
 
     if (isNaN(maxPrice)) {
       setErr('Enter a valid decimal number for maximum price.');
       setMaxPriceError('Enter a valid decimal number.');
-      return;
+      addEntry = false;
     }
 
     if (parseFloat(maxPrice) < 1) {
       setErr('Set a maximum price higher than 1.');
       setMaxPriceError('Set a maximum price higher than 1.');
-      return;
+      addEntry = false;
     }
 
     if (parseFloat(maxPrice) < parseFloat(minPrice)) {
       setErr('Set a maximum price higher than the minimum price.');
       setMaxPriceError('Set a maximum price higher the minimum price.');
-      return;
+      addEntry = false;
     }
 
     if (qualityToBePrinted.trim().length < 1) {
       setErr('Specify a quality to be printed.');
       setQualityToBePrintedError('specify a quality to be printed');
-      return;
+      addEntry = false;
     }
 
     if (detailedDescriptionOfPrint.trim().length < 1) {
       setErr('Describe the print in detail.');
       setDetailedDescError('Describe the print in detail.');
-      return;
+      addEntry = false;
     }
 
     if (accountCode.trim().length < 1) {
       setErr('Select an account code.');
       setAccountCodeErr('Select an account code.');
-      return;
+      addEntry = false;
+    }
+
+    if (typeOfBinding.trim().length < 1) {
+      setErr('Specify a type of binding.');
+      setTypeOfBindingErr('Specify a type of binding.');
+      addEntry = false;
+    }
+
+    if (typeOfPaper.trim().length < 1) {
+      setErr('Specify the type of paper to be used.');
+      setTypeOfPaperErr('Specify the type of paper to be used.');
+      addEntry = false;
+    }
+
+    if (paperSize.trim().length < 1) {
+      setErr('Specify a paper size.');
+      setPaperSizeErr('Specify a paper size.');
+      addEntry = false;
     }
 
     const newSpec = {
@@ -115,12 +137,23 @@ const AddPrintingSpec = () => {
       maxPrice: parseFloat(maxPrice),
       qualityToBePrinted: qualityToBePrinted.trim(),
       detailedDescriptionOfPrint: detailedDescriptionOfPrint.trim(),
-      moreDetails: moreDetails.trim()
+      moreDetails: moreDetails.trim(),
+      accountCode: accountCode.trim(),
+      sampleNeeded: sampleNeeded.trim(),
+      colourNeeded: colourNeeded.trim(),
+      typeOfBinding: typeOfBinding.trim(),
+      typeOfPaper: typeOfPaper.trim(),
+      paperSize: paperSize.trim(),
     };
 
     // toggle();
     console.log(newSpec);
     debugger;
+
+    if (addEntry) {
+      // toggle here.
+      return;
+    }
   };
 
   const minPriceInput = () => {
@@ -304,7 +337,7 @@ const AddPrintingSpec = () => {
                 }}
                 invalid
               />
-              <FormText>{detailedDescError}</FormText>
+              <FormFeedback>{detailedDescError}</FormFeedback>
             </InputGroup>
           </FormGroup>
         </>
@@ -387,12 +420,12 @@ const AddPrintingSpec = () => {
                 invalid
               >
                 <option value="">Not Set</option>
-                <option value="PID01">AC01</option>
-                <option value="PID02">AC02</option>
-                <option value="PID03">AC03</option>
-                <option value="PID04">AC04</option>
+                <option value="AC01">AC01</option>
+                <option value="AC02">AC02</option>
+                <option value="AC03">AC03</option>
+                <option value="AC04">AC04</option>
               </CustomInput>
-              <FormText>{accountCodeErr}</FormText>
+              <FormFeedback>{accountCodeErr}</FormFeedback>
             </InputGroup>
           </FormGroup>
         </>
@@ -419,11 +452,230 @@ const AddPrintingSpec = () => {
               }}
             >
               <option value="">Not Set</option>
-              <option value="PID01">AC01</option>
-              <option value="PID02">AC02</option>
-              <option value="PID03">AC03</option>
-              <option value="PID04">AC04</option>
+              <option value="AC01">AC01</option>
+              <option value="AC02">AC02</option>
+              <option value="AC03">AC03</option>
+              <option value="AC04">AC04</option>
             </CustomInput>
+          </InputGroup>
+        </FormGroup>
+      </>
+    );
+  };
+
+  const sampleNeededInput = () => {
+    return (
+      <>
+        {/* is a sample needed? */}
+        <FormGroup>
+          <InputGroup>
+            <InputGroupAddon addonType="prepend">
+              <InputGroupText>Sample Needed?</InputGroupText>
+            </InputGroupAddon>
+            <CustomInput
+              type="select"
+              id="sampleCustomSelect"
+              name="customSelect"
+              value={sampleNeeded}
+              onChange={(e) => {
+                setSuccess('');
+                setErr('');
+                setSampleNeeded(e.target.value);
+              }}
+            >
+              <option value="Yes">Yes</option>
+              <option value="No">No</option>
+            </CustomInput>
+          </InputGroup>
+        </FormGroup>
+      </>
+    );
+  };
+
+  const colourNeededInput = () => {
+    return (
+      <>
+        {/* Color needed? */}
+        <FormGroup>
+          <InputGroup>
+            <InputGroupAddon addonType="prepend">
+              <InputGroupText>Color Needed?</InputGroupText>
+            </InputGroupAddon>
+            <CustomInput
+              type="select"
+              id="colorSelect"
+              name="customSelect"
+              value={colourNeeded}
+              onChange={(e) => {
+                setSuccess('');
+                setErr('');
+                setColourNeeded(e.target.value);
+              }}
+            >
+              <option value="Black/White">Black/White</option>
+              <option value="Colour">Colour</option>
+            </CustomInput>
+          </InputGroup>
+        </FormGroup>
+      </>
+    );
+  };
+
+  const typeOfBindingInput = () => {
+    if (typeOfBindingErr) {
+      return (
+        <>
+          {/*  Type of binding */}
+          <FormGroup>
+            <InputGroup>
+              <InputGroupAddon addonType="prepend">
+                <InputGroupText>Type Of Binding</InputGroupText>
+              </InputGroupAddon>
+              <Input
+                placeholder='Type of binding'
+                type="text"
+                value={typeOfBinding}
+                onChange={(e) => {
+                  setSuccess('');
+                  setErr('');
+                  setTypeOfBindingErr('');
+                  setTypeOfBinding(e.target.value);
+                }}
+                invalid
+              />
+              <FormFeedback>{typeOfBindingErr}</FormFeedback>
+            </InputGroup>
+          </FormGroup>
+        </>
+      );
+    }
+    return (
+      <>
+        {/*  Type of binding */}
+        <FormGroup>
+          <InputGroup>
+            <InputGroupAddon addonType="prepend">
+              <InputGroupText>Type Of Binding</InputGroupText>
+            </InputGroupAddon>
+            <Input
+              placeholder='Type of binding'
+              type="text"
+              value={typeOfBinding}
+              onChange={(e) => {
+                setSuccess('');
+                setErr('');
+                setTypeOfBindingErr('');
+                setTypeOfBinding(e.target.value);
+              }}
+            />
+          </InputGroup>
+        </FormGroup>
+      </>
+    );
+  };
+
+  const typeOfPaperInput = () => {
+    if (typeOfPaperErr) {
+      return (
+        <>
+          {/*  Type of Paper */}
+          <FormGroup>
+            <InputGroup>
+              <InputGroupAddon addonType="prepend">
+                <InputGroupText>Type Of Paper</InputGroupText>
+              </InputGroupAddon>
+              <Input
+                placeholder='Type of paper'
+                type="text"
+                value={typeOfPaper}
+                onChange={(e) => {
+                  setSuccess('');
+                  setErr('');
+                  setTypeOfPaperErr('');
+                  setTypeOfPaper(e.target.value);
+                }}
+                invalid
+              />
+              <FormFeedback>{typeOfPaperErr}</FormFeedback>
+            </InputGroup>
+          </FormGroup>
+        </>
+      );
+    }
+    return (
+      <>
+        {/*  Type of Paper */}
+        <FormGroup>
+          <InputGroup>
+            <InputGroupAddon addonType="prepend">
+              <InputGroupText>Type Of Paper</InputGroupText>
+            </InputGroupAddon>
+            <Input
+              placeholder='Type of paper'
+              type="text"
+              value={typeOfPaper}
+              onChange={(e) => {
+                setSuccess('');
+                setErr('');
+                setTypeOfPaperErr('');
+                setTypeOfPaper(e.target.value);
+              }}
+            />
+          </InputGroup>
+        </FormGroup>
+      </>
+    );
+  };
+
+  const paperSizeInput = () => {
+    if (paperSizeErr) {
+      return (
+        <>
+          {/*  Paper Size */}
+          <FormGroup>
+            <InputGroup>
+              <InputGroupAddon addonType="prepend">
+                <InputGroupText>Paper Size</InputGroupText>
+              </InputGroupAddon>
+              <Input
+                placeholder='Paper size'
+                type="text"
+                value={paperSize}
+                onChange={(e) => {
+                  setSuccess('');
+                  setErr('');
+                  setPaperSizeErr('');
+                  setPaperSize(e.target.value);
+                }}
+                required
+                invalid
+              />
+              <FormFeedback>{paperSizeErr}</FormFeedback>
+            </InputGroup>
+          </FormGroup>
+        </>
+      );
+    }
+    return (
+      <>
+        {/*  Paper Size */}
+        <FormGroup>
+          <InputGroup>
+            <InputGroupAddon addonType="prepend">
+              <InputGroupText>Paper Size</InputGroupText>
+            </InputGroupAddon>
+            <Input
+              placeholder='Paper size'
+              type="text"
+              value={paperSize}
+              onChange={(e) => {
+                setSuccess('');
+                setErr('');
+                setPaperSizeErr('');
+                setPaperSize(e.target.value);
+              }}
+              required
+            />
           </InputGroup>
         </FormGroup>
       </>
@@ -449,112 +701,11 @@ const AddPrintingSpec = () => {
             {detailedPrintDescInput()}
             {moreDetailsIput()}
             {accountCodeInput()}
-            {/* is a sample needed? */}
-            <FormGroup>
-              <InputGroup>
-                <InputGroupAddon addonType="prepend">
-                  <InputGroupText>Sample Needed?</InputGroupText>
-                </InputGroupAddon>
-                <CustomInput
-                  type="select"
-                  id="sampleCustomSelect"
-                  name="customSelect"
-                  value={sampleNeeded}
-                  onChange={(e) => {
-                    setSuccess('');
-                    setErr('');
-                    setSampleNeeded(e.target.value);
-                  }}
-                >
-                  <option value="Yes">Yes</option>
-                  <option value="No">No</option>
-                </CustomInput>
-              </InputGroup>
-            </FormGroup>
-
-            {/* Color needed? */}
-            <FormGroup>
-              <InputGroup>
-                <InputGroupAddon addonType="prepend">
-                  <InputGroupText>Color Needed?</InputGroupText>
-                </InputGroupAddon>
-                <CustomInput
-                  type="select"
-                  id="colorSelect"
-                  name="customSelect"
-                  value={colourNeeded}
-                  onChange={(e) => {
-                    setSuccess('');
-                    setErr('');
-                    setColourNeeded(e.target.value);
-                  }}
-                >
-                  <option value="Black/White">Black/White</option>
-                  <option value="Colour">Colour</option>
-                </CustomInput>
-              </InputGroup>
-            </FormGroup>
-
-            {/*  Type of binding */}
-            <FormGroup>
-              <InputGroup>
-                <InputGroupAddon addonType="prepend">
-                  <InputGroupText>Type Of Binding</InputGroupText>
-                </InputGroupAddon>
-                <Input
-                  placeholder='Type of binding'
-                  type="text"
-                  value={typeOfBinding}
-                  onChange={(e) => {
-                    setSuccess('');
-                    setErr('');
-                    setTypeOfBinding(e.target.value);
-                  }}
-                  required
-                />
-              </InputGroup>
-            </FormGroup>
-
-            {/*  Type of Paper */}
-            <FormGroup>
-              <InputGroup>
-                <InputGroupAddon addonType="prepend">
-                  <InputGroupText>Type Of Paper</InputGroupText>
-                </InputGroupAddon>
-                <Input
-                  placeholder='Type of paper'
-                  type="text"
-                  value={typeOfPaper}
-                  onChange={(e) => {
-                    setSuccess('');
-                    setErr('');
-                    setTypeOfPaper(e.target.value);
-                  }}
-                  required
-                />
-              </InputGroup>
-            </FormGroup>
-
-            {/*  Paper Size */}
-            <FormGroup>
-              <InputGroup>
-                <InputGroupAddon addonType="prepend">
-                  <InputGroupText>Paper Size</InputGroupText>
-                </InputGroupAddon>
-                <Input
-                  placeholder='Paper size'
-                  type="text"
-                  value={paperSize}
-                  onChange={(e) => {
-                    setSuccess('');
-                    setErr('');
-                    setPaperSize(e.target.value);
-                  }}
-                  required
-                />
-              </InputGroup>
-            </FormGroup>
-
+            {sampleNeededInput()}
+            {colourNeededInput()}
+            {typeOfBindingInput()}
+            {typeOfPaperInput()}
+            {paperSizeInput()}
             {/* Range of dates */}
             <FormGroup>
               <InputGroup>
