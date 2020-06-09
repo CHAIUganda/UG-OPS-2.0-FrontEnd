@@ -23,8 +23,8 @@ import DropzoneComponent from '../../../../../common/dropzone';
 // import PropTypes from 'prop-types';
 
 const AddPrintingSpec = () => {
-  const [qualityToBePrinted, setQualityToBePrinted] = useState('');
-  const [detailedDescriptionOfPrint, setDetailedDescriptionOfPrint] = useState('');
+  const [qualityToBePrinted, setQualityToBePrinted] = useState('good quality');
+  const [detailedDescriptionOfPrint, setDetailedDescriptionOfPrint] = useState('The print should not be long lasting.');
   const [moreDetails, setMoreDetails] = useState('');
   const [accountCode, setAccountCode] = useState('');
   const [sampleNeeded, setSampleNeeded] = useState('No');
@@ -35,10 +35,13 @@ const AddPrintingSpec = () => {
   const [printingDatesRange, setPrintingDatesRange] = useState();
   const [success, setSuccess] = useState('');
   const [err, setErr] = useState('');
-  const [minPrice, setMinPrice] = useState(0);
-  const [maxPrice, setMaxPrice] = useState(0);
+  const [minPrice, setMinPrice] = useState('100');
+  const [maxPrice, setMaxPrice] = useState('200');
   const [minPriceError, setMinimumPriceError] = useState('');
   const [maxPRiceError, setMaxPriceError] = useState('');
+  const [qualityToBePrintedError, setQualityToBePrintedError] = useState('');
+  const [detailedDescError, setDetailedDescError] = useState('');
+  const [accountCodeErr, setAccountCodeErr] = useState('');
 
   const [modal, setModal] = useState(false);
 
@@ -47,7 +50,13 @@ const AddPrintingSpec = () => {
   const handleSubmit = (event) => {
     event.preventDefault();
 
-    if (isNaN(parseFloat(minPrice))) {
+    if (!minPrice || !minPrice.trim()) {
+      setMinimumPriceError('Enter a valid number.');
+      setErr('Enter a valid number  for minimum price.');
+      return;
+    }
+
+    if (isNaN(minPrice)) {
       setMinimumPriceError('Enter a valid decimal number.');
       setErr('Enter a valid decimal number  for minimum price.');
       return;
@@ -59,7 +68,13 @@ const AddPrintingSpec = () => {
       return;
     }
 
-    if (isNaN(parseFloat(maxPrice))) {
+    if (!maxPrice || !maxPrice.trim()) {
+      setErr('Enter a valid number for maximum price.');
+      setMaxPriceError('Enter a valid number.');
+      return;
+    }
+
+    if (isNaN(maxPrice)) {
       setErr('Enter a valid decimal number for maximum price.');
       setMaxPriceError('Enter a valid decimal number.');
       return;
@@ -77,9 +92,30 @@ const AddPrintingSpec = () => {
       return;
     }
 
+    if (qualityToBePrinted.trim().length < 1) {
+      setErr('Specify a quality to be printed.');
+      setQualityToBePrintedError('specify a quality to be printed');
+      return;
+    }
+
+    if (detailedDescriptionOfPrint.trim().length < 1) {
+      setErr('Describe the print in detail.');
+      setDetailedDescError('Describe the print in detail.');
+      return;
+    }
+
+    if (accountCode.trim().length < 1) {
+      setErr('Select an account code.');
+      setAccountCodeErr('Select an account code.');
+      return;
+    }
+
     const newSpec = {
-      minPrice,
-      maxPrice
+      minPrice: parseFloat(minPrice),
+      maxPrice: parseFloat(maxPrice),
+      qualityToBePrinted: qualityToBePrinted.trim(),
+      detailedDescriptionOfPrint: detailedDescriptionOfPrint.trim(),
+      moreDetails: moreDetails.trim()
     };
 
     // toggle();
@@ -192,6 +228,208 @@ const AddPrintingSpec = () => {
     );
   };
 
+  const printQualityInput = () => {
+    if (qualityToBePrintedError) {
+      return (
+        <>
+          {/*  Quality to be printed */}
+          <FormGroup>
+            <InputGroup>
+              <InputGroupAddon addonType="prepend">
+                <InputGroupText>Quality to be printed</InputGroupText>
+              </InputGroupAddon>
+              <Input
+                placeholder='Quality to be printed'
+                type="text"
+                value={qualityToBePrinted}
+                onChange={(e) => {
+                  setSuccess('');
+                  setErr('');
+                  setQualityToBePrintedError('');
+                  setQualityToBePrinted(e.target.value);
+                }}
+                invalid
+              />
+              <FormFeedback>{qualityToBePrintedError}</FormFeedback>
+            </InputGroup>
+          </FormGroup>
+        </>
+      );
+    }
+    return (
+      <>
+        {/*  Quality to be printed */}
+        <FormGroup>
+          <InputGroup>
+            <InputGroupAddon addonType="prepend">
+              <InputGroupText>Quality to be printed</InputGroupText>
+            </InputGroupAddon>
+            <Input
+              placeholder='Quality to be printed'
+              type="text"
+              value={qualityToBePrinted}
+              onChange={(e) => {
+                setSuccess('');
+                setErr('');
+                setQualityToBePrintedError('');
+                setQualityToBePrinted(e.target.value);
+              }}
+              required
+            />
+          </InputGroup>
+        </FormGroup>
+      </>
+    );
+  };
+
+  const detailedPrintDescInput = () => {
+    if (detailedDescError) {
+      return (
+        <>
+          {/*  detailed description of print */}
+          <FormGroup>
+            <InputGroup>
+              <InputGroupAddon addonType="prepend">
+                <InputGroupText>Detailed description of print </InputGroupText>
+              </InputGroupAddon>
+              <Input
+                placeholder='Detailed description of print '
+                type="textarea"
+                value={detailedDescriptionOfPrint}
+                onChange={(e) => {
+                  setSuccess('');
+                  setErr('');
+                  setDetailedDescError('');
+                  setDetailedDescriptionOfPrint(e.target.value);
+                }}
+                invalid
+              />
+              <FormText>{detailedDescError}</FormText>
+            </InputGroup>
+          </FormGroup>
+        </>
+      );
+    }
+    return (
+      <>
+        {/*  detailed description of print */}
+        <FormGroup>
+          <InputGroup>
+            <InputGroupAddon addonType="prepend">
+              <InputGroupText>Detailed description of print </InputGroupText>
+            </InputGroupAddon>
+            <Input
+              placeholder='Detailed description of print '
+              type="textarea"
+              value={detailedDescriptionOfPrint}
+              onChange={(e) => {
+                setSuccess('');
+                setErr('');
+                setDetailedDescError('');
+                setDetailedDescriptionOfPrint(e.target.value);
+              }}
+            />
+          </InputGroup>
+        </FormGroup>
+      </>
+    );
+  };
+
+  const moreDetailsIput = () => {
+    return (
+      <>
+        {/*  More details */}
+        <FormGroup>
+          <InputGroup>
+            <InputGroupAddon addonType="prepend">
+              <InputGroupText>More details if there is a need to design</InputGroupText>
+            </InputGroupAddon>
+            <Input
+              placeholder='Provide more details if there is a need to design'
+              type="textarea"
+              value={moreDetails}
+              onChange={(e) => {
+                setSuccess('');
+                setErr('');
+                setMoreDetails(e.target.value);
+              }}
+            />
+          </InputGroup>
+          <FormText>
+                This is optional, you can provide more details if there is a need to design.
+          </FormText>
+        </FormGroup>
+      </>
+    );
+  };
+
+  const accountCodeInput = () => {
+    if (accountCodeErr) {
+      return (
+        <>
+          {/*  Account code */}
+          <FormGroup>
+            <InputGroup>
+              <InputGroupAddon addonType="prepend">
+                <InputGroupText>Account code</InputGroupText>
+              </InputGroupAddon>
+              <CustomInput
+                type="select"
+                id="exampleCustomSelect"
+                name="customSelect"
+                value={accountCode}
+                onChange={(e) => {
+                  setSuccess('');
+                  setErr('');
+                  setAccountCodeErr('');
+                  setAccountCode(e.target.value);
+                }}
+                invalid
+              >
+                <option value="">Not Set</option>
+                <option value="PID01">AC01</option>
+                <option value="PID02">AC02</option>
+                <option value="PID03">AC03</option>
+                <option value="PID04">AC04</option>
+              </CustomInput>
+              <FormText>{accountCodeErr}</FormText>
+            </InputGroup>
+          </FormGroup>
+        </>
+      );
+    }
+    return (
+      <>
+        {/*  Account code */}
+        <FormGroup>
+          <InputGroup>
+            <InputGroupAddon addonType="prepend">
+              <InputGroupText>Account code</InputGroupText>
+            </InputGroupAddon>
+            <CustomInput
+              type="select"
+              id="exampleCustomSelect"
+              name="customSelect"
+              value={accountCode}
+              onChange={(e) => {
+                setSuccess('');
+                setErr('');
+                setAccountCodeErr('');
+                setAccountCode(e.target.value);
+              }}
+            >
+              <option value="">Not Set</option>
+              <option value="PID01">AC01</option>
+              <option value="PID02">AC02</option>
+              <option value="PID03">AC03</option>
+              <option value="PID04">AC04</option>
+            </CustomInput>
+          </InputGroup>
+        </FormGroup>
+      </>
+    );
+  };
+
   return (
     <div className="inlineItem">
       <button className="submitButton positionBtn" onClick={toggle}>
@@ -207,94 +445,10 @@ const AddPrintingSpec = () => {
             <h6>Price range of procurement</h6>
             {minPriceInput()}
             {maxPriceInput()}
-            {/*  Quality to be printed */}
-            <FormGroup>
-              <InputGroup>
-                <InputGroupAddon addonType="prepend">
-                  <InputGroupText>Quality to be printed</InputGroupText>
-                </InputGroupAddon>
-                <Input
-                  placeholder='Quality to be printed'
-                  type="text"
-                  value={qualityToBePrinted}
-                  onChange={(e) => {
-                    setSuccess('');
-                    setErr('');
-                    setQualityToBePrinted(e.target.value);
-                  }}
-                  required
-                />
-              </InputGroup>
-            </FormGroup>
-
-            {/*  detailed description of print */}
-            <FormGroup>
-              <InputGroup>
-                <InputGroupAddon addonType="prepend">
-                  <InputGroupText>Detailed description of print </InputGroupText>
-                </InputGroupAddon>
-                <Input
-                  placeholder='Detailed description of print '
-                  type="textarea"
-                  value={detailedDescriptionOfPrint}
-                  onChange={(e) => {
-                    setSuccess('');
-                    setErr('');
-                    setDetailedDescriptionOfPrint(e.target.value);
-                  }}
-                  required
-                />
-              </InputGroup>
-            </FormGroup>
-
-            {/*  More details */}
-            <FormGroup>
-              <InputGroup>
-                <InputGroupAddon addonType="prepend">
-                  <InputGroupText>More details if there is a need to design</InputGroupText>
-                </InputGroupAddon>
-                <Input
-                  placeholder='Provide more details if there is a need to design'
-                  type="textarea"
-                  value={moreDetails}
-                  onChange={(e) => {
-                    setSuccess('');
-                    setErr('');
-                    setMoreDetails(e.target.value);
-                  }}
-                />
-              </InputGroup>
-              <FormText>
-                This is optional, you can provide more details if there is a need to design.
-              </FormText>
-            </FormGroup>
-
-            {/*  Account code */}
-            <FormGroup>
-              <InputGroup>
-                <InputGroupAddon addonType="prepend">
-                  <InputGroupText>Account code</InputGroupText>
-                </InputGroupAddon>
-                <CustomInput
-                  type="select"
-                  id="exampleCustomSelect"
-                  name="customSelect"
-                  value={accountCode}
-                  onChange={(e) => {
-                    setSuccess('');
-                    setErr('');
-                    setAccountCode(e.target.value);
-                  }}
-                >
-                  <option value="">Not Set</option>
-                  <option value="PID01">AC01</option>
-                  <option value="PID02">AC02</option>
-                  <option value="PID03">AC03</option>
-                  <option value="PID04">AC04</option>
-                </CustomInput>
-              </InputGroup>
-            </FormGroup>
-
+            {printQualityInput()}
+            {detailedPrintDescInput()}
+            {moreDetailsIput()}
+            {accountCodeInput()}
             {/* is a sample needed? */}
             <FormGroup>
               <InputGroup>
