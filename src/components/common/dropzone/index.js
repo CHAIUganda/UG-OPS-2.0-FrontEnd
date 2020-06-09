@@ -1,29 +1,27 @@
 import React, { useEffect } from 'react';
-// import PropTypes from 'prop-types';
+import PropTypes from 'prop-types';
 import * as DropzoneLib from 'dropzone';
 
-const DropzoneComponent = () => {
+const DropzoneComponent = ({
+  fileError,
+  addFile,
+  removeFile,
+  dropzoneID
+}) => {
   const dropzoneNode = React.createRef();
   // eslint-disable-next-line no-unused-vars
   let dropzone;
-  const filesArray = [];
-
-  // eslint-disable-next-line no-unused-vars
-  const onFileError = (file, message) => {
-    console.log(`${file.name} :: message`);
-  };
 
   const onAddFile = (file) => {
-    filesArray.push(file);
+    addFile(file);
   };
 
   const onRemoveFile = (file) => {
-    const indexOfFile = filesArray.indexOf(file);
-    filesArray.splice(indexOfFile, 1);
+    removeFile(file);
   };
 
   const setupDropzone = () => {
-    const dropzoneArea = new DropzoneLib('div#d', {
+    const dropzoneArea = new DropzoneLib(`div#${dropzoneID}`, {
       url: '/not/required/',
       dictDefaultMessage: 'Drop files or click to upload',
       uploadMultiple: true,
@@ -32,7 +30,7 @@ const DropzoneComponent = () => {
       createImageThumbnails: true,
     });
 
-    dropzoneArea.on('error', (file, message) => console.log(message));
+    dropzoneArea.on('error', (file, message) => fileError(file, message));
 
     dropzoneArea.on('addedfile', onAddFile);
 
@@ -49,12 +47,15 @@ const DropzoneComponent = () => {
   }, []);
 
   return (
-    <div ref={dropzoneNode} id='d' className='dropzone'></div>
+    <div ref={dropzoneNode} id={dropzoneID} className='dropzone'></div>
   );
 };
 
 DropzoneComponent.propTypes = {
-
+  fileError: PropTypes.func,
+  addFile: PropTypes.func,
+  removeFile: PropTypes.func,
+  dropzoneID: PropTypes.string
 };
 
 export default DropzoneComponent;

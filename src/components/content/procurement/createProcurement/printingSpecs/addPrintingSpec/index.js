@@ -45,8 +45,13 @@ const AddPrintingSpec = () => {
   const [typeOfBindingErr, setTypeOfBindingErr] = useState('');
   const [typeOfPaperErr, setTypeOfPaperErr] = useState('');
   const [paperSizeErr, setPaperSizeErr] = useState('');
+  const [datesRangeErr, setDatesRangeErr] = useState('');
+  const [specTitle, setSpecTitle] = useState('');
+  const [specTitleErr, setSpecTitleErr] = useState('');
+  const [additionalDocumentations, setAdditionalDocumentations] = useState([]);
 
   const [modal, setModal] = useState(false);
+  const filesHolder = [];
 
   const toggle = () => setModal(!modal);
 
@@ -132,7 +137,20 @@ const AddPrintingSpec = () => {
       addEntry = false;
     }
 
+    if (!printingDatesRange) {
+      setErr('Select a range of dates.');
+      setDatesRangeErr('Select a range of dates.');
+      addEntry = false;
+    }
+
+    if (specTitle.trim() < 1) {
+      setErr('Set a specification title.');
+      setSpecTitleErr('Set a specification title.');
+      addEntry = false;
+    }
+
     const newSpec = {
+      specTitle: specTitle.trim(),
       minPrice: parseFloat(minPrice),
       maxPrice: parseFloat(maxPrice),
       qualityToBePrinted: qualityToBePrinted.trim(),
@@ -144,6 +162,8 @@ const AddPrintingSpec = () => {
       typeOfBinding: typeOfBinding.trim(),
       typeOfPaper: typeOfPaper.trim(),
       paperSize: paperSize.trim(),
+      printingDatesRange,
+      additionalDocumentations
     };
 
     // toggle();
@@ -682,6 +702,136 @@ const AddPrintingSpec = () => {
     );
   };
 
+  const rangeOfDatesInput = () => {
+    return (
+      <>
+        {/* Range of dates */}
+        <FormGroup>
+          <InputGroup>
+            <InputGroupAddon addonType="prepend">
+              <InputGroupText>Range of dates needed</InputGroupText>
+            </InputGroupAddon>
+            <Calendar
+              value={printingDatesRange}
+              selectRange={true}
+              onChange={(date) => {
+                setSuccess('');
+                setErr('');
+                setDatesRangeErr('');
+                setPrintingDatesRange(date);
+              }
+              } />
+          </InputGroup>
+          {
+            datesRangeErr
+              ? <div className="alert alert-danger" role="alert">
+                {datesRangeErr}
+              </div>
+              : <></>
+          }
+        </FormGroup>
+      </>
+    );
+  };
+
+  const specTitleInput = () => {
+    if (specTitleErr) {
+      return (
+        <>
+          {/*  spec title */}
+          <FormGroup>
+            <InputGroup>
+              <InputGroupAddon addonType="prepend">
+                <InputGroupText>Specification Title</InputGroupText>
+              </InputGroupAddon>
+              <Input
+                placeholder='General title'
+                type="text"
+                value={specTitle}
+                onChange={(e) => {
+                  setSuccess('');
+                  setErr('');
+                  setSpecTitleErr('');
+                  setSpecTitle(e.target.value);
+                }}
+                required
+                invalid
+              />
+              <FormFeedback>{specTitleErr}</FormFeedback>
+            </InputGroup>
+            <FormText>A general title to differentiate specifications.</FormText>
+          </FormGroup>
+        </>
+      );
+    }
+    return (
+      <>
+        {/*  Spec title */}
+        <FormGroup>
+          <InputGroup>
+            <InputGroupAddon addonType="prepend">
+              <InputGroupText>Specification Title</InputGroupText>
+            </InputGroupAddon>
+            <Input
+              placeholder='General title'
+              type="text"
+              value={specTitle}
+              onChange={(e) => {
+                setSuccess('');
+                setErr('');
+                setSpecTitleErr('');
+                setSpecTitle(e.target.value);
+              }}
+              required
+            />
+          </InputGroup>
+          <FormText>A general title to differentiate specifications.</FormText>
+        </FormGroup>
+      </>
+    );
+  };
+
+  const fileError = (file, message) => {
+    setErr(`File error :: ${file.name}: ${message}`);
+  };
+
+  const addFile = (file) => {
+    filesHolder.push(file);
+    setAdditionalDocumentations(filesHolder);
+  };
+
+  const removeFile = (file) => {
+    const indexOfFile = filesHolder.indexOf(file);
+    filesHolder.splice(indexOfFile, 1);
+    setAdditionalDocumentations(filesHolder);
+  };
+
+  const dropzoneInput = () => {
+    return (
+      <>
+        {/*  dropzone */}
+        <FormGroup>
+          <InputGroup>
+            <InputGroupAddon addonType="prepend">
+              <InputGroupText>Additional documations</InputGroupText>
+            </InputGroupAddon>
+            <div>
+              <DropzoneComponent
+                fileError={fileError}
+                addFile={addFile}
+                removeFile={removeFile}
+                dropzoneID={'printingExtraDocs'}
+              />
+            </div>
+          </InputGroup>
+          <FormText>
+                  Attach any additional suppporting documations.
+          </FormText>
+        </FormGroup>
+      </>
+    );
+  };
+
   return (
     <div className="inlineItem">
       <button className="submitButton positionBtn" onClick={toggle}>
@@ -695,6 +845,7 @@ const AddPrintingSpec = () => {
             {err && <div className="errorFeedback m-2"> {err} </div>}
             {success && <div className="errorFeedback m-2"> {success} </div>}
             <h6>Price range of procurement</h6>
+            {specTitleInput()}
             {minPriceInput()}
             {maxPriceInput()}
             {printQualityInput()}
@@ -706,38 +857,8 @@ const AddPrintingSpec = () => {
             {typeOfBindingInput()}
             {typeOfPaperInput()}
             {paperSizeInput()}
-            {/* Range of dates */}
-            <FormGroup>
-              <InputGroup>
-                <InputGroupAddon addonType="prepend">
-                  <InputGroupText>Range of dates needed</InputGroupText>
-                </InputGroupAddon>
-                <Calendar
-                  value={printingDatesRange}
-                  selectRange={true}
-                  onChange={(date) => {
-                    setSuccess('');
-                    setErr('');
-                    setPrintingDatesRange(date);
-                  }
-                  } />
-              </InputGroup>
-            </FormGroup>
-
-            {/*  dropzone */}
-            <FormGroup>
-              <InputGroup>
-                <InputGroupAddon addonType="prepend">
-                  <InputGroupText>Additional documations</InputGroupText>
-                </InputGroupAddon>
-                <div>
-                  <DropzoneComponent />
-                </div>
-              </InputGroup>
-              <FormText>
-                  Attach any additional suppporting documations.
-              </FormText>
-            </FormGroup>
+            {rangeOfDatesInput()}
+            {dropzoneInput()}
             {err && <div className="errorFeedback m-2"> {err} </div>}
             {success && <div className="errorFeedback m-2"> {success} </div>}
             <div>
