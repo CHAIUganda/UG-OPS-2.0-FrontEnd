@@ -14,9 +14,24 @@ const PrintingSpecs = ({
   activeSections,
   currentComponent,
   printingSpecs,
-  // setPrintingSpecs,
+  setPrintingSpecs,
 }) => {
   const [printingSpecError, setPrintingSpecError] = useState('');
+  const [printingSpecSucc, setPrintingSpecSucc] = useState('');
+
+  const addSpec = (newSpec) => {
+    const newArr = printingSpecs.concat([newSpec]);
+    setPrintingSpecSucc(`${newSpec.specTitle} added successfully.`);
+    setPrintingSpecs(newArr);
+  };
+
+  const editSpec = (position, newSpec) => {
+    const newArr = [...printingSpecs];
+    newArr.splice(position, 1, newSpec);
+    setPrintingSpecSucc(`${newSpec.specTitle} editted successfully.`);
+    setPrintingSpecs(newArr);
+  };
+
   const errorProps = () => {
     const arr = [];
     if (printingSpecs.length < 1) {
@@ -65,15 +80,51 @@ const PrintingSpecs = ({
       );
     }
 
-    return <></>;
+    return (
+      <table className="table holidaysTable">
+        <thead>
+          <tr>
+            <th scope="col">No.</th>
+            <th scope="col">Title</th>
+            <th scope="col">Manage</th>
+          </tr>
+        </thead>
+        <tbody>
+          {
+            printingSpecs.map((spec, index) => (
+              <tr key={index}>
+                <td>{index + 1}</td>
+                <td>{spec.specTitle}</td>
+                <td>
+                  <AddPrintingSpec
+                    edit={true}
+                    specToEdit={spec}
+                    editSpec={editSpec}
+                    position={index}
+                  />
+                </td>
+              </tr>
+            ))
+          }
+        </tbody>
+      </table>
+    );
   };
 
   return (
     <>
       <div>
         <h3 className="inlineItem">Printing, Art and Design Specifications</h3>
-        <AddPrintingSpec />
+        <AddPrintingSpec
+          addSpec={addSpec}
+          edit={false}
+        />
         {printingSpecError && <div className="errorFeedback m-3"> {printingSpecError} </div>}
+        { printingSpecSucc
+          && <div className="alert alert-success m-3" role="alert">
+            { printingSpecSucc }
+          </div>
+        }
         {returnTableData()}
       </div>
 

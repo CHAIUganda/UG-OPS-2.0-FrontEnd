@@ -6,9 +6,11 @@ const DropzoneComponent = ({
   fileError,
   addFile,
   removeFile,
-  dropzoneID
+  dropzoneID,
+  initialFiles,
+  resetFilesArrays
 }) => {
-  const dropzoneNode = React.createRef();
+  // const dropzoneNode = React.createRef();
   // eslint-disable-next-line no-unused-vars
   let dropzone;
 
@@ -41,13 +43,20 @@ const DropzoneComponent = ({
 
   useEffect(() => {
     dropzone = setupDropzone();
+    if (initialFiles && initialFiles.length > 0) {
+      resetFilesArrays();
+      initialFiles.forEach((f) => {
+        dropzone.addFile(f);
+      });
+    }
     return function destroyDropZone() {
       dropzone.destroy();
     };
   }, []);
 
   return (
-    <div ref={dropzoneNode} id={dropzoneID} className='dropzone'></div>
+    // <div ref={dropzoneNode} id={dropzoneID} className='dropzone'></div>
+    <div id={dropzoneID} className='dropzone'></div>
   );
 };
 
@@ -55,7 +64,9 @@ DropzoneComponent.propTypes = {
   fileError: PropTypes.func,
   addFile: PropTypes.func,
   removeFile: PropTypes.func,
-  dropzoneID: PropTypes.string
+  dropzoneID: PropTypes.string,
+  initialFiles: PropTypes.array,
+  resetFilesArrays: PropTypes.array
 };
 
 export default DropzoneComponent;

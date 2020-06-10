@@ -1,6 +1,7 @@
 /* eslint-disable no-restricted-globals */
 import React, { useState } from 'react';
-import { IoMdAdd } from 'react-icons/io';
+import { IoMdAdd, IoMdSettings } from 'react-icons/io';
+import { IconContext } from 'react-icons';
 import {
   Button,
   Modal,
@@ -18,25 +19,67 @@ import {
   FormFeedback
 } from 'reactstrap';
 import Calendar from 'react-calendar';
+import PropTypes from 'prop-types';
 import DropzoneComponent from '../../../../../common/dropzone';
 
-// import PropTypes from 'prop-types';
+const AddPrintingSpec = ({
+  addSpec,
+  edit,
+  specToEdit,
+  editSpec,
+  position
+}) => {
+  const [qualityToBePrinted, setQualityToBePrinted] = useState(
+    edit ? specToEdit.qualityToBePrinted : ''
+  );
 
-const AddPrintingSpec = () => {
-  const [qualityToBePrinted, setQualityToBePrinted] = useState('good quality');
-  const [detailedDescriptionOfPrint, setDetailedDescriptionOfPrint] = useState('The print should not be long lasting.');
-  const [moreDetails, setMoreDetails] = useState('');
-  const [accountCode, setAccountCode] = useState('AC01');
-  const [sampleNeeded, setSampleNeeded] = useState('No'); // deafult needed
-  const [colourNeeded, setColourNeeded] = useState('Black/White'); // default needed
-  const [typeOfBinding, setTypeOfBinding] = useState('leather binding.');
-  const [typeOfPaper, setTypeOfPaper] = useState('Shinny Paper.');
-  const [paperSize, setPaperSize] = useState('A4');
-  const [printingDatesRange, setPrintingDatesRange] = useState();
+  const [detailedDescriptionOfPrint, setDetailedDescriptionOfPrint] = useState(
+    edit ? specToEdit.detailedDescriptionOfPrint : ''
+  );
+
+  const [moreDetails, setMoreDetails] = useState(
+    edit ? specToEdit.moreDetails : ''
+  );
+
+  const [accountCode, setAccountCode] = useState(
+    edit ? specToEdit.accountCode : ''
+  );
+
+  const [sampleNeeded, setSampleNeeded] = useState(
+    edit ? specToEdit.sampleNeeded : 'No'
+  ); // deafult needed
+
+  const [colourNeeded, setColourNeeded] = useState(
+    edit ? specToEdit.colourNeeded : 'Black/White'
+  ); // default neede
+
+  const [typeOfBinding, setTypeOfBinding] = useState(
+    edit ? specToEdit.typeOfBinding : ''
+  );
+
+  const [typeOfPaper, setTypeOfPaper] = useState(
+    edit ? specToEdit.typeOfPaper : ''
+  );
+
+  const [paperSize, setPaperSize] = useState(
+    edit ? specToEdit.paperSize : ''
+  );
+
+  const [printingDatesRange, setPrintingDatesRange] = useState(
+    edit ? specToEdit.printingDatesRange : null
+  );
+
   const [success, setSuccess] = useState('');
   const [err, setErr] = useState('');
-  const [minPrice, setMinPrice] = useState('100');
-  const [maxPrice, setMaxPrice] = useState('200');
+
+  const [minPrice, setMinPrice] = useState(
+    edit ? specToEdit.minPrice : '0'
+  );
+
+  const [maxPrice, setMaxPrice] = useState(
+    edit ? specToEdit.maxPrice : '0'
+  );
+
   const [minPriceError, setMinimumPriceError] = useState('');
   const [maxPRiceError, setMaxPriceError] = useState('');
   const [qualityToBePrintedError, setQualityToBePrintedError] = useState('');
@@ -46,12 +89,18 @@ const AddPrintingSpec = () => {
   const [typeOfPaperErr, setTypeOfPaperErr] = useState('');
   const [paperSizeErr, setPaperSizeErr] = useState('');
   const [datesRangeErr, setDatesRangeErr] = useState('');
-  const [specTitle, setSpecTitle] = useState('');
+
+  const [specTitle, setSpecTitle] = useState(
+    edit ? specToEdit.specTitle : ''
+  );
+
   const [specTitleErr, setSpecTitleErr] = useState('');
-  const [additionalDocumentations, setAdditionalDocumentations] = useState([]);
+  const [additionalDocumentations, setAdditionalDocumentations] = useState(
+    edit ? specToEdit.additionalDocumentations : []
+  );
 
   const [modal, setModal] = useState(false);
-  const filesHolder = [];
+  let filesHolder = edit ? specToEdit.additionalDocumentations : [];
 
   const toggle = () => setModal(!modal);
 
@@ -59,7 +108,13 @@ const AddPrintingSpec = () => {
     event.preventDefault();
     let addEntry = true;
 
-    if (!minPrice || !minPrice.trim()) {
+    if (!edit && (!minPrice || !minPrice.trim())) {
+      setMinimumPriceError('Enter a valid number.');
+      setErr('Enter a valid number  for minimum price.');
+      addEntry = false;
+    }
+
+    if (edit && !minPrice) {
       setMinimumPriceError('Enter a valid number.');
       setErr('Enter a valid number  for minimum price.');
       addEntry = false;
@@ -77,9 +132,15 @@ const AddPrintingSpec = () => {
       addEntry = false;
     }
 
-    if (!maxPrice || !maxPrice.trim()) {
+    if (!edit && (!maxPrice || !maxPrice.trim())) {
       setErr('Enter a valid number for maximum price.');
       setMaxPriceError('Enter a valid number.');
+      addEntry = false;
+    }
+
+    if (edit && !maxPrice) {
+      setMinimumPriceError('Enter a valid number.');
+      setErr('Enter a valid number  for minimum price.');
       addEntry = false;
     }
 
@@ -163,16 +224,18 @@ const AddPrintingSpec = () => {
       typeOfPaper: typeOfPaper.trim(),
       paperSize: paperSize.trim(),
       printingDatesRange,
-      additionalDocumentations
+      additionalDocumentations,
+      filesHolder
     };
 
-    // toggle();
-    console.log(newSpec);
-    debugger;
-
     if (addEntry) {
-      // toggle here.
-      return;
+      if (edit) {
+        editSpec(position, newSpec);
+        toggle();
+        return;
+      }
+      addSpec(newSpec);
+      toggle();
     }
   };
 
@@ -796,13 +859,22 @@ const AddPrintingSpec = () => {
   };
 
   const addFile = (file) => {
+    setSuccess('');
+    setErr('');
     filesHolder.push(file);
-    setAdditionalDocumentations(filesHolder);
+    setAdditionalDocumentations([...filesHolder]);
   };
 
   const removeFile = (file) => {
+    setSuccess('');
+    setErr('');
     const indexOfFile = filesHolder.indexOf(file);
     filesHolder.splice(indexOfFile, 1);
+    setAdditionalDocumentations(filesHolder);
+  };
+
+  const resetFilesArrays = () => {
+    filesHolder = [];
     setAdditionalDocumentations(filesHolder);
   };
 
@@ -821,6 +893,8 @@ const AddPrintingSpec = () => {
                 addFile={addFile}
                 removeFile={removeFile}
                 dropzoneID={'printingExtraDocs'}
+                initialFiles={filesHolder}
+                resetFilesArrays={resetFilesArrays}
               />
             </div>
           </InputGroup>
@@ -832,12 +906,28 @@ const AddPrintingSpec = () => {
     );
   };
 
-  return (
-    <div className="inlineItem">
+  const returnIcon = () => {
+    if (edit) {
+      return (
+        <span onClick={toggle}>
+          <IconContext.Provider value={{ size: '2em' }}>
+            <IoMdSettings />
+          </IconContext.Provider>
+        </span>
+      );
+    }
+
+    return (
       <button className="submitButton positionBtn" onClick={toggle}>
         <IoMdAdd />
-            Add Specification
+        Add Specification
       </button>
+    );
+  };
+
+  return (
+    <div className="inlineItem">
+      {returnIcon()}
       <Modal isOpen={modal} toggle={toggle}>
         <ModalHeader toggle={toggle}>Printing Specifications</ModalHeader>
         <ModalBody>
@@ -864,7 +954,7 @@ const AddPrintingSpec = () => {
             <div>
               <button className="submitButton positionBtn pull-left" type='submit' onClick={handleSubmit}>
                 <IoMdAdd />
-              Add Specification
+                Add Specification
               </button>
             </div>
           </Form>
@@ -878,7 +968,11 @@ const AddPrintingSpec = () => {
 };
 
 AddPrintingSpec.propTypes = {
-
+  addSpec: PropTypes.func,
+  edit: PropTypes.bool,
+  specToEdit: PropTypes.object,
+  editSpec: PropTypes.func,
+  position: PropTypes.number
 };
 
 export default AddPrintingSpec;
