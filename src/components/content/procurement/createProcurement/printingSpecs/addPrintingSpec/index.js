@@ -51,7 +51,7 @@ const AddPrintingSpec = ({
 
   const [colourNeeded, setColourNeeded] = useState(
     edit ? specToEdit.colourNeeded : 'Black/White'
-  ); // default neede
+  ); // default needed
 
   const [typeOfBinding, setTypeOfBinding] = useState(
     edit ? specToEdit.typeOfBinding : ''
@@ -103,6 +103,32 @@ const AddPrintingSpec = ({
   let filesHolder = edit ? specToEdit.additionalDocumentations : [];
 
   const toggle = () => setModal(!modal);
+
+  const resetFilesArrays = () => {
+    filesHolder = [];
+    setAdditionalDocumentations(filesHolder);
+  };
+
+  const reset = () => {
+    setQualityToBePrinted('');
+    setDetailedDescriptionOfPrint('');
+    setMoreDetails('');
+    setAccountCode('');
+    setSampleNeeded('No');
+    setColourNeeded('Black/White');
+    setTypeOfBinding('');
+    setTypeOfPaper('');
+    setPaperSize('');
+    setPrintingDatesRange('');
+    setMinPrice('');
+    setMaxPrice('');
+    setSpecTitle('');
+
+    setSuccess('');
+    setErr('');
+
+    resetFilesArrays();
+  };
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -235,6 +261,7 @@ const AddPrintingSpec = ({
         return;
       }
       addSpec(newSpec);
+      reset();
       toggle();
     }
   };
@@ -873,11 +900,6 @@ const AddPrintingSpec = ({
     setAdditionalDocumentations(filesHolder);
   };
 
-  const resetFilesArrays = () => {
-    filesHolder = [];
-    setAdditionalDocumentations(filesHolder);
-  };
-
   const dropzoneInput = () => {
     return (
       <>
@@ -925,6 +947,26 @@ const AddPrintingSpec = ({
     );
   };
 
+  const submitButtonText = () => {
+    if (edit) {
+      return (
+        <>
+          <button className="submitButton positionBtn pull-left" type='submit' onClick={handleSubmit}>
+            Edit
+          </button>
+        </>
+      );
+    }
+
+    return (
+      <>
+        <button className="submitButton positionBtn pull-left" type='submit' onClick={handleSubmit}>
+          <IoMdAdd />
+          Add Specification
+        </button>
+      </>);
+  };
+
   return (
     <div className="inlineItem">
       {returnIcon()}
@@ -952,10 +994,7 @@ const AddPrintingSpec = ({
             {err && <div className="errorFeedback m-2"> {err} </div>}
             {success && <div className="errorFeedback m-2"> {success} </div>}
             <div>
-              <button className="submitButton positionBtn pull-left" type='submit' onClick={handleSubmit}>
-                <IoMdAdd />
-                Add Specification
-              </button>
+              {submitButtonText()}
             </div>
           </Form>
         </ModalBody>
