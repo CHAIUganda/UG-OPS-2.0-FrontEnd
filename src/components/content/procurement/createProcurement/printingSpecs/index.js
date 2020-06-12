@@ -21,6 +21,7 @@ const PrintingSpecs = ({
 
   const addSpec = (newSpec) => {
     const newArr = printingSpecs.concat([newSpec]);
+    setPrintingSpecError('');
     setPrintingSpecSucc(`${newSpec.specTitle} added successfully.`);
     setPrintingSpecs(newArr);
   };
@@ -28,6 +29,7 @@ const PrintingSpecs = ({
   const editSpec = (position, newSpec) => {
     const newArr = [...printingSpecs];
     newArr.splice(position, 1, newSpec);
+    setPrintingSpecError('');
     setPrintingSpecSucc(`${newSpec.specTitle} editted successfully.`);
     setPrintingSpecs(newArr);
   };

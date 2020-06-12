@@ -61,8 +61,8 @@ function CreateProcurement({
     CategoryOfProcurement,
     GeneralDetails
   ]);
-  const [gid, setGid] = useState('GID01');
-  const [pid, setPid] = useState('PID01');
+  const [gid, setGid] = useState('');
+  const [pid, setPid] = useState('');
   const [objectiveCode, setObjectiveCode] = useState('');
   const [printing, setPrinting] = useState(false);
   const [carHire, setCarHire] = useState(false);
@@ -74,17 +74,10 @@ function CreateProcurement({
   const [computersAndAccessories, setComputersAndAccessories] = useState(false);
   const [other, setOther] = useState(false);
   const [describeOther, setDescribeOther] = useState('');
-  const [keyObjectiveAsPerCostedWorkPlan, setKeyObjectiveAsPerCostedWorkPlan] = useState('Reaching out to the community');
-  const [keyActivitiesAsPerCostedWorkPlan, setKeyActivitiesAsPerCostedWorkPlan] = useState('Mulching, marathon');
+  const [keyObjectiveAsPerCostedWorkPlan, setKeyObjectiveAsPerCostedWorkPlan] = useState('');
+  const [keyActivitiesAsPerCostedWorkPlan, setKeyActivitiesAsPerCostedWorkPlan] = useState('');
   const [printingSpecs, setPrintingSpecs] = useState([]);
-  const [typeOfCar, setTypeOfCar] = useState('');
-  const [districtsToBeVisited, setDistrictsToBeVisited] = useState('');
-  const [numberOfCars, setNumberOfCars] = useState(0);
-  const [numberOfDays, setNumberOfDays] = useState(0);
-  const [numberOfNights, setNumberOfNights] = useState(0);
-  const [pickUpTime, setPickUpTime] = useState();
-  const [pickUpLocation, setPickUpLocation] = useState('');
-  const [carHireDatesRange, setcarHireDatesRange] = useState();
+  const [carHireSpecs, setCarHireSpecs] = useState([]);
   // const [itemRequests, setItemRequests] = useState('');
   // const [quantitiesRequired, setQuantitiesRequired] = useState('');
   // const [describeItems, setDescribeItems] = useState('');
@@ -191,27 +184,11 @@ function CreateProcurement({
     if (currentComponent[0] === CarHireSpecifications) {
       return (
         <CarHireSpecifications
-          setSuccessFeedback={setSuccessFeedback}
-          setError={setError}
-          typeOfCar={typeOfCar}
-          setTypeOfCar={setTypeOfCar}
-          districtsToBeVisited={districtsToBeVisited}
-          setDistrictsToBeVisited={setDistrictsToBeVisited}
-          numberOfCars={numberOfCars}
-          setNumberOfCars={setNumberOfCars}
-          numberOfDays={numberOfDays}
-          setNumberOfDays={setNumberOfDays}
-          numberOfNights={numberOfNights}
-          setNumberOfNights={setNumberOfNights}
-          pickUpTime={pickUpTime}
-          setPickUpTime={setPickUpTime}
-          pickUpLocation={pickUpLocation}
-          setPickUpLocation={setPickUpLocation}
-          carHireDatesRange={carHireDatesRange}
-          setcarHireDatesRange={setcarHireDatesRange}
           setCurrentComponent={setCurrentComponent}
           activeSections={activeSections}
           currentComponent={currentComponent}
+          carHireSpecs={carHireSpecs}
+          setCarHireSpecs={setCarHireSpecs}
         />
       );
     }

@@ -230,7 +230,7 @@ const AddPrintingSpec = ({
       addEntry = false;
     }
 
-    if (specTitle.trim() < 1) {
+    if (specTitle.trim().length < 1) {
       setErr('Set a specification title.');
       setSpecTitleErr('Set a specification title.');
       addEntry = false;
@@ -251,8 +251,9 @@ const AddPrintingSpec = ({
       paperSize: paperSize.trim(),
       printingDatesRange,
       additionalDocumentations,
-      filesHolder
     };
+
+    debugger;
 
     if (addEntry) {
       if (edit) {
@@ -976,8 +977,8 @@ const AddPrintingSpec = ({
           <Form>
             {err && <div className="errorFeedback m-2"> {err} </div>}
             {success && <div className="errorFeedback m-2"> {success} </div>}
-            <h6>Price range of procurement</h6>
             {specTitleInput()}
+            <h6>Price range of procurement</h6>
             {minPriceInput()}
             {maxPriceInput()}
             {printQualityInput()}
