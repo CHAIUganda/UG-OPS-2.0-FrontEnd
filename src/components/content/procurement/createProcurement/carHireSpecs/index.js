@@ -72,6 +72,27 @@ const CarHireSpecifications = ({
     return <></>;
   };
 
+  const carHireSpecComponent = () => {
+    return carHireSpecs.map((spec, index) => {
+      const x = spec.additionalDocumentations;
+      return (
+        <tr key={index}>
+          <td>{index + 1}</td>
+          <td>{spec.specTitle}</td>
+          <td>
+            <AddCarHireSpec
+              edit={true}
+              specToEdit={spec}
+              editSpec={editSpec}
+              position={index}
+              x={x}
+            />
+          </td>
+        </tr>
+      );
+    });
+  };
+
   const returnTableData = () => {
     if (carHireSpecs.length < 1) {
       return (
@@ -91,26 +112,7 @@ const CarHireSpecifications = ({
           </tr>
         </thead>
         <tbody>
-          {
-            carHireSpecs.map((spec, index) => {
-              const x = spec.additionalDocumentations;
-              return (
-                <tr key={index}>
-                  <td>{index + 1}</td>
-                  <td>{spec.specTitle}</td>
-                  <td>
-                    <AddCarHireSpec
-                      edit={true}
-                      specToEdit={spec}
-                      editSpec={editSpec}
-                      position={index}
-                      x={x}
-                    />
-                  </td>
-                </tr>
-              );
-            })
-          }
+          {carHireSpecComponent()}
         </tbody>
       </table>
     );

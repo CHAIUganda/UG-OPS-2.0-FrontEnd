@@ -12,6 +12,7 @@ const DropzoneComponent = ({
 }) => {
   // const dropzoneNode = React.createRef();
   // eslint-disable-next-line no-unused-vars
+  let remove = true;
   let dropzone;
 
   const onAddFile = (file) => {
@@ -19,7 +20,9 @@ const DropzoneComponent = ({
   };
 
   const onRemoveFile = (file) => {
-    removeFile(file);
+    if (remove) {
+      removeFile(file);
+    }
   };
 
   const setupDropzone = () => {
@@ -50,6 +53,7 @@ const DropzoneComponent = ({
       });
     }
     return function destroyDropZone() {
+      remove = false;
       dropzone.destroy();
     };
   }, []);

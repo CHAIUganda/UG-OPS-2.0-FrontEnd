@@ -31,7 +31,6 @@ const AddCarHireSpec = ({
   position,
   edit,
   specToEdit,
-  x
 }) => {
   const [success, setSuccess] = useState('');
   const [err, setErr] = useState('');
@@ -103,10 +102,9 @@ const AddCarHireSpec = ({
     edit ? specToEdit.carDatesRange : null
   );
 
-  console.log(x);
-  debugger;
-
-  const toggle = () => setModal(!modal);
+  const toggle = () => {
+    setModal(!modal);
+  };
 
   const resetFilesArrays = () => {
     filesHolder = [];
@@ -313,8 +311,6 @@ const AddCarHireSpec = ({
       pickUpTime,
       carDatesRange
     };
-
-    debugger;
 
     if (addEntry) {
       if (edit) {
