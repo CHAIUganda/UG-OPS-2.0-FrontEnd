@@ -209,3 +209,16 @@ code {
   position: absolute;
   bottom: 0;
 }
+
+.removeTableBorders {
+  border-collapse: collapse;
+  border-style: hidden;
+}
+
+/* .removeTableBorders td {
+  border: 1px solid #003366;
+} */
+
+.removeTableBorders td {
+  border: 1px solid white;
+}

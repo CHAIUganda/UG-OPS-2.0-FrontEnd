@@ -250,29 +250,88 @@ function ConsolidatedLeaveBalances({
     </th>
   );
 
-  const returnAnnualLeaveFilterHead = () => (
+  const returnAnnualLeaveFilterHead = () => {
+    return (
+      <th scope="col" colSpan="2">
+        <table className="removeTableBorders">
+          <tr>
+            <td colSpan="2">
+            Annual
+              <select className="form-control" value={annualSort} onChange={(e) => handleChange(e, setAnnualSort, 'annualSort')}>
+                <option value="all" >all</option>
+                <option value="green" >green</option>
+                <option value="red" >red</option>
+              </select>
+            </td>
+          </tr>
+          <tr>
+            <td>Used</td>
+            <td>Balance</td>
+          </tr>
+        </table>
+      </th>
+    );
+  /*
+  (
     <th scope="col">
             Annual
-      <select className="form-control" value={annualSort} onChange={(e) => handleChange(e, setAnnualSort, 'annualSort')}>
+      <select className="form-control" value={annualSort} onChange={(e) =>
+        handleChange(e, setAnnualSort, 'annualSort')}>
         <option value="all" >all</option>
         <option value="green" >green</option>
         <option value="red" >red</option>
       </select>
     </th>
   );
+  */
+  };
 
-  const returnNameFilterHead = () => (
-    <th scope="col">
+  const returnNameFilterHead = () => {
+    return (
+      <th scope="col">
       Name <span className="dontshowText">name name xx</span>
-      <span className="customSelectStyles">
-        <Select
-          options={allUsers}
-          onChange={(opt) => selectLibOnChange(opt.value, setName, 'name')}
-          value={null}
-        />
-      </span>
-    </th>
-  );
+        <span className="customSelectStyles">
+          <Select
+            options={allUsers}
+            onChange={(opt) => selectLibOnChange(opt.value, setName, 'name')}
+            value={null}
+          />
+        </span>
+      </th>
+    );
+  };
+
+  const homeLeaveTd = (l) => {
+    return (
+      <>
+        <td>
+          { l.type.toLocaleLowerCase() === 'local' || l.type.toLocaleLowerCase() === 'national'
+            ? 'NA'
+            : `${l.leaveDetails.homeLeaveTaken}`
+          }
+        </td>
+        <td>
+          { l.type.toLocaleLowerCase() === 'local' || l.type.toLocaleLowerCase() === 'national'
+            ? 'NA'
+            : `${l.leaveDetails.homeLeaveBal}`
+          }
+        </td>
+      </>
+    );
+  };
+
+  const annualLeaveTd = (l) => {
+    return (<>
+      <td>{l.leaveDetails.annualLeaveTaken}</td>
+      <td>
+        <span className={
+          l.leaveDetails.annualLeaveBal > 10
+            ? returnStatusClass('rejectedWords mt-1')
+            : returnStatusClass('approvedWords mt-1')
+        }>{l.leaveDetails.annualLeaveBal}</span>
+      </td>
+    </>);
+  };
 
   const returnData = () => (
     <table className="table holidaysTable">
@@ -281,7 +340,17 @@ function ConsolidatedLeaveBalances({
           {returnNameFilterHead()}
           {returnEndProgramFilterHead()}
           {returnAnnualLeaveFilterHead()}
-          <th scope="col">Home</th>
+          <th scope="col" colSpan="2">
+            <table className="removeTableBorders">
+              <tr>
+                <td colSpan="2">Home</td>
+              </tr>
+              <tr>
+                <td>Used</td>
+                <td>Balance</td>
+              </tr>
+            </table>
+          </th>
           <th scope="col">Study</th>
           <th scope="col">Maternity</th>
           <th scope="col">Paternity</th>
@@ -295,19 +364,8 @@ function ConsolidatedLeaveBalances({
             <tr key={l._id}>
               <td>{`${l.fName} ${l.lName}`}</td>
               <td>{l.programShortForm}</td>
-              <td className={
-                l.leaveDetails.annualLeaveBal > 10
-                  ? returnStatusClass('rejectedWords')
-                  : returnStatusClass('approvedWords')
-              }>
-                {l.leaveDetails.annualLeaveTaken} ~ {l.leaveDetails.annualLeaveBal}
-              </td>
-              <td>
-                { l.type === 'local'
-                  ? 'NA'
-                  : `${l.leaveDetails.homeLeaveTaken} ~ ${l.leaveDetails.homeLeaveBal}`
-                }
-              </td>
+              {annualLeaveTd(l)}
+              {homeLeaveTd(l)}
               <td>{l.leaveDetails.studyLeaveTaken} ~ {l.leaveDetails.studyLeaveBal}</td>
               <td>
                 {
