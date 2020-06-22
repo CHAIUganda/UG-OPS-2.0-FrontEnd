@@ -446,9 +446,6 @@ function ConsolidatedLeaveBalances({
       <div className="col">
         <div id="hrConsolidatedTrackerTable">
           <h3>
-            <button type="button" className="btn btn-info float-left">
-            KEY: (Used ~ Balance)
-            </button>
             Consolidated Leave Balances
             <button type="button" className="btn btn-secondary float-right" onClick={generatePDf}>
             Generate PDF
