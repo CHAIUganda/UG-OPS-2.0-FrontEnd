@@ -368,6 +368,24 @@ function ConsolidatedLeaveBalances({
     );
   };
 
+  const sickTableHead = () => {
+    return (
+      <>
+        <th scope="col" colSpan="2">
+          <table className="removeTableBorders">
+            <tr>
+              <td colSpan="2">Sick</td>
+            </tr>
+            <tr>
+              <td>Used</td>
+              <td>Balance</td>
+            </tr>
+          </table>
+        </th>
+      </>
+    );
+  };
+
   /** TD */
 
   const homeLeaveTd = (l) => {
@@ -446,6 +464,15 @@ function ConsolidatedLeaveBalances({
     );
   };
 
+  const sickTableTd = (l) => {
+    return (
+      <>
+        <td>{l.leaveDetails.sickLeaveTaken}</td>
+        <td>{l.leaveDetails.sickLeaveBal}</td>
+      </>
+    );
+  };
+
   const returnData = () => (
     <table className="table holidaysTable">
       <thead>
@@ -457,7 +484,7 @@ function ConsolidatedLeaveBalances({
           {studyTableHead()}
           {maternityTableHead()}
           {paternityTableHead()}
-          <th scope="col">Sick</th>
+          {sickTableHead()}
           <th scope="col">Unpaid</th>
         </tr>
       </thead>
@@ -472,7 +499,7 @@ function ConsolidatedLeaveBalances({
               {studyTableTd(l)}
               {maternityTableTd(l)}
               {paternityTableTd(l)}
-              <td>{l.leaveDetails.sickLeaveTaken} ~ {l.leaveDetails.sickLeaveBal}</td>
+              {sickTableTd(l)}
               <td>{l.leaveDetails.sickLeaveTaken} ~ {l.leaveDetails.sickLeaveBal}</td>
             </tr>
           ))
