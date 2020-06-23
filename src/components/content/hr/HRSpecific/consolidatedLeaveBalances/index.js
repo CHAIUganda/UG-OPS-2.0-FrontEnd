@@ -704,7 +704,7 @@ function ConsolidatedLeaveBalances({
   return (
     <div className="row">
       <div className="col">
-        <div id="hrConsolidatedTrackerTable">
+        <div>
           <h3>
             Consolidated Leave Balances
             <button type="button" className="btn btn-secondary float-right" onClick={generatePDf}>
@@ -712,10 +712,12 @@ function ConsolidatedLeaveBalances({
             </button>
           </h3>
           {leavesSwitches()}
-          {generateFilterRibbon()}
-          <div className="row">
-            <div className="col">
-              {returnData() }
+          <div id="hrConsolidatedTrackerTable">
+            {generateFilterRibbon()}
+            <div className="row">
+              <div className="col">
+                {returnData() }
+              </div>
             </div>
           </div>
         </div>
