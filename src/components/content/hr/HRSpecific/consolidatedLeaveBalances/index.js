@@ -301,6 +301,75 @@ function ConsolidatedLeaveBalances({
     );
   };
 
+  const studyTableHead = () => {
+    return (
+      <th scope="col" colSpan="2">
+        <table className="removeTableBorders">
+          <tr>
+            <td colSpan="2">Study</td>
+          </tr>
+          <tr>
+            <td>Used</td>
+            <td>Balance</td>
+          </tr>
+        </table>
+      </th>
+    );
+  };
+
+  const homeTableHead = () => {
+    return (
+      <th scope="col" colSpan="2">
+        <table className="removeTableBorders">
+          <tr>
+            <td colSpan="2">Home</td>
+          </tr>
+          <tr>
+            <td>Used</td>
+            <td>Balance</td>
+          </tr>
+        </table>
+      </th>
+    );
+  };
+
+  const maternityTableHead = () => {
+    return (
+      <>
+        <th scope="col" colSpan="2">
+          <table className="removeTableBorders">
+            <tr>
+              <td colSpan="2">Maternity</td>
+            </tr>
+            <tr>
+              <td>Used</td>
+              <td>Balance</td>
+            </tr>
+          </table>
+        </th>
+      </>
+    );
+  };
+
+  const paternityTableHead = () => {
+    return (
+      <>
+        <th scope="col">
+          <table className="removeTableBorders">
+            <tr>
+              <td>Paternity</td>
+            </tr>
+            <tr>
+              <td>Used</td>
+            </tr>
+          </table>
+        </th>
+      </>
+    );
+  };
+
+  /** TD */
+
   const homeLeaveTd = (l) => {
     return (
       <>
@@ -333,6 +402,50 @@ function ConsolidatedLeaveBalances({
     </>);
   };
 
+  const studyTableTd = (l) => {
+    return (
+      <>
+        <td>{l.leaveDetails.studyLeaveTaken}</td>
+        <td>{l.leaveDetails.studyLeaveBal}</td>
+      </>
+    );
+  };
+
+  const maternityTableTd = (l) => {
+    return (
+      <>
+        <td>
+          {
+            (l.gender === 'Female' || l.gender === 'female')
+              ? l.leaveDetails.maternityLeaveTaken
+              : 'NA'
+          }
+        </td>
+        <td>
+          {
+            (l.gender === 'Female' || l.gender === 'female')
+              ? l.leaveDetails.maternityLeaveBal
+              : 'NA'
+          }
+        </td>
+      </>
+    );
+  };
+
+  const paternityTableTd = (l) => {
+    return (
+      <>
+        <td>
+          {
+            (l.gender === 'Male' || l.gender === 'male')
+              ? l.leaveDetails.paternityLeaveTaken
+              : 'NA'
+          }
+        </td>
+      </>
+    );
+  };
+
   const returnData = () => (
     <table className="table holidaysTable">
       <thead>
@@ -340,20 +453,10 @@ function ConsolidatedLeaveBalances({
           {returnNameFilterHead()}
           {returnEndProgramFilterHead()}
           {returnAnnualLeaveFilterHead()}
-          <th scope="col" colSpan="2">
-            <table className="removeTableBorders">
-              <tr>
-                <td colSpan="2">Home</td>
-              </tr>
-              <tr>
-                <td>Used</td>
-                <td>Balance</td>
-              </tr>
-            </table>
-          </th>
-          <th scope="col">Study</th>
-          <th scope="col">Maternity</th>
-          <th scope="col">Paternity</th>
+          {homeTableHead()}
+          {studyTableHead()}
+          {maternityTableHead()}
+          {paternityTableHead()}
           <th scope="col">Sick</th>
           <th scope="col">Unpaid</th>
         </tr>
@@ -366,21 +469,9 @@ function ConsolidatedLeaveBalances({
               <td>{l.programShortForm}</td>
               {annualLeaveTd(l)}
               {homeLeaveTd(l)}
-              <td>{l.leaveDetails.studyLeaveTaken} ~ {l.leaveDetails.studyLeaveBal}</td>
-              <td>
-                {
-                  (l.gender === 'Female' || l.gender === 'female')
-                    ? `${l.leaveDetails.maternityLeaveTaken} ~ ${l.leaveDetails.maternityLeaveBal}`
-                    : 'NA'
-                }
-              </td>
-              <td>
-                {
-                  (l.gender === 'Male' || l.gender === 'male')
-                    ? `${l.leaveDetails.paternityLeaveTaken} ~ _`
-                    : 'NA'
-                }
-              </td>
+              {studyTableTd(l)}
+              {maternityTableTd(l)}
+              {paternityTableTd(l)}
               <td>{l.leaveDetails.sickLeaveTaken} ~ {l.leaveDetails.sickLeaveBal}</td>
               <td>{l.leaveDetails.sickLeaveTaken} ~ {l.leaveDetails.sickLeaveBal}</td>
             </tr>
