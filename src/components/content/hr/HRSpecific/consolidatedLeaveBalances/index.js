@@ -5,6 +5,11 @@ import axios from 'axios';
 import html2canvas from 'html2canvas';
 import JSPDF from 'jspdf';
 import Select from 'react-select';
+import {
+  CustomInput,
+  Form,
+  FormGroup
+} from 'reactstrap';
 
 import * as sideBarActions from '../../../../../redux/actions/sideBarActions';
 import CommonSpinner from '../../../../common/spinner';
@@ -31,6 +36,13 @@ function ConsolidatedLeaveBalances({
   changeSection,
   changeActive
 }) {
+  const [showAnnual, setshowAnnual] = useState(true);
+  const [showHome, setShowHome] = useState(false);
+  const [showStudy, setShowStudy] = useState(false);
+  const [showMaternity, setShowMaternity] = useState(false);
+  const [showPaternity, setShowPaternity] = useState(false);
+  const [showSick, setShowSick] = useState(false);
+  const [showUnpaid, setShowUnpaid] = useState(false);
   const [spinner, setSpinner] = useState(false);
   const [error, setError] = useState('');
   const [allLeaves, setallLeaves] = useState([]);
@@ -386,6 +398,24 @@ function ConsolidatedLeaveBalances({
     );
   };
 
+  const unPaidTableHead = () => {
+    return (
+      <>
+        <th scope="col" colSpan="2">
+          <table className="removeTableBorders">
+            <tr>
+              <td colSpan="2">Unpaid</td>
+            </tr>
+            <tr>
+              <td>Used</td>
+              <td>Balance</td>
+            </tr>
+          </table>
+        </th>
+      </>
+    );
+  };
+
   /** TD */
 
   const homeLeaveTd = (l) => {
@@ -473,19 +503,122 @@ function ConsolidatedLeaveBalances({
     );
   };
 
+  const unpaidTd = (l) => {
+    return (
+      <>
+        <td>{l.leaveDetails.unPaidLeaveTaken}</td>
+        <td>{l.leaveDetails.unpaidLeaveBal}</td>
+      </>
+    );
+  };
+
+  const leavesSwitches = () => {
+    return (
+      <>
+        <h4 className="text-left ml-2">Set the leave types to display</h4>
+        <Form>
+          <FormGroup>
+            <div className="text-left ml-5">
+              <CustomInput
+                type="switch"
+                id="AnnualSwitch"
+                name="customSwitch"
+                label="Annual Leave"
+                checked={showAnnual}
+                onChange={(e) => setshowAnnual(e.target.checked) }
+              />
+            </div>
+          </FormGroup>
+          <FormGroup>
+            <div className="text-left ml-5">
+              <CustomInput
+                type="switch"
+                id="HomeSwitch"
+                name="customSwitch"
+                label="Home Leave"
+                checked={showHome}
+                onChange={(e) => setShowHome(e.target.checked) }
+              />
+            </div>
+          </FormGroup>
+          <FormGroup>
+            <div className="text-left ml-5">
+              <CustomInput
+                type="switch"
+                id="studySwitch"
+                name="customSwitch"
+                label="Study Leave"
+                checked={showStudy}
+                onChange={(e) => setShowStudy(e.target.checked) }
+              />
+            </div>
+          </FormGroup>
+          <FormGroup>
+            <div className="text-left ml-5">
+              <CustomInput
+                type="switch"
+                id="maternitySwitch"
+                name="customSwitch"
+                label="Maternity Leave"
+                checked={showMaternity}
+                onChange={(e) => setShowMaternity(e.target.checked) }
+              />
+            </div>
+          </FormGroup>
+          <FormGroup>
+            <div className="text-left ml-5">
+              <CustomInput
+                type="switch"
+                id="paternitySwitch"
+                name="customSwitch"
+                label="Paternity Leave"
+                checked={showPaternity}
+                onChange={(e) => setShowPaternity(e.target.checked) }
+              />
+            </div>
+          </FormGroup>
+          <FormGroup>
+            <div className="text-left ml-5">
+              <CustomInput
+                type="switch"
+                id="sickSwitch"
+                name="customSwitch"
+                label="Sick Leave"
+                checked={showSick}
+                onChange={(e) => setShowSick(e.target.checked) }
+              />
+            </div>
+          </FormGroup>
+          <FormGroup>
+            <div className="text-left ml-5">
+              <CustomInput
+                type="switch"
+                id="unPaidSwitch"
+                name="customSwitch"
+                label="Unpaid Leave"
+                checked={showUnpaid}
+                onChange={(e) => setShowUnpaid(e.target.checked) }
+              />
+            </div>
+          </FormGroup>
+        </Form>
+      </>
+    );
+  };
+
   const returnData = () => (
     <table className="table holidaysTable">
       <thead>
         <tr>
           {returnNameFilterHead()}
           {returnEndProgramFilterHead()}
-          {returnAnnualLeaveFilterHead()}
-          {homeTableHead()}
-          {studyTableHead()}
-          {maternityTableHead()}
-          {paternityTableHead()}
-          {sickTableHead()}
-          <th scope="col">Unpaid</th>
+          { showAnnual ? returnAnnualLeaveFilterHead() : null }
+          { showHome ? homeTableHead() : null }
+          {showStudy ? studyTableHead() : null }
+          { showMaternity ? maternityTableHead() : null }
+          { showPaternity ? paternityTableHead() : null }
+          { showSick ? sickTableHead() : null }
+          { showUnpaid ? unPaidTableHead() : null }
         </tr>
       </thead>
       <tbody>
@@ -494,13 +627,13 @@ function ConsolidatedLeaveBalances({
             <tr key={l._id}>
               <td>{`${l.fName} ${l.lName}`}</td>
               <td>{l.programShortForm}</td>
-              {annualLeaveTd(l)}
-              {homeLeaveTd(l)}
-              {studyTableTd(l)}
-              {maternityTableTd(l)}
-              {paternityTableTd(l)}
-              {sickTableTd(l)}
-              <td>{l.leaveDetails.sickLeaveTaken} ~ {l.leaveDetails.sickLeaveBal}</td>
+              { showAnnual ? annualLeaveTd(l) : null }
+              { showHome ? homeLeaveTd(l) : null }
+              { showStudy ? studyTableTd(l) : null }
+              { showMaternity ? maternityTableTd(l) : null }
+              { showPaternity ? paternityTableTd(l) : null }
+              { showSick ? sickTableTd(l) : null }
+              { showUnpaid ? unpaidTd(l) : null }
             </tr>
           ))
         }
@@ -569,6 +702,7 @@ function ConsolidatedLeaveBalances({
             Generate PDF
             </button>
           </h3>
+          {leavesSwitches()}
           {generateFilterRibbon()}
           <div className="row">
             <div className="col">
