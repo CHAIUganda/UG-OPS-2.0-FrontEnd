@@ -216,9 +216,13 @@ code {
 }
 
 /* .removeTableBorders td {
-  border: 1px solid #003366;
+  border: 5px solid black;
 } */
 
 .removeTableBorders td {
   border: 1px solid white;
+}
+
+.removeTableBorders{
+ color: white !important;
 }

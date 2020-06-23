@@ -230,6 +230,15 @@ function ConsolidatedLeaveBalances({
     setProgram('all');
     setName([]);
     filter(allFilters);
+
+    /** Reset switches */
+    setshowAnnual(true);
+    setShowHome(false);
+    setShowStudy(false);
+    setShowMaternity(false);
+    setShowPaternity(false);
+    setShowSick(false);
+    setShowUnpaid(false);
   };
 
   const selectLibOnChange = (email, stateSetter, filterParam) => {
@@ -265,7 +274,7 @@ function ConsolidatedLeaveBalances({
   const returnAnnualLeaveFilterHead = () => {
     return (
       <th scope="col" colSpan="2">
-        <table className="removeTableBorders">
+        <table className="table removeTableBorders">
           <tr>
             <td colSpan="2">
             Annual
@@ -316,7 +325,7 @@ function ConsolidatedLeaveBalances({
   const studyTableHead = () => {
     return (
       <th scope="col" colSpan="2">
-        <table className="removeTableBorders">
+        <table className="table removeTableBorders">
           <tr>
             <td colSpan="2">Study</td>
           </tr>
@@ -332,7 +341,7 @@ function ConsolidatedLeaveBalances({
   const homeTableHead = () => {
     return (
       <th scope="col" colSpan="2">
-        <table className="removeTableBorders">
+        <table className="table removeTableBorders">
           <tr>
             <td colSpan="2">Home</td>
           </tr>
@@ -349,7 +358,7 @@ function ConsolidatedLeaveBalances({
     return (
       <>
         <th scope="col" colSpan="2">
-          <table className="removeTableBorders">
+          <table className=" table removeTableBorders">
             <tr>
               <td colSpan="2">Maternity</td>
             </tr>
@@ -367,7 +376,7 @@ function ConsolidatedLeaveBalances({
     return (
       <>
         <th scope="col">
-          <table className="removeTableBorders">
+          <table className="table removeTableBorders">
             <tr>
               <td>Paternity</td>
             </tr>
@@ -384,7 +393,7 @@ function ConsolidatedLeaveBalances({
     return (
       <>
         <th scope="col" colSpan="2">
-          <table className="removeTableBorders">
+          <table className="table removeTableBorders">
             <tr>
               <td colSpan="2">Sick</td>
             </tr>
@@ -402,7 +411,7 @@ function ConsolidatedLeaveBalances({
     return (
       <>
         <th scope="col" colSpan="2">
-          <table className="removeTableBorders">
+          <table className="table removeTableBorders">
             <tr>
               <td colSpan="2">Unpaid</td>
             </tr>
