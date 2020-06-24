@@ -58,7 +58,6 @@ const AddNewContOrWP = ({ user }) => {
 
     axios.post(url, newContract)
       .then((res) => {
-        debugger;
         setSubmitSpinner(false);
         setSuccess(res.data.message);
       })
