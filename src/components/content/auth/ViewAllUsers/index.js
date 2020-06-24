@@ -14,6 +14,7 @@ import * as sideBarActions from '../../../../redux/actions/sideBarActions';
 import { BASE_URL } from '../../../../config';
 import CommonSpinner from '../../../common/spinner';
 import FilterNameButton from '../../../common/filterNameButton';
+import AddNewContOrWP from './addNewContract';
 
 import './viewAllUsers.css';
 
@@ -258,6 +259,7 @@ function ViewAllUsers({
           {returnEmailFilterHead()}
           {returnNSSFFilterHead()}
           {returnTINFilterHead()}
+          <th scope="col">Add New Contract or Work Permit</th>
           <th scope="col">Edit</th>
         </tr>
       </thead>
@@ -283,6 +285,11 @@ function ViewAllUsers({
                   ? user.tinNumber
                   : ''
               }</td>
+              <td>
+                <AddNewContOrWP
+                  user={user}
+                />
+              </td>
               <td>
                 <span className="pointerCursor changeHColor">
                   <Link to={{
