@@ -48,8 +48,8 @@ const AddNewContOrWP = ({ user }) => {
     }
 
     const newContract = {
-      contractStartDate: `${contractStartDate.getFullYear()}-${contractStartDate.getMonth() + 1}-${contractStartDate.getDate()}}`,
-      contractEndDate: `${contractEndDate.getFullYear()}-${contractEndDate.getMonth() + 1}-${contractEndDate.getDate()}}`,
+      contractStartDate: `${contractStartDate.getFullYear()}-${contractStartDate.getMonth() + 1}-${contractStartDate.getDate()}`,
+      contractEndDate: `${contractEndDate.getFullYear()}-${contractEndDate.getMonth() + 1}-${contractEndDate.getDate()}`,
       contractType,
       staffEmail: user.email
     };
@@ -58,8 +58,9 @@ const AddNewContOrWP = ({ user }) => {
 
     axios.post(url, newContract)
       .then((res) => {
+        debugger;
         setSubmitSpinner(false);
-        setSuccess(res.message);
+        setSuccess(res.data.message);
       })
       .catch((e) => {
         if (e && e.response && e.response.data && e.response.data.message) {
@@ -83,8 +84,8 @@ const AddNewContOrWP = ({ user }) => {
     }
 
     const newWP = {
-      workPermitStartDate: `${wpStartDate.getFullYear()}-${wpStartDate.getMonth() + 1}-${wpStartDate.getDate()}}`,
-      workPermitEndDate: `${wpEndDate.getFullYear()}-${wpEndDate.getMonth() + 1}-${wpEndDate.getDate()}}`,
+      workPermitStartDate: `${wpStartDate.getFullYear()}-${wpStartDate.getMonth() + 1}-${wpStartDate.getDate()}`,
+      workPermitEndDate: `${wpEndDate.getFullYear()}-${wpEndDate.getMonth() + 1}-${wpEndDate.getDate()}`,
       staffEmail: user.email
     };
     const url = `${BASE_URL}hrApi/addStaffNewWP`;
@@ -93,7 +94,7 @@ const AddNewContOrWP = ({ user }) => {
     axios.post(url, newWP)
       .then((res) => {
         setSubmitSpinner(false);
-        setSuccess(res.message);
+        setSuccess(res.data.message);
       })
       .catch((e) => {
         if (e && e.response && e.response.data && e.response.data.message) {
