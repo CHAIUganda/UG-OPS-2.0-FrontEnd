@@ -96,43 +96,52 @@ function SuperviseLeave({
     setLeavesToApprove([...newArray]);
   };
 
-  const returnTable = () => (
-    <table className="table holidaysTable">
-      <thead>
-        <tr>
-          <th scope="col">#</th>
-          <th scope="col">Staff</th>
-          <th scope="col">Type</th>
-          <th scope="col">No. Of Days</th>
-          <th scope="col">Starts</th>
-          <th scope="col">Ends</th>
-          <th scope="col">Manage</th>
-        </tr>
-      </thead>
-      <tbody>
-        {
-          leavesToApprove.map((leave, index) => (
-            <tr key={leave._id}>
-              <th scope="row">{index + 1}</th>
-              <td>{`${leave.staff.fName} ${leave.staff.lName}`}</td>
-              <td>{leave.type}</td>
-              <td>{leave.daysTaken}</td>
-              <td>{new Date(leave.startDate).toDateString()}</td>
-              <td>{new Date(leave.endDate).toDateString()}</td>
-              <td>
-                <ManageLeaveModal
-                  leave={leave}
-                  staff={`${leave.staff.fName} ${leave.staff.lName}`}
-                  token={token}
-                  removeLeaveFromList={removeLeaveFromList}
-                />
-              </td>
-            </tr>
-          ))
-        }
-      </tbody>
-    </table>
-  );
+  const returnTable = () => {
+    if (leavesToApprove.length < 1) {
+      return (
+        <div className="alert alert-primary m-5" role="alert">
+          You currently have no leave to supervise.
+        </div>
+      );
+    }
+    return (
+      <table className="table holidaysTable">
+        <thead>
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">Staff</th>
+            <th scope="col">Type</th>
+            <th scope="col">No. Of Days</th>
+            <th scope="col">Starts</th>
+            <th scope="col">Ends</th>
+            <th scope="col">Manage</th>
+          </tr>
+        </thead>
+        <tbody>
+          {
+            leavesToApprove.map((leave, index) => (
+              <tr key={leave._id}>
+                <th scope="row">{index + 1}</th>
+                <td>{`${leave.staff.fName} ${leave.staff.lName}`}</td>
+                <td>{leave.type}</td>
+                <td>{leave.daysTaken}</td>
+                <td>{new Date(leave.startDate).toDateString()}</td>
+                <td>{new Date(leave.endDate).toDateString()}</td>
+                <td>
+                  <ManageLeaveModal
+                    leave={leave}
+                    staff={`${leave.staff.fName} ${leave.staff.lName}`}
+                    token={token}
+                    removeLeaveFromList={removeLeaveFromList}
+                  />
+                </td>
+              </tr>
+            ))
+          }
+        </tbody>
+      </table>
+    );
+  };
 
   return (
     <>
