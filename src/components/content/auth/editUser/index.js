@@ -397,7 +397,7 @@ function EditUser(props) {
         <FormGroup>
           <InputGroup>
             <InputGroupAddon addonType="prepend">
-              <InputGroupText>@ Email</InputGroupText>
+              <InputGroupText>Email</InputGroupText>
             </InputGroupAddon>
             <Input
               placeholder="email@clintonhealthaccess.org"

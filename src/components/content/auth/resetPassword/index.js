@@ -144,7 +144,7 @@ function ResetPassword({ logUserIn, props2Pass }) {
         <FormGroup>
           <InputGroup>
             <InputGroupAddon addonType="prepend">
-              <InputGroupText>email @ </InputGroupText>
+              <InputGroupText>email</InputGroupText>
             </InputGroupAddon>
             <Input
               placeholder="email@clintonhealthaccess.org"

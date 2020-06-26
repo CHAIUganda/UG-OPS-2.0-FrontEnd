@@ -142,7 +142,7 @@ function SignIn(props) {
         <FormGroup>
           <InputGroup>
             <InputGroupAddon addonType="prepend">
-              <InputGroupText>@ Email</InputGroupText>
+              <InputGroupText>Email</InputGroupText>
             </InputGroupAddon>
             <Input
               type="email"
