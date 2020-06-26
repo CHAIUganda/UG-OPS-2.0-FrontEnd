@@ -180,51 +180,60 @@ function Apply4Leave({
     setPersonsLeaves(arrToEdit.reverse());
   };
 
-  const returnTable = () => (
-    <table className="table holidaysTable">
-      <thead>
-        <tr>
-          <th scope="col">Category</th>
-          <th scope="col">Days Taken</th>
-          <th scope="col">Starts</th>
-          <th scope="col">Ends</th>
-          <th scope="col">Status</th>
-          <th scope="col">Manage</th>
-        </tr>
-      </thead>
-      <tbody>
-        {
-          personsLeaves.reverse().map((leave, index) => (
-            <tr
-              key={leave._id}
-              className={`${leave.highlightNotification ? 'highlightNotification' : ''}`}
-            >
-              <td>{leave.type}</td>
-              <td>{leave.daysTaken}</td>
-              <td>{new Date(leave.startDate).toDateString()}</td>
-              <td>{new Date(leave.endDate).toDateString()}</td>
-              <td>
-                <button className={returnStatusClass(leave.status)}>
-                  {leave.status}
-                </button>
-              </td>
-              <td>
-                <ManageLeaveModal
-                  leave={leave}
-                  supervisor={supervisor}
-                  removeLeave={removeLeave}
-                  type={type}
-                  gender={gender}
-                  indexOfLeave={index}
-                  propToModifyArray={modifyLeave}
-                />
-              </td>
-            </tr>
-          ))
-        }
-      </tbody>
-    </table>
-  );
+  const returnTable = () => {
+    if (personsLeaves.length < 1) {
+      return (
+        <div className="alert alert-primary m-5" role="alert">
+          You haven&apos;t applied for leave yet.
+        </div>
+      );
+    }
+    return (
+      <table className="table holidaysTable">
+        <thead>
+          <tr>
+            <th scope="col">Category</th>
+            <th scope="col">Days Taken</th>
+            <th scope="col">Starts</th>
+            <th scope="col">Ends</th>
+            <th scope="col">Status</th>
+            <th scope="col">Manage</th>
+          </tr>
+        </thead>
+        <tbody>
+          {
+            personsLeaves.reverse().map((leave, index) => (
+              <tr
+                key={leave._id}
+                className={`${leave.highlightNotification ? 'highlightNotification' : ''}`}
+              >
+                <td>{leave.type}</td>
+                <td>{leave.daysTaken}</td>
+                <td>{new Date(leave.startDate).toDateString()}</td>
+                <td>{new Date(leave.endDate).toDateString()}</td>
+                <td>
+                  <button className={returnStatusClass(leave.status)}>
+                    {leave.status}
+                  </button>
+                </td>
+                <td>
+                  <ManageLeaveModal
+                    leave={leave}
+                    supervisor={supervisor}
+                    removeLeave={removeLeave}
+                    type={type}
+                    gender={gender}
+                    indexOfLeave={index}
+                    propToModifyArray={modifyLeave}
+                  />
+                </td>
+              </tr>
+            ))
+          }
+        </tbody>
+      </table>
+    );
+  };
 
   const addLeave = (leave) => {
     setPersonsLeaves([...personsLeaves, leave]);
