@@ -123,7 +123,7 @@ const CreateNewPublicHoliday = ({ onNewPHoliday }) => {
         <button className="submitButton" type="submit">
           {buttonText()}
         </button>
-        <Button color="secondary" onClick={toggle} className="float-right">Cancel</Button>
+        <Button color="secondary" onClick={toggle} className="float-right">Close</Button>
       </Form>
     </div>
   );

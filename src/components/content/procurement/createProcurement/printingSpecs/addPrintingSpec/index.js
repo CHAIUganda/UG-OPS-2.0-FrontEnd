@@ -1000,7 +1000,7 @@ const AddPrintingSpec = ({
           </Form>
         </ModalBody>
         <ModalFooter>
-          <Button color="secondary" onClick={toggle}>Cancel</Button>
+          <Button color="secondary" onClick={toggle}></Button>
         </ModalFooter>
       </Modal>
     </div>
