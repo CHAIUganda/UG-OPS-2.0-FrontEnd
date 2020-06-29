@@ -7,7 +7,8 @@ import {
   InputGroupAddon,
   InputGroupText,
   CustomInput,
-  Spinner
+  Spinner,
+  Label
 } from 'reactstrap';
 import Calendar from 'react-calendar';
 import { connect } from 'react-redux';
@@ -76,6 +77,11 @@ function EditUser(props) {
     user.email
       ? user.email
       : '@clintonhealthaccess.org'
+  );
+  const [active, setActive] = useState(
+    user.active
+      ? user.active
+      : false
   );
   const [firstName, setFirstName] = useState(
     user.fName
@@ -238,6 +244,8 @@ function EditUser(props) {
 
     const editUser = {
       ...user,
+      active,
+      staffId: user._id,
       fName: firstName,
       lName: lastName,
       birthDate: `${birthDate.getFullYear()}-${birthDate.getMonth() + 1}-${birthDate.getDate()}`,
@@ -386,8 +394,6 @@ function EditUser(props) {
       <Form onSubmit={handleSubmit}>
         <h3 className="registerHeading">
           Edit User
-          <button type="button" className="btn btn-outline-success float-right">Activate user</button>
-          <button type="button" className="btn btn-outline-danger float-right">Deactivatve user</button>
         </h3>
         {
           spinner
@@ -396,8 +402,46 @@ function EditUser(props) {
             <p>Getting things ready.....</p>
           </div>
         }
+        <div className="alert alert-primary" role="alert">
+            Details are saved after submitting.
+        </div>
         {error && <div className="errorFeedback"> {error} </div>}
         {successFeedback && <div className="successFeedback"> {successFeedback} </div>}
+
+        <FormGroup>
+          <Label for="exampleEmail">
+            {
+              active
+                ? <p>This user account is <span className="btn btn-success">active</span></p>
+                : <p>This user account is <span className="btn btn-danger">inactive</span></p>
+            }
+          </Label>
+          <InputGroup>
+            <InputGroupAddon addonType="prepend">
+              <InputGroupText>
+                {
+                  active
+                    ? <p>Deactivate account</p>
+                    : <p>Activate account</p>
+                }
+              </InputGroupText>
+            </InputGroupAddon>
+            <div className="intSwitch">
+              <CustomInput
+                type="switch"
+                id="activeSwitch"
+                name="customSwitch"
+                checked={active}
+                onChange={(e) => {
+                  setSuccessFeedback('');
+                  setError('');
+                  setActive(e.target.checked);
+                }}
+              />
+            </div>
+          </InputGroup>
+        </FormGroup>
+
         <FormGroup>
           <InputGroup>
             <InputGroupAddon addonType="prepend">

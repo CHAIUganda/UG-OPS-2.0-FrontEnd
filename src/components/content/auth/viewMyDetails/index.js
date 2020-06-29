@@ -221,6 +221,7 @@ function ViewMyDetails(props) {
 
     const editUser = {
       ...user,
+      staffId: user._id,
       fName: firstName,
       lName: lastName,
       birthDate: `${birthDate.getFullYear()}-${birthDate.getMonth() + 1}-${birthDate.getDate()}`,
