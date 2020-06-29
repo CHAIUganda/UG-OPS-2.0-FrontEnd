@@ -1,5 +1,4 @@
 /* eslint-disable array-bracket-spacing */
-/* eslint-disable max-len */
 import React, { useState, useEffect } from 'react';
 import {
   Form,
@@ -9,10 +8,9 @@ import {
   InputGroupAddon,
   InputGroupText,
   CustomInput,
-  Spinner,
-  FormText
+  // Spinner
 } from 'reactstrap';
-import Calendar from 'react-calendar';
+// import Calendar from 'react-calendar';
 import { connect } from 'react-redux';
 import axios from 'axios';
 import PropTypes from 'prop-types';
@@ -20,7 +18,7 @@ import Select from 'react-select';
 
 import * as sideBarActions from '../../../../redux/actions/sideBarActions';
 import CommonSpinner from '../../../common/spinner';
-import EditBankDetailsModal from './editBankDetails';
+// import EditBankDetailsModal from './editBankDetails';
 import { BASE_URL, returnStatusClass } from '../../../../config';
 import './editUser.css';
 
@@ -39,10 +37,10 @@ function ViewMyDetails(props) {
   const {
     token,
     changeSection,
-    changeActive,
+    changeActive
   } = props;
 
-  changeSection('Human Resource');
+  changeSection(null);
   changeActive(null);
 
   if (props && props.user) {
@@ -75,7 +73,7 @@ function ViewMyDetails(props) {
       ? user.oNames
       : ''
   );
-  const [birthDate, setBirthDate] = useState(
+  const [birthDate, /* setBirthDate */] = useState(
     user.birthDate
       ? new Date(user.birthDate)
       : ''
@@ -102,7 +100,7 @@ function ViewMyDetails(props) {
   );
   const [password, setPassword] = useState('123456');
   const [confirmPass, setConfirmPass] = useState('123456');
-  const [gender, setGender] = useState(
+  const [gender, /* setGender */] = useState(
     user.gender
       ? user.gender
       : ''
@@ -137,7 +135,6 @@ function ViewMyDetails(props) {
       ? user.programId
       : ''
   );
-
   const [countryDirector, /* setCountryDirector */] = useState(
     (user.roles && user.roles.countryDirector)
       ? user.roles.countryDirector
@@ -163,13 +160,12 @@ function ViewMyDetails(props) {
       ? new Date(user.workPermitStartDate)
       : ''
   );
-
   const [workPermitEndDate, /* setWorkPermitEndDate */] = useState(
     user.workPermitEndDate
       ? new Date(user.workPermitEndDate)
       : ''
   );
-  const [bankAccounts, setBankAccounts] = useState(
+  const [bankAccounts, /* setBankAccounts */] = useState(
     (user.bankAccounts && user.bankAccounts.length > 0)
       ? user.bankAccounts
       : []
@@ -178,11 +174,11 @@ function ViewMyDetails(props) {
   const [spinner, setSpinner] = useState(false);
   const [error, setError] = useState('');
   const [allUsers, setAllUsers] = useState([]);
-  const [submitSpinner, setSubmitSpinner] = useState(false);
+  const [/* submitSpinner */, setSubmitSpinner] = useState(false);
   const [successFeedback, setSuccessFeedback] = useState('');
-  const [bankName, setBankName] = useState('');
-  const [accountNumber, setAccountNumber] = useState('');
-  const [Currency, setCurrency] = useState('UGX');
+  // const [bankName, setBankName] = useState('');
+  // const [accountNumber, setAccountNumber] = useState('');
+  // const [Currency, setCurrency] = useState('UGX');
 
   const returnDefaultSupervisor = () => {
     if (user.supervisorDetails
@@ -218,16 +214,15 @@ function ViewMyDetails(props) {
       setSubmitSpinner(false);
       return;
     }
-    debugger;
 
     const editUser = {
       ...user,
       fName: firstName,
       lName: lastName,
-      birthDate: `${birthDate.getFullYear()}-${birthDate.getMonth() + 1}-${birthDate.getDate()}`,
+      birthDate,
       bankAccounts,
-      // contractStartDate: `${contractStartDate.getFullYear()}-${contractStartDate.getMonth() + 1}-${contractStartDate.getDate()}`,
-      // contractEndDate: `${contractEndDate.getFullYear()}-${contractEndDate.getMonth() + 1}-${contractEndDate.getDate()}`,
+      contractStartDate,
+      contractEndDate,
       contractType,
       gender,
       admin,
@@ -245,14 +240,8 @@ function ViewMyDetails(props) {
       contractId: user.contractId,
       nssfNumber,
       tinNumber,
-      // workPermitStartDate:
-      //   workPermitStartDate
-      //     ? `${workPermitStartDate.getFullYear()}-${workPermitStartDate.getMonth() + 1}-${workPermitStartDate.getDate()}`
-      //     : null,
-      // workPermitEndDate:
-      //   workPermitEndDate
-      //     ? `${workPermitEndDate.getFullYear()}-${workPermitEndDate.getMonth() + 1}-${workPermitEndDate.getDate()}`
-      //     : null
+      workPermitStartDate,
+      workPermitEndDate
     };
 
     axios.defaults.headers.common = { token };
@@ -321,41 +310,41 @@ function ViewMyDetails(props) {
     setSupervisorsEmail(value);
   };
 
-  const buttonText = () => {
-    if (submitSpinner) {
-      return (
-        <Spinner color="primary" style={{ width: '3rem', height: '3rem' }} />
-      );
-    }
-    return 'Edit';
-  };
+  // const buttonText = () => {
+  //   if (submitSpinner) {
+  //     return (
+  //       <Spinner color="primary" style={{ width: '3rem', height: '3rem' }} />
+  //     );
+  //   }
+  //   return 'Edit';
+  // };
 
-  const handleNewBankAccount = (event) => {
-    event.preventDefault();
-    if (!bankName) {
-      setError('Please enter a bank to add account');
-    } else if (!accountNumber) {
-      setError('Please enter an account number to add account');
-    } else {
-      setBankAccounts([...bankAccounts,
-        {
-          bankName,
-          accountNumber,
-          Currency,
-          status: 'ACTIVE',
-        }
-      ]);
-      setBankName('');
-      setAccountNumber('');
-      setCurrency('UGX');
-    }
-  };
+  // const handleNewBankAccount = (event) => {
+  //   event.preventDefault();
+  //   if (!bankName) {
+  //     setError('Please enter a bank to add account');
+  //   } else if (!accountNumber) {
+  //     setError('Please enter an account number to add account');
+  //   } else {
+  //     setBankAccounts([...bankAccounts,
+  //       {
+  //         bankName,
+  //         accountNumber,
+  //         Currency,
+  //         status: 'ACTIVE',
+  //       }
+  //     ]);
+  //     setBankName('');
+  //     setAccountNumber('');
+  //     setCurrency('UGX');
+  //   }
+  // };
 
-  const handleEditBankAccountAction = (index, modifiedAccountDetails) => {
-    const holder = [...bankAccounts];
-    holder[index] = modifiedAccountDetails;
-    setBankAccounts(holder);
-  };
+  // const handleEditBankAccountAction = (index, modifiedAccountDetails) => {
+  //   const holder = [...bankAccounts];
+  //   holder[index] = modifiedAccountDetails;
+  //   setBankAccounts(holder);
+  // };
 
   return (
     <div className="registerFormStyle">
@@ -385,6 +374,7 @@ function ViewMyDetails(props) {
                 setEmail(e.target.value);
               }}
               required
+              disabled
             />
           </InputGroup>
         </FormGroup>
@@ -404,6 +394,7 @@ function ViewMyDetails(props) {
                 setFirstName(e.target.value);
               }}
               required
+              disabled
             />
           </InputGroup>
         </FormGroup>
@@ -423,6 +414,7 @@ function ViewMyDetails(props) {
                 setLastName(e.target.value);
               }}
               required
+              disabled
             />
           </InputGroup>
         </FormGroup>
@@ -436,11 +428,8 @@ function ViewMyDetails(props) {
               placeholder="Optional"
               type="text"
               value={otherNames}
-              onChange={(e) => {
-                setSuccessFeedback('');
-                setError('');
-                setOtherNames(e.target.value);
-              }}
+              onChange={(e) => setOtherNames(e.target.value)}
+              disabled
             />
           </InputGroup>
         </FormGroup>
@@ -450,23 +439,25 @@ function ViewMyDetails(props) {
             <InputGroupAddon addonType="prepend">
               <InputGroupText>Birth Date</InputGroupText>
             </InputGroupAddon>
-            <Calendar
+            {/* <Calendar
               value={birthDate}
-              onChange={(date) => {
-                setSuccessFeedback('');
-                setError('');
-                setBirthDate(date);
-              }}
+              onChange={(date) => setBirthDate(date)}
+            /> */}
+            <Input
+              placeholder="Optional"
+              type="text"
+              value={new Date(birthDate).toDateString()}
+              disabled
             />
           </InputGroup>
         </FormGroup>
 
         <div className="bankDetailsSection">
           <h5>Bank Details</h5>
-          {error && <div className="errorFeedback"> {error} </div>}
+          {/* {error && <div className="errorFeedback"> {error} </div>}
           <div className="alert alert-primary" role="alert">
             Note: changes to bank details will be effected when you submit the entire form.
-          </div>
+          </div> */}
           <table className="table holidaysTable">
             <thead>
               <tr>
@@ -490,7 +481,7 @@ function ViewMyDetails(props) {
                     }>
                       {bankAccount.status}
                     </td>
-                    <td>
+                    {/* <td>
                       <button
                         type="button">
                         <EditBankDetailsModal
@@ -499,13 +490,13 @@ function ViewMyDetails(props) {
                           index={index}
                         />
                       </button>
-                    </td>
+                    </td> */}
                   </tr>
                 ))
               }
             </tbody>
           </table>
-          <h6>Add a new bank account</h6>
+          {/* <h6>Add a new bank account</h6>
           <FormGroup>
             <InputGroup>
               <InputGroupAddon addonType="prepend">
@@ -565,7 +556,7 @@ function ViewMyDetails(props) {
             onClick={handleNewBankAccount}
           >
             Add New Account
-          </button>
+          </button> */}
         </div>
 
         <FormGroup>
@@ -582,6 +573,7 @@ function ViewMyDetails(props) {
                 setError('');
                 setNssfNumber(e.target.value);
               }}
+              disabled
             />
           </InputGroup>
         </FormGroup>
@@ -600,10 +592,11 @@ function ViewMyDetails(props) {
                 setError('');
                 setTinNumber(e.target.value);
               }}
+              disabled
             />
           </InputGroup>
         </FormGroup>
-        <FormGroup>
+        {/* <FormGroup>
           <InputGroup>
             <InputGroupAddon addonType="prepend">
               <InputGroupText>Gender</InputGroupText>
@@ -613,18 +606,14 @@ function ViewMyDetails(props) {
               id="exampleCustomSelect"
               name="customSelect"
               value={gender}
-              onChange={(e) => {
-                setSuccessFeedback('');
-                setError('');
-                setGender(e.target.value);
-              }}
+              onChange={(e) => setGender(e.target.value)}
             >
               <option value="">Not set</option>
               <option value="Female">Female</option>
               <option value="Male">Male</option>
             </CustomInput>
           </InputGroup>
-        </FormGroup>
+        </FormGroup> */}
 
         <FormGroup>
           <InputGroup>
@@ -635,12 +624,9 @@ function ViewMyDetails(props) {
               placeholder="Assistant Programme Officer"
               type="text"
               value={position}
-              onChange={(e) => {
-                setSuccessFeedback('');
-                setError('');
-                setPosition(e.target.value);
-              }}
+              onChange={(e) => setPosition(e.target.value)}
               required
+              disabled
             />
           </InputGroup>
         </FormGroup>
@@ -656,6 +642,7 @@ function ViewMyDetails(props) {
               name="customSelect"
               value={staffCategory}
               onChange={(e) => setStaffCategory(e.target.value)}
+              disabled
             >
               <option value="">Not set</option>
               <option value="national">national</option>
@@ -673,6 +660,10 @@ function ViewMyDetails(props) {
                 <InputGroupAddon addonType="prepend">
                   <InputGroupText>Work Permit Start Date</InputGroupText>
                 </InputGroupAddon>
+                {/* <Calendar
+                  value={workPermitStartDate}
+                  onChange={(date) => setWorkPermitStartDate(date)}
+                /> */}
                 <Input
                   type="text"
                   value={new Date(workPermitStartDate).toDateString()}
@@ -680,7 +671,6 @@ function ViewMyDetails(props) {
                   disabled
                 />
               </InputGroup>
-              <FormText>Contact HR or sys admin to modify this.</FormText>
             </FormGroup>
 
             <FormGroup>
@@ -688,6 +678,10 @@ function ViewMyDetails(props) {
                 <InputGroupAddon addonType="prepend">
                   <InputGroupText>Work Permit End Date</InputGroupText>
                 </InputGroupAddon>
+                {/* <Calendar
+                  value={workPermitEndDate}
+                  onChange={(date) => setWorkPermitEndDate(date)}
+                /> */}
                 <Input
                   type="text"
                   value={new Date(workPermitEndDate).toDateString()}
@@ -695,7 +689,6 @@ function ViewMyDetails(props) {
                   disabled
                 />
               </InputGroup>
-              <FormText>Contact HR or sys admin to modify this.</FormText>
             </FormGroup>
           </>
           )
@@ -711,11 +704,8 @@ function ViewMyDetails(props) {
               id="teamCustomSelect"
               name="customSelect"
               value={team}
-              onChange={(e) => {
-                setSuccessFeedback('');
-                setError('');
-                setTeam(e.target.value);
-              }}
+              onChange={(e) => setTeam(e.target.value)}
+              disabled
             >
               <option value="">Not set</option>
               <option value="Country Office">Country Office</option>
@@ -734,11 +724,8 @@ function ViewMyDetails(props) {
               id="programmeCustomSelect"
               name="customSelect"
               value={programId}
-              onChange={(e) => {
-                setSuccessFeedback('');
-                setError('');
-                setProgramId(e.target.value);
-              }}
+              onChange={(e) => setProgramId(e.target.value)}
+              disabled
             >
               <option value=''>Not set</option>
               {
@@ -750,79 +737,73 @@ function ViewMyDetails(props) {
           </InputGroup>
         </FormGroup>
 
-        { admin
-          && <FormGroup>
-            <InputGroup>
-              <InputGroupAddon addonType="prepend">
-                <InputGroupText>System Admin</InputGroupText>
-              </InputGroupAddon>
-              <div className="intSwitch">
-                <CustomInput
-                  type="switch"
-                  id="adminSwitch2"
-                  name="customSwitch"
-                  checked={admin}
-                />
-              </div>
-            </InputGroup>
-          </FormGroup>
-        }
+        <FormGroup>
+          <InputGroup>
+            <InputGroupAddon addonType="prepend">
+              <InputGroupText>System Admin</InputGroupText>
+            </InputGroupAddon>
+            <div className="intSwitch">
+              <CustomInput
+                type="switch"
+                id="adminSwitch2"
+                name="customSwitch"
+                checked={admin}
+                // onChange={(e) => setAdmin(e.target.checked)}
+              />
+            </div>
+          </InputGroup>
+        </FormGroup>
 
-        { supervisor
-            && <FormGroup>
-              <InputGroup>
-                <InputGroupAddon addonType="prepend">
-                  <InputGroupText>Is the person a supervisor?</InputGroupText>
-                </InputGroupAddon>
-                <div className="intSwitch">
-                  <CustomInput
-                    type="switch"
-                    id="supervisorSwitch2"
-                    name="customSwitch"
-                    checked={supervisor}
-                  />
-                </div>
-              </InputGroup>
-            </FormGroup>
-        }
+        <FormGroup>
+          <InputGroup>
+            <InputGroupAddon addonType="prepend">
+              <InputGroupText>Is the person a supervisor?</InputGroupText>
+            </InputGroupAddon>
+            <div className="intSwitch">
+              <CustomInput
+                type="switch"
+                id="supervisorSwitch2"
+                name="customSwitch"
+                checked={supervisor}
+                // onChange={(e) => setSupervisor(e.target.checked)}
+              />
+            </div>
+          </InputGroup>
+        </FormGroup>
 
-        { humanResource
-          && <FormGroup>
-            <InputGroup>
-              <InputGroupAddon addonType="prepend">
-                <InputGroupText>Human Resource</InputGroupText>
-              </InputGroupAddon>
-              <div className="intSwitch">
-                <CustomInput
-                  type="switch"
-                  id="hrSwitch2"
-                  name="customSwitch"
-                  checked={humanResource}
-                />
-              </div>
-            </InputGroup>
-          </FormGroup>
-        }
+        <FormGroup>
+          <InputGroup>
+            <InputGroupAddon addonType="prepend">
+              <InputGroupText>Human Resource</InputGroupText>
+            </InputGroupAddon>
+            <div className="intSwitch">
+              <CustomInput
+                type="switch"
+                id="hrSwitch2"
+                name="customSwitch"
+                checked={humanResource}
+                // onChange={(e) => setHumanResource(e.target.checked)}
+              />
+            </div>
+          </InputGroup>
+        </FormGroup>
 
-        {
-          countryDirector
-          && <FormGroup>
-            <InputGroup>
-              <InputGroupAddon addonType="prepend">
-                <InputGroupText>Country Director</InputGroupText>
-              </InputGroupAddon>
-              <div className="intSwitch">
-                <CustomInput
-                  type="switch"
-                  id="cdSwitch2"
-                  name="customSwitch"
-                  checked={countryDirector}
-                />
-              </div>
-            </InputGroup>
-          </FormGroup>
-        }
-
+        <FormGroup>
+          <InputGroup>
+            <InputGroupAddon addonType="prepend">
+              <InputGroupText>Country Director</InputGroupText>
+            </InputGroupAddon>
+            <div className="intSwitch">
+              <CustomInput
+                type="switch"
+                id="cdSwitch2"
+                name="customSwitch"
+                checked={countryDirector}
+                // onChange={(e) => setCountryDirector(e.target.checked)}
+              />
+            </div>
+          </InputGroup>
+        </FormGroup>
 
         <FormGroup>
           <InputGroup>
@@ -834,11 +815,8 @@ function ViewMyDetails(props) {
               id="exampleCustomSelect"
               name="customSelect"
               value={contractType}
-              onChange={(e) => {
-                setSuccessFeedback('');
-                setError('');
-                setContractType(e.target.value);
-              }}
+              onChange={(e) => setContractType(e.target.value)}
+              disabled
             >
               <option value="">Not set</option>
               <option value="Full-Time">Full-Time</option>
@@ -853,6 +831,10 @@ function ViewMyDetails(props) {
             <InputGroupAddon addonType="prepend">
               <InputGroupText>Contract Start Date</InputGroupText>
             </InputGroupAddon>
+            {/* <Calendar
+              value={contractStartDate}
+              onChange={(date) => setContractStartDate(date)}
+            /> */}
             <Input
               type="text"
               value={new Date(contractStartDate).toDateString()}
@@ -860,7 +842,6 @@ function ViewMyDetails(props) {
               disabled
             />
           </InputGroup>
-          <FormText>Contact HR or sys admin to modify this.</FormText>
         </FormGroup>
 
         <FormGroup>
@@ -875,7 +856,6 @@ function ViewMyDetails(props) {
               disabled
             />
           </InputGroup>
-          <FormText>Contact HR or sys admin to modify this.</FormText>
         </FormGroup>
 
         <FormGroup>
@@ -886,12 +866,9 @@ function ViewMyDetails(props) {
             <div className="selectCustomStyle">
               <Select
                 options={allUsers}
-                onChange={(opt) => {
-                  setSuccessFeedback('');
-                  setError('');
-                  onSelectSupervisorEmail(opt.value);
-                }}
+                onChange={(opt) => onSelectSupervisorEmail(opt.value)}
                 defaultValue={defaultSupervisor}
+                isDisabled={true}
               />
             </div>
           </InputGroup>
@@ -928,15 +905,16 @@ function ViewMyDetails(props) {
         </FormGroup>
 
         <p className="readThru alert alert-info">
-          Please read through and confirm the details provided before submitting
+          Please read through and confirm the details provided before submitting.
+          Contact the HR or System Admin to correct fields for which you have no edit rights.
         </p>
 
         {error && <div className="errorFeedback"> {error} </div>}
         {successFeedback && <div className="successFeedback"> {successFeedback} </div>}
 
-        <button className="submitButton" type="submit">
+        {/* <button className="submitButton" type="submit">
           {buttonText()}
-        </button>
+        </button> */}
       </Form>
     </div>
   );
@@ -944,7 +922,6 @@ function ViewMyDetails(props) {
 
 ViewMyDetails.propTypes = {
   token: PropTypes.string,
-  roles: PropTypes.object,
   propsPassed: PropTypes.bool,
   user: PropTypes.object,
   changeSection: PropTypes.func,
