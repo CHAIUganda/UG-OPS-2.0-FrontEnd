@@ -384,7 +384,11 @@ function EditUser(props) {
   return (
     <div className="registerFormStyle">
       <Form onSubmit={handleSubmit}>
-        <h3 className="registerHeading">Edit User</h3>
+        <h3 className="registerHeading">
+          Edit User
+          <button type="button" className="btn btn-outline-success float-right">Activate user</button>
+          <button type="button" className="btn btn-outline-danger float-right">Deactivatve user</button>
+        </h3>
         {
           spinner
           && <div className="alert alert-info text-center" role="alert">

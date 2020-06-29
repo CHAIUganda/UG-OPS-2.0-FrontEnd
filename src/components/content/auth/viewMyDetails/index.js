@@ -218,7 +218,6 @@ function ViewMyDetails(props) {
       setSubmitSpinner(false);
       return;
     }
-    debugger;
 
     const editUser = {
       ...user,
