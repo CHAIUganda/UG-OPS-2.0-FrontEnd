@@ -101,7 +101,7 @@ function Register({
     setBirthDate();
     setBankName('');
     setAccountNumber('');
-    setTeam('');
+    setTeam('Country Office');
     setContractType('Full-Time');
     setContractStartDate(new Date());
     setContractEndDate(new Date());
