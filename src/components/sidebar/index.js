@@ -40,16 +40,18 @@ function Sidebar({ token, section }) {
   useEffect(() => {
     const endPoint = `${BASE_URL}hrApi/getPublicHolidays`;
     axios.defaults.headers.common = { token };
-    axios.get(endPoint)
-      .then((res) => {
-        const days = [];
-        res.data.forEach((day) => {
-          days.push(new Date(`${new Date().getFullYear()}, ${day.date.split('/')[1]}, ${day.date.split('/')[0]}`));
+    if (token) {
+      axios.get(endPoint)
+        .then((res) => {
+          const days = [];
+          res.data.forEach((day) => {
+            days.push(new Date(`${new Date().getFullYear()}, ${day.date.split('/')[1]}, ${day.date.split('/')[0]}`));
+          });
+          setSelectedDates(days);
+        })
+        .catch((/* err */) => {
         });
-        setSelectedDates(days);
-      })
-      .catch((/* err */) => {
-      });
+    }
   }, []);
 
   return (

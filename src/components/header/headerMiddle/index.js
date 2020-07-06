@@ -16,10 +16,18 @@ const matchDispatchToProps = {
 
 const mapStateToProps = () => ({ });
 
-function HeaderMiddle({ changeSection }) {
+function HeaderMiddle({ changeSection, loginButton }) {
   const handleClick = (section) => {
     changeSection(section);
   };
+
+  if (loginButton) {
+    return (
+      <div className="middleHeader">
+        Ug Ops
+      </div>
+    );
+  }
 
   return (
     <div className="middleHeader">
@@ -50,7 +58,8 @@ function HeaderMiddle({ changeSection }) {
 }
 
 HeaderMiddle.propTypes = {
-  changeSection: PropTypes.func
+  changeSection: PropTypes.func,
+  loginButton: PropTypes.bool
 };
 
 export default connect(mapStateToProps, matchDispatchToProps)(HeaderMiddle);

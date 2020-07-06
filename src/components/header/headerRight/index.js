@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import Cookies from 'js-cookie';
 import { Link } from 'react-router-dom';
+import { useOktaAuth } from '@okta/okta-react';
 
 import {
   Dropdown,
@@ -26,15 +27,26 @@ const mapStateToProps = (state) => ({
   lastName: state.auth.lastName
 });
 
-function HeaderRight({ logUserOut, firstName, lastName }) {
+function HeaderRight({
+  logUserOut,
+  firstName,
+  lastName,
+  loginButton
+}) {
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const { authService } = useOktaAuth();
 
   const toggle = () => setDropdownOpen((prevState) => !prevState);
+
+  const login = async () => {
+    authService.login('/');
+  };
 
   const logOut = (event) => {
     event.preventDefault();
     Cookies.remove('token');
     logUserOut();
+    authService.logout('/');
   };
 
   const returnIcon = () => (
@@ -50,6 +62,16 @@ function HeaderRight({ logUserOut, firstName, lastName }) {
       </span>
     </IconContext.Provider>
   );
+
+  if (loginButton) {
+    return (
+      <div className="headerRight  float-right">
+        <button className="submitButton mr-4" type="submit" onClick={login}>
+          Login
+        </button>
+      </div>
+    );
+  }
 
   return (
     <div className="headerRight  float-right">
@@ -75,7 +97,8 @@ function HeaderRight({ logUserOut, firstName, lastName }) {
 HeaderRight.propTypes = {
   logUserOut: PropTypes.func,
   firstName: PropTypes.string,
-  lastName: PropTypes.string
+  lastName: PropTypes.string,
+  loginButton: PropTypes.bool
 };
 
 export default connect(mapStateToProps, matchDispatchToProps)(HeaderRight);
