@@ -3,7 +3,7 @@ import { FaUserCircle } from 'react-icons/fa';
 import { IconContext } from 'react-icons';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import Cookies from 'js-cookie';
+// import Cookies from 'js-cookie';
 import { Link } from 'react-router-dom';
 import { useOktaAuth } from '@okta/okta-react';
 
@@ -44,7 +44,7 @@ function HeaderRight({
 
   const logOut = (event) => {
     event.preventDefault();
-    Cookies.remove('token');
+    // Cookies.remove('token');
     logUserOut();
     authService.logout('/');
   };

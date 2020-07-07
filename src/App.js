@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import {
   // HashRouter,
   Route,
-  // Switch
+  Switch,
   BrowserRouter as Router
 } from 'react-router-dom';
 import { Security, SecureRoute, LoginCallback } from '@okta/okta-react';
@@ -31,22 +31,22 @@ function App() {
           <Header />
           <div className="row">
             <Sidebar />
-            {/* <Switch> */}
-            {/* {!token && (
+            <Switch>
+              {/* {!token && (
             <Route
               path="/"
               render={(Routerprops) => <Auth {...Routerprops} isAuthed={false} />}
             />
           )} */}
-            <Route exact path="/" component={Welcome} />
-            <Route path="/implicit/callback" component={LoginCallback} />
-            {/* OKTA SECURE */}
-            <SecureRoute path="/hr/:componentToRender" component={HR} />
-            <SecureRoute path="/procurement/:componentToRender" component={Procurement} />
-            <SecureRoute path="/auth/:componentToRender" component={Auth} />
-            <SecureRoute component={PageNotFound} />
-            {/* <Route component={Welcome} /> */}
-            {/* </Switch> */}
+              <Route exact path="/" component={Welcome} />
+              <Route path="/implicit/callback" component={LoginCallback} />
+              {/* OKTA SECURE */}
+              <SecureRoute path="/hr/:componentToRender" component={HR} />
+              <SecureRoute path="/procurement/:componentToRender" component={Procurement} />
+              <SecureRoute path="/auth/:componentToRender" component={Auth} />
+              <SecureRoute component={PageNotFound} />
+              {/* <Route component={Welcome} /> */}
+            </Switch>
           </div>
         </Security>
       </Router>
