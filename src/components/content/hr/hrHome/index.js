@@ -94,7 +94,6 @@ function HRHome({
   const setUpThisPage = () => {
     axios.defaults.headers.common = { token };
     const endPoint = `${BASE_URL}leaveApi/getStaffLeavesTaken/${email}`;
-    debugger;
     axios.get(endPoint)
       .then((res) => {
         setLeaveBalances(res.data.leaveDetails);
@@ -102,6 +101,11 @@ function HRHome({
       })
       .catch((err) => {
         setSpinner(false);
+
+        if (err.response.status === 401) {
+          authService.logout('/');
+        }
+
         if (err && err.response && err.response.data && err.response.data.message) {
           setError(err.response.data.message);
         } else {
@@ -111,7 +115,6 @@ function HRHome({
   };
 
   useEffect(() => {
-    debugger;
     setSpinner(true);
     setError('');
 
