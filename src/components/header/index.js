@@ -30,7 +30,7 @@ function Header({ token }) {
       </div>
     </div>);
   }
-  debugger;
+
   if (!authState.isAuthenticated) {
     return (<div className="headerDiv pt-3">
       <div className="row">

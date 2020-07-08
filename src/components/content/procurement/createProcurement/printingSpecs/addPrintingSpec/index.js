@@ -253,8 +253,6 @@ const AddPrintingSpec = ({
       additionalDocumentations,
     };
 
-    debugger;
-
     if (addEntry) {
       if (edit) {
         editSpec(position, newSpec);

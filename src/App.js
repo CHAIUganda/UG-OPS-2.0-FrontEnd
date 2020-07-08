@@ -2,10 +2,10 @@ import React from 'react';
 // import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import {
-  HashRouter,
+  // HashRouter,
   Route,
   Switch,
-  // BrowserRouter as Router
+  BrowserRouter as Router
 } from 'react-router-dom';
 import { Security, SecureRoute, LoginCallback } from '@okta/okta-react';
 
@@ -19,14 +19,14 @@ import Auth from './components/content/auth/index';
 
 // import * as authActions from './redux/actions/authActions';
 // import * as notificationActions from './redux/actions/notificationsActions';
-import oktaConfig from './oktaConf';
+import oktaConfig from './oktaConfig';
 
 import './App.css';
 
 function App() {
   return (
     <>
-      <HashRouter>
+      <Router>
         <Security {...oktaConfig.oidc}>
           <Header />
           <div className="row">
@@ -49,7 +49,7 @@ function App() {
             </Switch>
           </div>
         </Security>
-      </HashRouter>
+      </Router>
     </>
   );
 }
