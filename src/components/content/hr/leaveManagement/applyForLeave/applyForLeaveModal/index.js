@@ -20,6 +20,7 @@ import Calendar from 'react-calendar';
 import { connect } from 'react-redux';
 import axios from 'axios';
 import moment from 'moment';
+import { useOktaAuth } from '@okta/okta-react';
 
 import getDatesInBetween from '../../../../../common/getDatesBetween';
 import { BASE_URL } from '../../../../../../config';
@@ -54,6 +55,8 @@ function Apply4LeaveModal({
   const [greenContraintsFeedback, setGreenContraintsFeedback] = useState('');
   const [redContraintsFeedback, setRedContraintsFeedback] = useState('');
   const [successFeedback, setSuccessFeedback] = useState('');
+
+  const { authService } = useOktaAuth();
 
   const reset = () => {
     setError('');
@@ -317,12 +320,16 @@ function Apply4LeaveModal({
         setSuccessFeedback(res.data.message);
       })
       .catch((err) => {
+        setSpinner(false);
+
+        if (err.response.status === 401) {
+          authService.logout('/');
+        }
+
         if (err && err.response && err.response.data && err.response.data.message) {
           setError(err.response.data.message);
-          setSpinner(false);
         } else {
           setError(err.message);
-          setSpinner(false);
         }
       });
   };
@@ -484,6 +491,10 @@ function Apply4LeaveModal({
         setHolidays(res.data);
       })
       .catch((err) => {
+        if (err.response.status === 401) {
+          authService.logout('/');
+        }
+
         if (err && err.response && err.response.data && err.response.data.message) {
           setPublicHolidaysFeedback(err.response.data.message);
         } else {
