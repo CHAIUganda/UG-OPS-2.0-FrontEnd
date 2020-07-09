@@ -11,6 +11,7 @@ import { IoMdSettings } from 'react-icons/io';
 import PropTypes from 'prop-types';
 import axios from 'axios';
 import { connect } from 'react-redux';
+import { useOktaAuth } from '@okta/okta-react';
 
 import * as notificationActions from '../../../../../../redux/actions/notificationsActions';
 import Spinner from '../../../../../common/spinner';
@@ -39,6 +40,8 @@ const SpecificContractModal = ({
   const [error, setError] = useState('');
   const [removeFromList, setRemoveFromList] = useState(false);
 
+  const { authService } = useOktaAuth();
+
   const turnOffNotifications = () => {
     const handleSingleNotification = (c) => {
       axios.defaults.headers.common = { token };
@@ -53,6 +56,10 @@ const SpecificContractModal = ({
           removeNotification(c._id);
         })
         .catch((err) => {
+          if (err.response.status === 401) {
+            authService.logout('/');
+          }
+
           if (err && err.response && err.response.data && err.response.data.message) {
             setError(err.response.data.message);
           } else {
@@ -94,6 +101,11 @@ const SpecificContractModal = ({
       })
       .catch((err) => {
         setDismissSpiner(false);
+
+        if (err.response.status === 401) {
+          authService.logout('/');
+        }
+
         if (err && err.response && err.response.data && err.response.data.message) {
           setError(err.response.data.message);
         } else {
@@ -123,6 +135,11 @@ const SpecificContractModal = ({
       })
       .catch((err) => {
         setSnoozeSpinner(false);
+
+        if (err.response.status === 401) {
+          authService.logout('/');
+        }
+
         if (err && err.response && err.response.data && err.response.data.message) {
           setError(err.response.data.message);
         } else {
