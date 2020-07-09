@@ -56,12 +56,12 @@ function HRHome({
           lName,
           position,
           _id,
-          leaveDetails,
           supervisorDetails,
           notifications
         } = res.data;
         const genderToSet = res.data.gender;
         const emailToSet = res.data.email;
+        const leaveDetailsToSet = res.data.leaveDetails;
 
         const userObject = {
           ...res.data,
@@ -74,7 +74,7 @@ function HRHome({
           lastName: lName,
           Position: position,
           id: _id,
-          leaveDetails,
+          leaveDetails: leaveDetailsToSet,
           supervisor: supervisorDetails
         };
         setInitialNotifications(notifications);
