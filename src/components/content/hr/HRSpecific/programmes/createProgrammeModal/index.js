@@ -18,6 +18,7 @@ import axios from 'axios';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import Select from 'react-select';
+import { useOktaAuth } from '@okta/okta-react';
 
 import { BASE_URL } from '../../../../../../config';
 
@@ -33,6 +34,8 @@ const CreateNewProgramme = ({ onNewProgramme, token, allUsers }) => {
   const [programmeName, setProgrammeName] = useState('');
   const [shortForm, setShortForm] = useState('');
   const [pm, setPm] = useState('');
+
+  const { authService } = useOktaAuth();
 
   const toggle = () => setModal(!modal);
 
@@ -66,6 +69,11 @@ const CreateNewProgramme = ({ onNewProgramme, token, allUsers }) => {
       })
       .catch((err) => {
         setFormSpinner(false);
+
+        if (err.response.status === 401) {
+          authService.logout('/');
+        }
+
         if (err && err.response && err.response.data && err.response.data.message) {
           setFormError(err.response.data.message);
         } else {
