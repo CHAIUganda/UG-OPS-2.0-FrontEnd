@@ -514,14 +514,22 @@ function ConsolidatedLeaveBalances({
   };
 
   const annualLeaveTd = (l) => {
+    const returnColors = () => {
+      if (l.leaveDetails.annualLeaveBal >= 10) {
+        return returnStatusClass('rejectedWords');
+      }
+      if (l.leaveDetails.annualLeaveBal < 0) {
+        return returnStatusClass('declined');
+      }
+      if (l.leaveDetails.annualLeaveBal >= 0) {
+        return returnStatusClass('approvedWords');
+      }
+      return '';
+    };
     return (<>
       <td>{l.leaveDetails.annualLeaveTaken}</td>
       <td>
-        <span className={
-          l.leaveDetails.annualLeaveBal > 10
-            ? returnStatusClass('rejectedWords mt-1')
-            : returnStatusClass('approvedWords mt-1')
-        }>{l.leaveDetails.annualLeaveBal}</span>
+        <span className={returnColors()}>{l.leaveDetails.annualLeaveBal}</span>
       </td>
     </>);
   };
