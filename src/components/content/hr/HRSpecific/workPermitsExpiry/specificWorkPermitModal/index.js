@@ -11,6 +11,7 @@ import { IoMdSettings } from 'react-icons/io';
 import PropTypes from 'prop-types';
 import axios from 'axios';
 import { connect } from 'react-redux';
+import { useOktaAuth } from '@okta/okta-react';
 
 import Spinner from '../../../../../common/spinner';
 import * as notificationActions from '../../../../../../redux/actions/notificationsActions';
@@ -39,6 +40,8 @@ const SpecificWorkPermitModal = ({
   const [error, setError] = useState('');
   const [removeFromList, setRemoveFromList] = useState(false);
 
+  const { authService } = useOktaAuth();
+
   const toggle = () => {
     if (removeFromList) {
       modifyWorkPermitList(index);
@@ -60,6 +63,10 @@ const SpecificWorkPermitModal = ({
           removeNotification(wp._id);
         })
         .catch((err) => {
+          if (err.response.status === 401) {
+            authService.logout('/');
+          }
+
           if (err && err.response && err.response.data && err.response.data.message) {
             setError(err.response.data.message);
           } else {
@@ -94,6 +101,11 @@ const SpecificWorkPermitModal = ({
       })
       .catch((err) => {
         setDismissSpiner(false);
+
+        if (err.response.status === 401) {
+          authService.logout('/');
+        }
+
         if (err && err.response && err.response.data && err.response.data.message) {
           setError(err.response.data.message);
         } else {
@@ -123,6 +135,11 @@ const SpecificWorkPermitModal = ({
       })
       .catch((err) => {
         setSnoozeSpinner(false);
+
+        if (err.response.status === 401) {
+          authService.logout('/');
+        }
+
         if (err && err.response && err.response.data && err.response.data.message) {
           setError(err.response.data.message);
         } else {
