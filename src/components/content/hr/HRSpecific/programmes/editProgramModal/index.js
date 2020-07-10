@@ -17,6 +17,7 @@ import { IconContext } from 'react-icons';
 import PropTypes from 'prop-types';
 import axios from 'axios';
 import Select from 'react-select';
+import { useOktaAuth } from '@okta/okta-react';
 
 import { BASE_URL } from '../../../../../../config';
 import CommonSpinner from '../../../../../common/spinner';
@@ -38,6 +39,8 @@ export default function EditProgram({
   const [programmeName, setProgrammeName] = useState(program.name);
   const [shortForm, setShortForm] = useState(program.shortForm);
   const [editObj, setEditObj] = useState({});
+
+  const { authService } = useOktaAuth();
 
   const toggle = () => {
     setSuccessFeedback('');
@@ -82,6 +85,11 @@ export default function EditProgram({
       })
       .catch((err) => {
         setSubmitSpinner(false);
+
+        if (err.response.status === 401) {
+          authService.logout('/');
+        }
+
         if (err && err.response && err.response.data && err.response.data.message) {
           setError(err.response.data.message);
         } else {
