@@ -15,8 +15,12 @@ import { connect } from 'react-redux';
 import axios from 'axios';
 import PropTypes from 'prop-types';
 import Select from 'react-select';
+import { useOktaAuth } from '@okta/okta-react';
 
 import * as sideBarActions from '../../../../redux/actions/sideBarActions';
+import * as authActions from '../../../../redux/actions/authActions';
+import * as notificationActions from '../../../../redux/actions/notificationsActions';
+
 import CommonSpinner from '../../../common/spinner';
 import EditBankDetailsModal from '../editUser/editBankDetails';
 import { BASE_URL, returnStatusClass } from '../../../../config';
@@ -24,7 +28,9 @@ import './register.css';
 
 const matchDispatchToProps = {
   changeSection: sideBarActions.changeSection,
-  changeActive: sideBarActions.changeActive
+  changeActive: sideBarActions.changeActive,
+  logUserIn: authActions.logUserIn,
+  setInitialNotifications: notificationActions.setInitialNotifications
 };
 
 const mapStateToProps = (state) => ({
@@ -36,7 +42,9 @@ function Register({
   token,
   roles,
   changeSection,
-  changeActive
+  changeActive,
+  setInitialNotifications,
+  logUserIn
 }) {
   const [email, setEmail] = useState('@clintonhealthaccess.org');
   const [firstName, setFirstName] = useState('');
@@ -73,7 +81,9 @@ function Register({
   const [nssfNumber, setNssfNumber] = useState('');
   const [tinNumber, setTinNumber] = useState('');
 
-  if (roles) {
+  const { authState, authService } = useOktaAuth();
+
+  if (token && roles) {
     if (!roles.hr && !roles.admin) {
       return (
         <div className="alert alert-danger text-center" role="alert">
@@ -81,13 +91,6 @@ function Register({
         </div>
       );
     }
-  } else {
-    return (
-      <div className="alert alert-danger text-center" role="alert">
-        <p>{'FE: You seem to have no roles.'}</p>
-        <p>Please contact the system admin to rectify this.</p>
-      </div>
-    );
   }
 
   changeSection('Human Resource');
@@ -216,8 +219,54 @@ function Register({
       });
   };
 
-  useEffect(() => {
-    setSpinner(true);
+  const setUpUser = (tokenToSet) => {
+    axios.defaults.headers.common = { token: tokenToSet };
+    const apiRoute = `${BASE_URL}auth/getLoggedInUser`;
+    axios.get(apiRoute)
+      . then((res) => {
+        const {
+          department,
+          fName,
+          internationalStaff,
+          lName,
+          _id,
+          supervisorDetails,
+          notifications
+        } = res.data;
+        const genderToSet = res.data.gender;
+        const emailToSet = res.data.email;
+        const leaveDetailsToSet = res.data.leaveDetails;
+        const positionToSet = res.data.position;
+
+        const userObject = {
+          ...res.data,
+          email: emailToSet,
+          token: tokenToSet,
+          gender: genderToSet,
+          internationalStaff,
+          department,
+          firstName: fName,
+          lastName: lName,
+          Position: positionToSet,
+          id: _id,
+          leaveDetails: leaveDetailsToSet,
+          supervisor: supervisorDetails
+        };
+        setInitialNotifications(notifications);
+        logUserIn(userObject);
+        setSpinner(false);
+      })
+      .catch((err) => {
+        setSpinner(false);
+        if (err && err.response && err.response.data && err.response.data.message) {
+          setError(err.response.data.message);
+        } else {
+          setError(err.message);
+        }
+      });
+  };
+
+  const setUpThisPage = () => {
     axios.defaults.headers.common = { token };
     const apiRoute = `${BASE_URL}hrApi/getPrograms`;
     axios.get(apiRoute)
@@ -234,6 +283,25 @@ function Register({
           setError(err.message);
         }
       });
+  };
+
+  useEffect(() => {
+    setSpinner(true);
+    setError('');
+
+    if (token) {
+      setUpThisPage();
+    }
+
+    if (!token && authState.isAuthenticated) {
+      const { accessToken } = authState;
+      setUpUser(`Bearer ${accessToken}`);
+    }
+
+    if (!token && !authState.isAuthenticated) {
+      setSpinner(false);
+      authService.logout('/');
+    }
   }, []);
 
   const onSelectSupervisorEmail = (value) => {
@@ -897,7 +965,9 @@ Register.propTypes = {
   token: PropTypes.string,
   roles: PropTypes.object,
   changeSection: PropTypes.func,
-  changeActive: PropTypes.func
+  changeActive: PropTypes.func,
+  setInitialNotifications: PropTypes.func,
+  logUserIn: PropTypes.func,
 };
 
 export default connect(mapStateToProps, matchDispatchToProps)(Register);

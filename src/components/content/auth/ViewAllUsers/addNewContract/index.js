@@ -18,6 +18,7 @@ import { IconContext } from 'react-icons';
 import { IoIosAdd } from 'react-icons/io';
 import Calendar from 'react-calendar';
 import axios from 'axios';
+import { useOktaAuth } from '@okta/okta-react';
 
 import { BASE_URL } from '../../../../../config';
 import CommonSpinner from '../../../../common/spinner';
@@ -33,6 +34,8 @@ const AddNewContOrWP = ({ user }) => {
   const [wpStartDate, setWpStartDate] = useState();
   const [wpEndDate, setWpendDate] = useState();
   const [submitSpinner, setSubmitSpinner] = useState(false);
+
+  const { authService } = useOktaAuth();
 
   const toggle = () => setModal(!modal);
 
@@ -62,6 +65,10 @@ const AddNewContOrWP = ({ user }) => {
         setSuccess(res.data.message);
       })
       .catch((e) => {
+        if (e.response.status === 401) {
+          authService.logout('/');
+        }
+
         if (e && e.response && e.response.data && e.response.data.message) {
           setErr(e.response.data.message);
         } else {
@@ -96,6 +103,10 @@ const AddNewContOrWP = ({ user }) => {
         setSuccess(res.data.message);
       })
       .catch((e) => {
+        if (e.response.status === 401) {
+          authService.logout('/');
+        }
+
         if (e && e.response && e.response.data && e.response.data.message) {
           setErr(e.response.data.message);
         } else {

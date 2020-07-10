@@ -15,6 +15,7 @@ import { connect } from 'react-redux';
 import axios from 'axios';
 import PropTypes from 'prop-types';
 import Select from 'react-select';
+import { useOktaAuth } from '@okta/okta-react';
 
 import * as sideBarActions from '../../../../redux/actions/sideBarActions';
 import CommonSpinner from '../../../common/spinner';
@@ -42,7 +43,7 @@ function EditUser(props) {
     roles
   } = props;
 
-  if (roles) {
+  if (token && roles) {
     if (!roles.hr && !roles.admin) {
       return (
         <div className="alert alert-danger text-center" role="alert">
@@ -50,13 +51,6 @@ function EditUser(props) {
         </div>
       );
     }
-  } else {
-    return (
-      <div className="alert alert-danger text-center" role="alert">
-        <p>{'FE: You seem to have no roles.'}</p>
-        <p>Please contact the system admin to rectify this.</p>
-      </div>
-    );
   }
 
   changeSection('Human Resource');
@@ -207,6 +201,8 @@ function EditUser(props) {
   const [accountNumber, setAccountNumber] = useState('');
   const [Currency, setCurrency] = useState('UGX');
 
+  const { authService } = useOktaAuth();
+
   const returnDefaultSupervisor = () => {
     if (user.supervisorDetails
         && user.supervisorDetails.fName
@@ -288,6 +284,11 @@ function EditUser(props) {
       })
       .catch((err) => {
         setSubmitSpinner(false);
+
+        if (err.response.status === 401) {
+          authService.logout('/');
+        }
+
         if (err && err.response && err.response.data && err.response.data.message) {
           setError(err.response.data.message);
         } else {
@@ -311,6 +312,11 @@ function EditUser(props) {
       })
       .catch((err) => {
         setSpinner(false);
+
+        if (err.response.status === 401) {
+          authService.logout('/');
+        }
+
         if (err && err.response && err.response.data && err.response.data.message) {
           setError(err.response.data.message);
         } else {
@@ -331,6 +337,11 @@ function EditUser(props) {
       })
       .catch((err) => {
         setSpinner(false);
+
+        if (err.response.status === 401) {
+          authService.logout('/');
+        }
+
         if (err && err.response && err.response.data && err.response.data.message) {
           setError(err.response.data.message);
         } else {
