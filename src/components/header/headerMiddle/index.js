@@ -1,8 +1,8 @@
 import React from 'react';
 // import { Link } from 'react-router-dom';
 import { IoIosPeople } from 'react-icons/io';
-import { GiTakeMyMoney } from 'react-icons/gi';
-import { FaFileInvoiceDollar } from 'react-icons/fa';
+// import { GiTakeMyMoney } from 'react-icons/gi';
+// import { FaFileInvoiceDollar } from 'react-icons/fa';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
@@ -38,7 +38,7 @@ function HeaderMiddle({ changeSection, loginButton }) {
           textToSet="Human Resource"
         />
       </span>
-      <span onClick={() => handleClick('Procurement')}>
+      {/* <span onClick={() => handleClick('Procurement')}>
         <SubItem
           link="/"
           IcontoSet={GiTakeMyMoney}
@@ -52,7 +52,7 @@ function HeaderMiddle({ changeSection, loginButton }) {
           IcontoSet={FaFileInvoiceDollar}
           textToSet="Finance"
         />
-      </span>
+      </span> */}
     </div>
   );
 }
