@@ -57,8 +57,6 @@ function Register({
   const [contractEndDate, setContractEndDate] = useState(new Date());
   const [workPermitStartDate, setWorkPermitStartDate] = useState();
   const [workPermitEndDate, setWorkPermitEndDate] = useState();
-  const [password, setPassword] = useState('123456');
-  const [confirmPass, setConfirmPass] = useState('123456');
   const [gender, setGender] = useState('Female');
   const [position, setPosition] = useState('');
   const [admin, setAdmin] = useState(false);
@@ -108,8 +106,6 @@ function Register({
     setContractType('Full-Time');
     setContractStartDate(new Date());
     setContractEndDate(new Date());
-    setPassword('123456');
-    setConfirmPass('123456');
     setGender('female');
     setPosition('');
     setAdmin(false);
@@ -166,7 +162,6 @@ function Register({
       oNames: otherNames,
       email,
       bankAccounts,
-      password,
       nssfNumber,
       tinNumber,
       workPermitStartDate:
@@ -905,44 +900,6 @@ function Register({
                 }}
               />
             </div>
-          </InputGroup>
-        </FormGroup>
-
-        <FormGroup>
-          <InputGroup>
-            <InputGroupAddon addonType="prepend">
-              <InputGroupText>***</InputGroupText>
-            </InputGroupAddon>
-            <Input
-              placeholder="password"
-              type="password"
-              value={password}
-              onChange={(e) => {
-                setSuccessFeedback('');
-                setError('');
-                setPassword(e.target.value);
-              }}
-              required
-            />
-          </InputGroup>
-        </FormGroup>
-
-        <FormGroup>
-          <InputGroup>
-            <InputGroupAddon addonType="prepend">
-              <InputGroupText>***</InputGroupText>
-            </InputGroupAddon>
-            <Input
-              placeholder="Confirm Password"
-              type="password"
-              value={confirmPass}
-              onChange={(e) => {
-                setSuccessFeedback('');
-                setError('');
-                setConfirmPass(e.target.value);
-              }}
-              required
-            />
           </InputGroup>
         </FormGroup>
 
