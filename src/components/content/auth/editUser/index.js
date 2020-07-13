@@ -124,8 +124,6 @@ function EditUser(props) {
       ? new Date(user.contractEndDate)
       : ''
   );
-  const [password, setPassword] = useState('123456');
-  const [confirmPass, setConfirmPass] = useState('123456');
   const [gender, setGender] = useState(
     user.gender
       ? user.gender
@@ -268,7 +266,6 @@ function EditUser(props) {
       supervisorEmail: supervisorsEmail,
       oNames: otherNames,
       email,
-      password,
       contractId: user.contractId,
       nssfNumber,
       tinNumber,
@@ -1063,36 +1060,6 @@ function EditUser(props) {
                 defaultValue={defaultSupervisor}
               />
             </div>
-          </InputGroup>
-        </FormGroup>
-
-        <FormGroup>
-          <InputGroup>
-            <InputGroupAddon addonType="prepend">
-              <InputGroupText>***</InputGroupText>
-            </InputGroupAddon>
-            <Input
-              placeholder="password"
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-            />
-          </InputGroup>
-        </FormGroup>
-
-        <FormGroup>
-          <InputGroup>
-            <InputGroupAddon addonType="prepend">
-              <InputGroupText>***</InputGroupText>
-            </InputGroupAddon>
-            <Input
-              placeholder="Confirm Password"
-              type="password"
-              value={confirmPass}
-              onChange={(e) => setConfirmPass(e.target.value)}
-              required
-            />
           </InputGroup>
         </FormGroup>
 
