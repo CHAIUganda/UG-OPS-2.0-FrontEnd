@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
-import { FaUserCircle } from 'react-icons/fa';
+import { FaUserCircle, FaAngleDoubleRight } from 'react-icons/fa';
 import { IconContext } from 'react-icons';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 // import Cookies from 'js-cookie';
 import { Link } from 'react-router-dom';
 import { useOktaAuth } from '@okta/okta-react';
+
 
 import {
   Dropdown,
@@ -68,6 +69,17 @@ function HeaderRight({
       <div className="headerRight  float-right">
         <button className="submitButton mr-4" type="submit" onClick={login}>
           Login
+          <IconContext.Provider
+            value={{
+              color: '#003366',
+              size: '1em',
+              className: 'global-class-name'
+            }}
+          >
+            <span className="userIcon">
+              <FaAngleDoubleRight />
+            </span>
+          </IconContext.Provider>
         </button>
       </div>
     );
