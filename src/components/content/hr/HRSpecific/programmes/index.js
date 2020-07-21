@@ -166,6 +166,11 @@ function ManageProgrammes({
       })
       .catch((err) => {
         setTableSpinner(false);
+
+        if (err.response.status === 401) {
+          authService.logout('/');
+        }
+
         if (err && err.response && err.response.data && err.response.data.message) {
           setTableError(err.response.data.message);
         } else {
@@ -213,6 +218,11 @@ function ManageProgrammes({
       })
       .catch((err) => {
         setTableSpinner(false);
+
+        if (err.response.status === 401) {
+          authService.logout('/');
+        }
+
         if (err && err.response && err.response.data && err.response.data.message) {
           setTableError(err.response.data.message);
         } else {
@@ -231,6 +241,11 @@ function ManageProgrammes({
       })
       .catch((err) => {
         setTableSpinner(false);
+
+        if (err.response.status === 401) {
+          authService.logout('/');
+        }
+
         if (err && err.response && err.response.data && err.response.data.message) {
           setTableError(err.response.data.message);
         } else {

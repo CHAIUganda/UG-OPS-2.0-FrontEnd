@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import DayPicker from 'react-day-picker';
 import axios from 'axios';
+import { useOktaAuth } from '@okta/okta-react';
 
 import { BASE_URL } from '../../config';
 import HR from './hr';
@@ -17,6 +18,7 @@ const mapStateToProps = (state) => ({
 
 function Sidebar({ token, section }) {
   const [selectedDates, setSelectedDates] = useState([]);
+  const { authService } = useOktaAuth();
 
   const returnCalendar = () => {
     if (!section) {
@@ -49,7 +51,10 @@ function Sidebar({ token, section }) {
           });
           setSelectedDates(days);
         })
-        .catch((/* err */) => {
+        .catch((err) => {
+          if (err.response.status === 401) {
+            authService.logout('/');
+          }
         });
     }
   }, []);

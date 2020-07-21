@@ -84,6 +84,11 @@ function ProgramLeaveTracker({
       })
       .catch((err) => {
         setSpinner(false);
+
+        if (err.response.status === 401) {
+          authService.logout('/');
+        }
+
         if (err && err.response && err.response.data && err.response.data.message) {
           setError(err.response.data.message);
         } else {
@@ -131,6 +136,11 @@ function ProgramLeaveTracker({
       })
       .catch((err) => {
         setSpinner(false);
+
+        if (err.response.status === 401) {
+          authService.logout('/');
+        }
+
         if (err && err.response && err.response.data && err.response.data.message) {
           setError(err.response.data.message);
         } else {
@@ -153,6 +163,11 @@ function ProgramLeaveTracker({
       })
       .catch((err) => {
         setSpinner(false);
+
+        if (err.response.status === 401) {
+          authService.logout('/');
+        }
+
         if (err && err.response && err.response.data && err.response.data.message) {
           setError(err.response.data.message);
         } else {

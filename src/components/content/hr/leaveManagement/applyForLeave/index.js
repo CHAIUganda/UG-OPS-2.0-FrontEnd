@@ -67,6 +67,10 @@ function Apply4Leave({
             removeNotification(n._id);
           })
           .catch((err) => {
+            if (err.response.status === 401) {
+              authService.logout('/');
+            }
+
             if (err && err.response && err.response.data && err.response.data.message) {
               setError(err.response.data.message);
             } else {
@@ -132,6 +136,10 @@ function Apply4Leave({
         setSpinner(false);
       })
       .catch((err) => {
+        if (err.response.status === 401) {
+          authService.logout('/');
+        }
+
         if (err && err.response && err.response.data && err.response.data.message) {
           setError(err.response.data.message);
         } else {
@@ -179,6 +187,11 @@ function Apply4Leave({
       })
       .catch((err) => {
         setSpinner(false);
+
+        if (err.response.status === 401) {
+          authService.logout('/');
+        }
+
         if (err && err.response && err.response.data && err.response.data.message) {
           setError(err.response.data.message);
         } else {
@@ -196,6 +209,11 @@ function Apply4Leave({
       })
       .catch((err) => {
         setSpinner(false);
+
+        if (err.response.status === 401) {
+          authService.logout('/');
+        }
+
         if (err && err.response && err.response.data && err.response.data.message) {
           setError(err.response.data.message);
         } else {
