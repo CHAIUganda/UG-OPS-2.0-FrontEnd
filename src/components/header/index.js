@@ -31,7 +31,7 @@ function Header({ token }) {
     </div>);
   }
 
-  if (!authState.isAuthenticated) {
+  if (!authState.isAuthenticated && !authState.isPending) {
     return (<div className="headerDiv pt-3">
       <div className="row">
         <div className="col-sm-1">
