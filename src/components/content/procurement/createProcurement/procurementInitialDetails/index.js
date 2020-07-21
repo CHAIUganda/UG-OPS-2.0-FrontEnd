@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   FormGroup,
   InputGroup,
@@ -9,8 +9,10 @@ import {
   FormText
 } from 'reactstrap';
 import PropTypes from 'prop-types';
+import Select from 'react-select';
 
 import NextButton from '../../../../common/nextButton';
+import FilterNameButton from '../../../../common/filterNameButton';
 // import BackButton from '../../../../common/backButton';
 
 function ProcurementInitialDetails({
@@ -18,8 +20,8 @@ function ProcurementInitialDetails({
   setError,
   setGid,
   gid,
-  pid,
-  setPid,
+  pids,
+  setPids,
   objectiveCode,
   setObjectiveCode,
   setCurrentComponent,
@@ -29,6 +31,8 @@ function ProcurementInitialDetails({
   const [gidError, setGidError] = useState('');
   const [pidEror, setPidError] = useState('');
   const [objectiveCodeError, setObjectiveCodeError] = useState('');
+  const [allPIDs, setAllPIDs] = useState([]);
+  const [selectedPids, setSelectedPids] = useState(pids);
 
   const errorProps = () => {
     const arr = [];
@@ -39,14 +43,65 @@ function ProcurementInitialDetails({
       });
     }
 
-    if (!pid) {
+    if (selectedPids.length < 1) {
       arr.push({
         err: 'Please set a PID to continue.',
         setter: setPidError
       });
     }
+
+    setPids(selectedPids);
+
     return arr;
   };
+
+  const removePid = (pidToRemove) => {
+    // Filter out the pid to be removed
+    const arr = selectedPids.filter((p) => p !== pidToRemove);
+
+    // set new pids without the removed one
+    setSelectedPids(arr);
+  };
+
+  const generatePidsRibbon = (sPids) => {
+    if (sPids.length > 0) {
+      return (
+        <div className="row mb-3 mt-4">
+          <div className="col text-left filterRibbon">
+            {
+              sPids.map((selectedPid, index) => (
+                <FilterNameButton
+                  key={`${index}${selectedPid}`}
+                  person={{ label: selectedPid, value: selectedPid }}
+                  removePerson={removePid}
+                />
+              ))
+            }
+          </div>
+        </div>
+      );
+    }
+
+    return (
+      <div className="row mt-4">
+        <div className="col text-left filterRibbon">
+          <div className="alert alert-primary" role="alert">
+            You have not yet selected PIDs.
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  useEffect(() => {
+    const pidsFromDbs = ['PID1', 'PID2', 'PID3', 'PID4', 'PID5'];
+    const arrayToSet = pidsFromDbs.map((pidIter) => ({
+      label: pidIter,
+      value: pidIter
+    }));
+    setAllPIDs(arrayToSet);
+  },
+  []);
 
   const returnGidInput = () => {
     if (gidError) {
@@ -118,6 +173,17 @@ function ProcurementInitialDetails({
     );
   };
 
+  const addPid = (opt) => {
+    setSuccessFeedback('');
+    setError('');
+    setPidError('');
+    const a = [...selectedPids, opt.value];
+    const found = selectedPids.some((p) => p === opt.value);
+    if (!found) {
+      setSelectedPids(a);
+    }
+  };
+
   const returnPidInput = () => {
     if (pidEror) {
       return (
@@ -128,27 +194,18 @@ function ProcurementInitialDetails({
               <InputGroupAddon addonType="prepend">
                 <InputGroupText>PID</InputGroupText>
               </InputGroupAddon>
-              <CustomInput
-                type="select"
-                id="exampleCustomSelect"
-                name="customSelect"
-                value={pid}
-                onChange={(e) => {
-                  setSuccessFeedback('');
-                  setError('');
-                  setPid(e.target.value);
-                  setPidError('');
-                }}
-                invalid
-              >
-                <option value="">Not Set</option>
-                <option value="PID01">PID01</option>
-                <option value="PID02">PID02</option>
-                <option value="PID03">PID03</option>
-                <option value="PID04">PID04</option>
-              </CustomInput>
+              <div className="selectCustomStyle">
+                <Select
+                  options={allPIDs}
+                  onChange={(opt) => addPid(opt)}
+                />
+              </div>
               <FormFeedback>{pidEror}</FormFeedback>
+              <div className="alert alert-danger" role="alert">
+                {pidEror}
+              </div>
             </InputGroup>
+            <FormText>You can select more than 1 PID.</FormText>
           </FormGroup>
         </>
       );
@@ -162,25 +219,14 @@ function ProcurementInitialDetails({
             <InputGroupAddon addonType="prepend">
               <InputGroupText>PID</InputGroupText>
             </InputGroupAddon>
-            <CustomInput
-              type="select"
-              id="exampleCustomSelect"
-              name="customSelect"
-              value={pid}
-              onChange={(e) => {
-                setSuccessFeedback('');
-                setError('');
-                setPid(e.target.value);
-                setPidError('');
-              }}
-            >
-              <option value="">Not Set</option>
-              <option value="PID01">PID01</option>
-              <option value="PID02">PID02</option>
-              <option value="PID03">PID03</option>
-              <option value="PID04">PID04</option>
-            </CustomInput>
+            <div className="selectCustomStyle">
+              <Select
+                options={allPIDs}
+                onChange={(opt) => addPid(opt) }
+              />
+            </div>
           </InputGroup>
+          <FormText>You can select more than 1 PID.</FormText>
         </FormGroup>
       </>
     );
@@ -261,6 +307,7 @@ function ProcurementInitialDetails({
       <div>
         <h3>Create Procurement Request</h3>
         {returnGidInput()}
+        {generatePidsRibbon(selectedPids)}
         {returnPidInput()}
         {returnObjectiveCodeInput()}
       </div>
@@ -283,8 +330,8 @@ ProcurementInitialDetails.propTypes = {
   setError: PropTypes.func,
   setGid: PropTypes.func,
   gid: PropTypes.string,
-  pid: PropTypes.string,
-  setPid: PropTypes.func,
+  pids: PropTypes.string,
+  setPids: PropTypes.func,
   objectiveCode: PropTypes.string,
   setObjectiveCode: PropTypes.func,
   setCurrentComponent: PropTypes.func,
