@@ -75,7 +75,7 @@ function CreateProcurement({
     CategoryOfProcurement,
     GeneralDetails
   ]);
-  const [gid, setGid] = useState('');
+  const [gids, setGids] = useState([]);
   const [pids, setPids] = useState([]);
   const [objectiveCode, setObjectiveCode] = useState('');
   const [printing, setPrinting] = useState(false);
@@ -195,8 +195,8 @@ function CreateProcurement({
         <ProcurementInitialDetails
           setSuccessFeedback={setSuccessFeedback}
           setError={setError}
-          setGid={setGid}
-          gid={gid}
+          setGids={setGids}
+          gids={gids}
           pids={pids}
           setPids={setPids}
           objectiveCode={objectiveCode}
