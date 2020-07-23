@@ -77,7 +77,7 @@ function CreateProcurement({
   ]);
   const [gids, setGids] = useState([]);
   const [pids, setPids] = useState([]);
-  const [objectiveCode, setObjectiveCode] = useState('');
+  const [objectiveCodes, setObjectiveCodes] = useState([]);
   const [printing, setPrinting] = useState(false);
   const [carHire, setCarHire] = useState(false);
   const [conferenceFacilities, setConferenceFacilities] = useState(false);
@@ -199,8 +199,8 @@ function CreateProcurement({
           gids={gids}
           pids={pids}
           setPids={setPids}
-          objectiveCode={objectiveCode}
-          setObjectiveCode={setObjectiveCode}
+          objectiveCodes={objectiveCodes}
+          setObjectiveCodes={setObjectiveCodes}
           setCurrentComponent={setCurrentComponent}
           activeSections={activeSections}
           setActiveSections={setActiveSections}

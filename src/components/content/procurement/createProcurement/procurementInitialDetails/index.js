@@ -4,8 +4,6 @@ import {
   InputGroup,
   InputGroupAddon,
   InputGroupText,
-  FormFeedback,
-  CustomInput,
   FormText
 } from 'reactstrap';
 import PropTypes from 'prop-types';
@@ -22,8 +20,8 @@ function ProcurementInitialDetails({
   gids,
   pids,
   setPids,
-  objectiveCode,
-  setObjectiveCode,
+  objectiveCodes,
+  setObjectiveCodes,
   setCurrentComponent,
   activeSections,
   currentComponent
@@ -35,6 +33,8 @@ function ProcurementInitialDetails({
   const [selectedPids, setSelectedPids] = useState(pids);
   const [allGIDs, setAllGIDs] = useState([]);
   const [selectedGids, setSelectedGids] = useState(gids);
+  const [allObjectiveCodes, setAllObjectiveCodes] = useState([]);
+  const [selectedObjectiveCodes, setSelectedObjectiveCodes] = useState(objectiveCodes);
 
   const errorProps = () => {
     const arr = [];
@@ -54,6 +54,7 @@ function ProcurementInitialDetails({
 
     setPids(selectedPids);
     setGids(selectedGids);
+    setObjectiveCodes(selectedObjectiveCodes);
 
     return arr;
   };
@@ -127,7 +128,45 @@ function ProcurementInitialDetails({
       <div className="row mt-4">
         <div className="col text-left filterRibbon">
           <div className="alert alert-primary" role="alert">
-            You have not yet selected GIDs.
+            You have not yet selected GIDS.
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  const removeObjCode = (objCodeToRemove) => {
+    // Filter out the objCode to be removed
+    const arr = selectedObjectiveCodes.filter((obj) => obj !== objCodeToRemove);
+
+    // set new objective codes without the removed one
+    setSelectedObjectiveCodes(arr);
+  };
+
+  const generateObjCodesRibbon = (sObjs) => {
+    if (sObjs.length > 0) {
+      return (
+        <div className="row mb-3 mt-4">
+          <div className="col text-left filterRibbon">
+            {
+              sObjs.map((selectedObj, index) => (
+                <FilterNameButton
+                  key={`${index}${selectedObj}`}
+                  person={{ label: selectedObj, value: selectedObj }}
+                  removePerson={removeObjCode}
+                />
+              ))
+            }
+          </div>
+        </div>
+      );
+    }
+
+    return (
+      <div className="row mt-4">
+        <div className="col text-left filterRibbon">
+          <div className="alert alert-primary" role="alert">
+            You have not yet selected objective codes.
           </div>
         </div>
       </div>
@@ -149,6 +188,14 @@ function ProcurementInitialDetails({
       value: gidIter
     }));
     setAllGIDs(GIDarrayToSet);
+
+    // Objective codes
+    const objectiveCodesFromDbs = ['obj1', 'obj2', 'obj3', 'obj4', 'obj5'];
+    const objetiveCodesToSet = objectiveCodesFromDbs.map((objIter) => ({
+      label: objIter,
+      value: objIter
+    }));
+    setAllObjectiveCodes(objetiveCodesToSet);
   },
   []);
 
@@ -237,7 +284,6 @@ function ProcurementInitialDetails({
                   onChange={(opt) => addPid(opt)}
                 />
               </div>
-              <FormFeedback>{pidEror}</FormFeedback>
               <div className="alert alert-danger" role="alert">
                 {pidEror}
               </div>
@@ -269,6 +315,17 @@ function ProcurementInitialDetails({
     );
   };
 
+  const addObjectiveCode = (opt) => {
+    setSuccessFeedback('');
+    setError('');
+    setObjectiveCodeError('');
+    const a = [...selectedObjectiveCodes, opt.value];
+    const found = selectedObjectiveCodes.some((o) => o === opt.value);
+    if (!found) {
+      setSelectedObjectiveCodes(a);
+    }
+  };
+
   const returnObjectiveCodeInput = () => {
     if (objectiveCodeError) {
       return (
@@ -279,26 +336,15 @@ function ProcurementInitialDetails({
               <InputGroupAddon addonType="prepend">
                 <InputGroupText>Objective Code</InputGroupText>
               </InputGroupAddon>
-              <CustomInput
-                type="select"
-                id="exampleCustomSelect"
-                name="customSelect"
-                value={objectiveCode}
-                onChange={(e) => {
-                  setSuccessFeedback('');
-                  setError('');
-                  setObjectiveCode(e.target.value);
-                  setObjectiveCodeError('');
-                }}
-                invalid
-              >
-                <option value="">Not Set</option>
-                <option value="OBJ01">OBJ01</option>
-                <option value="OBJ02">OBJ02</option>
-                <option value="OBJ03">OBJ03</option>
-                <option value="OBJ04">OBJ04</option>
-              </CustomInput>
-              <FormFeedback>{objectiveCodeError}</FormFeedback>
+              <div className="selectCustomStyle">
+                <Select
+                  options={allObjectiveCodes}
+                  onChange={(opt) => addObjectiveCode(opt) }
+                />
+              </div>
+              <div className="alert alert-danger" role="alert">
+                {objectiveCodeError}
+              </div>
             </InputGroup>
             <FormText>Objective code is not mandatory for all programs</FormText>
           </FormGroup>
@@ -314,24 +360,12 @@ function ProcurementInitialDetails({
             <InputGroupAddon addonType="prepend">
               <InputGroupText>Objective Code</InputGroupText>
             </InputGroupAddon>
-            <CustomInput
-              type="select"
-              id="exampleCustomSelect"
-              name="customSelect"
-              value={objectiveCode}
-              onChange={(e) => {
-                setSuccessFeedback('');
-                setError('');
-                setObjectiveCode(e.target.value);
-                setObjectiveCodeError('');
-              }}
-            >
-              <option value="">Not Set</option>
-              <option value="OBJ01">OBJ01</option>
-              <option value="OBJ02">OBJ02</option>
-              <option value="OBJ03">OBJ03</option>
-              <option value="OBJ04">OBJ04</option>
-            </CustomInput>
+            <div className="selectCustomStyle">
+              <Select
+                options={allObjectiveCodes}
+                onChange={(opt) => addObjectiveCode(opt) }
+              />
+            </div>
           </InputGroup>
           <FormText>Objective code is not mandatory for all programs</FormText>
         </FormGroup>
@@ -347,6 +381,7 @@ function ProcurementInitialDetails({
         {returnGidInput()}
         {generatePidsRibbon(selectedPids)}
         {returnPidInput()}
+        {generateObjCodesRibbon(selectedObjectiveCodes)}
         {returnObjectiveCodeInput()}
       </div>
 
@@ -370,8 +405,8 @@ ProcurementInitialDetails.propTypes = {
   gids: PropTypes.string,
   pids: PropTypes.string,
   setPids: PropTypes.func,
-  objectiveCode: PropTypes.string,
-  setObjectiveCode: PropTypes.func,
+  objectiveCodes: PropTypes.string,
+  setObjectiveCodes: PropTypes.func,
   setCurrentComponent: PropTypes.func,
   activeSections: PropTypes.array,
   currentComponent: PropTypes.object
