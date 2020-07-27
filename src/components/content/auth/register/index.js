@@ -68,6 +68,9 @@ function Register({
   const [spinner, setSpinner] = useState(false);
   const [error, setError] = useState('');
   const [countryDirector, setCountryDirector] = useState(false);
+  const [deputyCountryDirector, setDeputyCountryDirector] = useState(false);
+  const [procurementAdmin, setProcurementAdmin] = useState(false);
+  const [financeAdmin, setFinanceAdmin] = useState(false);
   const [supervisorsEmail, setSupervisorsEmail] = useState('');
   const [allUsers, setAllUsers] = useState([]);
   const [submitSpinner, setSubmitSpinner] = useState(false);
@@ -154,6 +157,9 @@ function Register({
       hr: humanResource,
       supervisor,
       countryDirector,
+      deputyCountryDirector,
+      procurementAdmin,
+      financeAdmin,
       title: position,
       programId: programme,
       type: staffCategory,
@@ -838,6 +844,69 @@ function Register({
                   setSuccessFeedback('');
                   setError('');
                   setCountryDirector(e.target.checked);
+                }}
+              />
+            </div>
+          </InputGroup>
+        </FormGroup>
+
+        <FormGroup>
+          <InputGroup>
+            <InputGroupAddon addonType="prepend">
+              <InputGroupText>Deputy Country Director</InputGroupText>
+            </InputGroupAddon>
+            <div className="intSwitch">
+              <CustomInput
+                type="switch"
+                id="dcdSwitch2"
+                name="customSwitch"
+                checked={deputyCountryDirector}
+                onChange={(e) => {
+                  setSuccessFeedback('');
+                  setError('');
+                  setDeputyCountryDirector(e.target.checked);
+                }}
+              />
+            </div>
+          </InputGroup>
+        </FormGroup>
+
+        <FormGroup>
+          <InputGroup>
+            <InputGroupAddon addonType="prepend">
+              <InputGroupText>Finance Admin</InputGroupText>
+            </InputGroupAddon>
+            <div className="intSwitch">
+              <CustomInput
+                type="switch"
+                id="financeAdminSwitch2"
+                name="customSwitch"
+                checked={financeAdmin}
+                onChange={(e) => {
+                  setSuccessFeedback('');
+                  setError('');
+                  setFinanceAdmin(e.target.checked);
+                }}
+              />
+            </div>
+          </InputGroup>
+        </FormGroup>
+
+        <FormGroup>
+          <InputGroup>
+            <InputGroupAddon addonType="prepend">
+              <InputGroupText>Procurement Admin</InputGroupText>
+            </InputGroupAddon>
+            <div className="intSwitch">
+              <CustomInput
+                type="switch"
+                id="procurementAdminSwitch2"
+                name="customSwitch"
+                checked={procurementAdmin}
+                onChange={(e) => {
+                  setSuccessFeedback('');
+                  setError('');
+                  setProcurementAdmin(e.target.checked);
                 }}
               />
             </div>

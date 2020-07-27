@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import { FaPlaneDeparture } from 'react-icons/fa';
 
 import * as sideBarActions from '../../../redux/actions/sideBarActions';
 
@@ -44,7 +45,7 @@ function Procurement({
   return (
     <div>
       <p className="sidebTopNav">
-        {/* <FaPlaneDeparture /> Manage */}
+        <FaPlaneDeparture /> Manage
       </p>
       {
         admin
