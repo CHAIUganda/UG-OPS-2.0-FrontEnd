@@ -151,6 +151,25 @@ function ViewMyDetails(props) {
       ? user.roles.countryDirector
       : false
   );
+
+  const [deputyCountryDirector, /* setDeputyCountryDirector */] = useState(
+    (user.roles && user.roles.deputyCountryDirector)
+      ? user.roles.deputyCountryDirector
+      : false
+  );
+
+  const [procurementAdmin, /* setProcurementAdmin */] = useState(
+    (user.roles && user.roles.procurementAdmin)
+      ? user.roles.procurementAdmin
+      : false
+  );
+
+  const [financeAdmin, /* setFinanceAdmin */] = useState(
+    (user.roles && user.roles.financeAdmin)
+      ? user.roles.financeAdmin
+      : false
+  );
+
   const [supervisorsEmail, setSupervisorsEmail] = useState(
     (user.supervisorDetails && user.supervisorDetails.email)
       ? user.supervisorDetails.email
@@ -913,6 +932,57 @@ function ViewMyDetails(props) {
               </div>
             </InputGroup>
           </FormGroup>
+        }
+
+        {deputyCountryDirector && <FormGroup>
+          <InputGroup>
+            <InputGroupAddon addonType="prepend">
+              <InputGroupText>Deputy Country Director</InputGroupText>
+            </InputGroupAddon>
+            <div className="intSwitch">
+              <CustomInput
+                type="switch"
+                id="dcdSwitch2"
+                name="customSwitch"
+                checked={deputyCountryDirector}
+              />
+            </div>
+          </InputGroup>
+        </FormGroup>
+        }
+
+        {financeAdmin && <FormGroup>
+          <InputGroup>
+            <InputGroupAddon addonType="prepend">
+              <InputGroupText>Finance Admin</InputGroupText>
+            </InputGroupAddon>
+            <div className="intSwitch">
+              <CustomInput
+                type="switch"
+                id="financeAdminSwitch2"
+                name="customSwitch"
+                checked={financeAdmin}
+              />
+            </div>
+          </InputGroup>
+        </FormGroup>
+        }
+
+        {procurementAdmin && <FormGroup>
+          <InputGroup>
+            <InputGroupAddon addonType="prepend">
+              <InputGroupText>Procurement Admin</InputGroupText>
+            </InputGroupAddon>
+            <div className="intSwitch">
+              <CustomInput
+                type="switch"
+                id="procurementAdminSwitch2"
+                name="customSwitch"
+                checked={procurementAdmin}
+              />
+            </div>
+          </InputGroup>
+        </FormGroup>
         }
 
 
