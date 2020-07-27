@@ -3,7 +3,6 @@ require('dotenv').config();
 export const BASE_URL = 'https://ugtest.clintonhealthaccess.org:3040/';
 // export const BASE_URL = 'https://ugtest.clintonhealthaccess.org:3041/';
 // export const BASE_URL = `http://${process.env.BACKEND_IP}:${process.env.BACKEND_PORT}/`;
-// debugger;
 
 export const returnStatusClass = (status) => {
   if (status === 'approvedWords') {

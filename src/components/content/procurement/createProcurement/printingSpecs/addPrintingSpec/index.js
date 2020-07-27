@@ -102,7 +102,10 @@ const AddPrintingSpec = ({
   const [modal, setModal] = useState(false);
   let filesHolder = edit ? specToEdit.additionalDocumentations : [];
 
-  const toggle = () => setModal(!modal);
+  const toggle = (event) => {
+    event.preventDefault();
+    setModal(!modal);
+  };
 
   const resetFilesArrays = () => {
     filesHolder = [];

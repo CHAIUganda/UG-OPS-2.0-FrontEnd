@@ -1,7 +1,6 @@
 /* eslint-disable no-restricted-globals */
 import React, { useState } from 'react';
 import {
-  Button,
   Modal,
   ModalHeader,
   ModalBody,
@@ -102,7 +101,8 @@ const AddCarHireSpec = ({
     edit ? specToEdit.carDatesRange : null
   );
 
-  const toggle = () => {
+  const toggle = (event) => {
+    event.preventDefault();
     setModal(!modal);
   };
 
@@ -1023,7 +1023,7 @@ const AddCarHireSpec = ({
     if (edit) {
       return (
         <>
-          <button className="submitButton positionBtn pull-left" type='submit' onClick={handleSubmit}>
+          <button className="submitButton positionBtn pull-left" onClick={handleSubmit}>
             Edit
           </button>
         </>
@@ -1032,7 +1032,7 @@ const AddCarHireSpec = ({
 
     return (
       <>
-        <button className="submitButton positionBtn pull-left" type='submit' onClick={handleSubmit}>
+        <button className="submitButton positionBtn pull-left" onClick={handleSubmit}>
           <IoMdAdd />
           Add Specification
         </button>
@@ -1071,7 +1071,7 @@ const AddCarHireSpec = ({
           </Form>
         </ModalBody>
         <ModalFooter>
-          <Button color="secondary" onClick={toggle}>Close</Button>
+          <button color="secondary" onClick={toggle}>Close</button>
         </ModalFooter>
       </Modal>
     </div>
