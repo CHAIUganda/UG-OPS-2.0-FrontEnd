@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import CreateProcurement from './createProcurement';
+import ManagePrograms from './handlePrograms';
 
 export default function Procurement(props) {
   const { componentToRender } = props.match.params;
@@ -14,7 +15,8 @@ export default function Procurement(props) {
   }
 
   const ComponentsObject = {
-    CreateProcurement
+    CreateProcurement,
+    ManagePrograms
   };
 
   const Tag = ComponentsObject[componentToRender];

@@ -33,7 +33,8 @@ const mapStateToProps = (state) => ({
   token: state.auth.token,
   email: state.auth.email,
   gender: state.auth.gender,
-  type: state.auth.type
+  type: state.auth.type,
+  roles: state.auth.roles
 });
 
 function CreateProcurement({
@@ -41,28 +42,20 @@ function CreateProcurement({
   changeActive,
   token,
   setInitialNotifications,
-  logUserIn
+  logUserIn,
+  roles
 }) {
-  /*
-  Check for roles
+  // Check for roles
 
-  if (roles) {
-    if (!roles.hr && !roles.admin) {
+  if (token && roles) {
+    if (!roles.operationsLead && !roles.admin) {
       return (
         <div className="alert alert-danger text-center" role="alert">
           <p>{'FE: You have no access rights for this resource.'}</p>
         </div>
       );
     }
-  } else {
-    return (
-      <div className="alert alert-danger text-center" role="alert">
-        <p>{'FE: You seem to have no roles.'}</p>
-        <p>Please contact the system admin to rectify this.</p>
-      </div>
-    );
   }
-  */
 
   const [error, setError] = useState('');
   const [loadingPageErr, setLoadingPageErr] = useState('');
@@ -339,6 +332,7 @@ CreateProcurement.propTypes = {
   changeActive: PropTypes.func,
   setInitialNotifications: PropTypes.func,
   logUserIn: PropTypes.func,
+  roles: PropTypes.object
 };
 
 export default connect(mapStateToProps, matchDispatchToProps)(CreateProcurement);

@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { FaPlaneDeparture } from 'react-icons/fa';
+import { GiPayMoney, GiMoneyStack } from 'react-icons/gi';
 
 import * as sideBarActions from '../../../redux/actions/sideBarActions';
 
@@ -45,7 +45,7 @@ function Procurement({
   return (
     <div>
       <p className="sidebTopNav">
-        <FaPlaneDeparture /> Manage
+        <GiPayMoney /> General Duties
       </p>
       {
         admin
@@ -55,6 +55,22 @@ function Procurement({
             link="/procurement/CreateProcurement"
             textToSet="Create Procurement Request"
             active={active === 'CreateProcurement'}
+          />
+        </span>
+      </div>
+      }
+
+      <p className="sidebTopNav">
+        <GiMoneyStack /> Finance Admin
+      </p>
+      {
+        admin
+      && <div className='showContent'>
+        <span onClick={() => handleChangeActive('CreateProcurement')}>
+          <SubItem
+            link="/procurement/ManagePrograms"
+            textToSet="Programs"
+            active={active === 'ManagePrograms'}
           />
         </span>
       </div>
