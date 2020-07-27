@@ -14,7 +14,13 @@
   margin-left: auto;
   margin-top: 14%;
 }
+
 .imageDiv img {
   /* filter: blur(1.9px); */
   opacity: 0.2;
+}
+
+.continueButton{
+  padding-top: 18%;
+  font-size: large;
 }

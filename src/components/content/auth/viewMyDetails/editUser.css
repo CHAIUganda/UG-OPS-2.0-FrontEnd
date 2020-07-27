@@ -6,20 +6,6 @@
   border-radius: 0.3em;
 }
 
-.submitButton {
-  background-color: #003366;
-  color: white;
-  padding: 0.5em;
-  border-radius: 0.3em;
-  border: 0.1em solid #003366;
-}
-
-.submitButton:hover {
-  background-color: white;
-  color: #003366;
-  border: 0.1em solid #003366;
-}
-
 .registerHeading {
   margin-top: -2em;
   margin-bottom: 1em;

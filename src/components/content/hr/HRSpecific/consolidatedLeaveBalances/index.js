@@ -5,8 +5,17 @@ import axios from 'axios';
 import html2canvas from 'html2canvas';
 import JSPDF from 'jspdf';
 import Select from 'react-select';
+import {
+  CustomInput,
+  Form,
+  FormGroup
+} from 'reactstrap';
+import { useOktaAuth } from '@okta/okta-react';
 
 import * as sideBarActions from '../../../../../redux/actions/sideBarActions';
+import * as authActions from '../../../../../redux/actions/authActions';
+import * as notificationActions from '../../../../../redux/actions/notificationsActions';
+
 import CommonSpinner from '../../../../common/spinner';
 import FilterNameButton from '../../../../common/filterNameButton';
 import { BASE_URL, returnStatusClass } from '../../../../../config';
@@ -14,7 +23,9 @@ import './consolidatedLeaveBalances.css';
 
 const matchDispatchToProps = {
   changeSection: sideBarActions.changeSection,
-  changeActive: sideBarActions.changeActive
+  changeActive: sideBarActions.changeActive,
+  logUserIn: authActions.logUserIn,
+  setInitialNotifications: notificationActions.setInitialNotifications
 };
 
 const mapStateToProps = (state) => ({
@@ -29,8 +40,17 @@ function ConsolidatedLeaveBalances({
   token,
   roles,
   changeSection,
-  changeActive
+  changeActive,
+  setInitialNotifications,
+  logUserIn
 }) {
+  const [showAnnual, setshowAnnual] = useState(true);
+  const [showHome, setShowHome] = useState(false);
+  const [showStudy, setShowStudy] = useState(false);
+  const [showMaternity, setShowMaternity] = useState(false);
+  const [showPaternity, setShowPaternity] = useState(false);
+  const [showSick, setShowSick] = useState(false);
+  const [showUnpaid, setShowUnpaid] = useState(false);
   const [spinner, setSpinner] = useState(false);
   const [error, setError] = useState('');
   const [allLeaves, setallLeaves] = useState([]);
@@ -49,7 +69,9 @@ function ConsolidatedLeaveBalances({
     }
   );
 
-  if (roles) {
+  const { authState, authService } = useOktaAuth();
+
+  if (token && roles) {
     if (!roles.hr && !roles.admin) {
       return (
         <div className="alert alert-danger text-center" role="alert">
@@ -57,13 +79,6 @@ function ConsolidatedLeaveBalances({
         </div>
       );
     }
-  } else {
-    return (
-      <div className="alert alert-danger text-center" role="alert">
-        <p>{'FE: You seem to have no roles.'}</p>
-        <p>Please contact the system admin to rectify this.</p>
-      </div>
-    );
   }
 
   changeSection('Human Resource');
@@ -89,6 +104,11 @@ function ConsolidatedLeaveBalances({
       })
       .catch((err) => {
         setSpinner(false);
+
+        if (err.response.status === 401) {
+          authService.logout('/');
+        }
+
         if (err && err.response && err.response.data && err.response.data.message) {
           setError(err.response.data.message);
         } else {
@@ -107,6 +127,87 @@ function ConsolidatedLeaveBalances({
       })
       .catch((err) => {
         setSpinner(false);
+
+        if (err.response.status === 401) {
+          authService.logout('/');
+        }
+
+        if (err && err.response && err.response.data && err.response.data.message) {
+          setError(err.response.data.message);
+        } else {
+          setError(err.message);
+        }
+      });
+  };
+
+  const setUpUser = (tokenToSet) => {
+    axios.defaults.headers.common = { token: tokenToSet };
+    const apiRoute = `${BASE_URL}auth/getLoggedInUser`;
+    axios.get(apiRoute)
+      . then((res) => {
+        const {
+          department,
+          fName,
+          internationalStaff,
+          lName,
+          position,
+          _id,
+          supervisorDetails,
+          notifications
+        } = res.data;
+        const genderToSet = res.data.gender;
+        const emailToSet = res.data.email;
+        const leaveDetailsToSet = res.data.leaveDetails;
+
+        const userObject = {
+          ...res.data,
+          email: emailToSet,
+          token: tokenToSet,
+          gender: genderToSet,
+          internationalStaff,
+          department,
+          firstName: fName,
+          lastName: lName,
+          Position: position,
+          id: _id,
+          leaveDetails: leaveDetailsToSet,
+          supervisor: supervisorDetails
+        };
+        setInitialNotifications(notifications);
+        logUserIn(userObject);
+        setSpinner(false);
+      })
+      .catch((err) => {
+        setSpinner(false);
+
+        if (err.response.status === 401) {
+          authService.logout('/');
+        }
+
+        if (err && err.response && err.response.data && err.response.data.message) {
+          setError(err.response.data.message);
+        } else {
+          setError(err.message);
+        }
+      });
+  };
+
+  const setUpThisPage = () => {
+    axios.defaults.headers.common = { token };
+    const endPoint = `${BASE_URL}leaveApi/getAllStaffLeavesTaken`;
+    axios.get(endPoint)
+      .then((res) => {
+        setallLeaves(res.data);
+        setFilteredLeaves(res.data);
+        getProgrammes();
+      })
+      .catch((err) => {
+        setSpinner(false);
+
+        if (err.response.status === 401) {
+          authService.logout('/');
+        }
+
         if (err && err.response && err.response.data && err.response.data.message) {
           setError(err.response.data.message);
         } else {
@@ -118,22 +219,20 @@ function ConsolidatedLeaveBalances({
   useEffect(() => {
     setSpinner(true);
     setError('');
-    axios.defaults.headers.common = { token };
-    const endPoint = `${BASE_URL}leaveApi/getAllStaffLeavesTaken`;
-    axios.get(endPoint)
-      .then((res) => {
-        setallLeaves(res.data);
-        setFilteredLeaves(res.data);
-        getProgrammes();
-      })
-      .catch((err) => {
-        setSpinner(false);
-        if (err && err.response && err.response.data && err.response.data.message) {
-          setError(err.response.data.message);
-        } else {
-          setError(err.message);
-        }
-      });
+
+    if (token) {
+      setUpThisPage();
+    }
+
+    if (!token && authState.isAuthenticated) {
+      const { accessToken } = authState;
+      setUpUser(`Bearer ${accessToken}`);
+    }
+
+    if (!token && !authState.isAuthenticated) {
+      setSpinner(false);
+      authService.logout('/');
+    }
   }, []);
 
   if (error) {
@@ -218,6 +317,15 @@ function ConsolidatedLeaveBalances({
     setProgram('all');
     setName([]);
     filter(allFilters);
+
+    /** Reset switches */
+    setshowAnnual(true);
+    setShowHome(false);
+    setShowStudy(false);
+    setShowMaternity(false);
+    setShowPaternity(false);
+    setShowSick(false);
+    setShowUnpaid(false);
   };
 
   const selectLibOnChange = (email, stateSetter, filterParam) => {
@@ -250,29 +358,357 @@ function ConsolidatedLeaveBalances({
     </th>
   );
 
-  const returnAnnualLeaveFilterHead = () => (
+  const returnAnnualLeaveFilterHead = () => {
+    return (
+      <th scope="col" colSpan="2">
+        <table className="table removeTableBorders">
+          <tr>
+            <td colSpan="2">
+            Annual
+              <select className="form-control" value={annualSort} onChange={(e) => handleChange(e, setAnnualSort, 'annualSort')}>
+                <option value="all" >all</option>
+                <option value="green" >green</option>
+                <option value="red" >red</option>
+              </select>
+            </td>
+          </tr>
+          <tr>
+            <td>Used</td>
+            <td>Balance</td>
+          </tr>
+        </table>
+      </th>
+    );
+  /*
+  (
     <th scope="col">
             Annual
-      <select className="form-control" value={annualSort} onChange={(e) => handleChange(e, setAnnualSort, 'annualSort')}>
+      <select className="form-control" value={annualSort} onChange={(e) =>
+        handleChange(e, setAnnualSort, 'annualSort')}>
         <option value="all" >all</option>
         <option value="green" >green</option>
         <option value="red" >red</option>
       </select>
     </th>
   );
+  */
+  };
 
-  const returnNameFilterHead = () => (
-    <th scope="col">
+  const returnNameFilterHead = () => {
+    return (
+      <th scope="col">
       Name <span className="dontshowText">name name xx</span>
-      <span className="customSelectStyles">
-        <Select
-          options={allUsers}
-          onChange={(opt) => selectLibOnChange(opt.value, setName, 'name')}
-          value={null}
-        />
-      </span>
-    </th>
-  );
+        <span className="customSelectStyles">
+          <Select
+            options={allUsers}
+            onChange={(opt) => selectLibOnChange(opt.value, setName, 'name')}
+            value={null}
+          />
+        </span>
+      </th>
+    );
+  };
+
+  const studyTableHead = () => {
+    return (
+      <th scope="col" colSpan="2">
+        <table className="table removeTableBorders">
+          <tr>
+            <td colSpan="2">Study</td>
+          </tr>
+          <tr>
+            <td>Used</td>
+            <td>Balance</td>
+          </tr>
+        </table>
+      </th>
+    );
+  };
+
+  const homeTableHead = () => {
+    return (
+      <th scope="col" colSpan="2">
+        <table className="table removeTableBorders">
+          <tr>
+            <td colSpan="2">Home</td>
+          </tr>
+          <tr>
+            <td>Used</td>
+            <td>Balance</td>
+          </tr>
+        </table>
+      </th>
+    );
+  };
+
+  const maternityTableHead = () => {
+    return (
+      <>
+        <th scope="col" colSpan="2">
+          <table className=" table removeTableBorders">
+            <tr>
+              <td colSpan="2">Maternity</td>
+            </tr>
+            <tr>
+              <td>Used</td>
+              <td>Balance</td>
+            </tr>
+          </table>
+        </th>
+      </>
+    );
+  };
+
+  const paternityTableHead = () => {
+    return (
+      <>
+        <th scope="col">
+          <table className="table removeTableBorders">
+            <tr>
+              <td>Paternity</td>
+            </tr>
+            <tr>
+              <td>Used</td>
+            </tr>
+          </table>
+        </th>
+      </>
+    );
+  };
+
+  const sickTableHead = () => {
+    return (
+      <>
+        <th scope="col" colSpan="2">
+          <table className="table removeTableBorders">
+            <tr>
+              <td colSpan="2">Sick</td>
+            </tr>
+            <tr>
+              <td>Used</td>
+              <td>Balance</td>
+            </tr>
+          </table>
+        </th>
+      </>
+    );
+  };
+
+  const unPaidTableHead = () => {
+    return (
+      <>
+        <th scope="col" colSpan="2">
+          <table className="table removeTableBorders">
+            <tr>
+              <td colSpan="2">Unpaid</td>
+            </tr>
+            <tr>
+              <td>Used</td>
+              <td>Balance</td>
+            </tr>
+          </table>
+        </th>
+      </>
+    );
+  };
+
+  /** TD */
+
+  const homeLeaveTd = (l) => {
+    return (
+      <>
+        <td>
+          { l.type.toLocaleLowerCase() === 'local' || l.type.toLocaleLowerCase() === 'national'
+            ? 'NA'
+            : `${l.leaveDetails.homeLeaveTaken}`
+          }
+        </td>
+        <td>
+          { l.type.toLocaleLowerCase() === 'local' || l.type.toLocaleLowerCase() === 'national'
+            ? 'NA'
+            : `${l.leaveDetails.homeLeaveBal}`
+          }
+        </td>
+      </>
+    );
+  };
+
+  const annualLeaveTd = (l) => {
+    const returnColors = () => {
+      if (l.leaveDetails.annualLeaveBal >= 10) {
+        return returnStatusClass('rejectedWords');
+      }
+      if (l.leaveDetails.annualLeaveBal < 0) {
+        return returnStatusClass('declined');
+      }
+      if (l.leaveDetails.annualLeaveBal >= 0) {
+        return returnStatusClass('approvedWords');
+      }
+      return '';
+    };
+    return (<>
+      <td>{l.leaveDetails.annualLeaveTaken}</td>
+      <td>
+        <span className={returnColors()}>{l.leaveDetails.annualLeaveBal}</span>
+      </td>
+    </>);
+  };
+
+  const studyTableTd = (l) => {
+    return (
+      <>
+        <td>{l.leaveDetails.studyLeaveTaken}</td>
+        <td>{l.leaveDetails.studyLeaveBal}</td>
+      </>
+    );
+  };
+
+  const maternityTableTd = (l) => {
+    return (
+      <>
+        <td>
+          {
+            (l.gender === 'Female' || l.gender === 'female')
+              ? l.leaveDetails.maternityLeaveTaken
+              : 'NA'
+          }
+        </td>
+        <td>
+          {
+            (l.gender === 'Female' || l.gender === 'female')
+              ? l.leaveDetails.maternityLeaveBal
+              : 'NA'
+          }
+        </td>
+      </>
+    );
+  };
+
+  const paternityTableTd = (l) => {
+    return (
+      <>
+        <td>
+          {
+            (l.gender === 'Male' || l.gender === 'male')
+              ? l.leaveDetails.paternityLeaveTaken
+              : 'NA'
+          }
+        </td>
+      </>
+    );
+  };
+
+  const sickTableTd = (l) => {
+    return (
+      <>
+        <td>{l.leaveDetails.sickLeaveTaken}</td>
+        <td>{l.leaveDetails.sickLeaveBal}</td>
+      </>
+    );
+  };
+
+  const unpaidTd = (l) => {
+    return (
+      <>
+        <td>{l.leaveDetails.unPaidLeaveTaken}</td>
+        <td>{l.leaveDetails.unpaidLeaveBal}</td>
+      </>
+    );
+  };
+
+  const leavesSwitches = () => {
+    return (
+      <>
+        <h4 className="text-left ml-2">Set the leave types to display</h4>
+        <Form>
+          <FormGroup>
+            <div className="text-left ml-5">
+              <CustomInput
+                type="switch"
+                id="AnnualSwitch"
+                name="customSwitch"
+                label="Annual Leave"
+                checked={showAnnual}
+                onChange={(e) => setshowAnnual(e.target.checked) }
+              />
+            </div>
+          </FormGroup>
+          <FormGroup>
+            <div className="text-left ml-5">
+              <CustomInput
+                type="switch"
+                id="HomeSwitch"
+                name="customSwitch"
+                label="Home Leave"
+                checked={showHome}
+                onChange={(e) => setShowHome(e.target.checked) }
+              />
+            </div>
+          </FormGroup>
+          <FormGroup>
+            <div className="text-left ml-5">
+              <CustomInput
+                type="switch"
+                id="studySwitch"
+                name="customSwitch"
+                label="Study Leave"
+                checked={showStudy}
+                onChange={(e) => setShowStudy(e.target.checked) }
+              />
+            </div>
+          </FormGroup>
+          <FormGroup>
+            <div className="text-left ml-5">
+              <CustomInput
+                type="switch"
+                id="maternitySwitch"
+                name="customSwitch"
+                label="Maternity Leave"
+                checked={showMaternity}
+                onChange={(e) => setShowMaternity(e.target.checked) }
+              />
+            </div>
+          </FormGroup>
+          <FormGroup>
+            <div className="text-left ml-5">
+              <CustomInput
+                type="switch"
+                id="paternitySwitch"
+                name="customSwitch"
+                label="Paternity Leave"
+                checked={showPaternity}
+                onChange={(e) => setShowPaternity(e.target.checked) }
+              />
+            </div>
+          </FormGroup>
+          <FormGroup>
+            <div className="text-left ml-5">
+              <CustomInput
+                type="switch"
+                id="sickSwitch"
+                name="customSwitch"
+                label="Sick Leave"
+                checked={showSick}
+                onChange={(e) => setShowSick(e.target.checked) }
+              />
+            </div>
+          </FormGroup>
+          <FormGroup>
+            <div className="text-left ml-5">
+              <CustomInput
+                type="switch"
+                id="unPaidSwitch"
+                name="customSwitch"
+                label="Unpaid Leave"
+                checked={showUnpaid}
+                onChange={(e) => setShowUnpaid(e.target.checked) }
+              />
+            </div>
+          </FormGroup>
+        </Form>
+      </>
+    );
+  };
 
   const returnData = () => (
     <table className="table holidaysTable">
@@ -280,13 +716,13 @@ function ConsolidatedLeaveBalances({
         <tr>
           {returnNameFilterHead()}
           {returnEndProgramFilterHead()}
-          {returnAnnualLeaveFilterHead()}
-          <th scope="col">Home</th>
-          <th scope="col">Study</th>
-          <th scope="col">Maternity</th>
-          <th scope="col">Paternity</th>
-          <th scope="col">Sick</th>
-          <th scope="col">Unpaid</th>
+          { showAnnual ? returnAnnualLeaveFilterHead() : null }
+          { showHome ? homeTableHead() : null }
+          {showStudy ? studyTableHead() : null }
+          { showMaternity ? maternityTableHead() : null }
+          { showPaternity ? paternityTableHead() : null }
+          { showSick ? sickTableHead() : null }
+          { showUnpaid ? unPaidTableHead() : null }
         </tr>
       </thead>
       <tbody>
@@ -295,36 +731,13 @@ function ConsolidatedLeaveBalances({
             <tr key={l._id}>
               <td>{`${l.fName} ${l.lName}`}</td>
               <td>{l.programShortForm}</td>
-              <td className={
-                l.leaveDetails.annualLeaveBal > 10
-                  ? returnStatusClass('rejectedWords')
-                  : returnStatusClass('approvedWords')
-              }>
-                {l.leaveDetails.annualLeaveTaken} ~ {l.leaveDetails.annualLeaveBal}
-              </td>
-              <td>
-                { l.type === 'local'
-                  ? 'NA'
-                  : `${l.leaveDetails.homeLeaveTaken} ~ ${l.leaveDetails.homeLeaveBal}`
-                }
-              </td>
-              <td>{l.leaveDetails.studyLeaveTaken} ~ {l.leaveDetails.studyLeaveBal}</td>
-              <td>
-                {
-                  (l.gender === 'Female' || l.gender === 'female')
-                    ? `${l.leaveDetails.maternityLeaveTaken} ~ ${l.leaveDetails.maternityLeaveBal}`
-                    : 'NA'
-                }
-              </td>
-              <td>
-                {
-                  (l.gender === 'Male' || l.gender === 'male')
-                    ? `${l.leaveDetails.paternityLeaveTaken} ~ _`
-                    : 'NA'
-                }
-              </td>
-              <td>{l.leaveDetails.sickLeaveTaken} ~ {l.leaveDetails.sickLeaveBal}</td>
-              <td>{l.leaveDetails.sickLeaveTaken} ~ {l.leaveDetails.sickLeaveBal}</td>
+              { showAnnual ? annualLeaveTd(l) : null }
+              { showHome ? homeLeaveTd(l) : null }
+              { showStudy ? studyTableTd(l) : null }
+              { showMaternity ? maternityTableTd(l) : null }
+              { showPaternity ? paternityTableTd(l) : null }
+              { showSick ? sickTableTd(l) : null }
+              { showUnpaid ? unpaidTd(l) : null }
             </tr>
           ))
         }
@@ -386,20 +799,20 @@ function ConsolidatedLeaveBalances({
   return (
     <div className="row">
       <div className="col">
-        <div id="hrConsolidatedTrackerTable">
+        <div>
           <h3>
-            <button type="button" className="btn btn-info float-left">
-            KEY: (Used ~ Balance)
-            </button>
             Consolidated Leave Balances
             <button type="button" className="btn btn-secondary float-right" onClick={generatePDf}>
             Generate PDF
             </button>
           </h3>
-          {generateFilterRibbon()}
-          <div className="row">
-            <div className="col">
-              {returnData() }
+          {leavesSwitches()}
+          <div id="hrConsolidatedTrackerTable">
+            {generateFilterRibbon()}
+            <div className="row">
+              <div className="col">
+                {returnData() }
+              </div>
             </div>
           </div>
         </div>
@@ -415,7 +828,9 @@ ConsolidatedLeaveBalances.propTypes = {
   type: PropTypes.string,
   roles: PropTypes.object,
   changeSection: PropTypes.func,
-  changeActive: PropTypes.func
+  changeActive: PropTypes.func,
+  setInitialNotifications: PropTypes.func,
+  logUserIn: PropTypes.func,
 };
 
 export default connect(mapStateToProps, matchDispatchToProps)(ConsolidatedLeaveBalances);

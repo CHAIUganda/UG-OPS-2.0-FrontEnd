@@ -2,9 +2,12 @@ import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import axios from 'axios';
+import { useOktaAuth } from '@okta/okta-react';
 
 import * as sideBarActions from '../../../../../redux/actions/sideBarActions';
 import * as notificationActions from '../../../../../redux/actions/notificationsActions';
+import * as authActions from '../../../../../redux/actions/authActions';
+
 import CommonSpinner from '../../../../common/spinner';
 import { BASE_URL, returnStatusClass } from '../../../../../config';
 import Apply4LeaveModal from './applyForLeaveModal';
@@ -14,7 +17,9 @@ import './apply4Leave.css';
 const matchDispatchToProps = {
   changeSection: sideBarActions.changeSection,
   changeActive: sideBarActions.changeActive,
-  removeNotification: notificationActions.removeNotification
+  removeNotification: notificationActions.removeNotification,
+  logUserIn: authActions.logUserIn,
+  setInitialNotifications: notificationActions.setInitialNotifications
 };
 
 const mapStateToProps = (state) => ({
@@ -33,12 +38,16 @@ function Apply4Leave({
   type,
   changeSection,
   changeActive,
-  removeNotification
+  removeNotification,
+  setInitialNotifications,
+  logUserIn
 }) {
   const [spinner, setSpinner] = useState(false);
   const [leaveDetails, setLeaveDetails] = useState(null);
   const [error, setError] = useState('');
   const [personsLeaves, setPersonsLeaves] = useState([]);
+
+  const { authState, authService } = useOktaAuth();
 
   changeSection('Human Resource');
   changeActive('Apply4Leave');
@@ -58,6 +67,10 @@ function Apply4Leave({
             removeNotification(n._id);
           })
           .catch((err) => {
+            if (err.response.status === 401) {
+              authService.logout('/');
+            }
+
             if (err && err.response && err.response.data && err.response.data.message) {
               setError(err.response.data.message);
             } else {
@@ -123,6 +136,84 @@ function Apply4Leave({
         setSpinner(false);
       })
       .catch((err) => {
+        if (err.response.status === 401) {
+          authService.logout('/');
+        }
+
+        if (err && err.response && err.response.data && err.response.data.message) {
+          setError(err.response.data.message);
+        } else {
+          setError(err.message);
+        }
+      });
+  };
+
+  const setUpUser = (tokenToSet) => {
+    axios.defaults.headers.common = { token: tokenToSet };
+    const apiRoute = `${BASE_URL}auth/getLoggedInUser`;
+    axios.get(apiRoute)
+      . then((res) => {
+        const {
+          department,
+          fName,
+          internationalStaff,
+          lName,
+          position,
+          _id,
+          supervisorDetails,
+          notifications
+        } = res.data;
+        const genderToSet = res.data.gender;
+        const emailToSet = res.data.email;
+        const leaveDetailsToSet = res.data.leaveDetails;
+
+        const userObject = {
+          ...res.data,
+          email: emailToSet,
+          token: tokenToSet,
+          gender: genderToSet,
+          internationalStaff,
+          department,
+          firstName: fName,
+          lastName: lName,
+          Position: position,
+          id: _id,
+          leaveDetails: leaveDetailsToSet,
+          supervisor: supervisorDetails
+        };
+        setInitialNotifications(notifications);
+        logUserIn(userObject);
+        setSpinner(false);
+      })
+      .catch((err) => {
+        setSpinner(false);
+
+        if (err.response.status === 401) {
+          authService.logout('/');
+        }
+
+        if (err && err.response && err.response.data && err.response.data.message) {
+          setError(err.response.data.message);
+        } else {
+          setError(err.message);
+        }
+      });
+  };
+
+  const setUpThisPage = () => {
+    const endPoint = `${BASE_URL}leaveApi/getStaffLeavesTaken/${email}`;
+    axios.get(endPoint)
+      .then((res) => {
+        setLeaveDetails(res.data.leaveDetails);
+        getPersonsLeaves();
+      })
+      .catch((err) => {
+        setSpinner(false);
+
+        if (err.response.status === 401) {
+          authService.logout('/');
+        }
+
         if (err && err.response && err.response.data && err.response.data.message) {
           setError(err.response.data.message);
         } else {
@@ -134,20 +225,19 @@ function Apply4Leave({
   useEffect(() => {
     setSpinner(true);
     setError(false);
-    const endPoint = `${BASE_URL}leaveApi/getStaffLeavesTaken/${email}`;
-    axios.get(endPoint)
-      .then((res) => {
-        setLeaveDetails(res.data.leaveDetails);
-        getPersonsLeaves();
-      })
-      .catch((err) => {
-        setSpinner(false);
-        if (err && err.response && err.response.data && err.response.data.message) {
-          setError(err.response.data.message);
-        } else {
-          setError(err.message);
-        }
-      });
+    if (token) {
+      setUpThisPage();
+    }
+
+    if (!token && authState.isAuthenticated) {
+      const { accessToken } = authState;
+      setUpUser(`Bearer ${accessToken}`);
+    }
+
+    if (!token && !authState.isAuthenticated) {
+      setSpinner(false);
+      authService.logout('/');
+    }
   }, []);
 
   if (error) {
@@ -180,51 +270,60 @@ function Apply4Leave({
     setPersonsLeaves(arrToEdit.reverse());
   };
 
-  const returnTable = () => (
-    <table className="table holidaysTable">
-      <thead>
-        <tr>
-          <th scope="col">Category</th>
-          <th scope="col">Days Taken</th>
-          <th scope="col">Starts</th>
-          <th scope="col">Ends</th>
-          <th scope="col">Status</th>
-          <th scope="col">Manage</th>
-        </tr>
-      </thead>
-      <tbody>
-        {
-          personsLeaves.reverse().map((leave, index) => (
-            <tr
-              key={leave._id}
-              className={`${leave.highlightNotification ? 'highlightNotification' : ''}`}
-            >
-              <td>{leave.type}</td>
-              <td>{leave.daysTaken}</td>
-              <td>{new Date(leave.startDate).toDateString()}</td>
-              <td>{new Date(leave.endDate).toDateString()}</td>
-              <td>
-                <button className={returnStatusClass(leave.status)}>
-                  {leave.status}
-                </button>
-              </td>
-              <td>
-                <ManageLeaveModal
-                  leave={leave}
-                  supervisor={supervisor}
-                  removeLeave={removeLeave}
-                  type={type}
-                  gender={gender}
-                  indexOfLeave={index}
-                  propToModifyArray={modifyLeave}
-                />
-              </td>
-            </tr>
-          ))
-        }
-      </tbody>
-    </table>
-  );
+  const returnTable = () => {
+    if (personsLeaves.length < 1) {
+      return (
+        <div className="alert alert-primary m-5" role="alert">
+          You haven&apos;t applied for leave yet.
+        </div>
+      );
+    }
+    return (
+      <table className="table holidaysTable">
+        <thead>
+          <tr>
+            <th scope="col">Category</th>
+            <th scope="col">Days Taken</th>
+            <th scope="col">Starts</th>
+            <th scope="col">Ends</th>
+            <th scope="col">Status</th>
+            <th scope="col">Manage</th>
+          </tr>
+        </thead>
+        <tbody>
+          {
+            personsLeaves.reverse().map((leave, index) => (
+              <tr
+                key={leave._id}
+                className={`${leave.highlightNotification ? 'highlightNotification' : ''}`}
+              >
+                <td>{leave.type}</td>
+                <td>{leave.daysTaken}</td>
+                <td>{new Date(leave.startDate).toDateString()}</td>
+                <td>{new Date(leave.endDate).toDateString()}</td>
+                <td>
+                  <button className={returnStatusClass(leave.status)}>
+                    {leave.status}
+                  </button>
+                </td>
+                <td>
+                  <ManageLeaveModal
+                    leave={leave}
+                    supervisor={supervisor}
+                    removeLeave={removeLeave}
+                    type={type}
+                    gender={gender}
+                    indexOfLeave={index}
+                    propToModifyArray={modifyLeave}
+                  />
+                </td>
+              </tr>
+            ))
+          }
+        </tbody>
+      </table>
+    );
+  };
 
   const addLeave = (leave) => {
     setPersonsLeaves([...personsLeaves, leave]);
@@ -254,6 +353,8 @@ Apply4Leave.propTypes = {
   changeSection: PropTypes.func,
   changeActive: PropTypes.func,
   removeNotification: PropTypes.func,
+  setInitialNotifications: PropTypes.func,
+  logUserIn: PropTypes.func,
 };
 
 export default connect(mapStateToProps, matchDispatchToProps)(Apply4Leave);

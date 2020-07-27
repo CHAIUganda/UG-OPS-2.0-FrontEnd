@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import {
   FormGroup,
@@ -19,7 +19,6 @@ import PrintingSpecs from '../printingSpecs';
 const CategoryOfProcurement = ({
   printing,
   setSuccessFeedback,
-  setError,
   setPrinting,
   carHire,
   setCarHire,
@@ -43,8 +42,8 @@ const CategoryOfProcurement = ({
   activeSections,
   currentComponent,
   setActiveSections,
-  error
 }) => {
+  const [categoryError, setCategoryError] = useState('');
   const errorProps = () => {
     const arr = [];
     const masterBool = (printing || carHire || conferenceFacilities || stationery
@@ -53,7 +52,7 @@ const CategoryOfProcurement = ({
     if (!masterBool) {
       arr.push({
         err: 'Please select atleast 1 category to continue.',
-        setter: setError
+        setter: setCategoryError
       });
     }
 
@@ -87,6 +86,7 @@ const CategoryOfProcurement = ({
             different procurement requests.
           </p>
         </div>
+        {categoryError && <div className="errorFeedback"> {categoryError} </div>}
         {/*  Printing */}
         <FormGroup>
           <InputGroup>
@@ -101,7 +101,7 @@ const CategoryOfProcurement = ({
                 checked={printing}
                 onChange={(e) => {
                   setSuccessFeedback('');
-                  setError('');
+                  setCategoryError('');
                   setPrinting(e.target.checked);
                   handleSections(PrintingSpecs, e.target.checked);
                 }}
@@ -124,7 +124,7 @@ const CategoryOfProcurement = ({
                 checked={carHire}
                 onChange={(e) => {
                   setSuccessFeedback('');
-                  setError('');
+                  setCategoryError('');
                   setCarHire(e.target.checked);
                   handleSections(CarHireSpecifications, e.target.checked);
                 }}
@@ -147,7 +147,7 @@ const CategoryOfProcurement = ({
                 checked={conferenceFacilities}
                 onChange={(e) => {
                   setSuccessFeedback('');
-                  setError('');
+                  setCategoryError('');
                   setConferenceFacilities(e.target.checked);
                 }}
               />
@@ -169,7 +169,7 @@ const CategoryOfProcurement = ({
                 checked={stationery}
                 onChange={(e) => {
                   setSuccessFeedback('');
-                  setError('');
+                  setCategoryError('');
                   setStationery(e.target.checked);
                 }}
               />
@@ -191,7 +191,7 @@ const CategoryOfProcurement = ({
                 checked={dataCollectors}
                 onChange={(e) => {
                   setSuccessFeedback('');
-                  setError('');
+                  setCategoryError('');
                   setDataCollectors(e.target.checked);
                 }}
               />
@@ -213,7 +213,7 @@ const CategoryOfProcurement = ({
                 checked={accomodation}
                 onChange={(e) => {
                   setSuccessFeedback('');
-                  setError('');
+                  setCategoryError('');
                   setAccomodation(e.target.checked);
                 }}
               />
@@ -235,7 +235,7 @@ const CategoryOfProcurement = ({
                 checked={medicalEquipment}
                 onChange={(e) => {
                   setSuccessFeedback('');
-                  setError('');
+                  setCategoryError('');
                   setMedicalEquipment(e.target.checked);
                 }}
               />
@@ -257,7 +257,7 @@ const CategoryOfProcurement = ({
                 checked={computersAndAccessories}
                 onChange={(e) => {
                   setSuccessFeedback('');
-                  setError('');
+                  setCategoryError('');
                   setComputersAndAccessories(e.target.checked);
                 }}
               />
@@ -279,7 +279,7 @@ const CategoryOfProcurement = ({
                 checked={other}
                 onChange={(e) => {
                   setSuccessFeedback('');
-                  setError('');
+                  setCategoryError('');
                   setOther(e.target.checked);
                 }}
               />
@@ -300,7 +300,7 @@ const CategoryOfProcurement = ({
         value={describeOther}
         onChange={(e) => {
           setSuccessFeedback('');
-          setError('');
+          setCategoryError('');
           setDescribeOther(e.target.value);
         }}
         required
@@ -308,7 +308,7 @@ const CategoryOfProcurement = ({
     </InputGroup>
   </FormGroup>
         }
-        {error && <div className="errorFeedback m-2"> {error} </div>}
+        {categoryError && <div className="errorFeedback m-2"> {categoryError} </div>}
       </div>
       <div className='pushChildToBottom mb-2'>
         <BackButton
@@ -330,7 +330,6 @@ const CategoryOfProcurement = ({
 CategoryOfProcurement.propTypes = {
   printing: PropTypes.bool,
   setSuccessFeedback: PropTypes.func,
-  setError: PropTypes.func,
   setPrinting: PropTypes.func,
   carHire: PropTypes.bool,
   setCarHire: PropTypes.func,
@@ -354,7 +353,6 @@ CategoryOfProcurement.propTypes = {
   activeSections: PropTypes.array,
   setActiveSections: PropTypes.func,
   currentComponent: PropTypes.array,
-  error: PropTypes.string
 };
 
 export default CategoryOfProcurement;

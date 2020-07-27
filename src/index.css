@@ -84,7 +84,7 @@ code {
 }
 
 .pending {
-  background-color: #f6684a;
+  background-color: #003366;
   color: white;
   padding: 0 0.2em;
   border-radius: 0.3em;
@@ -92,7 +92,7 @@ code {
 }
 
 .planned {
-  background-color: #5987c4;
+  background-color: #003366;
   color: white;
   padding: 0 0.2em;
   border-radius: 0.3em;
@@ -100,7 +100,8 @@ code {
 }
 
 .cancelled {
-  background-color:  #581845 ;
+  background-color: #6c757d;
+  border-color: #6c757d;
   color: white;
   padding: 0 0.2em;
   border-radius: 0.3em;
@@ -108,7 +109,8 @@ code {
 }
 
 .rejected {
-  background-color: red;
+  background-color:  #6c757d;
+  border-color: #6c757d;
   color: white;
   padding: 0 0.2em;
   border-radius: 0.3em;
@@ -116,7 +118,7 @@ code {
 }
 
 .approved {
-  background-color: #028b1f;
+  background-color: #003366;
   color: white;
   padding: 0 0.2em;
   border-radius: 0.3em;
@@ -127,14 +129,14 @@ code {
   /* color: white; */
   padding: 0 0.2em;
   border-radius: 0.3em;
-  border: 0.1em solid  #028b1f;
+  border: 0.1em solid  #003366;
 }
 
 .nottaken {
   /* color: white; */
   padding: 0 0.2em;
   border-radius: 0.3em;
-  border: 0.1em solid  #581845;
+  border: 0.1em solid  #003366;
 }
 
 .rejectedWords {
@@ -149,7 +151,7 @@ code {
   background-color: #028b1f;
   color: white;
   border-radius: 0.3em;
-  padding: 1em
+  padding: 0 0.2em;
   /* border: 0.1em solid #003366; */
 }
 
@@ -208,4 +210,21 @@ code {
   width: 78%;
   position: absolute;
   bottom: 0;
+}
+
+.removeTableBorders {
+  border-collapse: collapse;
+  border-style: hidden;
+}
+
+/* .removeTableBorders td {
+  border: 5px solid black;
+} */
+
+.removeTableBorders td {
+  border: 1px solid white;
+}
+
+.removeTableBorders{
+ color: white !important;
 }

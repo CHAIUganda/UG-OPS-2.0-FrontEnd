@@ -1,3 +1,4 @@
+/* eslint-disable array-bracket-spacing */
 import React, { useState, useEffect } from 'react';
 import {
   Form,
@@ -7,69 +8,47 @@ import {
   InputGroupAddon,
   InputGroupText,
   CustomInput,
-  Spinner,
-  Label
+  // Spinner
 } from 'reactstrap';
-import Calendar from 'react-calendar';
+// import Calendar from 'react-calendar';
 import { connect } from 'react-redux';
 import axios from 'axios';
 import PropTypes from 'prop-types';
 import Select from 'react-select';
-import { useOktaAuth } from '@okta/okta-react';
 
 import * as sideBarActions from '../../../../redux/actions/sideBarActions';
-import * as authActions from '../../../../redux/actions/authActions';
-import * as notificationActions from '../../../../redux/actions/notificationsActions';
-
 import CommonSpinner from '../../../common/spinner';
-import EditBankDetailsModal from './editBankDetails';
+// import EditBankDetailsModal from './editBankDetails';
 import { BASE_URL, returnStatusClass } from '../../../../config';
 import './editUser.css';
 
 const matchDispatchToProps = {
   changeSection: sideBarActions.changeSection,
-  changeActive: sideBarActions.changeActive,
-  logUserIn: authActions.logUserIn,
-  setInitialNotifications: notificationActions.setInitialNotifications
+  changeActive: sideBarActions.changeActive
 };
 
 const mapStateToProps = (state) => ({
   token: state.auth.token,
-  roles: state.auth.roles
+  user: state.auth
 });
 
-function EditUser(props) {
+function ViewMyDetails(props) {
   let user;
-  let propsPassed;
   const {
     token,
     changeSection,
-    changeActive,
-    roles,
-    setInitialNotifications,
-    logUserIn
+    changeActive
   } = props;
 
-  if (token && roles) {
-    if (!roles.hr && !roles.admin) {
-      return (
-        <div className="alert alert-danger text-center" role="alert">
-          <p>{'FE: You have no access rights for this resource.'}</p>
-        </div>
-      );
-    }
-  }
-
-  changeSection('Human Resource');
+  changeSection(null);
   changeActive(null);
 
-  if (props && props.propsPassed && props.user) {
+  if (props && props.user) {
     user = props.user;
-    propsPassed = props.propsPassed;
   } else {
     return (
       <div className="alert alert-info text-center" role="alert">
-        <p>Please select a particular user.</p>
+        <p>Please reload the page, we are having trouble loading your details.</p>
       </div>
     );
   }
@@ -78,11 +57,6 @@ function EditUser(props) {
     user.email
       ? user.email
       : '@clintonhealthaccess.org'
-  );
-  const [active, setActive] = useState(
-    user.active
-      ? user.active
-      : false
   );
   const [firstName, setFirstName] = useState(
     user.fName
@@ -99,7 +73,7 @@ function EditUser(props) {
       ? user.oNames
       : ''
   );
-  const [birthDate, setBirthDate] = useState(
+  const [birthDate, /* setBirthDate */] = useState(
     user.birthDate
       ? new Date(user.birthDate)
       : ''
@@ -114,17 +88,19 @@ function EditUser(props) {
       ? user.contractType
       : ''
   );
-  const [contractStartDate, setContractStartDate] = useState(
+  const [contractStartDate, /* setContractStartDate */] = useState(
     user.contractStartDate
       ? new Date(user.contractStartDate)
       : ''
   );
-  const [contractEndDate, setContractEndDate] = useState(
+  const [contractEndDate, /* setContractEndDate */] = useState(
     user.contractEndDate
       ? new Date(user.contractEndDate)
       : ''
   );
-  const [gender, setGender] = useState(
+  const [password, setPassword] = useState('123456');
+  const [confirmPass, setConfirmPass] = useState('123456');
+  const [gender, /* setGender */] = useState(
     user.gender
       ? user.gender
       : ''
@@ -134,17 +110,17 @@ function EditUser(props) {
       ? user.title
       : ''
   );
-  const [admin, setAdmin] = useState(
+  const [admin, /* setAdmin */] = useState(
     (user.roles && user.roles.admin)
       ? user.roles.admin
       : false
   );
-  const [supervisor, setSupervisor] = useState(
+  const [supervisor, /* setSupervisor */] = useState(
     (user.roles && user.roles.supervisor)
       ? user.roles.supervisor
       : false
   );
-  const [humanResource, setHumanResource] = useState(
+  const [humanResource, /* setHumanResource */] = useState(
     (user.roles && user.roles.hr)
       ? user.roles.hr
       : false
@@ -159,8 +135,7 @@ function EditUser(props) {
       ? user.programId
       : ''
   );
-
-  const [countryDirector, setCountryDirector] = useState(
+  const [countryDirector, /* setCountryDirector */] = useState(
     (user.roles && user.roles.countryDirector)
       ? user.roles.countryDirector
       : false
@@ -180,18 +155,17 @@ function EditUser(props) {
       ? user.tinNumber
       : ''
   );
-  const [workPermitStartDate, setWorkPermitStartDate] = useState(
+  const [workPermitStartDate, /* setWorkPermitStartDate */] = useState(
     user.workPermitStartDate
       ? new Date(user.workPermitStartDate)
       : ''
   );
-
-  const [workPermitEndDate, setWorkPermitEndDate] = useState(
+  const [workPermitEndDate, /* setWorkPermitEndDate */] = useState(
     user.workPermitEndDate
       ? new Date(user.workPermitEndDate)
       : ''
   );
-  const [bankAccounts, setBankAccounts] = useState(
+  const [bankAccounts, /* setBankAccounts */] = useState(
     (user.bankAccounts && user.bankAccounts.length > 0)
       ? user.bankAccounts
       : []
@@ -200,13 +174,11 @@ function EditUser(props) {
   const [spinner, setSpinner] = useState(false);
   const [error, setError] = useState('');
   const [allUsers, setAllUsers] = useState([]);
-  const [submitSpinner, setSubmitSpinner] = useState(false);
+  const [/* submitSpinner */, setSubmitSpinner] = useState(false);
   const [successFeedback, setSuccessFeedback] = useState('');
-  const [bankName, setBankName] = useState('');
-  const [accountNumber, setAccountNumber] = useState('');
-  const [Currency, setCurrency] = useState('UGX');
-
-  const { authState, authService } = useOktaAuth();
+  // const [bankName, setBankName] = useState('');
+  // const [accountNumber, setAccountNumber] = useState('');
+  // const [Currency, setCurrency] = useState('UGX');
 
   const returnDefaultSupervisor = () => {
     if (user.supervisorDetails
@@ -245,14 +217,12 @@ function EditUser(props) {
 
     const editUser = {
       ...user,
-      active,
-      staffId: user._id,
       fName: firstName,
       lName: lastName,
-      birthDate: `${birthDate.getFullYear()}-${birthDate.getMonth() + 1}-${birthDate.getDate()}`,
+      birthDate,
       bankAccounts,
-      contractStartDate: `${contractStartDate.getFullYear()}-${contractStartDate.getMonth() + 1}-${contractStartDate.getDate()}`,
-      contractEndDate: `${contractEndDate.getFullYear()}-${contractEndDate.getMonth() + 1}-${contractEndDate.getDate()}`,
+      contractStartDate,
+      contractEndDate,
       contractType,
       gender,
       admin,
@@ -266,17 +236,12 @@ function EditUser(props) {
       supervisorEmail: supervisorsEmail,
       oNames: otherNames,
       email,
+      password,
       contractId: user.contractId,
       nssfNumber,
       tinNumber,
-      workPermitStartDate:
-        workPermitStartDate
-          ? `${workPermitStartDate.getFullYear()}-${workPermitStartDate.getMonth() + 1}-${workPermitStartDate.getDate()}`
-          : null,
-      workPermitEndDate:
-        workPermitEndDate
-          ? `${workPermitEndDate.getFullYear()}-${workPermitEndDate.getMonth() + 1}-${workPermitEndDate.getDate()}`
-          : null
+      workPermitStartDate,
+      workPermitEndDate
     };
 
     axios.defaults.headers.common = { token };
@@ -288,11 +253,6 @@ function EditUser(props) {
       })
       .catch((err) => {
         setSubmitSpinner(false);
-
-        if (err.response.status === 401) {
-          authService.logout('/');
-        }
-
         if (err && err.response && err.response.data && err.response.data.message) {
           setError(err.response.data.message);
         } else {
@@ -316,87 +276,6 @@ function EditUser(props) {
       })
       .catch((err) => {
         setSpinner(false);
-
-        if (err.response.status === 401) {
-          authService.logout('/');
-        }
-
-        if (err && err.response && err.response.data && err.response.data.message) {
-          setError(err.response.data.message);
-        } else {
-          setError(err.message);
-        }
-      });
-  };
-
-  const setUpUser = (tokenToSet) => {
-    axios.defaults.headers.common = { token: tokenToSet };
-    const apiRoute = `${BASE_URL}auth/getLoggedInUser`;
-    axios.get(apiRoute)
-      . then((res) => {
-        const {
-          department,
-          fName,
-          internationalStaff,
-          lName,
-          _id,
-          supervisorDetails,
-          notifications
-        } = res.data;
-        const genderToSet = res.data.gender;
-        const emailToSet = res.data.email;
-        const leaveDetailsToSet = res.data.leaveDetails;
-        const positionToSet = res.data.position;
-
-        const userObject = {
-          ...res.data,
-          email: emailToSet,
-          token: tokenToSet,
-          gender: genderToSet,
-          internationalStaff,
-          department,
-          firstName: fName,
-          lastName: lName,
-          Position: positionToSet,
-          id: _id,
-          leaveDetails: leaveDetailsToSet,
-          supervisor: supervisorDetails
-        };
-        setInitialNotifications(notifications);
-        logUserIn(userObject);
-        setSpinner(false);
-      })
-      .catch((err) => {
-        setSpinner(false);
-
-        if (err.response.status === 401) {
-          authService.logout('/');
-        }
-
-        if (err && err.response && err.response.data && err.response.data.message) {
-          setError(err.response.data.message);
-        } else {
-          setError(err.message);
-        }
-      });
-  };
-
-  const setUpThisPage = () => {
-    axios.defaults.headers.common = { token };
-    const apiRoute = `${BASE_URL}hrApi/getPrograms`;
-    axios.get(apiRoute)
-      . then((res) => {
-        setSpinner(false);
-        setAllProgrammes(res.data);
-        getUsers();
-      })
-      .catch((err) => {
-        setSpinner(false);
-
-        if (err.response.status === 401) {
-          authService.logout('/');
-        }
-
         if (err && err.response && err.response.data && err.response.data.message) {
           setError(err.response.data.message);
         } else {
@@ -407,21 +286,22 @@ function EditUser(props) {
 
   useEffect(() => {
     setSpinner(true);
-    setError('');
-
-    if (token) {
-      setUpThisPage();
-    }
-
-    if (!token && authState.isAuthenticated) {
-      const { accessToken } = authState;
-      setUpUser(`Bearer ${accessToken}`);
-    }
-
-    if (!token && !authState.isAuthenticated) {
-      setSpinner(false);
-      authService.logout('/');
-    }
+    axios.defaults.headers.common = { token };
+    const apiRoute = `${BASE_URL}hrApi/getPrograms`;
+    axios.get(apiRoute)
+      . then((res) => {
+        setSpinner(false);
+        setAllProgrammes(res.data);
+        getUsers();
+      })
+      .catch((err) => {
+        setSpinner(false);
+        if (err && err.response && err.response.data && err.response.data.message) {
+          setError(err.response.data.message);
+        } else {
+          setError(err.message);
+        }
+      });
   }, []);
 
   const onSelectSupervisorEmail = (value) => {
@@ -430,56 +310,46 @@ function EditUser(props) {
     setSupervisorsEmail(value);
   };
 
-  const buttonText = () => {
-    if (submitSpinner) {
-      return (
-        <Spinner color="primary" style={{ width: '3rem', height: '3rem' }} />
-      );
-    }
-    return 'Edit';
-  };
+  // const buttonText = () => {
+  //   if (submitSpinner) {
+  //     return (
+  //       <Spinner color="primary" style={{ width: '3rem', height: '3rem' }} />
+  //     );
+  //   }
+  //   return 'Edit';
+  // };
 
-  if (!propsPassed) {
-    return (
-      <div className="alert alert-info text-center" role="alert">
-        <p>Please select a particular user.</p>
-      </div>
-    );
-  }
+  // const handleNewBankAccount = (event) => {
+  //   event.preventDefault();
+  //   if (!bankName) {
+  //     setError('Please enter a bank to add account');
+  //   } else if (!accountNumber) {
+  //     setError('Please enter an account number to add account');
+  //   } else {
+  //     setBankAccounts([...bankAccounts,
+  //       {
+  //         bankName,
+  //         accountNumber,
+  //         Currency,
+  //         status: 'ACTIVE',
+  //       }
+  //     ]);
+  //     setBankName('');
+  //     setAccountNumber('');
+  //     setCurrency('UGX');
+  //   }
+  // };
 
-  const handleNewBankAccount = (event) => {
-    event.preventDefault();
-    if (!bankName) {
-      setError('Please enter a bank to add account');
-    } else if (!accountNumber) {
-      setError('Please enter an account number to add account');
-    } else {
-      setBankAccounts([...bankAccounts,
-        {
-          bankName,
-          accountNumber,
-          Currency,
-          status: 'ACTIVE',
-        }
-      ]);
-      setBankName('');
-      setAccountNumber('');
-      setCurrency('UGX');
-    }
-  };
-
-  const handleEditBankAccountAction = (index, modifiedAccountDetails) => {
-    const holder = [...bankAccounts];
-    holder[index] = modifiedAccountDetails;
-    setBankAccounts(holder);
-  };
+  // const handleEditBankAccountAction = (index, modifiedAccountDetails) => {
+  //   const holder = [...bankAccounts];
+  //   holder[index] = modifiedAccountDetails;
+  //   setBankAccounts(holder);
+  // };
 
   return (
     <div className="registerFormStyle">
       <Form onSubmit={handleSubmit}>
-        <h3 className="registerHeading">
-          Edit User
-        </h3>
+        <h3 className="registerHeading">My Details</h3>
         {
           spinner
           && <div className="alert alert-info text-center" role="alert">
@@ -487,46 +357,8 @@ function EditUser(props) {
             <p>Getting things ready.....</p>
           </div>
         }
-        <div className="alert alert-primary" role="alert">
-            Details are saved after submitting.
-        </div>
         {error && <div className="errorFeedback"> {error} </div>}
         {successFeedback && <div className="successFeedback"> {successFeedback} </div>}
-
-        <FormGroup>
-          <Label for="exampleEmail">
-            {
-              active
-                ? <p>This user account is <span className="btn btn-success">active</span></p>
-                : <p>This user account is <span className="btn btn-danger">inactive</span></p>
-            }
-          </Label>
-          <InputGroup>
-            <InputGroupAddon addonType="prepend">
-              <InputGroupText>
-                {
-                  active
-                    ? <p>Deactivate account</p>
-                    : <p>Activate account</p>
-                }
-              </InputGroupText>
-            </InputGroupAddon>
-            <div className="intSwitch">
-              <CustomInput
-                type="switch"
-                id="activeSwitch"
-                name="customSwitch"
-                checked={active}
-                onChange={(e) => {
-                  setSuccessFeedback('');
-                  setError('');
-                  setActive(e.target.checked);
-                }}
-              />
-            </div>
-          </InputGroup>
-        </FormGroup>
-
         <FormGroup>
           <InputGroup>
             <InputGroupAddon addonType="prepend">
@@ -542,6 +374,7 @@ function EditUser(props) {
                 setEmail(e.target.value);
               }}
               required
+              disabled
             />
           </InputGroup>
         </FormGroup>
@@ -561,6 +394,7 @@ function EditUser(props) {
                 setFirstName(e.target.value);
               }}
               required
+              disabled
             />
           </InputGroup>
         </FormGroup>
@@ -580,6 +414,7 @@ function EditUser(props) {
                 setLastName(e.target.value);
               }}
               required
+              disabled
             />
           </InputGroup>
         </FormGroup>
@@ -593,11 +428,8 @@ function EditUser(props) {
               placeholder="Optional"
               type="text"
               value={otherNames}
-              onChange={(e) => {
-                setSuccessFeedback('');
-                setError('');
-                setOtherNames(e.target.value);
-              }}
+              onChange={(e) => setOtherNames(e.target.value)}
+              disabled
             />
           </InputGroup>
         </FormGroup>
@@ -607,23 +439,25 @@ function EditUser(props) {
             <InputGroupAddon addonType="prepend">
               <InputGroupText>Birth Date</InputGroupText>
             </InputGroupAddon>
-            <Calendar
+            {/* <Calendar
               value={birthDate}
-              onChange={(date) => {
-                setSuccessFeedback('');
-                setError('');
-                setBirthDate(date);
-              }}
+              onChange={(date) => setBirthDate(date)}
+            /> */}
+            <Input
+              placeholder="Optional"
+              type="text"
+              value={new Date(birthDate).toDateString()}
+              disabled
             />
           </InputGroup>
         </FormGroup>
 
         <div className="bankDetailsSection">
           <h5>Bank Details</h5>
-          {error && <div className="errorFeedback"> {error} </div>}
+          {/* {error && <div className="errorFeedback"> {error} </div>}
           <div className="alert alert-primary" role="alert">
             Note: changes to bank details will be effected when you submit the entire form.
-          </div>
+          </div> */}
           <table className="table holidaysTable">
             <thead>
               <tr>
@@ -647,7 +481,7 @@ function EditUser(props) {
                     }>
                       {bankAccount.status}
                     </td>
-                    <td>
+                    {/* <td>
                       <button
                         type="button">
                         <EditBankDetailsModal
@@ -656,13 +490,13 @@ function EditUser(props) {
                           index={index}
                         />
                       </button>
-                    </td>
+                    </td> */}
                   </tr>
                 ))
               }
             </tbody>
           </table>
-          <h6>Add a new bank account</h6>
+          {/* <h6>Add a new bank account</h6>
           <FormGroup>
             <InputGroup>
               <InputGroupAddon addonType="prepend">
@@ -722,7 +556,7 @@ function EditUser(props) {
             onClick={handleNewBankAccount}
           >
             Add New Account
-          </button>
+          </button> */}
         </div>
 
         <FormGroup>
@@ -739,6 +573,7 @@ function EditUser(props) {
                 setError('');
                 setNssfNumber(e.target.value);
               }}
+              disabled
             />
           </InputGroup>
         </FormGroup>
@@ -757,10 +592,11 @@ function EditUser(props) {
                 setError('');
                 setTinNumber(e.target.value);
               }}
+              disabled
             />
           </InputGroup>
         </FormGroup>
-        <FormGroup>
+        {/* <FormGroup>
           <InputGroup>
             <InputGroupAddon addonType="prepend">
               <InputGroupText>Gender</InputGroupText>
@@ -770,18 +606,14 @@ function EditUser(props) {
               id="exampleCustomSelect"
               name="customSelect"
               value={gender}
-              onChange={(e) => {
-                setSuccessFeedback('');
-                setError('');
-                setGender(e.target.value);
-              }}
+              onChange={(e) => setGender(e.target.value)}
             >
               <option value="">Not set</option>
               <option value="Female">Female</option>
               <option value="Male">Male</option>
             </CustomInput>
           </InputGroup>
-        </FormGroup>
+        </FormGroup> */}
 
         <FormGroup>
           <InputGroup>
@@ -792,12 +624,9 @@ function EditUser(props) {
               placeholder="Assistant Programme Officer"
               type="text"
               value={position}
-              onChange={(e) => {
-                setSuccessFeedback('');
-                setError('');
-                setPosition(e.target.value);
-              }}
+              onChange={(e) => setPosition(e.target.value)}
               required
+              disabled
             />
           </InputGroup>
         </FormGroup>
@@ -813,6 +642,7 @@ function EditUser(props) {
               name="customSelect"
               value={staffCategory}
               onChange={(e) => setStaffCategory(e.target.value)}
+              disabled
             >
               <option value="">Not set</option>
               <option value="national">national</option>
@@ -830,13 +660,15 @@ function EditUser(props) {
                 <InputGroupAddon addonType="prepend">
                   <InputGroupText>Work Permit Start Date</InputGroupText>
                 </InputGroupAddon>
-                <Calendar
+                {/* <Calendar
                   value={workPermitStartDate}
-                  onChange={(date) => {
-                    setSuccessFeedback('');
-                    setError('');
-                    setWorkPermitStartDate(date);
-                  }}
+                  onChange={(date) => setWorkPermitStartDate(date)}
+                /> */}
+                <Input
+                  type="text"
+                  value={new Date(workPermitStartDate).toDateString()}
+                  required
+                  disabled
                 />
               </InputGroup>
             </FormGroup>
@@ -846,13 +678,15 @@ function EditUser(props) {
                 <InputGroupAddon addonType="prepend">
                   <InputGroupText>Work Permit End Date</InputGroupText>
                 </InputGroupAddon>
-                <Calendar
+                {/* <Calendar
                   value={workPermitEndDate}
-                  onChange={(date) => {
-                    setSuccessFeedback('');
-                    setError('');
-                    setWorkPermitEndDate(date);
-                  }}
+                  onChange={(date) => setWorkPermitEndDate(date)}
+                /> */}
+                <Input
+                  type="text"
+                  value={new Date(workPermitEndDate).toDateString()}
+                  required
+                  disabled
                 />
               </InputGroup>
             </FormGroup>
@@ -870,11 +704,8 @@ function EditUser(props) {
               id="teamCustomSelect"
               name="customSelect"
               value={team}
-              onChange={(e) => {
-                setSuccessFeedback('');
-                setError('');
-                setTeam(e.target.value);
-              }}
+              onChange={(e) => setTeam(e.target.value)}
+              disabled
             >
               <option value="">Not set</option>
               <option value="Country Office">Country Office</option>
@@ -893,11 +724,8 @@ function EditUser(props) {
               id="programmeCustomSelect"
               name="customSelect"
               value={programId}
-              onChange={(e) => {
-                setSuccessFeedback('');
-                setError('');
-                setProgramId(e.target.value);
-              }}
+              onChange={(e) => setProgramId(e.target.value)}
+              disabled
             >
               <option value=''>Not set</option>
               {
@@ -920,11 +748,7 @@ function EditUser(props) {
                 id="adminSwitch2"
                 name="customSwitch"
                 checked={admin}
-                onChange={(e) => {
-                  setSuccessFeedback('');
-                  setError('');
-                  setAdmin(e.target.checked);
-                }}
+                // onChange={(e) => setAdmin(e.target.checked)}
               />
             </div>
           </InputGroup>
@@ -941,11 +765,7 @@ function EditUser(props) {
                 id="supervisorSwitch2"
                 name="customSwitch"
                 checked={supervisor}
-                onChange={(e) => {
-                  setSuccessFeedback('');
-                  setError('');
-                  setSupervisor(e.target.checked);
-                }}
+                // onChange={(e) => setSupervisor(e.target.checked)}
               />
             </div>
           </InputGroup>
@@ -962,11 +782,7 @@ function EditUser(props) {
                 id="hrSwitch2"
                 name="customSwitch"
                 checked={humanResource}
-                onChange={(e) => {
-                  setSuccessFeedback('');
-                  setError('');
-                  setHumanResource(e.target.checked);
-                }}
+                // onChange={(e) => setHumanResource(e.target.checked)}
               />
             </div>
           </InputGroup>
@@ -983,11 +799,7 @@ function EditUser(props) {
                 id="cdSwitch2"
                 name="customSwitch"
                 checked={countryDirector}
-                onChange={(e) => {
-                  setSuccessFeedback('');
-                  setError('');
-                  setCountryDirector(e.target.checked);
-                }}
+                // onChange={(e) => setCountryDirector(e.target.checked)}
               />
             </div>
           </InputGroup>
@@ -1003,11 +815,8 @@ function EditUser(props) {
               id="exampleCustomSelect"
               name="customSelect"
               value={contractType}
-              onChange={(e) => {
-                setSuccessFeedback('');
-                setError('');
-                setContractType(e.target.value);
-              }}
+              onChange={(e) => setContractType(e.target.value)}
+              disabled
             >
               <option value="">Not set</option>
               <option value="Full-Time">Full-Time</option>
@@ -1022,13 +831,15 @@ function EditUser(props) {
             <InputGroupAddon addonType="prepend">
               <InputGroupText>Contract Start Date</InputGroupText>
             </InputGroupAddon>
-            <Calendar
+            {/* <Calendar
               value={contractStartDate}
-              onChange={(date) => {
-                setSuccessFeedback('');
-                setError('');
-                setContractStartDate(date);
-              }}
+              onChange={(date) => setContractStartDate(date)}
+            /> */}
+            <Input
+              type="text"
+              value={new Date(contractStartDate).toDateString()}
+              required
+              disabled
             />
           </InputGroup>
         </FormGroup>
@@ -1038,13 +849,11 @@ function EditUser(props) {
             <InputGroupAddon addonType="prepend">
               <InputGroupText>Contract End Date</InputGroupText>
             </InputGroupAddon>
-            <Calendar
-              value={contractEndDate}
-              onChange={(date) => {
-                setSuccessFeedback('');
-                setError('');
-                setContractEndDate(date);
-              }}
+            <Input
+              type="text"
+              value={new Date(contractEndDate).toDateString()}
+              required
+              disabled
             />
           </InputGroup>
         </FormGroup>
@@ -1057,41 +866,66 @@ function EditUser(props) {
             <div className="selectCustomStyle">
               <Select
                 options={allUsers}
-                onChange={(opt) => {
-                  setSuccessFeedback('');
-                  setError('');
-                  onSelectSupervisorEmail(opt.value);
-                }}
+                onChange={(opt) => onSelectSupervisorEmail(opt.value)}
                 defaultValue={defaultSupervisor}
+                isDisabled={true}
               />
             </div>
           </InputGroup>
         </FormGroup>
 
+        <FormGroup>
+          <InputGroup>
+            <InputGroupAddon addonType="prepend">
+              <InputGroupText>***</InputGroupText>
+            </InputGroupAddon>
+            <Input
+              placeholder="password"
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+          </InputGroup>
+        </FormGroup>
+
+        <FormGroup>
+          <InputGroup>
+            <InputGroupAddon addonType="prepend">
+              <InputGroupText>***</InputGroupText>
+            </InputGroupAddon>
+            <Input
+              placeholder="Confirm Password"
+              type="password"
+              value={confirmPass}
+              onChange={(e) => setConfirmPass(e.target.value)}
+              required
+            />
+          </InputGroup>
+        </FormGroup>
+
         <p className="readThru alert alert-info">
-          Please read through and confirm the details provided before submitting
+          Please read through and confirm the details provided before submitting.
+          Contact the HR or System Admin to correct fields for which you have no edit rights.
         </p>
 
         {error && <div className="errorFeedback"> {error} </div>}
         {successFeedback && <div className="successFeedback"> {successFeedback} </div>}
 
-        <button className="submitButton" type="submit">
+        {/* <button className="submitButton" type="submit">
           {buttonText()}
-        </button>
+        </button> */}
       </Form>
     </div>
   );
 }
 
-EditUser.propTypes = {
+ViewMyDetails.propTypes = {
   token: PropTypes.string,
-  roles: PropTypes.object,
   propsPassed: PropTypes.bool,
   user: PropTypes.object,
   changeSection: PropTypes.func,
-  changeActive: PropTypes.func,
-  setInitialNotifications: PropTypes.func,
-  logUserIn: PropTypes.func,
+  changeActive: PropTypes.func
 };
 
-export default connect(mapStateToProps, matchDispatchToProps)(EditUser);
+export default connect(mapStateToProps, matchDispatchToProps)(ViewMyDetails);

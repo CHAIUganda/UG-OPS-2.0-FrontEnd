@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import DayPicker from 'react-day-picker';
 import axios from 'axios';
+import { useOktaAuth } from '@okta/okta-react';
 
 import { BASE_URL } from '../../config';
 import HR from './hr';
@@ -17,6 +18,7 @@ const mapStateToProps = (state) => ({
 
 function Sidebar({ token, section }) {
   const [selectedDates, setSelectedDates] = useState([]);
+  const { authService } = useOktaAuth();
 
   const returnCalendar = () => {
     if (!section) {
@@ -40,16 +42,21 @@ function Sidebar({ token, section }) {
   useEffect(() => {
     const endPoint = `${BASE_URL}hrApi/getPublicHolidays`;
     axios.defaults.headers.common = { token };
-    axios.get(endPoint)
-      .then((res) => {
-        const days = [];
-        res.data.forEach((day) => {
-          days.push(new Date(`${new Date().getFullYear()}, ${day.date.split('/')[1]}, ${day.date.split('/')[0]}`));
+    if (token) {
+      axios.get(endPoint)
+        .then((res) => {
+          const days = [];
+          res.data.forEach((day) => {
+            days.push(new Date(`${new Date().getFullYear()}, ${day.date.split('/')[1]}, ${day.date.split('/')[0]}`));
+          });
+          setSelectedDates(days);
+        })
+        .catch((err) => {
+          if (err.response.status === 401) {
+            authService.logout('/');
+          }
         });
-        setSelectedDates(days);
-      })
-      .catch((/* err */) => {
-      });
+    }
   }, []);
 
   return (

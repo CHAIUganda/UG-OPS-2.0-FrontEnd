@@ -1,88 +1,48 @@
-import React, { useEffect } from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import Calendar from 'react-calendar';
-import {
-  FormGroup,
-  Input,
-  InputGroup,
-  InputGroupAddon,
-  InputGroupText,
-  FormText,
-  // CustomInput
-} from 'reactstrap';
-import TimePicker from 'rc-time-picker';
-import moment from 'moment';
-import * as DropzoneLib from 'dropzone';
 
 import 'dropzone/dist/dropzone.css';
 import 'rc-time-picker/assets/index.css';
 
 import NextButton from '../../../../common/nextButton';
 import BackButton from '../../../../common/backButton';
+import AddCarHireSpec from './addCarHireSpec';
 
 const CarHireSpecifications = ({
-  setSuccessFeedback,
-  setError,
-  typeOfCar,
-  setTypeOfCar,
-  districtsToBeVisited,
-  setDistrictsToBeVisited,
-  numberOfCars,
-  setNumberOfCars,
-  numberOfDays,
-  setNumberOfDays,
-  numberOfNights,
-  setNumberOfNights,
-  pickUpTime,
-  setPickUpTime,
-  pickUpLocation,
-  setPickUpLocation,
-  carHireDatesRange,
-  setcarHireDatesRange,
   setCurrentComponent,
   activeSections,
   currentComponent,
+  carHireSpecs,
+  setCarHireSpecs
 }) => {
-  const carHireDropzoneNode = React.createRef();
-  // eslint-disable-next-line no-unused-vars
-  let carHireDropzone;
-  const carHireFilesArray = [];
+  const [carHireSpecsError, setCarHireSpecsError] = useState('');
+  const [carHireSpecsSucc, setCarHireSpecsSucc] = useState('');
 
-  // eslint-disable-next-line no-unused-vars
-  const onFileError = (file, message) => {
-    setError(`${file.name} :: message`);
+  const addSpec = (newSpec) => {
+    const newArr = carHireSpecs.concat([newSpec]);
+    setCarHireSpecsError('');
+    setCarHireSpecsSucc(`${newSpec.specTitle} added successfully.`);
+    setCarHireSpecs(newArr);
   };
 
-  const onAddFile = (file) => {
-    carHireFilesArray.push(file);
-    setError('');
-    setSuccessFeedback('');
+  const editSpec = (position, newSpec) => {
+    const newArr = [...carHireSpecs];
+    newArr.splice(position, 1, newSpec);
+    setCarHireSpecsError('');
+    setCarHireSpecsSucc(`${newSpec.specTitle} editted successfully.`);
+    setCarHireSpecs(newArr);
   };
 
-  const onRemoveFile = (file) => {
-    const indexOfFile = carHireFilesArray.indexOf(file);
-    carHireFilesArray.splice(indexOfFile, 1);
-    setError('');
-    setSuccessFeedback('');
-  };
+  const errorProps = () => {
+    const arr = [];
+    if (carHireSpecs.length < 1) {
+      arr.push({
+        err: 'Please add atleast a specification to continue.',
+        setter: setCarHireSpecsError
+      });
+    }
 
-  const setupDropzone = () => {
-    const carHireDropzoneArea = new DropzoneLib('div#cadHireDiv', {
-      url: '/not/required/',
-      dictDefaultMessage: 'Drop files or click to upload',
-      uploadMultiple: true,
-      autoProcessQueue: false,
-      addRemoveLinks: true,
-      createImageThumbnails: true,
-    });
-
-    carHireDropzoneArea.on('error', (file, message) => console.log(message));
-
-    carHireDropzoneArea.on('addedfile', onAddFile);
-
-    carHireDropzoneArea.on('removedfile', onRemoveFile);
-
-    return carHireDropzoneArea;
+    return arr;
   };
 
   const returnNextButton = () => {
@@ -95,7 +55,7 @@ const CarHireSpecifications = ({
             setCurrentComponent={setCurrentComponent}
             // activeSections={activeSections}
             // currentComponent={currentComponent}
-          // errorProps={errorProps()}
+            errorProps={errorProps()}
           />
         );
       }
@@ -104,7 +64,7 @@ const CarHireSpecifications = ({
           activeSections={activeSections}
           currentComponent={currentComponent}
           setCurrentComponent={setCurrentComponent}
-          // errorProps={errorProps()}
+          errorProps={errorProps()}
         />
       );
     }
@@ -112,180 +72,67 @@ const CarHireSpecifications = ({
     return <></>;
   };
 
-  useEffect(() => {
-    carHireDropzone = setupDropzone();
-  }, []);
+  const carHireSpecComponent = () => {
+    return carHireSpecs.map((spec, index) => {
+      const x = spec.additionalDocumentations;
+      return (
+        <tr key={index}>
+          <td>{index + 1}</td>
+          <td>{spec.specTitle}</td>
+          <td>
+            <AddCarHireSpec
+              edit={true}
+              specToEdit={spec}
+              editSpec={editSpec}
+              position={index}
+              x={x}
+            />
+          </td>
+        </tr>
+      );
+    });
+  };
+
+  const returnTableData = () => {
+    if (carHireSpecs.length < 1) {
+      return (
+        <div className="alert alert-info mt-5" role="alert">
+          You haven&apos;t added any specifications yet.
+        </div>
+      );
+    }
+
+    return (
+      <table className="table holidaysTable">
+        <thead>
+          <tr>
+            <th scope="col">No.</th>
+            <th scope="col">Title</th>
+            <th scope="col">Manage</th>
+          </tr>
+        </thead>
+        <tbody>
+          {carHireSpecComponent()}
+        </tbody>
+      </table>
+    );
+  };
 
   return (
     <>
       <div>
-        <h3>Car Hire Specifications</h3>
-        {/* Range of dates */}
-        <FormGroup>
-          <InputGroup>
-            <InputGroupAddon addonType="prepend">
-              <InputGroupText>Range of dates needed</InputGroupText>
-            </InputGroupAddon>
-            <Calendar
-              value={carHireDatesRange}
-              selectRange={true}
-              onChange={(date) => {
-                setSuccessFeedback('');
-                setError('');
-                setcarHireDatesRange(date);
-              }
-              } />
-          </InputGroup>
-        </FormGroup>
-
-        {/*  Type of car */}
-        <FormGroup>
-          <InputGroup>
-            <InputGroupAddon addonType="prepend">
-              <InputGroupText>Type Of Car</InputGroupText>
-            </InputGroupAddon>
-            <Input
-              placeholder='Type of car'
-              type="text"
-              value={typeOfCar}
-              onChange={(e) => {
-                setSuccessFeedback('');
-                setError('');
-                setTypeOfCar(e.target.value);
-              }}
-              required
-            />
-          </InputGroup>
-        </FormGroup>
-
-        {/* Districts to be visited */}
-        <FormGroup>
-          <InputGroup>
-            <InputGroupAddon addonType="prepend">
-              <InputGroupText>Districts To Be Visited</InputGroupText>
-            </InputGroupAddon>
-            <Input
-              placeholder='Districts To Be Visited'
-              type="text"
-              value={districtsToBeVisited}
-              onChange={(e) => {
-                setSuccessFeedback('');
-                setError('');
-                setDistrictsToBeVisited(e.target.value);
-              }}
-              required
-            />
-          </InputGroup>
-          <FormText>Supply a comma seperated list of districts to be visited.</FormText>
-        </FormGroup>
-
-        {/*  Number of cars */}
-        <FormGroup>
-          <InputGroup>
-            <InputGroupAddon addonType="prepend">
-              <InputGroupText>Number of Cars</InputGroupText>
-            </InputGroupAddon>
-            <Input
-              placeholder='0'
-              type="number"
-              value={numberOfCars}
-              onChange={(e) => {
-                setSuccessFeedback('');
-                setError('');
-                setNumberOfCars(e.target.value);
-              }}
-              required
-            />
-          </InputGroup>
-        </FormGroup>
-
-        {/*  Duration of trip. */}
-        <h6>Duration Of Trip</h6>
-        <FormGroup>
-          <InputGroup>
-            <InputGroupAddon addonType="prepend">
-              <InputGroupText>Number of Days</InputGroupText>
-            </InputGroupAddon>
-            <Input
-              placeholder='0'
-              type="number"
-              value={numberOfDays}
-              onChange={(e) => {
-                setSuccessFeedback('');
-                setError('');
-                setNumberOfDays(e.target.value);
-              }}
-              required
-            />
-          </InputGroup>
-        </FormGroup>
-
-        <FormGroup>
-          <InputGroup>
-            <InputGroupAddon addonType="prepend">
-              <InputGroupText>Number of Nights</InputGroupText>
-            </InputGroupAddon>
-            <Input
-              placeholder='0'
-              type="number"
-              value={numberOfNights}
-              onChange={(e) => {
-                setSuccessFeedback('');
-                setError('');
-                setNumberOfNights(e.target.value);
-              }}
-              required
-            />
-          </InputGroup>
-        </FormGroup>
-
-        {/* pick up time */}
-        <FormGroup>
-          <InputGroup>
-            <InputGroupAddon addonType="prepend">
-              <InputGroupText>Pick up Time</InputGroupText>
-            </InputGroupAddon>
-            <TimePicker
-              showSecond={false}
-              defaultValue={moment()}
-              onChange={(value) => setPickUpTime(value)}
-              value={pickUpTime}
-            />
-          </InputGroup>
-        </FormGroup>
-
-        {/*  Pick up location */}
-        <FormGroup>
-          <InputGroup>
-            <InputGroupAddon addonType="prepend">
-              <InputGroupText>Pick Up Location</InputGroupText>
-            </InputGroupAddon>
-            <Input
-              placeholder='Location'
-              type="text"
-              value={pickUpLocation}
-              onChange={(e) => {
-                setSuccessFeedback('');
-                setError('');
-                setPickUpLocation(e.target.value);
-              }}
-              required
-            />
-          </InputGroup>
-        </FormGroup>
-
-        {/*  dropzone */}
-        <FormGroup>
-          <InputGroup>
-            <InputGroupAddon addonType="prepend">
-              <InputGroupText>Additional documations</InputGroupText>
-            </InputGroupAddon>
-            <div ref={carHireDropzoneNode} id='cadHireDiv' className='dropzone'></div>
-          </InputGroup>
-          <FormText>
-          Attach any additional suppporting documations.
-          </FormText>
-        </FormGroup>
+        <h3 className="inlineItem">Car Hire Specifications</h3>
+        <AddCarHireSpec
+          addSpec={addSpec}
+          edit={false}
+        />
+        {carHireSpecsError && <div className="errorFeedback m-3"> {carHireSpecsError} </div>}
+        { carHireSpecsSucc
+          && <div className="alert alert-success m-3" role="alert">
+            { carHireSpecsSucc }
+          </div>
+        }
+        {returnTableData()}
       </div>
 
       <div className='pushChildToBottom mb-2'>
@@ -301,27 +148,11 @@ const CarHireSpecifications = ({
 };
 
 CarHireSpecifications.propTypes = {
-  setSuccessFeedback: PropTypes.func,
-  setError: PropTypes.func,
-  typeOfCar: PropTypes.string,
-  setTypeOfCar: PropTypes.func,
-  districtsToBeVisited: PropTypes.text,
-  setDistrictsToBeVisited: PropTypes.func,
-  numberOfCars: PropTypes.number,
-  setNumberOfCars: PropTypes.func,
-  numberOfDays: PropTypes.number,
-  setNumberOfDays: PropTypes.func,
-  numberOfNights: PropTypes.number,
-  setNumberOfNights: PropTypes.func,
-  pickUpTime: PropTypes.string,
-  setPickUpTime: PropTypes.func,
-  pickUpLocation: PropTypes.string,
-  setPickUpLocation: PropTypes.func,
-  carHireDatesRange: PropTypes.object,
-  setcarHireDatesRange: PropTypes.func,
   setCurrentComponent: PropTypes.func,
   activeSections: PropTypes.array,
   currentComponent: PropTypes.array,
+  carHireSpecs: PropTypes.array,
+  setCarHireSpecs: PropTypes.func
 };
 
 export default CarHireSpecifications;

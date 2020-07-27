@@ -3,8 +3,12 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { Spinner } from 'reactstrap';
 import axios from 'axios';
+import { useOktaAuth } from '@okta/okta-react';
 
 import * as sideBarActions from '../../../../../redux/actions/sideBarActions';
+import * as authActions from '../../../../../redux/actions/authActions';
+import * as notificationActions from '../../../../../redux/actions/notificationsActions';
+
 import { BASE_URL } from '../../../../../config';
 import CreateNewProgramme from './createProgrammeModal';
 import EditProgram from './editProgramModal';
@@ -12,7 +16,9 @@ import './programmes.css';
 
 const matchDispatchToProps = {
   changeSection: sideBarActions.changeSection,
-  changeActive: sideBarActions.changeActive
+  changeActive: sideBarActions.changeActive,
+  logUserIn: authActions.logUserIn,
+  setInitialNotifications: notificationActions.setInitialNotifications
 };
 
 const mapStateToProps = (state) => ({
@@ -28,14 +34,18 @@ function ManageProgrammes({
   token,
   roles,
   changeSection,
-  changeActive
+  changeActive,
+  setInitialNotifications,
+  logUserIn
 }) {
   const [programmes, setProgrammes] = useState([]);
   const [allUsers, setAllUsers] = useState([]);
   const [tableSpinner, setTableSpinner] = useState(false);
   const [tableError, setTableError] = useState('');
 
-  if (roles) {
+  const { authState, authService } = useOktaAuth();
+
+  if (token && roles) {
     if (!roles.hr && !roles.admin) {
       return (
         <div className="alert alert-danger text-center" role="alert">
@@ -43,13 +53,6 @@ function ManageProgrammes({
         </div>
       );
     }
-  } else {
-    return (
-      <div className="alert alert-danger text-center" role="alert">
-        <p>{'FE: You seem to have no roles.'}</p>
-        <p>Please contact the system admin to rectify this.</p>
-      </div>
-    );
   }
 
   changeSection('Human Resource');
@@ -69,6 +72,10 @@ function ManageProgrammes({
         setProgrammes(newProgrammes);
       })
       .catch((err) => {
+        if (err.response.status === 401) {
+          authService.logout('/');
+        }
+
         if (err && err.response && err.response.data && err.response.data.message) {
           setTableError(err.response.data.message);
         } else {
@@ -159,6 +166,86 @@ function ManageProgrammes({
       })
       .catch((err) => {
         setTableSpinner(false);
+
+        if (err.response.status === 401) {
+          authService.logout('/');
+        }
+
+        if (err && err.response && err.response.data && err.response.data.message) {
+          setTableError(err.response.data.message);
+        } else {
+          setTableError(err.message);
+        }
+      });
+  };
+
+  const setUpUser = (tokenToSet) => {
+    axios.defaults.headers.common = { token: tokenToSet };
+    const apiRoute = `${BASE_URL}auth/getLoggedInUser`;
+    axios.get(apiRoute)
+      . then((res) => {
+        const {
+          department,
+          fName,
+          internationalStaff,
+          lName,
+          position,
+          _id,
+          supervisorDetails,
+          notifications
+        } = res.data;
+        const genderToSet = res.data.gender;
+        const emailToSet = res.data.email;
+        const leaveDetailsToSet = res.data.leaveDetails;
+
+        const userObject = {
+          ...res.data,
+          email: emailToSet,
+          token: tokenToSet,
+          gender: genderToSet,
+          internationalStaff,
+          department,
+          firstName: fName,
+          lastName: lName,
+          Position: position,
+          id: _id,
+          leaveDetails: leaveDetailsToSet,
+          supervisor: supervisorDetails
+        };
+        setInitialNotifications(notifications);
+        logUserIn(userObject);
+        setTableSpinner(false);
+      })
+      .catch((err) => {
+        setTableSpinner(false);
+
+        if (err.response.status === 401) {
+          authService.logout('/');
+        }
+
+        if (err && err.response && err.response.data && err.response.data.message) {
+          setTableError(err.response.data.message);
+        } else {
+          setTableError(err.message);
+        }
+      });
+  };
+
+  const setUpThisPage = () => {
+    const endPoint = `${BASE_URL}hrApi/getPrograms`;
+    axios.defaults.headers.common = { token };
+    axios.get(endPoint)
+      .then((res) => {
+        setProgrammes(res.data);
+        getUsers();
+      })
+      .catch((err) => {
+        setTableSpinner(false);
+
+        if (err.response.status === 401) {
+          authService.logout('/');
+        }
+
         if (err && err.response && err.response.data && err.response.data.message) {
           setTableError(err.response.data.message);
         } else {
@@ -169,21 +256,21 @@ function ManageProgrammes({
 
   useEffect(() => {
     setTableSpinner(true);
-    const endPoint = `${BASE_URL}hrApi/getPrograms`;
-    axios.defaults.headers.common = { token };
-    axios.get(endPoint)
-      .then((res) => {
-        setProgrammes(res.data);
-        getUsers();
-      })
-      .catch((err) => {
-        setTableSpinner(false);
-        if (err && err.response && err.response.data && err.response.data.message) {
-          setTableError(err.response.data.message);
-        } else {
-          setTableError(err.message);
-        }
-      });
+    setTableError('');
+
+    if (token) {
+      setUpThisPage();
+    }
+
+    if (!token && authState.isAuthenticated) {
+      const { accessToken } = authState;
+      setUpUser(`Bearer ${accessToken}`);
+    }
+
+    if (!token && !authState.isAuthenticated) {
+      setTableSpinner(false);
+      authService.logout('/');
+    }
   }, []);
 
   return (
@@ -204,7 +291,9 @@ ManageProgrammes.propTypes = {
   token: PropTypes.string,
   roles: PropTypes.object,
   changeSection: PropTypes.func,
-  changeActive: PropTypes.func
+  changeActive: PropTypes.func,
+  setInitialNotifications: PropTypes.func,
+  logUserIn: PropTypes.func,
 };
 
 export default connect(mapStateToProps, matchDispatchToProps)(ManageProgrammes);

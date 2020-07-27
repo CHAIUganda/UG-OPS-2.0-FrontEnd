@@ -17,6 +17,7 @@ import { IconContext } from 'react-icons';
 import PropTypes from 'prop-types';
 import axios from 'axios';
 import Calendar from 'react-calendar';
+import { useOktaAuth } from '@okta/okta-react';
 
 import { BASE_URL, returnStatusClass } from '../../../../../../config';
 import CommonSpinner from '../../../../../common/spinner';
@@ -43,6 +44,8 @@ export default function ManageLeaveModal({
   const [leaveDates, setLeaveDate] = useState([new Date(leave.startDate), new Date(leave.endDate)]);
   const [modifyArray, setModifyArray] = useState(false);
   const [leaveObjFromServer, setLeaveObjectFromServer] = useState(false);
+
+  const { authService } = useOktaAuth();
 
 
   const toggle = () => {
@@ -97,6 +100,11 @@ export default function ManageLeaveModal({
       })
       .catch((err) => {
         setCancelSpinner(false);
+
+        if (err.response.status === 401) {
+          authService.logout('/');
+        }
+
         if (err && err.response && err.response.data && err.response.data.message) {
           setError(err.response.data.message);
         } else {
@@ -132,6 +140,11 @@ export default function ManageLeaveModal({
       })
       .catch((err) => {
         setModifyLeaveSpinner(false);
+
+        if (err.response.status === 401) {
+          authService.logout('/');
+        }
+
         if (err && err.response && err.response.data && err.response.data.message) {
           setError(err.response.data.message);
         } else {

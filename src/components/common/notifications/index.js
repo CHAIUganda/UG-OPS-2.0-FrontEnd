@@ -12,6 +12,7 @@ import PropTypes from 'prop-types';
 import { AiOutlineNotification } from 'react-icons/ai';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
+import { useOktaAuth } from '@okta/okta-react';
 
 import * as notificationActions from '../../../redux/actions/notificationsActions';
 import { BASE_URL } from '../../../config';
@@ -35,6 +36,7 @@ function Notifications({
   removeNotification
 }) {
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const { authService } = useOktaAuth();
 
   const toggle = () => setDropdownOpen((prevState) => !prevState);
 
@@ -50,12 +52,10 @@ function Notifications({
       .then(() => {
         removeNotification(notificationId);
       })
-      .catch(() => {
-        // if (err && err.response && err.response.data && err.response.data.message) {
-        //   setError(err.response.data.message);
-        // } else {
-        //   setError(err.message);
-        // }
+      .catch((err) => {
+        if (err.response.status === 401) {
+          authService.logout('/');
+        }
       });
   };
 

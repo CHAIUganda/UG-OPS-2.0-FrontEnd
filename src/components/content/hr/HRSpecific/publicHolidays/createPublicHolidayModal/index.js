@@ -16,6 +16,7 @@ import {
 import { IoMdAdd } from 'react-icons/io';
 import axios from 'axios';
 import Calendar from 'react-calendar';
+import { useOktaAuth } from '@okta/okta-react';
 
 import { BASE_URL } from '../../../../../../config';
 
@@ -26,6 +27,8 @@ const CreateNewPublicHoliday = ({ onNewPHoliday }) => {
   const [formSpinner, setFormSpinner] = useState(false);
   const [newDate, setNewDate] = useState('');
   const [holidayName, setHolidayName] = useState('');
+
+  const { authService } = useOktaAuth();
 
   const toggle = () => setModal(!modal);
 
@@ -55,6 +58,11 @@ const CreateNewPublicHoliday = ({ onNewPHoliday }) => {
       })
       .catch((err) => {
         setFormSpinner(false);
+
+        if (err.response.status === 401) {
+          authService.logout('/');
+        }
+
         if (err && err.response && err.response.data && err.response.data.message) {
           setFormError(err.response.data.message);
         } else {
@@ -123,7 +131,7 @@ const CreateNewPublicHoliday = ({ onNewPHoliday }) => {
         <button className="submitButton" type="submit">
           {buttonText()}
         </button>
-        <Button color="secondary" onClick={toggle} className="float-right">Cancel</Button>
+        <Button color="secondary" onClick={toggle} className="float-right">Close</Button>
       </Form>
     </div>
   );

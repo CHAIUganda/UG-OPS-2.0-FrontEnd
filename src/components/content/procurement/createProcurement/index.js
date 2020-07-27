@@ -1,9 +1,16 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { Form } from 'reactstrap';
+import { useOktaAuth } from '@okta/okta-react';
+import axios from 'axios';
+
+import { BASE_URL } from '../../../../config';
 
 import * as sideBarActions from '../../../../redux/actions/sideBarActions';
+import * as authActions from '../../../../redux/actions/authActions';
+import * as notificationActions from '../../../../redux/actions/notificationsActions';
+
 import CommonSpinner from '../../../common/spinner';
 import ProcurementInitialDetails from './procurementInitialDetails';
 import CategoryOfProcurement from './categoryOfProcurement';
@@ -17,7 +24,9 @@ import './createProcurement.css';
 
 const matchDispatchToProps = {
   changeSection: sideBarActions.changeSection,
-  changeActive: sideBarActions.changeActive
+  changeActive: sideBarActions.changeActive,
+  logUserIn: authActions.logUserIn,
+  setInitialNotifications: notificationActions.setInitialNotifications
 };
 
 const mapStateToProps = (state) => ({
@@ -29,7 +38,10 @@ const mapStateToProps = (state) => ({
 
 function CreateProcurement({
   changeSection,
-  changeActive
+  changeActive,
+  token,
+  setInitialNotifications,
+  logUserIn
 }) {
   /*
   Check for roles
@@ -52,18 +64,20 @@ function CreateProcurement({
   }
   */
 
-  const [spinner] = useState(false);
   const [error, setError] = useState('');
+  const [loadingPageErr, setLoadingPageErr] = useState('');
   const [successFeedback, setSuccessFeedback] = useState('');
+  const { authState, authService } = useOktaAuth();
+
   const [currentComponent, setCurrentComponent] = useState([ProcurementInitialDetails]);
   const [activeSections, setActiveSections] = useState([
     ProcurementInitialDetails,
     CategoryOfProcurement,
     GeneralDetails
   ]);
-  const [gid, setGid] = useState('GID01');
-  const [pid, setPid] = useState('PID01');
-  const [objectiveCode, setObjectiveCode] = useState('');
+  const [gids, setGids] = useState([]);
+  const [pids, setPids] = useState([]);
+  const [objectiveCodes, setObjectiveCodes] = useState([]);
   const [printing, setPrinting] = useState(false);
   const [carHire, setCarHire] = useState(false);
   const [conferenceFacilities, setConferenceFacilities] = useState(false);
@@ -74,25 +88,94 @@ function CreateProcurement({
   const [computersAndAccessories, setComputersAndAccessories] = useState(false);
   const [other, setOther] = useState(false);
   const [describeOther, setDescribeOther] = useState('');
-  const [minPrice, setMinPrice] = useState(0);
-  const [maxPrice, setMaxPrice] = useState(0);
   const [keyObjectiveAsPerCostedWorkPlan, setKeyObjectiveAsPerCostedWorkPlan] = useState('');
   const [keyActivitiesAsPerCostedWorkPlan, setKeyActivitiesAsPerCostedWorkPlan] = useState('');
-
-  const [typeOfCar, setTypeOfCar] = useState('');
-  const [districtsToBeVisited, setDistrictsToBeVisited] = useState('');
-  const [numberOfCars, setNumberOfCars] = useState(0);
-  const [numberOfDays, setNumberOfDays] = useState(0);
-  const [numberOfNights, setNumberOfNights] = useState(0);
-  const [pickUpTime, setPickUpTime] = useState();
-  const [pickUpLocation, setPickUpLocation] = useState('');
-  const [carHireDatesRange, setcarHireDatesRange] = useState();
+  const [printingSpecs, setPrintingSpecs] = useState([]);
+  const [carHireSpecs, setCarHireSpecs] = useState([]);
   // const [itemRequests, setItemRequests] = useState('');
   // const [quantitiesRequired, setQuantitiesRequired] = useState('');
   // const [describeItems, setDescribeItems] = useState('');
 
+  const [spinner, setSpinner] = useState(false);
+
   changeSection('Procurement');
   changeActive('CreateProcurement');
+
+  const setUpUser = (tokenToSet) => {
+    axios.defaults.headers.common = { token: tokenToSet };
+    const apiRoute = `${BASE_URL}auth/getLoggedInUser`;
+    axios.get(apiRoute)
+      . then((res) => {
+        const {
+          department,
+          fName,
+          internationalStaff,
+          lName,
+          position,
+          _id,
+          supervisorDetails,
+          notifications
+        } = res.data;
+        const genderToSet = res.data.gender;
+        const emailToSet = res.data.email;
+        const leaveDetailsToSet = res.data.leaveDetails;
+
+        const userObject = {
+          ...res.data,
+          email: emailToSet,
+          token: tokenToSet,
+          gender: genderToSet,
+          internationalStaff,
+          department,
+          firstName: fName,
+          lastName: lName,
+          Position: position,
+          id: _id,
+          leaveDetails: leaveDetailsToSet,
+          supervisor: supervisorDetails
+        };
+        setInitialNotifications(notifications);
+        logUserIn(userObject);
+        setSpinner(false);
+      })
+      .catch((err) => {
+        setSpinner(false);
+
+        if (err.response.status === 401) {
+          authService.logout('/');
+        }
+
+        if (err && err.response && err.response.data && err.response.data.message) {
+          setError(err.response.data.message);
+        } else {
+          setError(err.message);
+        }
+      });
+  };
+
+  const setUpThisPage = () => {
+    // set this page up. Do stuff like pick pids and gids.
+    setSpinner(false);
+  };
+
+  useEffect(() => {
+    setSpinner(true);
+    setLoadingPageErr('');
+
+    if (token) {
+      setUpThisPage();
+    }
+
+    if (!token && authState.isAuthenticated) {
+      const { accessToken } = authState;
+      setUpUser(`Bearer ${accessToken}`);
+    }
+
+    if (!token && !authState.isAuthenticated) {
+      setSpinner(false);
+      authService.logout('/');
+    }
+  }, []);
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -112,12 +195,12 @@ function CreateProcurement({
         <ProcurementInitialDetails
           setSuccessFeedback={setSuccessFeedback}
           setError={setError}
-          setGid={setGid}
-          gid={gid}
-          pid={pid}
-          setPid={setPid}
-          objectiveCode={objectiveCode}
-          setObjectiveCode={setObjectiveCode}
+          setGids={setGids}
+          gids={gids}
+          pids={pids}
+          setPids={setPids}
+          objectiveCodes={objectiveCodes}
+          setObjectiveCodes={setObjectiveCodes}
           setCurrentComponent={setCurrentComponent}
           activeSections={activeSections}
           setActiveSections={setActiveSections}
@@ -166,10 +249,6 @@ function CreateProcurement({
         <GeneralDetails
           setSuccessFeedback={setSuccessFeedback}
           setError={setError}
-          minPrice={minPrice}
-          setMinPrice={setMinPrice}
-          maxPrice={maxPrice}
-          setMaxPrice={setMaxPrice}
           keyObjectiveAsPerCostedWorkPlan={keyObjectiveAsPerCostedWorkPlan}
           setKeyObjectiveAsPerCostedWorkPlan={setKeyObjectiveAsPerCostedWorkPlan}
           keyActivitiesAsPerCostedWorkPlan={keyActivitiesAsPerCostedWorkPlan}
@@ -185,10 +264,11 @@ function CreateProcurement({
       return (
         <PrintingSpecs
           setSuccessFeedback={setSuccessFeedback}
-          setError={setError}
           setCurrentComponent={setCurrentComponent}
           activeSections={activeSections}
           currentComponent={currentComponent}
+          printingSpecs={printingSpecs}
+          setPrintingSpecs={setPrintingSpecs}
         />
       );
     }
@@ -196,27 +276,11 @@ function CreateProcurement({
     if (currentComponent[0] === CarHireSpecifications) {
       return (
         <CarHireSpecifications
-          setSuccessFeedback={setSuccessFeedback}
-          setError={setError}
-          typeOfCar={typeOfCar}
-          setTypeOfCar={setTypeOfCar}
-          districtsToBeVisited={districtsToBeVisited}
-          setDistrictsToBeVisited={setDistrictsToBeVisited}
-          numberOfCars={numberOfCars}
-          setNumberOfCars={setNumberOfCars}
-          numberOfDays={numberOfDays}
-          setNumberOfDays={setNumberOfDays}
-          numberOfNights={numberOfNights}
-          setNumberOfNights={setNumberOfNights}
-          pickUpTime={pickUpTime}
-          setPickUpTime={setPickUpTime}
-          pickUpLocation={pickUpLocation}
-          setPickUpLocation={setPickUpLocation}
-          carHireDatesRange={carHireDatesRange}
-          setcarHireDatesRange={setcarHireDatesRange}
           setCurrentComponent={setCurrentComponent}
           activeSections={activeSections}
           currentComponent={currentComponent}
+          carHireSpecs={carHireSpecs}
+          setCarHireSpecs={setCarHireSpecs}
         />
       );
     }
@@ -224,16 +288,28 @@ function CreateProcurement({
     return <></>;
   };
 
+  if (loadingPageErr) {
+    return (
+      <div className="alert alert-danger text-center" role="alert">
+        <p>{loadingPageErr}</p>
+      </div>
+    );
+  }
+
+  if (spinner) {
+    return (
+      <div className="alert alert-info text-center" role="alert">
+        <div>
+          <CommonSpinner />
+          <p>Getting things ready.....</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className='createProcformContainer containerPositionRelative'>
       <Form onsubmit={handleSubmit}>
-        {
-          spinner
-          && <div className="alert alert-info text-center" role="alert">
-            <div><CommonSpinner /></div>
-            <p>Getting things ready.....</p>
-          </div>
-        }
         {error && <div className="errorFeedback"> {error} </div>}
         {successFeedback && <div className="successFeedback"> {successFeedback} </div>}
         {returnComponent()}
@@ -260,7 +336,9 @@ CreateProcurement.propTypes = {
   token: PropTypes.string,
   email: PropTypes.string,
   changeSection: PropTypes.func,
-  changeActive: PropTypes.func
+  changeActive: PropTypes.func,
+  setInitialNotifications: PropTypes.func,
+  logUserIn: PropTypes.func,
 };
 
 export default connect(mapStateToProps, matchDispatchToProps)(CreateProcurement);

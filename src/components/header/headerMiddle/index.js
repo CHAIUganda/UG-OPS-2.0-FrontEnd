@@ -1,8 +1,8 @@
 import React from 'react';
 // import { Link } from 'react-router-dom';
 import { IoIosPeople } from 'react-icons/io';
-import { GiTakeMyMoney } from 'react-icons/gi';
-import { FaFileInvoiceDollar } from 'react-icons/fa';
+// import { GiTakeMyMoney } from 'react-icons/gi';
+// import { FaFileInvoiceDollar } from 'react-icons/fa';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
@@ -16,10 +16,18 @@ const matchDispatchToProps = {
 
 const mapStateToProps = () => ({ });
 
-function HeaderMiddle({ changeSection }) {
+function HeaderMiddle({ changeSection, loginButton }) {
   const handleClick = (section) => {
     changeSection(section);
   };
+
+  if (loginButton) {
+    return (
+      <div className="middleHeader">
+        Ug Ops
+      </div>
+    );
+  }
 
   return (
     <div className="middleHeader">
@@ -30,27 +38,28 @@ function HeaderMiddle({ changeSection }) {
           textToSet="Human Resource"
         />
       </span>
-      <span onClick={() => handleClick('Procurement')}>
+      {/* <span onClick={() => handleClick('Procurement')}>
         <SubItem
           link="/"
           IcontoSet={GiTakeMyMoney}
           textToSet="Procurement"
         />
-      </span>
-
+      </span> */}
+      {/*
       <span onClick={() => handleClick('Finance')}>
         <SubItem
           link="/"
           IcontoSet={FaFileInvoiceDollar}
           textToSet="Finance"
         />
-      </span>
+      </span> */}
     </div>
   );
 }
 
 HeaderMiddle.propTypes = {
-  changeSection: PropTypes.func
+  changeSection: PropTypes.func,
+  loginButton: PropTypes.bool
 };
 
 export default connect(mapStateToProps, matchDispatchToProps)(HeaderMiddle);

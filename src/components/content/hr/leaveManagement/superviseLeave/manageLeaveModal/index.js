@@ -15,6 +15,7 @@ import { IconContext } from 'react-icons';
 import PropTypes from 'prop-types';
 import axios from 'axios';
 import { connect } from 'react-redux';
+import { useOktaAuth } from '@okta/okta-react';
 
 import CommonSpinner from '../../../../../common/spinner';
 import * as notificationActions from '../../../../../../redux/actions/notificationsActions';
@@ -46,6 +47,8 @@ function ManageLeaveModal({
   const [leaveStatus, setLeaveStatus] = useState(leave.status);
   const [id2Remove, setId2Remove] = useState(false);
 
+  const { authService } = useOktaAuth();
+
   const toggle = () => {
     const bool = !modal;
     if (!bool && id2Remove) {
@@ -70,6 +73,10 @@ function ManageLeaveModal({
           removeNotification(n._id);
         })
         .catch((err) => {
+          if (err.response.status === 401) {
+            authService.logout('/');
+          }
+
           if (err && err.response && err.response.data && err.response.data.message) {
             setError(err.response.data.message);
           } else {
@@ -124,6 +131,10 @@ function ManageLeaveModal({
           setApproveSpinner(false);
         } else {
           setDeclineSpinner(false);
+        }
+
+        if (err.response.status === 401) {
+          authService.logout('/');
         }
 
         if (err && err.response && err.response.data && err.response.data.message) {

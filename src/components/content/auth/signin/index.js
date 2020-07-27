@@ -107,9 +107,9 @@ function SignIn(props) {
       });
   };
 
-  // const loginAs = (email2Set) => {
-  //   setEmail(email2Set);
-  // };
+  const loginAs = (email2Set) => {
+    setEmail(email2Set);
+  };
 
   const handleChange = (event) => {
     setLoginError('');
@@ -133,16 +133,16 @@ function SignIn(props) {
   return (
     <div className="SigninFormStyle">
       <Form onSubmit={handleSubmit}>
-        {/* <h3 className="signInHeading">Sign In</h3>
+        <h3 className="signInHeading">Sign In</h3>
         <p className="signInAs">HR, sys admin, supervisor (Ssebale Paul): <span className="submitButton pointerCursor" onClick={() => loginAs('spaul@clintonhealthaccess.org')}>set as Paul</span></p>
         <p className="signInAs">sys admin, supervisor, national (Oboth Abel): <span className="submitButton pointerCursor" onClick={() => loginAs('aoboth@clintonhealthaccess.org')}>set as Abel</span></p>
         <p className="signInAs">expat (Vanessa Karungi): <span className="submitButton pointerCursor" onClick={() => loginAs('vkarungi@clintonhealthaccess.org')}>set as Vanessa</span></p>
-        <p>Just click submit to preview</p> */}
+        <p>Just click submit to preview</p>
         {loginError && <div className="errorFeedback"> {loginError} </div>}
         <FormGroup>
           <InputGroup>
             <InputGroupAddon addonType="prepend">
-              <InputGroupText>@ Email</InputGroupText>
+              <InputGroupText>Email</InputGroupText>
             </InputGroupAddon>
             <Input
               type="email"
