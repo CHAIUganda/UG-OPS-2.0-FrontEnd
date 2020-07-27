@@ -1,0 +1,20 @@
+.headerRight {
+  font-size: 115%;
+}
+
+.userIcon {
+  cursor: pointer;
+}
+
+.name {
+  color: #003366;
+  /* float: left; */
+  text-align: right;
+}
+
+.customDropdown {
+  /* margin-top: -1.8em; */
+  /* margin-right: -2em; */
+  /* display: none; */
+  /* display: inline; */
+}

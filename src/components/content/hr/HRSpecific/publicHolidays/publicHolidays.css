@@ -1,0 +1,19 @@
+.holidaysTable{
+  margin: 1em 0 5em 0;
+}
+
+.disappear{
+  visibility: hidden !important;
+}
+
+/* .PublicFormStyle {
+  width: 100%;
+  margin: 3em auto 0em auto;
+  border: 0.1em solid #003366;
+  padding: 5em 5em 1em 5em;
+  border-radius: 0.3em;
+} */
+
+.positionBtn{
+  margin-left: 20%;
+}

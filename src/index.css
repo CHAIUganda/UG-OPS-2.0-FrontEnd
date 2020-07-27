@@ -1,0 +1,230 @@
+/* 
+ #003366
+*/
+
+* {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  outline: 0;
+  font-size: 100%;
+  vertical-align: baseline;
+  background: transparent;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
+body {
+  margin: 4em 0 0 0 !important;
+  /* background-color: rgba(0, 0, 0, 0.02) !important; */
+
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+a {
+  color: white; /* Come back later incase of trouble*/
+  text-decoration: inherit; /* no underline */
+}
+
+a:hover {
+  /* color: white !important; */
+  text-decoration: inherit !important; /* no underline */
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+/* dev defined styles */
+.submitButton {
+  background-color: #003366;
+  color: white;
+  padding: 0.5em;
+  border-radius: 0.3em;
+  border: 0.1em solid #003366;
+}
+
+.submitButton:hover {
+  background-color: white;
+  color: #003366;
+  border: 0.1em solid #003366;
+}
+
+
+.inlineItem{
+  display: inline;
+}
+
+.errorFeedback {
+  /* background-color: rgba(206, 17, 38, 0.05); */
+  background-color: #fc7d74;
+  color: black;
+  padding: 1em;
+  margin: 1em;
+  border-radius: 0.4em;
+}
+
+.successFeedback {
+  /* background-color: rgba(206, 17, 38, 0.05); */
+  background-color: #90ee90;
+  color: black;
+  padding: 1em;
+  margin: 1em;
+  border-radius: 0.4em;
+}
+
+.pointerCursor {
+  cursor: pointer;
+}
+
+.pending {
+  background-color: #003366;
+  color: white;
+  padding: 0 0.2em;
+  border-radius: 0.3em;
+  /* border: 0.1em solid #003366; */
+}
+
+.planned {
+  background-color: #003366;
+  color: white;
+  padding: 0 0.2em;
+  border-radius: 0.3em;
+  /* border: 0.1em solid #003366; */
+}
+
+.cancelled {
+  background-color: #6c757d;
+  border-color: #6c757d;
+  color: white;
+  padding: 0 0.2em;
+  border-radius: 0.3em;
+  /* border: 0.1em solid #003366; */
+}
+
+.rejected {
+  background-color:  #6c757d;
+  border-color: #6c757d;
+  color: white;
+  padding: 0 0.2em;
+  border-radius: 0.3em;
+  /* border: 0.1em solid #003366; */
+}
+
+.approved {
+  background-color: #003366;
+  color: white;
+  padding: 0 0.2em;
+  border-radius: 0.3em;
+  /* border: 0.1em solid #003366; */
+}
+
+.taken {
+  /* color: white; */
+  padding: 0 0.2em;
+  border-radius: 0.3em;
+  border: 0.1em solid  #003366;
+}
+
+.nottaken {
+  /* color: white; */
+  padding: 0 0.2em;
+  border-radius: 0.3em;
+  border: 0.1em solid  #003366;
+}
+
+.rejectedWords {
+  background-color: red;
+  color: white;
+  border-radius: 0.3em;
+  padding: 1em
+  /* border: 0.1em solid #003366; */
+}
+
+.approvedWords {
+  background-color: #028b1f;
+  color: white;
+  border-radius: 0.3em;
+  padding: 0 0.2em;
+  /* border: 0.1em solid #003366; */
+}
+
+.input-group-text {
+  width:19em !important;
+}
+
+.resetFilters{
+  cursor: pointer;
+  color: white;
+  background-color: #003366;
+  padding: 0.3em;
+  border: 0.01em solid #003366;
+}
+
+.resetFilters:hover{
+  color:  #003366;
+  background-color:white;
+  border: 0.01em solid #003366;
+  border-radius: 0.3em;
+}
+
+.filterRibbon{
+  margin-top: 0.5%;
+  margin-bottom: -0.8%;
+}
+
+.blur{
+	font-size: 1.4em;
+  color: grey
+}
+
+/* dropzone css */
+.dropzone {
+  border: 2px dashed #0087F7 !important;
+  border-radius: 5px;
+  width: 32.5em;
+}
+
+/* .dz-filename{
+  font-family: sans-serif;
+  font-size: large;
+  margin-left: 20px
+} */
+
+.dz-progress{
+  /* margin-left: 40% !important; */
+  display: none;
+}
+
+.containerPositionRelative {
+  position: relative
+}
+
+.pushChildToBottom {
+  width: 78%;
+  position: absolute;
+  bottom: 0;
+}
+
+.removeTableBorders {
+  border-collapse: collapse;
+  border-style: hidden;
+}
+
+/* .removeTableBorders td {
+  border: 5px solid black;
+} */
+
+.removeTableBorders td {
+  border: 1px solid white;
+}
+
+.removeTableBorders{
+ color: white !important;
+}

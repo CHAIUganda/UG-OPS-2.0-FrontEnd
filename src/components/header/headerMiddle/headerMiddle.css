@@ -1,0 +1,15 @@
+.middleHeader {
+ /* margin-left: 20%;  */
+}
+
+.item {
+  color: #003366;
+  border-radius: 5%;
+  /* background-color: green; */
+}
+
+.item:hover {
+  color: white;
+  background-color: #003366;
+  cursor: pointer;
+}

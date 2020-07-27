@@ -1,0 +1,13 @@
+.whiteTextHeader {
+  color: white;
+  background-color: #003366;
+}
+
+.blueTextHeader {
+  color: #003366;
+  background-color: white;
+}
+
+.generalStyles {
+  border-radius: 5%;
+}

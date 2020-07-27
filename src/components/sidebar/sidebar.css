@@ -1,0 +1,46 @@
+.setSideBarInline {
+  /* display: inline-block; */
+  height: 100vh;
+  /* width: 100em; */
+  margin-top: 0.3%;
+  line-height: 1em;
+}
+
+.sidebgColor {
+  background-color: #003366;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+  text-align: left;
+  color: white;
+}
+
+.sidebTopNav {
+  font-size: 1.2em;
+}
+
+.sidebarDropdownContent {
+  /* margin-left: 0.5em; */
+  /* margin-top: -0.7em; */
+}
+
+.showContent {
+  display: static;
+  cursor: pointer;
+  margin-bottom: 12%;
+  margin-top: -4.5%;
+}
+
+.sidebarContainer {
+  visibility: hidden;
+}
+
+.DayPicker-TodayButton{
+  color: white !important;
+  /* padding-left: 50%; */
+  padding: 2%;
+  border-radius: 5%;
+  border: 0.1em solid white; 
+}
+
+.sidebarCalendar{
+  margin-top: 50%;
+}

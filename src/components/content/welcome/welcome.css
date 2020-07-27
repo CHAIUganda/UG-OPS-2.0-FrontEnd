@@ -1,0 +1,26 @@
+.welcome {
+  color: #003366;
+  padding-top: 1em;
+  /* width: 80%; */
+}
+
+.welcomeLogo {
+  margin-top: 2em;
+}
+
+.imageDiv{
+  width: 50%;
+  margin-right:auto;
+  margin-left: auto;
+  margin-top: 14%;
+}
+
+.imageDiv img {
+  /* filter: blur(1.9px); */
+  opacity: 0.2;
+}
+
+.continueButton{
+  padding-top: 18%;
+  font-size: large;
+}

@@ -1,0 +1,32 @@
+.headerDiv {
+  border-bottom: 3px solid #003366;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background-color: white;
+}
+
+.inlineHeader {
+  /* display: inline-block;
+  vertical-align: top; */
+  /* padding-top: 0.6em; */
+  /* font-size: 115%; */
+  /* background-color: green; */
+}
+
+.MiddleAndRightHeaderContainer {
+  visibility: hidden;
+}
+
+.invisible {
+  visibility: hidden;
+}
+
+.green2 {
+  /* background-color: yellowgreen; */
+}
+
+.green {
+  border: 1px solid green;
+}
