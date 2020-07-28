@@ -26,11 +26,15 @@ function Procurement({
 }) {
   // let procurement;
   let admin;
+  let operationsLead;
+  let financeAdmin;
   // let supervisor;
   // let countryDirector;
   if (roles) {
     // procurement = roles.procurement;
     admin = roles.admin;
+    operationsLead = roles.operationsLead;
+    financeAdmin = roles.financeAdmin;
     // supervisor = roles.supervisor;
     // countryDirector = roles.countryDirector;
   } else {
@@ -48,7 +52,7 @@ function Procurement({
         <GiPayMoney /> General Duties
       </p>
       {
-        admin
+        (admin || operationsLead)
       && <div className='showContent'>
         <span onClick={() => handleChangeActive('CreateProcurement')}>
           <SubItem
@@ -60,20 +64,30 @@ function Procurement({
       </div>
       }
 
-      <p className="sidebTopNav">
-        <GiMoneyStack /> Finance Admin
-      </p>
       {
-        admin
-      && <div className='showContent'>
-        <span onClick={() => handleChangeActive('CreateProcurement')}>
-          <SubItem
-            link="/procurement/ManagePrograms"
-            textToSet="Programs"
-            active={active === 'ManagePrograms'}
-          />
-        </span>
-      </div>
+        (admin || financeAdmin)
+      && <>
+        <p className="sidebTopNav">
+          <GiMoneyStack /> Finance Admin
+        </p>
+        <div className='showContent'>
+          <span onClick={() => handleChangeActive('ManagePrograms')}>
+            <SubItem
+              link="/procurement/ManagePrograms"
+              textToSet="Programs"
+              active={active === 'ManagePrograms'}
+            />
+          </span>
+
+          <span onClick={() => handleChangeActive('ManageAccountCodes')}>
+            <SubItem
+              link="/procurement/ManageAccountCodes"
+              textToSet="Account Codes"
+              active={active === 'ManageAccountCodes'}
+            />
+          </span>
+        </div>
+      </>
       }
     </div>
   );
