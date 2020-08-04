@@ -54,11 +54,11 @@ const CreateNewAccountCode = ({
   );
 
   const [costedWorkPlans, setCostedWorkPlans] = useState(
-    edit ? accCode.costedWorkPlans : false
+    edit ? accCode.includeOn.costedWorkPlans : false
   );
 
   const [quickBooks, setQuickBooks] = useState(
-    edit ? accCode.quickBooks : false
+    edit ? accCode.includeOn.quickBooks : false
   );
 
   const [usedInCountry, setUsedInCountry] = useState(
@@ -67,6 +67,10 @@ const CreateNewAccountCode = ({
 
   const [description, setDesricption] = useState(
     edit ? accCode.description : ''
+  );
+
+  const [status, setStatus] = useState(
+    edit ? accCode.status : ''
   );
 
   const { authService } = useOktaAuth();
@@ -146,6 +150,11 @@ const CreateNewAccountCode = ({
     };
 
     const EditAccCode = () => {
+      if (!status) {
+        setFormError('Please set a status');
+        setFormSpinner(false);
+        return;
+      }
       const accountCodeEdit = {
         ...accCode,
         accountCode,
@@ -154,7 +163,9 @@ const CreateNewAccountCode = ({
         costedWorkPlans,
         quickBooks,
         description,
-        usedInCountry
+        usedInCountry,
+        status,
+        id: accCode._id
       };
 
       const endPoint = `${BASE_URL}financeApi/editAccount`;
@@ -353,6 +364,27 @@ const CreateNewAccountCode = ({
           </InputGroup>
         </FormGroup>
 
+        {
+          edit && <FormGroup>
+            <InputGroup>
+              <InputGroupAddon addonType="prepend">
+                <InputGroupText>Status</InputGroupText>
+              </InputGroupAddon>
+              <select className="form-control" value={status} onChange={
+                (e) => {
+                  setFormError('');
+                  setFormSuccessMessage('');
+                  setStatus(e.target.value);
+                }
+              }>
+                <option value="">Not Set</option>
+                <option value="Active">Active</option>
+                <option value="Archived">Archived</option>
+              </select>
+            </InputGroup>
+          </FormGroup>
+        }
+
         <button className="submitButton" type="submit">
           {buttonText()}
         </button>
@@ -386,7 +418,13 @@ const CreateNewAccountCode = ({
       </button> */}
       {icon()}
       <Modal isOpen={modal} toggle={toggle}>
-        <ModalHeader toggle={toggle}>Create a new Program</ModalHeader>
+        <ModalHeader toggle={toggle}>
+          {
+            edit
+              ? 'Edit Account Code'
+              : 'Create New Account Code'
+          }
+        </ModalHeader>
         <ModalBody>
           {returnForm()}
         </ModalBody>

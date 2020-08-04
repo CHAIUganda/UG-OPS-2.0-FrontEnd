@@ -174,7 +174,7 @@ export const HandleAccountCodes = ({
     const codeIndex = allAccountCodes.findIndex((c) => c._id === codeId);
 
     if (codeIndex !== -1) {
-      const arr = allAccountCodes;
+      const arr = [...allAccountCodes];
       arr.splice(codeIndex, 1, codeObj);
       setAllAccountCodes(arr);
     }
