@@ -322,7 +322,7 @@ function Apply4LeaveModal({
       .catch((err) => {
         setSpinner(false);
 
-        if (err.response.status === 401) {
+        if (err && err.response && err.response.status && err.response.status === 401) {
           authService.logout('/');
         }
 
@@ -491,7 +491,7 @@ function Apply4LeaveModal({
         setHolidays(res.data);
       })
       .catch((err) => {
-        if (err.response.status === 401) {
+        if (err && err.response && err.response.status && err.response.status === 401) {
           authService.logout('/');
         }
 

@@ -191,7 +191,7 @@ function Register({
       .catch((err) => {
         setSubmitSpinner(false);
 
-        if (err.response.status === 401) {
+        if (err && err.response && err.response.status && err.response.status === 401) {
           authService.logout('/');
         }
 
@@ -218,7 +218,7 @@ function Register({
       .catch((err) => {
         setSpinner(false);
 
-        if (err.response.status === 401) {
+        if (err && err.response && err.response.status && err.response.status === 401) {
           authService.logout('/');
         }
 
@@ -270,7 +270,7 @@ function Register({
       .catch((err) => {
         setSpinner(false);
 
-        if (err.response.status === 401) {
+        if (err && err.response && err.response.status && err.response.status === 401) {
           authService.logout('/');
         }
 
@@ -294,7 +294,7 @@ function Register({
       .catch((err) => {
         setSpinner(false);
 
-        if (err.response.status === 401) {
+        if (err && err.response && err.response.status && err.response.status === 401) {
           authService.logout('/');
         }
 

@@ -104,7 +104,7 @@ export default function ManageLeaveModal({
       .catch((err) => {
         setApplySpinner(false);
 
-        if (err.response.status === 401) {
+        if (err && err.response && err.response.status && err.response.status === 401) {
           authService.logout('/');
         }
 
@@ -142,7 +142,7 @@ export default function ManageLeaveModal({
       .catch((err) => {
         setCancelSpinner(false);
 
-        if (err.response.status === 401) {
+        if (err && err.response && err.response.status && err.response.status === 401) {
           authService.logout('/');
         }
 
@@ -182,7 +182,7 @@ export default function ManageLeaveModal({
       .catch((err) => {
         setModifyLeaveSpinner(false);
 
-        if (err.response.status === 401) {
+        if (err && err.response && err.response.status && err.response.status === 401) {
           authService.logout('/');
         }
 

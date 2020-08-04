@@ -56,7 +56,7 @@ const SpecificContractModal = ({
           removeNotification(c._id);
         })
         .catch((err) => {
-          if (err.response.status === 401) {
+          if (err && err.response && err.response.status && err.response.status === 401) {
             authService.logout('/');
           }
 
@@ -102,7 +102,7 @@ const SpecificContractModal = ({
       .catch((err) => {
         setDismissSpiner(false);
 
-        if (err.response.status === 401) {
+        if (err && err.response && err.response.status && err.response.status === 401) {
           authService.logout('/');
         }
 
@@ -136,7 +136,7 @@ const SpecificContractModal = ({
       .catch((err) => {
         setSnoozeSpinner(false);
 
-        if (err.response.status === 401) {
+        if (err && err.response && err.response.status && err.response.status === 401) {
           authService.logout('/');
         }
 

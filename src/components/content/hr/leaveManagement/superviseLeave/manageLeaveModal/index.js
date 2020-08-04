@@ -73,7 +73,7 @@ function ManageLeaveModal({
           removeNotification(n._id);
         })
         .catch((err) => {
-          if (err.response.status === 401) {
+          if (err && err.response && err.response.status && err.response.status === 401) {
             authService.logout('/');
           }
 
@@ -133,7 +133,7 @@ function ManageLeaveModal({
           setDeclineSpinner(false);
         }
 
-        if (err.response.status === 401) {
+        if (err && err.response && err.response.status && err.response.status === 401) {
           authService.logout('/');
         }
 

@@ -90,7 +90,7 @@ function Plan4Leave({
       .catch((err) => {
         setSpinner(false);
 
-        if (err.response.status === 401) {
+        if (err && err.response && err.response.status && err.response.status === 401) {
           authService.logout('/');
         }
 
@@ -111,7 +111,7 @@ function Plan4Leave({
         setPersonsLeaves(res.data);
       })
       .catch((err) => {
-        if (err.response.status === 401) {
+        if (err && err.response && err.response.status && err.response.status === 401) {
           authService.logout('/');
         }
 
@@ -135,7 +135,7 @@ function Plan4Leave({
       .catch((err) => {
         setSpinner(false);
 
-        if (err.response.status === 401) {
+        if (err && err.response && err.response.status && err.response.status === 401) {
           authService.logout('/');
         }
 

@@ -67,7 +67,7 @@ function Apply4Leave({
             removeNotification(n._id);
           })
           .catch((err) => {
-            if (err.response.status === 401) {
+            if (err && err.response && err.response.status && err.response.status === 401) {
               authService.logout('/');
             }
 
@@ -136,7 +136,7 @@ function Apply4Leave({
         setSpinner(false);
       })
       .catch((err) => {
-        if (err.response.status === 401) {
+        if (err && err.response && err.response.status && err.response.status === 401) {
           authService.logout('/');
         }
 
@@ -188,7 +188,7 @@ function Apply4Leave({
       .catch((err) => {
         setSpinner(false);
 
-        if (err.response.status === 401) {
+        if (err && err.response && err.response.status && err.response.status === 401) {
           authService.logout('/');
         }
 
@@ -210,7 +210,7 @@ function Apply4Leave({
       .catch((err) => {
         setSpinner(false);
 
-        if (err.response.status === 401) {
+        if (err && err.response && err.response.status && err.response.status === 401) {
           authService.logout('/');
         }
 

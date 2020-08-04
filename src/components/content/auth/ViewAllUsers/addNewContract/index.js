@@ -65,7 +65,7 @@ const AddNewContOrWP = ({ user }) => {
         setSuccess(res.data.message);
       })
       .catch((e) => {
-        if (e.response.status === 401) {
+        if (e && e.response && e.response.status && e.response.status === 401) {
           authService.logout('/');
         }
 
@@ -103,7 +103,7 @@ const AddNewContOrWP = ({ user }) => {
         setSuccess(res.data.message);
       })
       .catch((e) => {
-        if (e.response.status === 401) {
+        if (e && e.response && e.response.status && e.response.status === 401) {
           authService.logout('/');
         }
 
