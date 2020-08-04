@@ -10,6 +10,7 @@ import * as sideBarActions from '../../../../redux/actions/sideBarActions';
 import * as authActions from '../../../../redux/actions/authActions';
 import * as notificationActions from '../../../../redux/actions/notificationsActions';
 
+import CreateNewAccountCode from './createAccCodeModal';
 import CommonSpinner from '../../../common/spinner';
 
 const mapStateToProps = (state) => ({
@@ -46,6 +47,7 @@ export const HandleAccountCodes = ({
 
   const [spinner, setSpinner] = useState(false);
   const [loadingPageErr, setLoadingPageErr] = useState('');
+  const [allAccountCodes, setAllAccountCodes] = useState([]);
 
   const { authState, authService } = useOktaAuth();
 
@@ -106,7 +108,27 @@ export const HandleAccountCodes = ({
 
   const setUpThisPage = () => {
     // set this page up. Do stuff like pick all programs.
-    setSpinner(false);
+
+    axios.defaults.headers.common = { token };
+    const apiRoute = `${BASE_URL}financeApi/getAccounts/all`;
+    axios.get(apiRoute)
+      . then((res) => {
+        setSpinner(false);
+        setAllAccountCodes(res.data);
+      })
+      .catch((err) => {
+        setSpinner(false);
+
+        if (err && err.response && err.response.status && err.response.status === 401) {
+          authService.logout('/');
+        }
+
+        if (err && err.response && err.response.data && err.response.data.message) {
+          setLoadingPageErr(err.response.data.message);
+        } else {
+          setLoadingPageErr(err.message);
+        }
+      });
   };
 
   useEffect(() => {
@@ -147,9 +169,92 @@ export const HandleAccountCodes = ({
     );
   }
 
+  const editArrayOfAccs = (codeObj) => {
+    const codeId = codeObj._id;
+    const codeIndex = allAccountCodes.findIndex((c) => c._id === codeId);
+
+    if (codeIndex !== -1) {
+      const arr = allAccountCodes;
+      arr.splice(codeIndex, 1, codeObj);
+      setAllAccountCodes(arr);
+    }
+  };
+
+  const returnTableOFAccountCodes = () => {
+    if (allAccountCodes.length < 1) {
+      return (
+        <div className="alert alert-primary" role="alert">
+          No account codes have been added as of now.
+        </div>
+      );
+    }
+
+    const handleStatusColors = (status) => {
+      if (status.toLowerCase() === 'active') {
+        return 'bg-success text-white';
+      }
+
+      if (status.toLowerCase() === 'archived') {
+        return 'bg-warning text-dark';
+      }
+
+      return '';
+    };
+
+    return (
+      <table className="table holidaysTable">
+        <thead>
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">Account Code</th>
+            <th scope="col">Grouping</th>
+            <th scope="col">Status</th>
+            <th scope="col">short description</th>
+          </tr>
+        </thead>
+        <tbody>
+          {
+            allAccountCodes.map((code, index) => (
+              <tr key={code._id}>
+                <td scope="row">{index + 1}</td>
+                <td>{code.accountCode}</td>
+                <td>{code.financialGrouping}</td>
+                <td
+                  className={handleStatusColors(code.status)}
+                >
+                  {code.status}
+                </td>
+                <td>{code.useDecsription}</td>
+                <td>
+                  <CreateNewAccountCode
+                    edit={true}
+                    accCode={code}
+                    editArrayOfAccs={editArrayOfAccs}
+                  />
+                </td>
+              </tr>
+            ))
+          }
+        </tbody>
+      </table>
+    );
+  };
+
+  const updateAccCodessArray = (newAccCode) => {
+    setAllAccountCodes([...allAccountCodes, newAccCode]);
+  };
+
   return (
     <div>
-      Manage Account codes.
+      <div className="mb-4">
+        <h1 className="inlineItem">Manage Account codes</h1>
+        <CreateNewAccountCode
+          updateAccCodessArray={updateAccCodessArray}
+          edit={false}
+        />
+      </div>
+
+      {returnTableOFAccountCodes()}
     </div>
   );
 };
