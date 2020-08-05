@@ -1,20 +1,16 @@
-import React, { useEffect, useState } from 'react';
-import { connect } from 'react-redux';
-import { IoMdAdd } from 'react-icons/io';
-import { FiEdit } from 'react-icons/fi';
-import { IconContext } from 'react-icons';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import { useOktaAuth } from '@okta/okta-react';
 import axios from 'axios';
-import { Spinner } from 'reactstrap';
 
-import { BASE_URL } from '../../../../config';
+import CommonSpinner from '../../../../common/spinner';
 
-import * as sideBarActions from '../../../../redux/actions/sideBarActions';
-import * as authActions from '../../../../redux/actions/authActions';
-import * as notificationActions from '../../../../redux/actions/notificationsActions';
+import { BASE_URL } from '../../../../../config';
+import * as sideBarActions from '../../../../../redux/actions/sideBarActions';
+import * as authActions from '../../../../../redux/actions/authActions';
+import * as notificationActions from '../../../../../redux/actions/notificationsActions';
 
-import CommonSpinner from '../../../common/spinner';
 
 const mapStateToProps = (state) => ({
   token: state.auth.token,
@@ -28,13 +24,13 @@ const mapDispatchToProps = {
   setInitialNotifications: notificationActions.setInitialNotifications
 };
 
-export const HandlePrograms = ({
+export const CreateProgram = ({
+  token,
+  roles,
   changeSection,
   changeActive,
-  token,
   setInitialNotifications,
   logUserIn,
-  roles
 }) => {
   // Check for roles
 
@@ -50,9 +46,6 @@ export const HandlePrograms = ({
 
   const [spinner, setSpinner] = useState(false);
   const [loadingPageErr, setLoadingPageErr] = useState('');
-  const [allPrograms, setAllPrograms] = useState([]);
-  const [tableSpinner, setTableSpinner] = useState(false);
-  const [tableError, setTableError] = useState('');
 
   const { authState, authService } = useOktaAuth();
 
@@ -112,31 +105,29 @@ export const HandlePrograms = ({
   };
 
   const setUpThisPage = () => {
-    // set this page up. Do stuff like pick all programs.
+    // set this page up. Do stuff like pick all users.
     setSpinner(false);
-    setTableError('');
-    setTableSpinner(true);
 
-    const endPoint = `${BASE_URL}hrApi/getPrograms`;
-    axios.defaults.headers.common = { token };
-    axios.get(endPoint)
-      .then((res) => {
-        setAllPrograms(res.data);
-        setTableSpinner(false);
-      })
-      .catch((err) => {
-        setTableSpinner(false);
+    // const endPoint = `${BASE_URL}hrApi/getProgramsklkl`;
+    // axios.defaults.headers.common = { token };
+    // axios.get(endPoint)
+    //   .then((res) => {
+    //     setAllPrograms(res.data);
+    //     setSpinner(false);
+    //   })
+    //   .catch((err) => {
+    //     setSpinner(false);
 
-        if (err && err.response && err.response.status && err.response.status === 401) {
-          authService.logout('/');
-        }
+    //     if (err && err.response && err.response.status && err.response.status === 401) {
+    //       authService.logout('/');
+    //     }
 
-        if (err && err.response && err.response.data && err.response.data.message) {
-          setTableError(err.response.data.message);
-        } else {
-          setTableError(err.message);
-        }
-      });
+    //     if (err && err.response && err.response.data && err.response.data.message) {
+    //       setLoadingPageErr(err.response.data.message);
+    //     } else {
+    //       setLoadingPageErr(err.message);
+    //     }
+    //   });
   };
 
   useEffect(() => {
@@ -177,74 +168,20 @@ export const HandlePrograms = ({
     );
   }
 
-  const returnTable = () => {
-    if (tableError) {
-      return <div className="errorFeedback">{ tableError }</div>;
-    }
-
-    if (tableSpinner) {
-      return <>
-        <Spinner color="primary" style={{ width: '3rem', height: '3rem' }} />
-        <p>Loading Table Contents...</p>
-      </>;
-    }
-
-    return (
-      <table className="table holidaysTable">
-        <thead>
-          <tr>
-            <th scope="col">#</th>
-            <th scope="col">Program</th>
-            <th scope="col">Shortform</th>
-            <th scope="col">Program Manager</th>
-            <th scope="col">Edit</th>
-          </tr>
-        </thead>
-        <tbody>
-          {
-            allPrograms.map((prog, index) => (
-              <tr key={prog._id}>
-                <td scope="row">{index + 1}</td>
-                <td>{prog.name}</td>
-                <td>{prog.shortForm}</td>
-                <td>{`${prog.programManagerDetails.fName} ${prog.programManagerDetails.lName}`}</td>
-                <td>
-                  <IconContext.Provider value={{ size: '2em' }}>
-                    <FiEdit />
-                  </IconContext.Provider>
-                </td>
-              </tr>
-            ))
-          }
-        </tbody>
-      </table>
-    );
-  };
-
   return (
     <div>
-      <div>
-        <h2 className="inlineItem">Programs</h2>
-        <span className="float-right mr-3">
-          <IconContext.Provider value={{ size: '1em' }}>
-            <IoMdAdd />
-          </IconContext.Provider>
-          New Program
-        </span>
-      </div>
-      {returnTable()}
+      Create Program
     </div>
   );
 };
 
-HandlePrograms.propTypes = {
+CreateProgram.propTypes = {
   token: PropTypes.string,
-  email: PropTypes.string,
+  roles: PropTypes.object,
   changeSection: PropTypes.func,
   changeActive: PropTypes.func,
   setInitialNotifications: PropTypes.func,
   logUserIn: PropTypes.func,
-  roles: PropTypes.object
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(HandlePrograms);
+export default connect(mapStateToProps, mapDispatchToProps)(CreateProgram);
