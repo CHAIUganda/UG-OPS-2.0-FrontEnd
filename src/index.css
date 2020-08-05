@@ -2,6 +2,7 @@
  #003366
 */
 
+
 * {
   margin: 0;
   padding: 0;
@@ -42,6 +43,11 @@ code {
 }
 
 /* dev defined styles */
+
+.forceColor{
+  color: #003366 !important;
+}
+
 .submitButton {
   background-color: #003366;
   color: white;

@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import CreateProcurement from './createProcurement';
 import ManagePrograms from './handlePrograms';
 import ManageAccountCodes from './handleAccountCodes';
+import CreateProgramComp from './handlePrograms/createProgram';
 
 export default function Procurement(props) {
   const { componentToRender } = props.match.params;
@@ -18,7 +19,8 @@ export default function Procurement(props) {
   const ComponentsObject = {
     CreateProcurement,
     ManagePrograms,
-    ManageAccountCodes
+    ManageAccountCodes,
+    CreateProgramComp
   };
 
   const Tag = ComponentsObject[componentToRender];

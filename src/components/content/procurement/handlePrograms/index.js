@@ -7,6 +7,7 @@ import PropTypes from 'prop-types';
 import { useOktaAuth } from '@okta/okta-react';
 import axios from 'axios';
 import { Spinner } from 'reactstrap';
+import { Link } from 'react-router-dom';
 
 import { BASE_URL } from '../../../../config';
 
@@ -225,12 +226,14 @@ export const HandlePrograms = ({
     <div>
       <div>
         <h2 className="inlineItem">Programs</h2>
-        <span className="float-right mr-3">
-          <IconContext.Provider value={{ size: '1em' }}>
-            <IoMdAdd />
-          </IconContext.Provider>
+        <Link to="/procurement/CreateProgramComp">
+          <span className="float-right mr-3 forceColor">
+            <IconContext.Provider value={{ size: '1em' }}>
+              <IoMdAdd />
+            </IconContext.Provider>
           New Program
-        </span>
+          </span>
+        </Link>
       </div>
       {returnTable()}
     </div>
