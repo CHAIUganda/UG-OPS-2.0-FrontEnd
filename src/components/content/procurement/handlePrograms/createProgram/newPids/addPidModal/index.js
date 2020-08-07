@@ -11,17 +11,21 @@ import {
   InputGroupText,
   Input
 } from 'reactstrap';
-import { IoMdAdd, IoIosArrowForward } from 'react-icons/io';
+import { IoMdAdd } from 'react-icons/io';
+import { FiEdit } from 'react-icons/fi';
 import { IconContext } from 'react-icons';
 import PropTypes from 'prop-types';
 
-import Icon from '../../../../../../common/icon';
-
 const AddPidModal = ({
-  addOnePid
+  addOnePid,
+  edit,
+  pidToEdit,
+  editPid
 }) => {
   const [modal, setModal] = useState(false);
-  const [pid, setPid] = useState('');
+  const [pid, setPid] = useState(
+    (edit && pidToEdit && pidToEdit.pid) ? pidToEdit.pid : ''
+  );
   const [successMessage, setSuccessMessage] = useState('');
 
   const toggle = (event) => {
@@ -41,27 +45,43 @@ const AddPidModal = ({
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    addOnePid(pid);
-    setSuccessMessage(`${pid} added successfully`);
-    setPid('');
+    if (edit) {
+      editPid(pid, pidToEdit.index);
+      setSuccessMessage(`${pid} editted successfully`);
+    } else {
+      addOnePid(pid);
+      setSuccessMessage(`${pid} added successfully`);
+      setPid('');
+    }
   };
 
-  return (
-    <div className="inlineItem push-button-left">
+  const returnICon = () => {
+    if (edit) {
+      return (
+        <span onClick={toggle} className="pointerCursor">
+          <IconContext.Provider value={{ size: '2em' }}>
+            <FiEdit />
+          </IconContext.Provider>
+        </span>
+      );
+    }
+    return (
       <button onClick={toggle} className="submitButton positionBtn">
         <IconContext.Provider value={{ size: '1em' }}>
           <IoMdAdd />
         </IconContext.Provider>
           Add PID
       </button>
-      {/* <span className="float-right mr-3 forceColor" onClick={toggle}>
-        <IconContext.Provider value={{ size: '1em' }}>
-          <IoMdAdd />
-        </IconContext.Provider>
-          Add PID
-      </span> */}
+    );
+  };
+
+  return (
+    <div className="inlineItem push-button-left">
+      {returnICon()}
       <Modal isOpen={modal} toggle={toggle}>
-        <ModalHeader toggle={toggle}>Add PID</ModalHeader>
+        <ModalHeader toggle={toggle}>
+          { edit ? 'Edit PID' : 'Add PID'}
+        </ModalHeader>
         <ModalBody>
           <form onSubmit={handleSubmit}>
             {
@@ -89,11 +109,7 @@ const AddPidModal = ({
 
             <div className="mt-5">
               <button className='pointerCursor float-right nextButton' type='submit'>
-                Add PID
-                <Icon
-                  Icon2Render={IoIosArrowForward}
-                  color={'#003366'}
-                />
+                { edit ? 'Edit PID' : 'Add PID' }
               </button>
             </div>
           </form>
@@ -107,7 +123,10 @@ const AddPidModal = ({
 };
 
 AddPidModal.propTypes = {
-  addOnePid: PropTypes.func
+  addOnePid: PropTypes.func,
+  edit: PropTypes.bool,
+  pidToEdit: PropTypes.object,
+  editPid: PropTypes.func
 };
 
 export default AddPidModal;

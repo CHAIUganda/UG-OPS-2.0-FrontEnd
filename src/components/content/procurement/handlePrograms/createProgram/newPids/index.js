@@ -1,14 +1,22 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import { FiEdit } from 'react-icons/fi';
-import { IconContext } from 'react-icons';
+import { IoIosArrowBack, IoIosArrowForward } from 'react-icons/io';
 
 import AddPidModal from './addPidModal';
 
+import Icon from '../../../../../common/icon';
+
 function AddPids({
-  newPids
+  newPids,
+  setCurrentComponent
 }) {
   const [pids, setPids] = useState(newPids || []);
+
+  const editPid = (newPidDetails, indexOfPid) => {
+    const arr = [...pids];
+    arr.splice(indexOfPid, 1, newPidDetails);
+    setPids(arr);
+  };
 
   const returnTable = () => {
     if (pids.length < 1) {
@@ -25,6 +33,7 @@ function AddPids({
           <tr>
             <th scope="col">#</th>
             <th scope="col">PID</th>
+            <th scope="col">Edit</th>
           </tr>
         </thead>
         <tbody>
@@ -34,9 +43,14 @@ function AddPids({
                 <td scope="row">{index + 1}</td>
                 <td>{p}</td>
                 <td>
-                  <IconContext.Provider value={{ size: '2em' }}>
-                    <FiEdit />
-                  </IconContext.Provider>
+                  <AddPidModal
+                    edit={true}
+                    pidToEdit={{
+                      pid: p,
+                      index
+                    }}
+                    editPid={editPid}
+                  />
                 </td>
               </tr>
             ))
@@ -51,6 +65,10 @@ function AddPids({
     setPids(arr);
   };
 
+  const changePage = (page) => {
+    setCurrentComponent(page);
+  };
+
   return (
     <div>
       <div className="m-4">
@@ -58,16 +76,49 @@ function AddPids({
         <span>
           <AddPidModal
             addOnePid={addOnePid}
+            edit={false}
           />
         </span>
       </div>
       {returnTable()}
+      <div className="pushChildToBottomPrograms m-5">
+        <button className='pointerCursor float-left nextButton'
+          onClick={
+            (event) => {
+              event.preventDefault();
+              changePage(0);
+            }
+          }
+        >
+          <Icon
+            Icon2Render={IoIosArrowBack}
+            color={'#003366'}
+          />
+            Back
+        </button>
+
+        <button className='pointerCursor float-right nextButton'
+          onClick={
+            (event) => {
+              event.preventDefault();
+              changePage(2);
+            }
+          }
+        >
+            Next
+          <Icon
+            Icon2Render={IoIosArrowForward}
+            color={'#003366'}
+          />
+        </button>
+      </div>
     </div>
   );
 }
 
 AddPids.propTypes = {
-  newPids: PropTypes.array
+  newPids: PropTypes.array,
+  setCurrentComponent: PropTypes.func
 };
 
 export default AddPids;

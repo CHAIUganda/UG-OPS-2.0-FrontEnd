@@ -6,3 +6,9 @@
 .push-button-left{
   padding-left: 55%;
 }
+
+.pushChildToBottomPrograms {
+  width: 92%;
+  position: absolute;
+  bottom: 0;
+}

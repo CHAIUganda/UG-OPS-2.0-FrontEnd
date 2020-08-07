@@ -22,26 +22,26 @@ const InitialDetailsComp = ({
   const [programName, setProgramName] = useState((initialProDetails && initialProDetails.name) ? initialProDetails.name : '');
   const [shortForm, setShortForm] = useState((initialProDetails && initialProDetails.shortForm) ? initialProDetails.shortForm : '');
   const [formError, setFormError] = useState('');
-  const [programManagerId, setProgramManagerId] = useState((initialProDetails && initialProDetails.programManagerId) ? initialProDetails.programManagerId : '');
-  const [operationsLeadId, setOperationsLeadId] = useState((initialProDetails && initialProDetails.operationsLeadId) ? initialProDetails.operationsLeadId : '');
+  const [programManager, setProgramManager] = useState((initialProDetails && initialProDetails.programManager) ? initialProDetails.programManager : { label: 'Not Supplied', value: '' });
+  const [operationsLead, setOperationsLead] = useState((initialProDetails && initialProDetails.operationsLead) ? initialProDetails.operationsLead : { label: 'Not Supplied', value: '' });
 
   const handlesubmit = (event) => {
     event.preventDefault();
 
-    if (!programManagerId) {
+    if (!programManager.value) {
       setFormError('Please select a Program Manager.');
       return;
     }
 
-    if (!operationsLeadId) {
+    if (!operationsLead.value) {
       setFormError('Please select an Operations Lead.');
       return;
     }
 
     const initialDetailsObj = {
       name: programName,
-      programManagerId,
-      operationsLeadId,
+      programManager,
+      operationsLead,
       shortForm
     };
     setInitialProDetails(initialDetailsObj);
@@ -115,9 +115,10 @@ const InitialDetailsComp = ({
             <div className="selectCustomStyle">
               <Select
                 options={allUsers}
+                value={programManager}
                 onChange={(opt) => {
                   setFormError('');
-                  setProgramManagerId(opt.value);
+                  setProgramManager(opt);
                 }}
               />
             </div>
@@ -132,9 +133,10 @@ const InitialDetailsComp = ({
             <div className="selectCustomStyle">
               <Select
                 options={allUsers}
+                value={operationsLead}
                 onChange={(opt) => {
                   setFormError('');
-                  setOperationsLeadId(opt.value);
+                  setOperationsLead(opt);
                 }}
               />
             </div>

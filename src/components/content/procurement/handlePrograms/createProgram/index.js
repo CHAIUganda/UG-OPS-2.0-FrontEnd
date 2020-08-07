@@ -54,8 +54,8 @@ export const CreateProgram = ({
   const [initialProDetails, setInitialProDetails] = useState(
     {
       name: '',
-      programManagerId: '',
-      operationsLeadId: '',
+      programManager: '',
+      operationsLead: '',
       shortForm: ''
     }
   );
@@ -203,6 +203,7 @@ export const CreateProgram = ({
         <AddPids
           newPids={newPids}
           setNewPids={setNewPids}
+          setCurrentComponent={setCurrentComponent}
         />
       );
     }
