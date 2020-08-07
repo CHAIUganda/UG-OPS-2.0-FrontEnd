@@ -2,28 +2,28 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { IoIosArrowBack, IoIosArrowForward } from 'react-icons/io';
 
-import AddGidModal from './addGidModal';
+import AddObjectiveCodeModal from './addObjectiveCodeModal';
 
 import Icon from '../../../../../common/icon';
 
-function AddGids({
-  newGids,
+function AddObjectiveCodes({
+  newObjectiveCodes,
   setCurrentComponent,
-  setNewGids
+  setNewObjectiveCodes
 }) {
-  const [gids, setGids] = useState(newGids || []);
+  const [objectiveCodes, setObjetiveCodes] = useState(newObjectiveCodes || []);
 
-  const editGid = (newGidDetails, indexOfGid) => {
-    const arr = [...gids];
-    arr.splice(indexOfGid, 1, newGidDetails);
-    setGids(arr);
+  const editObjectiveCode = (newObjectiveCodeDetails, indexOfObjectiveCode) => {
+    const arr = [...objectiveCodes];
+    arr.splice(indexOfObjectiveCode, 1, newObjectiveCodeDetails);
+    setObjetiveCodes(arr);
   };
 
   const returnTable = () => {
-    if (gids.length < 1) {
+    if (objectiveCodes.length < 1) {
       return (
         <div className="alert alert-info" role="alert">
-          No GIDS so far.
+          No objective codes so far.
         </div>
       );
     }
@@ -33,24 +33,24 @@ function AddGids({
         <thead>
           <tr>
             <th scope="col">#</th>
-            <th scope="col">GID</th>
+            <th scope="col">Objetive Code</th>
             <th scope="col">Edit</th>
           </tr>
         </thead>
         <tbody>
           {
-            gids.map((g, index) => (
+            objectiveCodes.map((o, index) => (
               <tr key={index}>
                 <td scope="row">{index + 1}</td>
-                <td>{g}</td>
+                <td>{o}</td>
                 <td>
-                  <AddGidModal
+                  <AddObjectiveCodeModal
                     edit={true}
-                    gidToEdit={{
-                      gid: g,
+                    objectiveCodeToEdit={{
+                      objectiveCode: o,
                       index
                     }}
-                    editGid={editGid}
+                    editObjectiveCode={editObjectiveCode}
                   />
                 </td>
               </tr>
@@ -61,23 +61,23 @@ function AddGids({
     );
   };
 
-  const addOneGid = (gidToAdd) => {
-    const arr = [...gids, gidToAdd];
-    setGids(arr);
+  const addOneObjectiveCode = (objectiveCodeToAdd) => {
+    const arr = [...objectiveCodes, objectiveCodeToAdd];
+    setObjetiveCodes(arr);
   };
 
   const changePage = (page) => {
-    setNewGids(gids);
+    setNewObjectiveCodes(objectiveCodes);
     setCurrentComponent(page);
   };
 
   return (
     <div>
       <div className="m-4">
-        <h4 className="inlineItem">Add GIDs</h4>
+        <h4 className="inlineItem">Add Objective Codes</h4>
         <span>
-          <AddGidModal
-            addOneGid={addOneGid}
+          <AddObjectiveCodeModal
+            addOneObjectiveCode={addOneObjectiveCode}
             edit={false}
           />
         </span>
@@ -88,7 +88,7 @@ function AddGids({
           onClick={
             (event) => {
               event.preventDefault();
-              changePage(1);
+              changePage(2);
             }
           }
         >
@@ -103,7 +103,7 @@ function AddGids({
           onClick={
             (event) => {
               event.preventDefault();
-              changePage(3);
+              changePage(4);
             }
           }
         >
@@ -118,10 +118,10 @@ function AddGids({
   );
 }
 
-AddGids.propTypes = {
-  newGids: PropTypes.array,
+AddObjectiveCodes.propTypes = {
+  newObjectiveCodes: PropTypes.array,
   setCurrentComponent: PropTypes.func,
-  setNewGids: PropTypes.func
+  setNewObjectiveCodes: PropTypes.func
 };
 
-export default AddGids;
+export default AddObjectiveCodes;

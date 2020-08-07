@@ -8,6 +8,7 @@ import Icon from '../../../../../common/icon';
 
 function AddPids({
   newPids,
+  setNewPids,
   setCurrentComponent
 }) {
   const [pids, setPids] = useState(newPids || []);
@@ -66,6 +67,7 @@ function AddPids({
   };
 
   const changePage = (page) => {
+    setNewPids(pids);
     setCurrentComponent(page);
   };
 
@@ -118,7 +120,8 @@ function AddPids({
 
 AddPids.propTypes = {
   newPids: PropTypes.array,
-  setCurrentComponent: PropTypes.func
+  setCurrentComponent: PropTypes.func,
+  setNewPids: PropTypes.func
 };
 
 export default AddPids;

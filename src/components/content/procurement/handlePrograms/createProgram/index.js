@@ -8,6 +8,7 @@ import CommonSpinner from '../../../../common/spinner';
 import InitialDetailsComp from './initialDetails';
 import AddPids from './newPids';
 import AddGids from './newGids';
+import AddObjectiveCodes from './newObjectiveCodes';
 
 import { BASE_URL } from '../../../../../config';
 import * as sideBarActions from '../../../../../redux/actions/sideBarActions';
@@ -52,6 +53,7 @@ export const CreateProgram = ({
   const [allUsers, setAllUsers] = useState([]);
   const [newPids, setNewPids] = useState([]);
   const [newGids, setNewGids] = useState([]);
+  const [newObjectiveCodes, setNewObjectiveCodes] = useState([]);
 
   const [initialProDetails, setInitialProDetails] = useState(
     {
@@ -61,7 +63,7 @@ export const CreateProgram = ({
       shortForm: ''
     }
   );
-  const [currentComponent, setCurrentComponent] = useState(2);
+  const [currentComponent, setCurrentComponent] = useState(3);
 
   const { authState, authService } = useOktaAuth();
 
@@ -215,6 +217,16 @@ export const CreateProgram = ({
         <AddGids
           newGids={newGids}
           setNewGids={setNewGids}
+          setCurrentComponent={setCurrentComponent}
+        />
+      );
+    }
+
+    if (currentComponent === 3) {
+      return (
+        <AddObjectiveCodes
+          newObjectiveCodes={newObjectiveCodes}
+          setNewObjectiveCodes={setNewObjectiveCodes}
           setCurrentComponent={setCurrentComponent}
         />
       );
