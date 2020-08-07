@@ -17,6 +17,8 @@ import * as notificationActions from '../../../../redux/actions/notificationsAct
 
 import CommonSpinner from '../../../common/spinner';
 
+import './handlePrograms.css';
+
 const mapStateToProps = (state) => ({
   token: state.auth.token,
   roles: state.auth.roles
@@ -188,6 +190,14 @@ export const HandlePrograms = ({
         <Spinner color="primary" style={{ width: '3rem', height: '3rem' }} />
         <p>Loading Table Contents...</p>
       </>;
+    }
+
+    if (allPrograms.length < 1) {
+      return (
+        <div className="alert alert-info" role="alert">
+          No programs so far.
+        </div>
+      );
     }
 
     return (

@@ -5,6 +5,8 @@ import { useOktaAuth } from '@okta/okta-react';
 import axios from 'axios';
 
 import CommonSpinner from '../../../../common/spinner';
+import InitialDetailsComp from './initialDetails';
+import AddPids from './newPids';
 
 import { BASE_URL } from '../../../../../config';
 import * as sideBarActions from '../../../../../redux/actions/sideBarActions';
@@ -46,11 +48,23 @@ export const CreateProgram = ({
 
   const [spinner, setSpinner] = useState(false);
   const [loadingPageErr, setLoadingPageErr] = useState('');
+  const [allUsers, setAllUsers] = useState([]);
+  const [newPids, setNewPids] = useState([]);
+
+  const [initialProDetails, setInitialProDetails] = useState(
+    {
+      name: '',
+      programManagerId: '',
+      operationsLeadId: '',
+      shortForm: ''
+    }
+  );
+  const [currentComponent, setCurrentComponent] = useState(1);
 
   const { authState, authService } = useOktaAuth();
 
   changeSection('Procurement');
-  changeActive('ManagePrograms');
+  changeActive('CreateProgram');
 
   const setUpUser = (tokenToSet) => {
     axios.defaults.headers.common = { token: tokenToSet };
@@ -108,26 +122,30 @@ export const CreateProgram = ({
     // set this page up. Do stuff like pick all users.
     setSpinner(false);
 
-    // const endPoint = `${BASE_URL}hrApi/getProgramsklkl`;
-    // axios.defaults.headers.common = { token };
-    // axios.get(endPoint)
-    //   .then((res) => {
-    //     setAllPrograms(res.data);
-    //     setSpinner(false);
-    //   })
-    //   .catch((err) => {
-    //     setSpinner(false);
+    axios.defaults.headers.common = { token };
+    const endPoint = `${BASE_URL}auth/getUsers`;
+    axios.get(endPoint)
+      .then((res) => {
+        setSpinner(false);
+        const arrayToSet = res.data.map((user) => ({
+          label: `${user.fName} ${user.lName}`,
+          value: user._id
+        }));
+        setAllUsers(arrayToSet);
+      })
+      .catch((err) => {
+        setSpinner(false);
 
-    //     if (err && err.response && err.response.status && err.response.status === 401) {
-    //       authService.logout('/');
-    //     }
+        if (err && err.response && err.response.status && err.response.status === 401) {
+          authService.logout('/');
+        }
 
-    //     if (err && err.response && err.response.data && err.response.data.message) {
-    //       setLoadingPageErr(err.response.data.message);
-    //     } else {
-    //       setLoadingPageErr(err.message);
-    //     }
-    //   });
+        if (err && err.response && err.response.data && err.response.data.message) {
+          setLoadingPageErr(err.response.data.message);
+        } else {
+          setLoadingPageErr(err.message);
+        }
+      });
   };
 
   useEffect(() => {
@@ -168,9 +186,41 @@ export const CreateProgram = ({
     );
   }
 
+  const returnComponent = () => {
+    if (currentComponent === 0) {
+      return (
+        <InitialDetailsComp
+          allUsers={allUsers}
+          initialProDetails={initialProDetails}
+          setInitialProDetails={setInitialProDetails}
+          setCurrentComponent={setCurrentComponent}
+        />
+      );
+    }
+
+    if (currentComponent === 1) {
+      return (
+        <AddPids
+          newPids={newPids}
+          setNewPids={setNewPids}
+        />
+      );
+    }
+
+    return (
+      <InitialDetailsComp
+        allUsers={allUsers}
+        initialProDetails={initialProDetails}
+        setInitialProDetails={setInitialProDetails}
+        setCurrentComponent={setCurrentComponent}
+      />
+    );
+  };
+
   return (
     <div>
-      Create Program
+      <h2>Create A New Program</h2>
+      {returnComponent()}
     </div>
   );
 };

@@ -79,6 +79,14 @@ function Procurement({
             />
           </span>
 
+          <span onClick={() => handleChangeActive('CreateProgram')}>
+            <SubItem
+              link="/procurement/CreateProgramComp"
+              textToSet="Create New Program"
+              active={active === 'CreateProgram'}
+            />
+          </span>
+
           <span onClick={() => handleChangeActive('ManageAccountCodes')}>
             <SubItem
               link="/procurement/ManageAccountCodes"
