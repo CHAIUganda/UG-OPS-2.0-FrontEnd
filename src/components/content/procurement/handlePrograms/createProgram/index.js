@@ -7,6 +7,7 @@ import axios from 'axios';
 import CommonSpinner from '../../../../common/spinner';
 import InitialDetailsComp from './initialDetails';
 import AddPids from './newPids';
+import AddGids from './newGids';
 
 import { BASE_URL } from '../../../../../config';
 import * as sideBarActions from '../../../../../redux/actions/sideBarActions';
@@ -50,6 +51,7 @@ export const CreateProgram = ({
   const [loadingPageErr, setLoadingPageErr] = useState('');
   const [allUsers, setAllUsers] = useState([]);
   const [newPids, setNewPids] = useState([]);
+  const [newGids, setNewGids] = useState([]);
 
   const [initialProDetails, setInitialProDetails] = useState(
     {
@@ -59,7 +61,7 @@ export const CreateProgram = ({
       shortForm: ''
     }
   );
-  const [currentComponent, setCurrentComponent] = useState(1);
+  const [currentComponent, setCurrentComponent] = useState(2);
 
   const { authState, authService } = useOktaAuth();
 
@@ -203,6 +205,16 @@ export const CreateProgram = ({
         <AddPids
           newPids={newPids}
           setNewPids={setNewPids}
+          setCurrentComponent={setCurrentComponent}
+        />
+      );
+    }
+
+    if (currentComponent === 2) {
+      return (
+        <AddGids
+          newGids={newGids}
+          setNewGids={setNewGids}
           setCurrentComponent={setCurrentComponent}
         />
       );
