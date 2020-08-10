@@ -12,3 +12,15 @@
   position: absolute;
   bottom: 0;
 }
+
+.objectiveHeading{
+  margin-right: 70%;
+}
+
+.objButtonPosition{
+  margin-left: 40%;
+}
+
+.objheadingSize{
+  font-size: larger;
+}

@@ -22,7 +22,6 @@ const AddGidModal = ({
   objectiveCodeToEdit,
   editObjectiveCode
 }) => {
-  debugger;
   const [modal, setModal] = useState(false);
   const [objectiveCode, setObjectiveCode] = useState(
     (edit && objectiveCodeToEdit && objectiveCodeToEdit.objectiveCode) ? objectiveCodeToEdit.objectiveCode : ''
@@ -77,7 +76,7 @@ const AddGidModal = ({
   };
 
   return (
-    <div className="inlineItem push-button-left">
+    <div className="inlineItem">
       {returnICon()}
       <Modal isOpen={modal} toggle={toggle}>
         <ModalHeader toggle={toggle}>

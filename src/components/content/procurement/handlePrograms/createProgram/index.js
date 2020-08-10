@@ -9,6 +9,7 @@ import InitialDetailsComp from './initialDetails';
 import AddPids from './newPids';
 import AddGids from './newGids';
 import AddObjectiveCodes from './newObjectiveCodes';
+import Finish from './finishComponent/FinishComponent';
 
 import { BASE_URL } from '../../../../../config';
 import * as sideBarActions from '../../../../../redux/actions/sideBarActions';
@@ -227,6 +228,22 @@ export const CreateProgram = ({
         <AddObjectiveCodes
           newObjectiveCodes={newObjectiveCodes}
           setNewObjectiveCodes={setNewObjectiveCodes}
+          setCurrentComponent={setCurrentComponent}
+        />
+      );
+    }
+
+    if (currentComponent === 4) {
+      return (
+        <Finish
+          initialProDetails={initialProDetails}
+          newPids={newPids}
+          newGids={newGids}
+          newObjectiveCodes={newObjectiveCodes}
+          setNewPids={setNewPids}
+          setNewGids={setNewGids}
+          setNewObjectiveCodes={setNewObjectiveCodes}
+          setInitialProDetails={setInitialProDetails}
           setCurrentComponent={setCurrentComponent}
         />
       );

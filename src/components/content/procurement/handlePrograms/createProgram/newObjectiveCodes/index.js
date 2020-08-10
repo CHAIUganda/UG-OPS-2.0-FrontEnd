@@ -74,13 +74,14 @@ function AddObjectiveCodes({
   return (
     <div>
       <div className="m-4">
-        <h4 className="inlineItem">Add Objective Codes</h4>
-        <span>
-          <AddObjectiveCodeModal
-            addOneObjectiveCode={addOneObjectiveCode}
-            edit={false}
-          />
-        </span>
+        <div className="inlineItem objectiveHeading"><span className="objheadingSize">Add Objective Codes</span>
+          <span className="objButtonPosition">
+            <AddObjectiveCodeModal
+              addOneObjectiveCode={addOneObjectiveCode}
+              edit={false}
+            />
+          </span>
+        </div>
       </div>
       {returnTable()}
       <div className="pushChildToBottomPrograms m-5">
