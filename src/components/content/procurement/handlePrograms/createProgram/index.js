@@ -64,7 +64,7 @@ export const CreateProgram = ({
       shortForm: ''
     }
   );
-  const [currentComponent, setCurrentComponent] = useState(3);
+  const [currentComponent, setCurrentComponent] = useState(0);
 
   const { authState, authService } = useOktaAuth();
 
