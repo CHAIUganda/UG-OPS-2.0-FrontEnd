@@ -4,12 +4,12 @@ import { connect } from 'react-redux';
 import { useOktaAuth } from '@okta/okta-react';
 import axios from 'axios';
 
-import CommonSpinner from '../common/spinner';
+import CommonSpinner from '../../../../common/spinner';
 
-import { BASE_URL } from '../../config';
-import * as sideBarActions from '../../redux/actions/sideBarActions';
-import * as authActions from '../../redux/actions/authActions';
-import * as notificationActions from '../../redux/actions/notificationsActions';
+import { BASE_URL } from '../../../../../config';
+import * as sideBarActions from '../../../../../redux/actions/sideBarActions';
+import * as authActions from '../../../../../redux/actions/authActions';
+import * as notificationActions from '../../../../../redux/actions/notificationsActions';
 
 
 const mapStateToProps = (state) => ({
@@ -24,7 +24,7 @@ const mapDispatchToProps = {
   setInitialNotifications: notificationActions.setInitialNotifications
 };
 
-export const BluePrint = ({
+export const SelectedProgram = ({
   token,
   roles,
   changeSection,
@@ -170,12 +170,12 @@ export const BluePrint = ({
 
   return (
     <div>
-      Blue print
+      Create Program
     </div>
   );
 };
 
-BluePrint.propTypes = {
+SelectedProgram.propTypes = {
   token: PropTypes.string,
   roles: PropTypes.object,
   changeSection: PropTypes.func,
@@ -184,4 +184,4 @@ BluePrint.propTypes = {
   logUserIn: PropTypes.func,
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(BluePrint);
+export default connect(mapStateToProps, mapDispatchToProps)(SelectedProgram);
