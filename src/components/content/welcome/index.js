@@ -76,9 +76,9 @@ function Welcome({
       .catch((err) => {
         setSpinner(false);
 
-        if (err && err.response && err.response.status && err.response.status === 401) {
-          authService.logout('/');
-        }
+        // if (err && err.response && err.response.status && err.response.status === 401) {
+        //   authService.logout('/');
+        // }
 
         if (err && err.response && err.response.data && err.response.data.message) {
           setError(err.response.data.message);

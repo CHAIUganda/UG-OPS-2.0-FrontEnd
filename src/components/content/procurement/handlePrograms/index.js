@@ -220,9 +220,19 @@ export const HandlePrograms = ({
                 <td>{prog.shortForm}</td>
                 <td>{`${prog.programManagerDetails.fName} ${prog.programManagerDetails.lName}`}</td>
                 <td>
-                  <IconContext.Provider value={{ size: '2em' }}>
-                    <FiEdit />
-                  </IconContext.Provider>
+                  <Link
+                    to={
+                      {
+                        pathname: '/procurement/SingleProgram',
+                        propx: prog,
+                        propsPassed: true
+                      }
+                    }
+                  >
+                    <IconContext.Provider value={{ size: '2em' }}>
+                      <FiEdit />
+                    </IconContext.Provider>
+                  </Link>
                 </td>
               </tr>
             ))

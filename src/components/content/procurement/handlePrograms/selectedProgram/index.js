@@ -31,9 +31,9 @@ export const SelectedProgram = ({
   changeActive,
   setInitialNotifications,
   logUserIn,
+  propx
 }) => {
   // Check for roles
-
   if (token && roles) {
     if (!roles.financeAdmin && !roles.admin) {
       return (
@@ -44,8 +44,17 @@ export const SelectedProgram = ({
     }
   }
 
+  if (!propx) {
+    return (
+      <div className="alert alert-info" role="alert">
+        Please take a step back and select a program.
+      </div>
+    );
+  }
+
   const [spinner, setSpinner] = useState(false);
   const [loadingPageErr, setLoadingPageErr] = useState('');
+  const [allPids, setAllPids] = useState([]);
 
   const { authState, authService } = useOktaAuth();
 
@@ -105,29 +114,33 @@ export const SelectedProgram = ({
   };
 
   const setUpThisPage = () => {
-    // set this page up. Do stuff like pick all users.
-    setSpinner(false);
+    // set this page up. Do stuff like pick all users or just pick something
 
-    // const endPoint = `${BASE_URL}hrApi/getProgramsklkl`;
-    // axios.defaults.headers.common = { token };
-    // axios.get(endPoint)
-    //   .then((res) => {
-    //     setAllPrograms(res.data);
-    //     setSpinner(false);
-    //   })
-    //   .catch((err) => {
-    //     setSpinner(false);
+    const pickPIDs = () => {
+      const endPoint = `${BASE_URL}getProjects/${propx._id}/all`;
+      axios.defaults.headers.common = { token };
+      axios.get(endPoint)
+        .then((res) => {
+          setAllPids(res.data);
+          setSpinner(false);
+        })
+        .catch((err) => {
+          debugger;
+          setSpinner(false);
 
-    //     if (err && err.response && err.response.status && err.response.status === 401) {
-    //       authService.logout('/');
-    //     }
+          if (err && err.response && err.response.status && err.response.status === 401) {
+            authService.logout('/');
+          }
 
-    //     if (err && err.response && err.response.data && err.response.data.message) {
-    //       setLoadingPageErr(err.response.data.message);
-    //     } else {
-    //       setLoadingPageErr(err.message);
-    //     }
-    //   });
+          if (err && err.response && err.response.data && err.response.data.message) {
+            setLoadingPageErr(err.response.data.message);
+          } else {
+            setLoadingPageErr(err.message);
+          }
+        });
+    };
+
+    pickPIDs();
   };
 
   useEffect(() => {
@@ -170,7 +183,32 @@ export const SelectedProgram = ({
 
   return (
     <div>
-      Create Program
+      <h1 className="text-center">{`${propx.name} Details`}</h1>
+
+      <table className="table table-striped mt-5">
+        <tbody>
+          <tr>
+            <td>Program Manager</td>
+            <td>{`${propx.programManagerDetails.fName}  ${propx.programManagerDetails.lName}`}</td>
+          </tr>
+          <tr>
+            <td>Operations Lead</td>
+            <td>{`${propx.programManagerDetails.fName}  ${propx.programManagerDetails.lName}`}</td>
+          </tr>
+          <tr>
+            <td>PIDs</td>
+            <td>{allPids.length}</td>
+          </tr>
+          <tr>
+            <td>GIDs</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>Objective Codes </td>
+            <td></td>
+          </tr>
+        </tbody>
+      </table>
     </div>
   );
 };
@@ -182,6 +220,7 @@ SelectedProgram.propTypes = {
   changeActive: PropTypes.func,
   setInitialNotifications: PropTypes.func,
   logUserIn: PropTypes.func,
+  propx: PropTypes.object
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(SelectedProgram);
