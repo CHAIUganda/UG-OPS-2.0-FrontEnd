@@ -3,8 +3,11 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { useOktaAuth } from '@okta/okta-react';
 import axios from 'axios';
+import { FiPlus, FiMinus } from 'react-icons/fi';
+import { IconContext } from 'react-icons';
 
 import CommonSpinner from '../../../../common/spinner';
+import EditGeneralDetails from './editGeneralDetails';
 
 import { BASE_URL } from '../../../../../config';
 import * as sideBarActions from '../../../../../redux/actions/sideBarActions';
@@ -55,6 +58,12 @@ export const SelectedProgram = ({
   const [spinner, setSpinner] = useState(false);
   const [loadingPageErr, setLoadingPageErr] = useState('');
   const [allPids, setAllPids] = useState([]);
+  const [, setAllGids] = useState([]);
+  const [, setAllObjectiveCodes] = useState([]);
+  const [allUsers, setAllUsers] = useState([]);
+  const [showPids, setShowPids] = useState(false);
+  // const [showGids, setShowGids] = useState(false);
+  // const [showObjectiveCodes, setShowObjectiveCodes] = useState(false);
 
   const { authState, authService } = useOktaAuth();
 
@@ -114,18 +123,15 @@ export const SelectedProgram = ({
   };
 
   const setUpThisPage = () => {
-    // set this page up. Do stuff like pick all users or just pick something
-
-    const pickPIDs = () => {
-      const endPoint = `${BASE_URL}getProjects/${propx._id}/all`;
+    const pickObjectiveCodes = () => {
+      const endPoint = `${BASE_URL}financeApi/getObjectives/${propx._id}/all`;
       axios.defaults.headers.common = { token };
       axios.get(endPoint)
         .then((res) => {
-          setAllPids(res.data);
+          setAllObjectiveCodes(res.data);
           setSpinner(false);
         })
         .catch((err) => {
-          debugger;
           setSpinner(false);
 
           if (err && err.response && err.response.status && err.response.status === 401) {
@@ -140,7 +146,82 @@ export const SelectedProgram = ({
         });
     };
 
-    pickPIDs();
+    const pickGIDs = () => {
+      const endPoint = `${BASE_URL}financeApi/getGrants/${propx._id}/all`;
+      axios.defaults.headers.common = { token };
+      axios.get(endPoint)
+        .then((res) => {
+          setAllGids(res.data);
+          // setSpinner(false);
+          pickObjectiveCodes();
+        })
+        .catch((err) => {
+          setSpinner(false);
+
+          if (err && err.response && err.response.status && err.response.status === 401) {
+            authService.logout('/');
+          }
+
+          if (err && err.response && err.response.data && err.response.data.message) {
+            setLoadingPageErr(err.response.data.message);
+          } else {
+            setLoadingPageErr(err.message);
+          }
+        });
+    };
+
+    const pickPIDs = () => {
+      const endPoint = `${BASE_URL}financeApi/getProjects/${propx._id}/all`;
+      axios.defaults.headers.common = { token };
+      axios.get(endPoint)
+        .then((res) => {
+          setAllPids(res.data);
+          // setSpinner(false);
+          pickGIDs();
+        })
+        .catch((err) => {
+          setSpinner(false);
+
+          if (err && err.response && err.response.status && err.response.status === 401) {
+            authService.logout('/');
+          }
+
+          if (err && err.response && err.response.data && err.response.data.message) {
+            setLoadingPageErr(err.response.data.message);
+          } else {
+            setLoadingPageErr(err.message);
+          }
+        });
+    };
+
+    const pickAllUsers = () => {
+      axios.defaults.headers.common = { token };
+      const endPoint = `${BASE_URL}auth/getUsers`;
+      axios.get(endPoint)
+        .then((res) => {
+          const arrayToSet = res.data.map((user) => ({
+            label: `${user.fName} ${user.lName}`,
+            value: user._id
+          }));
+          setAllUsers(arrayToSet);
+          pickPIDs();
+        })
+        .catch((err) => {
+          setSpinner(false);
+
+          if (err && err.response && err.response.status && err.response.status === 401) {
+            authService.logout('/');
+          }
+
+          if (err && err.response && err.response.data && err.response.data.message) {
+            setLoadingPageErr(err.response.data.message);
+          } else {
+            setLoadingPageErr(err.message);
+          }
+        });
+    };
+
+    pickAllUsers();
   };
 
   useEffect(() => {
@@ -181,34 +262,119 @@ export const SelectedProgram = ({
     );
   }
 
-  return (
-    <div>
-      <h1 className="text-center">{`${propx.name} Details`}</h1>
+  const TableOfPids = () => {
+    if (showPids) {
+      return (
+        <table className="table table-striped">
+          <thead>
+            <tr>
+              <th>PID</th>
+              <th>Status</th>
+              <th>Manage</th>
+              <th>
+                <span className="pointerCursor" onClick={
+                  (event) => {
+                    event.preventDefault();
+                    setShowPids(false);
+                  }
+                }>
+                  <IconContext.Provider value={{ size: '3em' }}>
+                    <FiMinus />
+                  </IconContext.Provider>
+                </span>
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {
+              allPids.map((p, index) => (
+                <tr key={index}>
+                  <td>{p.pId}</td>
+                  <td>
+                    <span
+                      className={`${p.status.toLowerCase() === 'active' ? 'bg-success' : 'bg-warning'} p-1`}
+                    >{p.status}</span>
+                  </td>
+                  <td></td>
+                  <td></td>
+                </tr>
+              ))
+            }
+          </tbody>
+        </table>
+      );
+    }
 
-      <table className="table table-striped mt-5">
+    return (
+      <table className="table table-striped">
         <tbody>
-          <tr>
-            <td>Program Manager</td>
-            <td>{`${propx.programManagerDetails.fName}  ${propx.programManagerDetails.lName}`}</td>
-          </tr>
-          <tr>
-            <td>Operations Lead</td>
-            <td>{`${propx.programManagerDetails.fName}  ${propx.programManagerDetails.lName}`}</td>
-          </tr>
           <tr>
             <td>PIDs</td>
             <td>{allPids.length}</td>
-          </tr>
-          <tr>
-            <td>GIDs</td>
-            <td></td>
-          </tr>
-          <tr>
-            <td>Objective Codes </td>
-            <td></td>
+            <td>
+              <span className="pointerCursor" onClick={
+                (event) => {
+                  event.preventDefault();
+                  setShowPids(true);
+                }
+              }>
+                <IconContext.Provider value={{ size: '2em' }}>
+                  <FiPlus />
+                </IconContext.Provider>
+              </span>
+            </td>
           </tr>
         </tbody>
       </table>
+    );
+  };
+
+  return (
+    <div className="row">
+      <div className="col-12">
+        <h1 className="text-center mb-5">{`${propx.name}`}</h1>
+        <EditGeneralDetails
+          progName={propx.name}
+          sForm={propx.shortForm}
+          allUsers={allUsers}
+          id={propx._id}
+          token={token}
+          pm={
+            allUsers.find((u) => u.value === propx.programManagerDetails._id)
+          }
+          opsLead={
+            allUsers.find((u) => u.value === propx.operationsLeadDetails._id)
+          }
+        />
+        {/* start row */}
+        <div className="row">
+          <div className="col-12">
+            <table className="table table-striped mt-5">
+              <tbody>
+                <tr>
+                  <td>Short Form</td>
+                  <td>{propx.shortForm}</td>
+                  <td></td>
+                </tr>
+                <tr>
+                  <td>Program Manager</td>
+                  <td>{`${propx.programManagerDetails.fName}  ${propx.programManagerDetails.lName}`}</td>
+                  <td></td>
+                </tr>
+                <tr>
+                  <td>Operations Lead</td>
+                  <td>{`${propx.operationsLeadDetails.fName}  ${propx.operationsLeadDetails.lName}`}</td>
+                  <td></td>
+                </tr>
+              </tbody>
+            </table>
+
+            {/* table 2 */}
+            {TableOfPids()}
+          </div>
+        </div>
+        {/* end row */}
+      </div>
     </div>
   );
 };
