@@ -8,6 +8,7 @@ import { IconContext } from 'react-icons';
 
 import CommonSpinner from '../../../../common/spinner';
 import EditGeneralDetails from './editGeneralDetails';
+import EditPidModal from './EditPidModal';
 
 import { BASE_URL } from '../../../../../config';
 import * as sideBarActions from '../../../../../redux/actions/sideBarActions';
@@ -262,6 +263,12 @@ export const SelectedProgram = ({
     );
   }
 
+  const editPid = (objTofix, indexOfObj) => {
+    const arr = [...allPids];
+    arr.splice(indexOfObj, 1, objTofix);
+    setAllPids(arr);
+  };
+
   const TableOfPids = () => {
     if (showPids) {
       return (
@@ -270,7 +277,7 @@ export const SelectedProgram = ({
             <tr>
               <th>PID</th>
               <th>Status</th>
-              <th>Manage</th>
+              <th colSpan="2">Manage</th>
               <th>
                 <span className="pointerCursor" onClick={
                   (event) => {
@@ -295,7 +302,16 @@ export const SelectedProgram = ({
                       className={`${p.status.toLowerCase() === 'active' ? 'bg-success' : 'bg-warning'} p-1`}
                     >{p.status}</span>
                   </td>
-                  <td></td>
+                  <td>
+                    <span>
+                      <EditPidModal
+                        pidToEdit={p}
+                        editPid={editPid}
+                        token={token}
+                        BASE_URL={BASE_URL}
+                        index={index}
+                      />
+                    </span></td>
                   <td></td>
                 </tr>
               ))
