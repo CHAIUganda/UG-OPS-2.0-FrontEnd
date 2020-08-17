@@ -24,7 +24,10 @@ const EditGidModal = ({
   editGid,
   token,
   BASE_URL,
-  index
+  index,
+  newGid,
+  programId,
+  insertNewGid
 }) => {
   const [modal, setModal] = useState(false);
   const [gid, setGid] = useState(
@@ -59,43 +62,87 @@ const EditGidModal = ({
     setSuccessMessage('');
     setSubmitSpinner(true);
 
-    if (!status) {
+    if (!status && !newGid) {
       setErrMessage('Please set a valid status.');
       setSubmitSpinner(false);
       return;
     }
 
-    const editObj = {
-      id: gidToEdit._id,
-      gId: gid,
-      programId: gidToEdit.programId,
-      status
+    const editGidFunc = () => {
+      const editObj = {
+        id: gidToEdit._id,
+        gId: gid,
+        programId: gidToEdit.programId,
+        status
+      };
+
+      const endPoint = `${BASE_URL}financeApi/editGrant`;
+      axios.defaults.headers.common = { token };
+      axios.post(endPoint, editObj)
+        .then((res) => {
+          setSuccessMessage(res.data.message);
+          setSubmitSpinner(false);
+          editGid(res.data, index);
+        })
+        .catch((err) => {
+          setSubmitSpinner(false);
+
+          if (err && err.response && err.response.status && err.response.status === 401) {
+            authService.logout('/');
+          }
+
+          if (err && err.response && err.response.data && err.response.data.message) {
+            setErrMessage(err.response.data.message);
+          } else {
+            setErrMessage(err.message);
+          }
+        });
     };
 
-    const endPoint = `${BASE_URL}financeApi/editGrant`;
-    axios.defaults.headers.common = { token };
-    axios.post(endPoint, editObj)
-      .then((res) => {
-        setSuccessMessage(res.data.message);
-        setSubmitSpinner(false);
-        editGid(res.data, index);
-      })
-      .catch((err) => {
-        setSubmitSpinner(false);
+    const createNewGid = () => {
+      const gitToCreate = {
+        gId: [gid],
+        programId
+      };
 
-        if (err && err.response && err.response.status && err.response.status === 401) {
-          authService.logout('/');
-        }
+      const endPoint = `${BASE_URL}financeApi/createGrant`;
+      axios.defaults.headers.common = { token };
+      axios.post(endPoint, gitToCreate)
+        .then((res) => {
+          setSuccessMessage(res.data.message);
+          setSubmitSpinner(false);
+          insertNewGid(res.data.gIds[0]);
+        })
+        .catch((err) => {
+          setSubmitSpinner(false);
 
-        if (err && err.response && err.response.data && err.response.data.message) {
-          setErrMessage(err.response.data.message);
-        } else {
-          setErrMessage(err.message);
-        }
-      });
+          if (err && err.response && err.response.status && err.response.status === 401) {
+            authService.logout('/');
+          }
+
+          if (err && err.response && err.response.data && err.response.data.message) {
+            setErrMessage(err.response.data.message);
+          } else {
+            setErrMessage(err.message);
+          }
+        });
+    };
+
+    if (newGid) {
+      createNewGid();
+    } else {
+      editGidFunc();
+    }
   };
 
   const returnICon = () => {
+    if (newGid) {
+      return (
+        <span onClick={toggle} className="pointerCursor">
+          <button className="btn btn-outline-primary">Add New</button>
+        </span>
+      );
+    }
     return (
       <span onClick={toggle} className="pointerCursor">
         <IconContext.Provider value={{ size: '2em' }}>
@@ -144,24 +191,28 @@ const EditGidModal = ({
               </InputGroup>
             </FormGroup>
 
-            <FormGroup>
-              <InputGroup>
-                <InputGroupAddon addonType="prepend">
-                  <InputGroupText>Status</InputGroupText>
-                </InputGroupAddon>
-                <select className="form-control" value={status} onChange={
-                  (e) => {
-                    setErrMessage('');
-                    setSuccessMessage('');
-                    setStatus(e.target.value);
-                  }
-                }>
-                  <option value="">Not Set</option>
-                  <option value="Active">Active</option>
-                  <option value="Archived">Archived</option>
-                </select>
-              </InputGroup>
-            </FormGroup>
+            {
+              !newGid && (
+                <FormGroup>
+                  <InputGroup>
+                    <InputGroupAddon addonType="prepend">
+                      <InputGroupText>Status</InputGroupText>
+                    </InputGroupAddon>
+                    <select className="form-control" value={status} onChange={
+                      (e) => {
+                        setErrMessage('');
+                        setSuccessMessage('');
+                        setStatus(e.target.value);
+                      }
+                    }>
+                      <option value="">Not Set</option>
+                      <option value="Active">Active</option>
+                      <option value="Archived">Archived</option>
+                    </select>
+                  </InputGroup>
+                </FormGroup>
+              )
+            }
 
             <div className="mt-5">
               {
@@ -173,7 +224,7 @@ const EditGidModal = ({
                   )
                   : (
                     <button className='pointerCursor float-right nextButton' type='submit'>
-                      Edit GID
+                      { newGid ? 'Add New Gid' : 'Edit GID' }
                     </button>
                   )
               }
@@ -193,7 +244,10 @@ EditGidModal.propTypes = {
   editGid: PropTypes.func,
   token: PropTypes.string,
   BASE_URL: PropTypes.string,
-  index: PropTypes.number
+  index: PropTypes.number,
+  newGid: PropTypes.bool,
+  programId: PropTypes.string,
+  insertNewGid: PropTypes.func
 };
 
 export default EditGidModal;

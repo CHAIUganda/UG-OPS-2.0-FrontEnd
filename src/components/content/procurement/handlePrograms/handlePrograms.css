@@ -30,5 +30,10 @@
 }
 
 .objCode{
-  padding-right: 35%;
+  padding-right: 50%;
+}
+
+.lengthSpan{
+  padding-right: 95%;
+  margin-left: -50%;
 }

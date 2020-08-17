@@ -371,6 +371,12 @@ export const SelectedProgram = ({
     setAllGids(arr);
   };
 
+  const insertNewGid = (gidToInsert) => {
+    const arr = [...allGids];
+    arr.push(gidToInsert);
+    setAllGids(arr);
+  };
+
   const TableOfGids = () => {
     if (showGids) {
       return (
@@ -412,6 +418,7 @@ export const SelectedProgram = ({
                         token={token}
                         BASE_URL={BASE_URL}
                         index={index}
+                        newGid={false}
                       />
                     </span></td>
                   <td></td>
@@ -443,6 +450,15 @@ export const SelectedProgram = ({
                 </IconContext.Provider>
               </span>
             </td>
+            <td>
+              <EditGidModal
+                token={token}
+                BASE_URL={BASE_URL}
+                newGid={true}
+                programId={propx._id}
+                insertNewGid={insertNewGid}
+              />
+            </td>
           </tr>
         </tbody>
       </table>
@@ -453,6 +469,12 @@ export const SelectedProgram = ({
     const arr = [...allObjectiveCodes];
     arr.splice(indexOfObj, 1, objTofix);
     setAllGids(arr);
+  };
+
+  const insertNewObjectiveCode = (objectiveCodeToInsert) => {
+    const arr = [...allObjectiveCodes];
+    arr.push(objectiveCodeToInsert);
+    setAllObjectiveCodes(arr);
   };
 
   const TableOfObjectiveCodes = () => {
@@ -496,6 +518,7 @@ export const SelectedProgram = ({
                         token={token}
                         BASE_URL={BASE_URL}
                         index={index}
+                        newObjectiveCode={false}
                       />
                     </span></td>
                   <td></td>
@@ -511,7 +534,7 @@ export const SelectedProgram = ({
       <table className="table table-striped">
         <tbody>
           <tr>
-            <td><span className="objCode">Objective Codes</span></td>
+            <td>Objective Codes</td>
             <td>{allObjectiveCodes.length}</td>
             <td>
               <span className="pointerCursor" onClick={
@@ -526,6 +549,15 @@ export const SelectedProgram = ({
                   <FiPlus />
                 </IconContext.Provider>
               </span>
+            </td>
+            <td>
+              <EditObjectiveCodeModal
+                token={token}
+                insertNewObjectiveCode={insertNewObjectiveCode}
+                newObjectiveCode={true}
+                programId={propx._id}
+                BASE_URL={BASE_URL}
+              />
             </td>
           </tr>
         </tbody>

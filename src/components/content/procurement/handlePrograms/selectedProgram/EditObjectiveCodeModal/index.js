@@ -24,7 +24,10 @@ const EditObjectiveCodeModal = ({
   editObjectiveCode,
   token,
   BASE_URL,
-  index
+  index,
+  insertNewObjectiveCode,
+  newObjectiveCode,
+  programId
 }) => {
   const [modal, setModal] = useState(false);
   const [objectiveCode, setObjectiveCode] = useState(
@@ -59,43 +62,87 @@ const EditObjectiveCodeModal = ({
     setSuccessMessage('');
     setSubmitSpinner(true);
 
-    if (!status) {
+    if (!status && !newObjectiveCode) {
       setErrMessage('Please set a valid status.');
       setSubmitSpinner(false);
       return;
     }
 
-    const editObj = {
-      id: objectiveCodeToEdit._id,
-      objectiveCode,
-      programId: objectiveCodeToEdit.programId,
-      status
+    const editObjCodeFunc = () => {
+      const editObj = {
+        id: objectiveCodeToEdit._id,
+        objectiveCode,
+        programId: objectiveCodeToEdit.programId,
+        status
+      };
+
+      const endPoint = `${BASE_URL}financeApi/editObjective`;
+      axios.defaults.headers.common = { token };
+      axios.post(endPoint, editObj)
+        .then((res) => {
+          setSuccessMessage(res.data.message);
+          setSubmitSpinner(false);
+          editObjectiveCode(res.data, index);
+        })
+        .catch((err) => {
+          setSubmitSpinner(false);
+
+          if (err && err.response && err.response.status && err.response.status === 401) {
+            authService.logout('/');
+          }
+
+          if (err && err.response && err.response.data && err.response.data.message) {
+            setErrMessage(err.response.data.message);
+          } else {
+            setErrMessage(err.message);
+          }
+        });
     };
 
-    const endPoint = `${BASE_URL}financeApi/editObjective`;
-    axios.defaults.headers.common = { token };
-    axios.post(endPoint, editObj)
-      .then((res) => {
-        setSuccessMessage(res.data.message);
-        setSubmitSpinner(false);
-        editObjectiveCode(res.data, index);
-      })
-      .catch((err) => {
-        setSubmitSpinner(false);
+    const createNewObjCodeFunc = () => {
+      const objCodeToCreate = {
+        objectiveCode: [objectiveCode],
+        programId
+      };
 
-        if (err && err.response && err.response.status && err.response.status === 401) {
-          authService.logout('/');
-        }
+      const endPoint = `${BASE_URL}financeApi/createObjective`;
+      axios.defaults.headers.common = { token };
+      axios.post(endPoint, objCodeToCreate)
+        .then((res) => {
+          setSuccessMessage(res.data.message);
+          setSubmitSpinner(false);
+          insertNewObjectiveCode(res.data.objectiveCodes[0]);
+        })
+        .catch((err) => {
+          setSubmitSpinner(false);
 
-        if (err && err.response && err.response.data && err.response.data.message) {
-          setErrMessage(err.response.data.message);
-        } else {
-          setErrMessage(err.message);
-        }
-      });
+          if (err && err.response && err.response.status && err.response.status === 401) {
+            authService.logout('/');
+          }
+
+          if (err && err.response && err.response.data && err.response.data.message) {
+            setErrMessage(err.response.data.message);
+          } else {
+            setErrMessage(err.message);
+          }
+        });
+    };
+
+    if (newObjectiveCode) {
+      createNewObjCodeFunc();
+    } else {
+      editObjCodeFunc();
+    }
   };
 
   const returnICon = () => {
+    if (newObjectiveCode) {
+      return (
+        <span onClick={toggle} className="pointerCursor">
+          <button className="btn btn-outline-primary">Add New</button>
+        </span>
+      );
+    }
     return (
       <span onClick={toggle} className="pointerCursor">
         <IconContext.Provider value={{ size: '2em' }}>
@@ -134,7 +181,7 @@ const EditObjectiveCodeModal = ({
                   <InputGroupText>Objective Code</InputGroupText>
                 </InputGroupAddon>
                 <Input
-                  placeholder="GID"
+                  placeholder="Objective Code"
                   type="text"
                   name="objectiveCode"
                   value={objectiveCode}
@@ -144,24 +191,28 @@ const EditObjectiveCodeModal = ({
               </InputGroup>
             </FormGroup>
 
-            <FormGroup>
-              <InputGroup>
-                <InputGroupAddon addonType="prepend">
-                  <InputGroupText>Status</InputGroupText>
-                </InputGroupAddon>
-                <select className="form-control" value={status} onChange={
-                  (e) => {
-                    setErrMessage('');
-                    setSuccessMessage('');
-                    setStatus(e.target.value);
-                  }
-                }>
-                  <option value="">Not Set</option>
-                  <option value="Active">Active</option>
-                  <option value="Archived">Archived</option>
-                </select>
-              </InputGroup>
-            </FormGroup>
+            {
+              !newObjectiveCode && (
+                <FormGroup>
+                  <InputGroup>
+                    <InputGroupAddon addonType="prepend">
+                      <InputGroupText>Status</InputGroupText>
+                    </InputGroupAddon>
+                    <select className="form-control" value={status} onChange={
+                      (e) => {
+                        setErrMessage('');
+                        setSuccessMessage('');
+                        setStatus(e.target.value);
+                      }
+                    }>
+                      <option value="">Not Set</option>
+                      <option value="Active">Active</option>
+                      <option value="Archived">Archived</option>
+                    </select>
+                  </InputGroup>
+                </FormGroup>
+              )
+            }
 
             <div className="mt-5">
               {
@@ -173,7 +224,7 @@ const EditObjectiveCodeModal = ({
                   )
                   : (
                     <button className='pointerCursor float-right nextButton' type='submit'>
-                      Edit Objective Code
+                      { newObjectiveCode ? 'Add New Objective code' : 'Edit Objective Code' }
                     </button>
                   )
               }
@@ -194,6 +245,9 @@ EditObjectiveCodeModal.propTypes = {
   index: PropTypes.number,
   objectiveCodeToEdit: PropTypes.object,
   editObjectiveCode: PropTypes.func,
+  insertNewObjectiveCode: PropTypes.func,
+  newObjectiveCode: PropTypes.bool,
+  programId: PropTypes.string
 };
 
 export default EditObjectiveCodeModal;
