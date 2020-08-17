@@ -9,6 +9,8 @@ import { IconContext } from 'react-icons';
 import CommonSpinner from '../../../../common/spinner';
 import EditGeneralDetails from './editGeneralDetails';
 import EditPidModal from './EditPidModal';
+import EditGidModal from './EditGidModal';
+import EditObjectiveCodeModal from './EditObjectiveCodeModal';
 
 import { BASE_URL } from '../../../../../config';
 import * as sideBarActions from '../../../../../redux/actions/sideBarActions';
@@ -59,12 +61,12 @@ export const SelectedProgram = ({
   const [spinner, setSpinner] = useState(false);
   const [loadingPageErr, setLoadingPageErr] = useState('');
   const [allPids, setAllPids] = useState([]);
-  const [, setAllGids] = useState([]);
-  const [, setAllObjectiveCodes] = useState([]);
+  const [allGids, setAllGids] = useState([]);
+  const [allObjectiveCodes, setAllObjectiveCodes] = useState([]);
   const [allUsers, setAllUsers] = useState([]);
   const [showPids, setShowPids] = useState(false);
-  // const [showGids, setShowGids] = useState(false);
-  // const [showObjectiveCodes, setShowObjectiveCodes] = useState(false);
+  const [showGids, setShowGids] = useState(false);
+  const [showObjectiveCodes, setShowObjectiveCodes] = useState(false);
 
   const { authState, authService } = useOktaAuth();
 
@@ -269,6 +271,12 @@ export const SelectedProgram = ({
     setAllPids(arr);
   };
 
+  const insertNewPid = (pidToInsert) => {
+    const arr = [...allPids];
+    arr.push(pidToInsert);
+    setAllPids(arr);
+  };
+
   const TableOfPids = () => {
     if (showPids) {
       return (
@@ -277,7 +285,7 @@ export const SelectedProgram = ({
             <tr>
               <th>PID</th>
               <th>Status</th>
-              <th colSpan="2">Manage</th>
+              <th colSpan="2">Edit</th>
               <th>
                 <span className="pointerCursor" onClick={
                   (event) => {
@@ -310,6 +318,7 @@ export const SelectedProgram = ({
                         token={token}
                         BASE_URL={BASE_URL}
                         index={index}
+                        newPid={false}
                       />
                     </span></td>
                   <td></td>
@@ -332,6 +341,185 @@ export const SelectedProgram = ({
                 (event) => {
                   event.preventDefault();
                   setShowPids(true);
+                  setShowGids(false);
+                  setShowObjectiveCodes(false);
+                }
+              }>
+                <IconContext.Provider value={{ size: '2em' }}>
+                  <FiPlus />
+                </IconContext.Provider>
+              </span>
+            </td>
+            <td>
+              <EditPidModal
+                token={token}
+                BASE_URL={BASE_URL}
+                newPid={true}
+                programId={propx._id}
+                insertNewPid={insertNewPid}
+              />
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    );
+  };
+
+  const editGid = (objTofix, indexOfObj) => {
+    const arr = [...allGids];
+    arr.splice(indexOfObj, 1, objTofix);
+    setAllGids(arr);
+  };
+
+  const TableOfGids = () => {
+    if (showGids) {
+      return (
+        <table className="table table-striped">
+          <thead>
+            <tr>
+              <th>GID</th>
+              <th>Status</th>
+              <th colSpan="2">Edit</th>
+              <th>
+                <span className="pointerCursor" onClick={
+                  (event) => {
+                    event.preventDefault();
+                    setShowGids(false);
+                  }
+                }>
+                  <IconContext.Provider value={{ size: '3em' }}>
+                    <FiMinus />
+                  </IconContext.Provider>
+                </span>
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {
+              allGids.map((g, index) => (
+                <tr key={index}>
+                  <td>{g.gId}</td>
+                  <td>
+                    <span
+                      className={`${g.status.toLowerCase() === 'active' ? 'bg-success' : 'bg-warning'} p-1`}
+                    >{g.status}</span>
+                  </td>
+                  <td>
+                    <span>
+                      <EditGidModal
+                        gidToEdit={g}
+                        editGid={editGid}
+                        token={token}
+                        BASE_URL={BASE_URL}
+                        index={index}
+                      />
+                    </span></td>
+                  <td></td>
+                </tr>
+              ))
+            }
+          </tbody>
+        </table>
+      );
+    }
+
+    return (
+      <table className="table table-striped">
+        <tbody>
+          <tr>
+            <td>GIDs</td>
+            <td>{allGids.length}</td>
+            <td>
+              <span className="pointerCursor" onClick={
+                (event) => {
+                  event.preventDefault();
+                  setShowGids(true);
+                  setShowPids(false);
+                  setShowObjectiveCodes(false);
+                }
+              }>
+                <IconContext.Provider value={{ size: '2em' }}>
+                  <FiPlus />
+                </IconContext.Provider>
+              </span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    );
+  };
+
+  const editObjectiveCode = (objTofix, indexOfObj) => {
+    const arr = [...allObjectiveCodes];
+    arr.splice(indexOfObj, 1, objTofix);
+    setAllGids(arr);
+  };
+
+  const TableOfObjectiveCodes = () => {
+    if (showObjectiveCodes) {
+      return (
+        <table className="table table-striped">
+          <thead>
+            <tr>
+              <th>Objective Code</th>
+              <th>Status</th>
+              <th colSpan="2">Edit</th>
+              <th>
+                <span className="pointerCursor" onClick={
+                  (event) => {
+                    event.preventDefault();
+                    setShowObjectiveCodes(false);
+                  }
+                }>
+                  <IconContext.Provider value={{ size: '3em' }}>
+                    <FiMinus />
+                  </IconContext.Provider>
+                </span>
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {
+              allObjectiveCodes.map((o, index) => (
+                <tr key={o._id}>
+                  <td>{o.objectiveCode}</td>
+                  <td>
+                    <span
+                      className={`${o.status.toLowerCase() === 'active' ? 'bg-success' : 'bg-warning'} p-1`}
+                    >{o.status}</span>
+                  </td>
+                  <td>
+                    <span>
+                      <EditObjectiveCodeModal
+                        objectiveCodeToEdit={o}
+                        editObjectiveCode={editObjectiveCode}
+                        token={token}
+                        BASE_URL={BASE_URL}
+                        index={index}
+                      />
+                    </span></td>
+                  <td></td>
+                </tr>
+              ))
+            }
+          </tbody>
+        </table>
+      );
+    }
+
+    return (
+      <table className="table table-striped">
+        <tbody>
+          <tr>
+            <td><span className="objCode">Objective Codes</span></td>
+            <td>{allObjectiveCodes.length}</td>
+            <td>
+              <span className="pointerCursor" onClick={
+                (event) => {
+                  event.preventDefault();
+                  setShowGids(false);
+                  setShowPids(false);
+                  setShowObjectiveCodes(true);
                 }
               }>
                 <IconContext.Provider value={{ size: '2em' }}>
@@ -385,8 +573,12 @@ export const SelectedProgram = ({
               </tbody>
             </table>
 
-            {/* table 2 */}
+            {/* table of pids */}
             {TableOfPids()}
+            {/* table of gids */}
+            {TableOfGids()}
+            {/* table of objective codes */}
+            {TableOfObjectiveCodes()}
           </div>
         </div>
         {/* end row */}

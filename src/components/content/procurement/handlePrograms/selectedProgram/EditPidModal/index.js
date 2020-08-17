@@ -24,7 +24,10 @@ const EditPidModal = ({
   editPid,
   token,
   BASE_URL,
-  index
+  index,
+  newPid,
+  programId,
+  insertNewPid
 }) => {
   const [modal, setModal] = useState(false);
   const [pid, setPid] = useState(
@@ -59,43 +62,87 @@ const EditPidModal = ({
     setSuccessMessage('');
     setSubmitSpinner(true);
 
-    if (!status) {
+    if (!status && !newPid) {
       setErrMessage('Please set a valid status.');
       setSubmitSpinner(false);
       return;
     }
 
-    const editObj = {
-      id: pidToEdit._id,
-      pId: pid,
-      programId: pidToEdit.programId,
-      status
+    const editPidFunc = () => {
+      const editObj = {
+        id: pidToEdit._id,
+        pId: pid,
+        programId: pidToEdit.programId,
+        status
+      };
+
+      const endPoint = `${BASE_URL}financeApi/editProject`;
+      axios.defaults.headers.common = { token };
+      axios.post(endPoint, editObj)
+        .then((res) => {
+          setSuccessMessage(res.data.message);
+          setSubmitSpinner(false);
+          editPid(res.data, index);
+        })
+        .catch((err) => {
+          setSubmitSpinner(false);
+
+          if (err && err.response && err.response.status && err.response.status === 401) {
+            authService.logout('/');
+          }
+
+          if (err && err.response && err.response.data && err.response.data.message) {
+            setErrMessage(err.response.data.message);
+          } else {
+            setErrMessage(err.message);
+          }
+        });
     };
 
-    const endPoint = `${BASE_URL}financeApi/editProject`;
-    axios.defaults.headers.common = { token };
-    axios.post(endPoint, editObj)
-      .then((res) => {
-        setSuccessMessage(res.data.message);
-        setSubmitSpinner(false);
-        editPid(res.data, index);
-      })
-      .catch((err) => {
-        setSubmitSpinner(false);
+    const addNewPid = () => {
+      const pidToCreate = {
+        pId: [pid],
+        programId
+      };
 
-        if (err && err.response && err.response.status && err.response.status === 401) {
-          authService.logout('/');
-        }
+      const endPoint = `${BASE_URL}financeApi/createProject`;
+      axios.defaults.headers.common = { token };
+      axios.post(endPoint, pidToCreate)
+        .then((res) => {
+          setSuccessMessage(res.data.message);
+          setSubmitSpinner(false);
+          insertNewPid(res.data.pIds[0]);
+        })
+        .catch((err) => {
+          setSubmitSpinner(false);
 
-        if (err && err.response && err.response.data && err.response.data.message) {
-          setErrMessage(err.response.data.message);
-        } else {
-          setErrMessage(err.message);
-        }
-      });
+          if (err && err.response && err.response.status && err.response.status === 401) {
+            authService.logout('/');
+          }
+
+          if (err && err.response && err.response.data && err.response.data.message) {
+            setErrMessage(err.response.data.message);
+          } else {
+            setErrMessage(err.message);
+          }
+        });
+    };
+
+    if (newPid) {
+      addNewPid();
+    } else {
+      editPidFunc();
+    }
   };
 
   const returnICon = () => {
+    if (newPid) {
+      return (
+        <span onClick={toggle} className="pointerCursor">
+          <button className="btn btn-outline-primary">Add New</button>
+        </span>
+      );
+    }
     return (
       <span onClick={toggle} className="pointerCursor">
         <IconContext.Provider value={{ size: '2em' }}>
@@ -144,24 +191,28 @@ const EditPidModal = ({
               </InputGroup>
             </FormGroup>
 
-            <FormGroup>
-              <InputGroup>
-                <InputGroupAddon addonType="prepend">
-                  <InputGroupText>Status</InputGroupText>
-                </InputGroupAddon>
-                <select className="form-control" value={status} onChange={
-                  (e) => {
-                    setErrMessage('');
-                    setSuccessMessage('');
-                    setStatus(e.target.value);
-                  }
-                }>
-                  <option value="">Not Set</option>
-                  <option value="Active">Active</option>
-                  <option value="Archived">Archived</option>
-                </select>
-              </InputGroup>
-            </FormGroup>
+            {
+              !newPid && (
+                <FormGroup>
+                  <InputGroup>
+                    <InputGroupAddon addonType="prepend">
+                      <InputGroupText>Status</InputGroupText>
+                    </InputGroupAddon>
+                    <select className="form-control" value={status} onChange={
+                      (e) => {
+                        setErrMessage('');
+                        setSuccessMessage('');
+                        setStatus(e.target.value);
+                      }
+                    }>
+                      <option value="">Not Set</option>
+                      <option value="Active">Active</option>
+                      <option value="Archived">Archived</option>
+                    </select>
+                  </InputGroup>
+                </FormGroup>
+              )
+            }
 
             <div className="mt-5">
               {
@@ -173,7 +224,7 @@ const EditPidModal = ({
                   )
                   : (
                     <button className='pointerCursor float-right nextButton' type='submit'>
-                      Edit PID
+                      { newPid ? 'Add New Pid' : 'Edit PID' }
                     </button>
                   )
               }
@@ -193,7 +244,10 @@ EditPidModal.propTypes = {
   editPid: PropTypes.func,
   token: PropTypes.string,
   BASE_URL: PropTypes.string,
-  index: PropTypes.number
+  index: PropTypes.number,
+  newPid: PropTypes.bool,
+  programId: PropTypes.string,
+  insertNewPid: PropTypes.func
 };
 
 export default EditPidModal;
