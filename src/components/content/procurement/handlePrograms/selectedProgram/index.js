@@ -221,10 +221,20 @@ export const SelectedProgram = ({
           setAllUsers(arrayToSet);
 
           // When all users are available, set the pm
-          setPm(arrayToSet.find((u) => u.value === propx.programManagerDetails._id));
+          const initialPMDetails = arrayToSet.find(
+            (u) => u.value === propx.programManagerDetails._id
+          );
+          if (initialPMDetails) {
+            setPm(initialPMDetails);
+          }
 
           // When all users are available, set the ops lead.
-          setOpsLead(arrayToSet.find((u) => u.value === propx.operationsLeadDetails._id));
+          const initialOpsLeadDetails = arrayToSet.find(
+            (u) => u.value === propx.operationsLeadDetails._id
+          );
+          if (initialOpsLeadDetails) {
+            setOpsLead(initialOpsLeadDetails);
+          }
           pickPIDs();
         })
         .catch((err) => {
