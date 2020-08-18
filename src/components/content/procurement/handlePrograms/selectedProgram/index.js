@@ -68,9 +68,9 @@ export const SelectedProgram = ({
   const [showGids, setShowGids] = useState(false);
   const [showObjectiveCodes, setShowObjectiveCodes] = useState(false);
 
-  const [progStatus, setProgStatus] = useState(propx.status);
-  const [progName, setProgName] = useState(propx.name);
-  const [sForm, setShortFormName] = useState(propx.shortForm);
+  const [progStatus, setProgStatus] = useState(propx.status ? propx.status : '');
+  const [progName, setProgName] = useState(propx.name ? propx.name : '');
+  const [sForm, setShortFormName] = useState(propx.shortForm ? propx.shortForm : '');
   const [pm, setPm] = useState({
     label: 'Not Set',
     value: 'Not Set'
