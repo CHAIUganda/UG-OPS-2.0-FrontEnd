@@ -68,6 +68,18 @@ export const SelectedProgram = ({
   const [showGids, setShowGids] = useState(false);
   const [showObjectiveCodes, setShowObjectiveCodes] = useState(false);
 
+  const [progStatus, setProgStatus] = useState(propx.status);
+  const [progName, setProgName] = useState(propx.name);
+  const [sForm, setShortFormName] = useState(propx.shortForm);
+  const [pm, setPm] = useState({
+    label: 'Not Set',
+    value: 'Not Set'
+  });
+  const [opsLead, setOpsLead] = useState({
+    label: 'Not Set',
+    value: 'Not Set'
+  });
+
   const { authState, authService } = useOktaAuth();
 
   changeSection('Procurement');
@@ -207,6 +219,12 @@ export const SelectedProgram = ({
             value: user._id
           }));
           setAllUsers(arrayToSet);
+
+          // When all users are available, set the pm
+          setPm(arrayToSet.find((u) => u.value === propx.programManagerDetails._id));
+
+          // When all users are available, set the ops lead.
+          setOpsLead(arrayToSet.find((u) => u.value === propx.operationsLeadDetails._id));
           pickPIDs();
         })
         .catch((err) => {
@@ -568,19 +586,28 @@ export const SelectedProgram = ({
   return (
     <div className="row">
       <div className="col-12">
-        <h1 className="text-center mb-5">{`${propx.name}`}</h1>
+        <h1 className="text-center mb-5">
+          {`${progName}`}
+          <span className={
+            `ml-3 p-1 statusSize ${progStatus.toLowerCase() === 'active' ? 'bg-success text-white' : 'bg-warning text-dark'}`
+          }>
+            {progStatus}
+          </span>
+        </h1>
         <EditGeneralDetails
-          progName={propx.name}
-          sForm={propx.shortForm}
+          progStatus={progStatus}
+          setProgStatus={setProgStatus}
+          progName={progName}
+          setProgName={setProgName}
+          sForm={sForm}
+          setShortFormName={setShortFormName}
           allUsers={allUsers}
           id={propx._id}
           token={token}
-          pm={
-            allUsers.find((u) => u.value === propx.programManagerDetails._id)
-          }
-          opsLead={
-            allUsers.find((u) => u.value === propx.operationsLeadDetails._id)
-          }
+          pm={pm}
+          setPm={setPm}
+          opsLead={opsLead}
+          setOpsLead={setOpsLead}
         />
         {/* start row */}
         <div className="row">
@@ -589,17 +616,17 @@ export const SelectedProgram = ({
               <tbody>
                 <tr>
                   <td>Short Form</td>
-                  <td>{propx.shortForm}</td>
+                  <td>{sForm}</td>
                   <td></td>
                 </tr>
                 <tr>
                   <td>Program Manager</td>
-                  <td>{`${propx.programManagerDetails.fName}  ${propx.programManagerDetails.lName}`}</td>
+                  <td>{pm.label}</td>
                   <td></td>
                 </tr>
                 <tr>
                   <td>Operations Lead</td>
-                  <td>{`${propx.operationsLeadDetails.fName}  ${propx.operationsLeadDetails.lName}`}</td>
+                  <td>{opsLead.label}</td>
                   <td></td>
                 </tr>
               </tbody>

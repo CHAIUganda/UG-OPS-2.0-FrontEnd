@@ -23,12 +23,18 @@ import { BASE_URL } from '../../../../../../config';
 
 const EditGeneralDetails = ({
   progName,
+  setProgName,
   sForm,
+  setShortFormName,
   allUsers,
   pm,
+  setPm,
   opsLead,
   id,
-  token
+  token,
+  progStatus,
+  setProgStatus,
+  setOpsLead
 }) => {
   const [modal, setModal] = useState(false);
   const [formError, setFormError] = useState('');
@@ -38,6 +44,7 @@ const EditGeneralDetails = ({
   const [programManager, setProgramManager] = useState(pm);
   const [operationsLead, setOperationsLead] = useState(opsLead);
   const [submitSpinner, setSubmitSpinner] = useState(false);
+  const [status, setStatus] = useState(progStatus);
 
   const { authService } = useOktaAuth();
 
@@ -52,12 +59,19 @@ const EditGeneralDetails = ({
     setSuccessMessage('');
     setSubmitSpinner(true);
 
+    if (!status) {
+      setFormError('Set a valid status.');
+      setSubmitSpinner(false);
+      return;
+    }
+
     const progToEdit = {
       id,
       name: programName,
       programManagerId: programManager.value,
       operationsLeadId: operationsLead.value,
-      shortForm
+      shortForm,
+      status
     };
 
     const endPoint = `${BASE_URL}hrApi/editProgram`;
@@ -65,11 +79,15 @@ const EditGeneralDetails = ({
     axios.post(endPoint, progToEdit)
       .then((res) => {
         setSuccessMessage(res.data.message);
+        setProgStatus(res.data.status);
+        setProgName(res.data.name);
+        setShortFormName(res.data.shortForm);
+        setPm(allUsers.find((u) => u.value === res.data.programManagerId));
+        setOpsLead(allUsers.find((u) => u.value === res.data.operationsLeadId));
         setSubmitSpinner(false);
       })
       .catch((err) => {
         setSubmitSpinner(false);
-
         if (err && err.response && err.response.status && err.response.status === 401) {
           authService.logout('/');
         }
@@ -166,6 +184,25 @@ const EditGeneralDetails = ({
             <FormGroup>
               <InputGroup>
                 <InputGroupAddon addonType="prepend">
+                  <InputGroupText>Status</InputGroupText>
+                </InputGroupAddon>
+                <select className="form-control" value={status} onChange={
+                  (e) => {
+                    setFormError('');
+                    setSuccessMessage('');
+                    setStatus(e.target.value);
+                  }
+                }>
+                  <option value="">Not Set</option>
+                  <option value="Active">Active</option>
+                  <option value="Archived">Archived</option>
+                </select>
+              </InputGroup>
+            </FormGroup>
+
+            <FormGroup>
+              <InputGroup>
+                <InputGroupAddon addonType="prepend">
                   <InputGroupText>Program Manager</InputGroupText>
                 </InputGroupAddon>
                 <div className="selectCustomStyleGenDetails">
@@ -225,7 +262,13 @@ EditGeneralDetails.propTypes = {
   allUsers: PropTypes.array,
   pm: PropTypes.string,
   opsLead: PropTypes.string,
-  id: PropTypes.string
+  id: PropTypes.string,
+  setProgStatus: PropTypes.func,
+  progStatus: PropTypes.string,
+  setProgName: PropTypes.string,
+  setShortFormName: PropTypes.func,
+  setPm: PropTypes.func,
+  setOpsLead: PropTypes.func
 };
 
 export default EditGeneralDetails;
