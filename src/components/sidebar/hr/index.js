@@ -2,6 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { MdPerson } from 'react-icons/md';
+import { GiBus } from 'react-icons/gi';
+import { IconContext } from 'react-icons';
 import { FaPlaneDeparture, FaFileContract, FaLaptopCode } from 'react-icons/fa';
 
 import * as sideBarActions from '../../../redux/actions/sideBarActions';
@@ -45,6 +47,30 @@ function HR({
 
   return (
     <div>
+      <p className="sidebTopNav">
+        <IconContext.Provider value={{ size: '1.5em' }}>
+          <GiBus />
+        </IconContext.Provider>
+        Travels
+      </p>
+      <div>
+        <span onClick={() => handleChangeActive('PersonalTravelTracker')}>
+          <SubItem
+            link="/hr/PersonalTravelTracker"
+            textToSet="Travel Tracker"
+            active={active === 'PersonalTravelTracker'}
+          />
+        </span>
+
+        <span onClick={() => handleChangeActive('allTravelTracker')}>
+          <SubItem
+            link="/hr/allTravelTracker"
+            textToSet="All Travel Tracker"
+            active={active === 'allTravelTracker'}
+          />
+        </span>
+      </div>
+
       <p className="sidebTopNav">
         <FaPlaneDeparture /> Leave
       </p>
