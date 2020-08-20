@@ -1007,7 +1007,7 @@ function ViewMyDetails(props) {
                     id="securityTeamSwitch2"
                     name="customSwitch"
                     checked={securityTeam}
-                    onChange={(e) => {
+                    onChange={() => {
                       setSuccessFeedback('');
                       setError('');
                       // setSecurityTeam(e.target.checked);
@@ -1032,7 +1032,7 @@ function ViewMyDetails(props) {
                     id="chaiProcurementSwitch2"
                     name="customSwitch"
                     checked={chaiProcurement}
-                    onChange={(e) => {
+                    onChange={() => {
                       setSuccessFeedback('');
                       setError('');
                       // setChaiProcurement(e.target.checked);
