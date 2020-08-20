@@ -62,11 +62,11 @@ function HR({
           />
         </span>
 
-        <span onClick={() => handleChangeActive('allTravelTracker')}>
+        <span onClick={() => handleChangeActive('AllTravelTracker')}>
           <SubItem
-            link="/hr/allTravelTracker"
+            link="/hr/AllTravelTracker"
             textToSet="All Travel Tracker"
-            active={active === 'allTravelTracker'}
+            active={active === 'AllTravelTracker'}
           />
         </span>
       </div>

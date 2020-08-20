@@ -6,6 +6,7 @@ import ManagePrograms from './handlePrograms';
 import ManageAccountCodes from './handleAccountCodes';
 import CreateProgramComp from './handlePrograms/createProgram';
 import SingleProgram from './handlePrograms/selectedProgram';
+import AddVendor from './createNewVendor';
 
 export default function Procurement(props) {
   const { componentToRender } = props.match.params;
@@ -29,7 +30,8 @@ export default function Procurement(props) {
     ManagePrograms,
     ManageAccountCodes,
     CreateProgramComp,
-    SingleProgram
+    SingleProgram,
+    AddVendor
   };
 
   const Tag = ComponentsObject[componentToRender];

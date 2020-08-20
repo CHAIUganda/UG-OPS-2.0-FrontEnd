@@ -15,7 +15,10 @@ import * as notificationActions from '../../../../../redux/actions/notifications
 
 const mapStateToProps = (state) => ({
   token: state.auth.token,
-  roles: state.auth.roles
+  roles: state.auth.roles,
+  email: state.auth.email,
+  firstName: state.auth.firstName,
+  lastName: state.auth.lastName
 });
 
 const mapDispatchToProps = {
@@ -31,6 +34,9 @@ export const TravelTracker = ({
   changeActive,
   setInitialNotifications,
   logUserIn,
+  email,
+  firstName,
+  lastName
 }) => {
   const [spinner, setSpinner] = useState(false);
   const [loadingPageErr, setLoadingPageErr] = useState('');
@@ -95,28 +101,27 @@ export const TravelTracker = ({
 
   const setUpThisPage = () => {
     // set this page up. Do stuff like pick all users.
-    setSpinner(false);
 
-    // const endPoint = `${BASE_URL}hrApi/getProgramsklkl`;
-    // axios.defaults.headers.common = { token };
-    // axios.get(endPoint)
-    //   .then((res) => {
-    //     setAllPrograms(res.data);
-    //     setSpinner(false);
-    //   })
-    //   .catch((err) => {
-    //     setSpinner(false);
+    const endPoint = `${BASE_URL}hrApi/getStaffTravels/${email}`;
+    axios.defaults.headers.common = { token };
+    axios.get(endPoint)
+      .then((res) => {
+        setMyTravels(res.data);
+        setSpinner(false);
+      })
+      .catch((err) => {
+        setSpinner(false);
 
-    //     if (err && err.response && err.response.status && err.response.status === 401) {
-    //       authService.logout('/');
-    //     }
+        if (err && err.response && err.response.status && err.response.status === 401) {
+          authService.logout('/');
+        }
 
-    //     if (err && err.response && err.response.data && err.response.data.message) {
-    //       setLoadingPageErr(err.response.data.message);
-    //     } else {
-    //       setLoadingPageErr(err.message);
-    //     }
-    //   });
+        if (err && err.response && err.response.data && err.response.data.message) {
+          setLoadingPageErr(err.response.data.message);
+        } else {
+          setLoadingPageErr(err.message);
+        }
+      });
   };
 
   useEffect(() => {
@@ -167,16 +172,26 @@ export const TravelTracker = ({
     }
 
     return (
-      <table className="table table-striped">
+      <table className="table table-striped mt-4">
         <thead>
           <tr>
-            <th></th>
+            <th>Travel Location</th>
+            <th>Type Of Trip</th>
+            <th>Travel Date</th>
+            <th>Return Date</th>
           </tr>
         </thead>
         <tbody>
-          <tr>
-
-          </tr>
+          {
+            myTravels.reverse().map((t) => (
+              <tr key={t._id}>
+                <td>{t.travelLocation}</td>
+                <td>{t.typeOTrip}</td>
+                <td>{new Date(t.dates.travelDate).toDateString()}</td>
+                <td>{new Date(t.dates.returnDate).toDateString()}</td>
+              </tr>
+            ))
+          }
         </tbody>
       </table>
     );
@@ -193,6 +208,10 @@ export const TravelTracker = ({
       <h2 className="inlineItem mr-5">My Travel Tracker</h2>
       <NewTravel
         addNewEntry={addNewEntry}
+        token={token}
+        name={`${firstName} ${lastName}`}
+        email={email}
+        BASE_URL={BASE_URL}
       />
       {returnTable()}
     </div>
@@ -205,6 +224,9 @@ TravelTracker.propTypes = {
   changeActive: PropTypes.func,
   setInitialNotifications: PropTypes.func,
   logUserIn: PropTypes.func,
+  email: PropTypes.string,
+  firstName: PropTypes.string,
+  lastName: PropTypes.string,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(TravelTracker);

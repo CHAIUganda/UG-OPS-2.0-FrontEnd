@@ -4,17 +4,20 @@ import { connect } from 'react-redux';
 import { useOktaAuth } from '@okta/okta-react';
 import axios from 'axios';
 
-import CommonSpinner from '../common/spinner';
+import CommonSpinner from '../../../../common/spinner';
 
-import { BASE_URL } from '../../config';
-import * as sideBarActions from '../../redux/actions/sideBarActions';
-import * as authActions from '../../redux/actions/authActions';
-import * as notificationActions from '../../redux/actions/notificationsActions';
+import { BASE_URL } from '../../../../../config';
+import * as sideBarActions from '../../../../../redux/actions/sideBarActions';
+import * as authActions from '../../../../../redux/actions/authActions';
+import * as notificationActions from '../../../../../redux/actions/notificationsActions';
 
 
 const mapStateToProps = (state) => ({
   token: state.auth.token,
-  roles: state.auth.roles
+  roles: state.auth.roles,
+  email: state.auth.email,
+  firstName: state.auth.firstName,
+  lastName: state.auth.lastName
 });
 
 const mapDispatchToProps = {
@@ -24,33 +27,21 @@ const mapDispatchToProps = {
   setInitialNotifications: notificationActions.setInitialNotifications
 };
 
-export const BluePrint = ({
+export const AllStaffTravelTracker = ({
   token,
-  roles,
   changeSection,
   changeActive,
   setInitialNotifications,
   logUserIn,
 }) => {
-  // Check for roles
-
-  if (token && roles) {
-    if (!roles.financeAdmin && !roles.admin) {
-      return (
-        <div className="alert alert-danger text-center" role="alert">
-          <p>{'FE: You have no access rights for this resource.'}</p>
-        </div>
-      );
-    }
-  }
-
   const [spinner, setSpinner] = useState(false);
   const [loadingPageErr, setLoadingPageErr] = useState('');
+  const [allTravels, setAllTravels] = useState([]);
 
   const { authState, authService } = useOktaAuth();
 
-  changeSection('Procurement');
-  changeActive('ManagePrograms');
+  changeSection('Human Resource');
+  changeActive('allTravelTracker');
 
   const setUpUser = (tokenToSet) => {
     axios.defaults.headers.common = { token: tokenToSet };
@@ -106,28 +97,27 @@ export const BluePrint = ({
 
   const setUpThisPage = () => {
     // set this page up. Do stuff like pick all users.
-    setSpinner(false);
 
-    // const endPoint = `${BASE_URL}hrApi/getProgramsklkl`;
-    // axios.defaults.headers.common = { token };
-    // axios.get(endPoint)
-    //   .then((res) => {
-    //     setAllPrograms(res.data);
-    //     setSpinner(false);
-    //   })
-    //   .catch((err) => {
-    //     setSpinner(false);
+    const endPoint = `${BASE_URL}hrApi/getAllStaffTravels`;
+    axios.defaults.headers.common = { token };
+    axios.get(endPoint)
+      .then((res) => {
+        setAllTravels(res.data);
+        setSpinner(false);
+      })
+      .catch((err) => {
+        setSpinner(false);
 
-    //     if (err && err.response && err.response.status && err.response.status === 401) {
-    //       authService.logout('/');
-    //     }
+        if (err && err.response && err.response.status && err.response.status === 401) {
+          authService.logout('/');
+        }
 
-    //     if (err && err.response && err.response.data && err.response.data.message) {
-    //       setLoadingPageErr(err.response.data.message);
-    //     } else {
-    //       setLoadingPageErr(err.message);
-    //     }
-    //   });
+        if (err && err.response && err.response.data && err.response.data.message) {
+          setLoadingPageErr(err.response.data.message);
+        } else {
+          setLoadingPageErr(err.message);
+        }
+      });
   };
 
   useEffect(() => {
@@ -168,20 +158,60 @@ export const BluePrint = ({
     );
   }
 
+  const returnTable = () => {
+    if (allTravels.length < 1) {
+      return (
+        <div className="alert alert-info m-5" role="alert">
+          No registered travel history yet.
+        </div>
+      );
+    }
+
+    return (
+      <table className="table table-striped mt-4">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Travel Location</th>
+            <th>Type Of Trip</th>
+            <th>Travel Date</th>
+            <th>Return Date</th>
+          </tr>
+        </thead>
+        <tbody>
+          {
+            allTravels.reverse().map((t) => (
+              <tr key={t._id}>
+                <td>{t.employeeName}</td>
+                <td>{t.travelLocation}</td>
+                <td>{t.typeOTrip}</td>
+                <td>{new Date(t.dates.travelDate).toDateString()}</td>
+                <td>{new Date(t.dates.returnDate).toDateString()}</td>
+              </tr>
+            ))
+          }
+        </tbody>
+      </table>
+    );
+  };
+
   return (
     <div>
-      Blue print
+      <h2 className="text-center">All Staff Travel Tracker</h2>
+      {returnTable()}
     </div>
   );
 };
 
-BluePrint.propTypes = {
+AllStaffTravelTracker.propTypes = {
   token: PropTypes.string,
-  roles: PropTypes.object,
   changeSection: PropTypes.func,
   changeActive: PropTypes.func,
   setInitialNotifications: PropTypes.func,
   logUserIn: PropTypes.func,
+  email: PropTypes.string,
+  firstName: PropTypes.string,
+  lastName: PropTypes.string,
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(BluePrint);
+export default connect(mapStateToProps, mapDispatchToProps)(AllStaffTravelTracker);

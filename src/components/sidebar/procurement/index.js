@@ -28,6 +28,7 @@ function Procurement({
   let admin;
   let operationsLead;
   let financeAdmin;
+  let chaiProcurement;
   // let supervisor;
   // let countryDirector;
   if (roles) {
@@ -35,6 +36,8 @@ function Procurement({
     admin = roles.admin;
     operationsLead = roles.operationsLead;
     financeAdmin = roles.financeAdmin;
+    chaiProcurement = roles.chaiProcurement;
+
     // supervisor = roles.supervisor;
     // countryDirector = roles.countryDirector;
   } else {
@@ -96,6 +99,33 @@ function Procurement({
           </span>
         </div>
       </>
+      }
+
+      {
+        (admin || chaiProcurement) && (
+          <>
+            <p className="sidebTopNav">
+              <GiPayMoney /> CHAI Procurement
+            </p>
+            <div className='showContent'>
+              <span onClick={() => handleChangeActive('AddVendor')}>
+                <SubItem
+                  link="/procurement/AddVendor"
+                  textToSet="Add Vendor"
+                  active={active === 'AddVendor'}
+                />
+              </span>
+
+              <span onClick={() => handleChangeActive('ViewAllVendors')}>
+                <SubItem
+                  link="/procurement/ViewAllVendors"
+                  textToSet="View All Vendors"
+                  active={active === 'ViewAllVendors'}
+                />
+              </span>
+            </div>
+          </>
+        )
       }
     </div>
   );
