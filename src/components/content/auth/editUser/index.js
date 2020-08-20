@@ -149,6 +149,16 @@ function EditUser(props) {
       ? user.roles.hr
       : false
   );
+  const [securityTeam, setSecurityTeam] = useState(
+    (user.roles && user.roles.securityTeam)
+      ? user.roles.securityTeam
+      : false
+  );
+  const [chaiProcurement, setChaiProcurement] = useState(
+    (user.roles && user.roles.chaiProcurement)
+      ? user.roles.chaiProcurement
+      : false
+  );
   const [staffCategory, setStaffCategory] = useState(
     user.type
       ? user.type
@@ -281,6 +291,8 @@ function EditUser(props) {
       deputyCountryDirector,
       procurementAdmin,
       financeAdmin,
+      securityTeam,
+      chaiProcurement,
       title: position,
       programId,
       type: staffCategory,
@@ -1072,6 +1084,48 @@ function EditUser(props) {
                   setSuccessFeedback('');
                   setError('');
                   setProcurementAdmin(e.target.checked);
+                }}
+              />
+            </div>
+          </InputGroup>
+        </FormGroup>
+
+        <FormGroup>
+          <InputGroup>
+            <InputGroupAddon addonType="prepend">
+              <InputGroupText>Security Team</InputGroupText>
+            </InputGroupAddon>
+            <div className="intSwitch">
+              <CustomInput
+                type="switch"
+                id="securityTeamSwitch2"
+                name="customSwitch"
+                checked={securityTeam}
+                onChange={(e) => {
+                  setSuccessFeedback('');
+                  setError('');
+                  setSecurityTeam(e.target.checked);
+                }}
+              />
+            </div>
+          </InputGroup>
+        </FormGroup>
+
+        <FormGroup>
+          <InputGroup>
+            <InputGroupAddon addonType="prepend">
+              <InputGroupText>Chai Procurement</InputGroupText>
+            </InputGroupAddon>
+            <div className="intSwitch">
+              <CustomInput
+                type="switch"
+                id="chaiProcurementSwitch2"
+                name="customSwitch"
+                checked={chaiProcurement}
+                onChange={(e) => {
+                  setSuccessFeedback('');
+                  setError('');
+                  setChaiProcurement(e.target.checked);
                 }}
               />
             </div>

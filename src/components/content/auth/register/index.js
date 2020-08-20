@@ -72,7 +72,6 @@ function Register({
   const [procurementAdmin, setProcurementAdmin] = useState(false);
   const [securityTeam, setSecurityTeam] = useState(false);
   const [chaiProcurement, setChaiProcurement] = useState(false);
-
   const [financeAdmin, setFinanceAdmin] = useState(false);
   const [supervisorsEmail, setSupervisorsEmail] = useState('');
   const [allUsers, setAllUsers] = useState([]);
