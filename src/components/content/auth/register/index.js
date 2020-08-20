@@ -70,6 +70,9 @@ function Register({
   const [countryDirector, setCountryDirector] = useState(false);
   const [deputyCountryDirector, setDeputyCountryDirector] = useState(false);
   const [procurementAdmin, setProcurementAdmin] = useState(false);
+  const [securityTeam, setSecurityTeam] = useState(false);
+  const [chaiProcurement, setChaiProcurement] = useState(false);
+
   const [financeAdmin, setFinanceAdmin] = useState(false);
   const [supervisorsEmail, setSupervisorsEmail] = useState('');
   const [allUsers, setAllUsers] = useState([]);
@@ -159,6 +162,8 @@ function Register({
       countryDirector,
       deputyCountryDirector,
       procurementAdmin,
+      securityTeam,
+      chaiProcurement,
       financeAdmin,
       title: position,
       programId: programme,
@@ -907,6 +912,48 @@ function Register({
                   setSuccessFeedback('');
                   setError('');
                   setProcurementAdmin(e.target.checked);
+                }}
+              />
+            </div>
+          </InputGroup>
+        </FormGroup>
+
+        <FormGroup>
+          <InputGroup>
+            <InputGroupAddon addonType="prepend">
+              <InputGroupText>Security Team</InputGroupText>
+            </InputGroupAddon>
+            <div className="intSwitch">
+              <CustomInput
+                type="switch"
+                id="securityTeamSwitch2"
+                name="customSwitch"
+                checked={securityTeam}
+                onChange={(e) => {
+                  setSuccessFeedback('');
+                  setError('');
+                  setSecurityTeam(e.target.checked);
+                }}
+              />
+            </div>
+          </InputGroup>
+        </FormGroup>
+
+        <FormGroup>
+          <InputGroup>
+            <InputGroupAddon addonType="prepend">
+              <InputGroupText>Chai Procurement</InputGroupText>
+            </InputGroupAddon>
+            <div className="intSwitch">
+              <CustomInput
+                type="switch"
+                id="chaiProcurementSwitch2"
+                name="customSwitch"
+                checked={chaiProcurement}
+                onChange={(e) => {
+                  setSuccessFeedback('');
+                  setError('');
+                  setChaiProcurement(e.target.checked);
                 }}
               />
             </div>
