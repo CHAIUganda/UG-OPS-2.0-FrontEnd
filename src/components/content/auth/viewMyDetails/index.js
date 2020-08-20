@@ -169,7 +169,16 @@ function ViewMyDetails(props) {
       ? user.roles.financeAdmin
       : false
   );
-
+  const [securityTeam, /* setSecurityTeam */] = useState(
+    (user.roles && user.roles.securityTeam)
+      ? user.roles.securityTeam
+      : false
+  );
+  const [chaiProcurement, /* setChaiProcurement */] = useState(
+    (user.roles && user.roles.chaiProcurement)
+      ? user.roles.chaiProcurement
+      : false
+  );
   const [supervisorsEmail, setSupervisorsEmail] = useState(
     (user.supervisorDetails && user.supervisorDetails.email)
       ? user.supervisorDetails.email
@@ -985,6 +994,55 @@ function ViewMyDetails(props) {
         </FormGroup>
         }
 
+        {
+          securityTeam && (
+            <FormGroup>
+              <InputGroup>
+                <InputGroupAddon addonType="prepend">
+                  <InputGroupText>Security Team</InputGroupText>
+                </InputGroupAddon>
+                <div className="intSwitch">
+                  <CustomInput
+                    type="switch"
+                    id="securityTeamSwitch2"
+                    name="customSwitch"
+                    checked={securityTeam}
+                    onChange={(e) => {
+                      setSuccessFeedback('');
+                      setError('');
+                      // setSecurityTeam(e.target.checked);
+                    }}
+                  />
+                </div>
+              </InputGroup>
+            </FormGroup>
+          )
+        }
+
+        {
+          chaiProcurement && (
+            <FormGroup>
+              <InputGroup>
+                <InputGroupAddon addonType="prepend">
+                  <InputGroupText>Chai Procurement</InputGroupText>
+                </InputGroupAddon>
+                <div className="intSwitch">
+                  <CustomInput
+                    type="switch"
+                    id="chaiProcurementSwitch2"
+                    name="customSwitch"
+                    checked={chaiProcurement}
+                    onChange={(e) => {
+                      setSuccessFeedback('');
+                      setError('');
+                      // setChaiProcurement(e.target.checked);
+                    }}
+                  />
+                </div>
+              </InputGroup>
+            </FormGroup>
+          )
+        }
 
         <FormGroup>
           <InputGroup>
