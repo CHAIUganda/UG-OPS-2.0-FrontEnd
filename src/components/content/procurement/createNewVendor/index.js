@@ -9,9 +9,12 @@ import {
   InputGroup,
   InputGroupAddon,
   InputGroupText,
+  CustomInput,
+  Spinner
 } from 'reactstrap';
 
 import CommonSpinner from '../../../common/spinner';
+import AddVendorBankingDetails from './addVendorBankingData';
 
 import { BASE_URL } from '../../../../config';
 import * as sideBarActions from '../../../../redux/actions/sideBarActions';
@@ -57,12 +60,28 @@ export const CreateANewVendor = ({
   const [registeredAddress, setRegisteredAddress] = useState('');
   const [formErr, setFormErr] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
-  // const [submitSpinner, setSubmitSpinner] = useState(false);
+  const [name, setName] = useState('');
+  const [vendorEmail, setVendorEmail] = useState('');
+  const [vendorTin, setVendorTin] = useState('');
+  const [exemptFromWHT, setExemptFromWHT] = useState(false);
+  const [onPrequalifiedList, setOnPrequalifiedList] = useState(false);
+  const [bankingDetails, setBankingDetails] = useState([]);
+  const [submitSpinner, setSubmitSpinner] = useState(false);
 
   const { authState, authService } = useOktaAuth();
 
   changeSection('Procurement');
   changeActive('AddVendor');
+
+  // eslint-disable-next-line no-unused-vars
+  const reset = () => {
+    setRegisteredAddress('');
+    setName('');
+    setVendorEmail('');
+    setVendorTin('');
+    setExemptFromWHT(false);
+    setOnPrequalifiedList(false);
+  };
 
   const setUpUser = (tokenToSet) => {
     axios.defaults.headers.common = { token: tokenToSet };
@@ -180,10 +199,76 @@ export const CreateANewVendor = ({
     );
   }
 
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    setSubmitSpinner(true);
+
+    if (bankingDetails.length < 1) {
+      setFormErr('Add banking details.');
+      setSubmitSpinner(false);
+      return;
+    }
+  };
+
+  const addBankingData = (newData) => {
+    const arr = [...bankingDetails];
+    arr.push(newData);
+    setBankingDetails(arr);
+  };
+
+  const modifyBankingData = (modifiedData, index) => {
+    const arr = [...bankingDetails];
+    arr.splice(index, 1, modifiedData);
+    setBankingDetails(arr);
+  };
+
+  const returnBankingDetailsTable = () => {
+    if (bankingDetails.length < 1) {
+      return (
+        <div className="alert alert-info m-3" role="alert">
+           No vendor banking details added yet.
+        </div>
+      );
+    }
+
+    return (
+      <table className="table holidaysTable">
+        <thead>
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">Bank Name</th>
+            <th scope="col">Account Name</th>
+            <th scope="col">Account Number</th>
+            <th>Edit</th>
+          </tr>
+        </thead>
+        <tbody>
+          {
+            bankingDetails.map((b, index) => (
+              <tr key={index}>
+                <td>{index + 1}</td>
+                <td>{b.bankName}</td>
+                <td>{b.accountName}</td>
+                <td>{b.accountNumber}</td>
+                <td>
+                  <AddVendorBankingDetails
+                    modifyBankingData={modifyBankingData}
+                    edit={true}
+                    bankingData={b}
+                  />
+                </td>
+              </tr>
+            ))
+          }
+        </tbody>
+      </table>
+    );
+  };
+
   return (
     <div>
       <h2>Add A Vendor.</h2>
-      <form className="createVendorForm">
+      <form className="createVendorForm" onSubmit={handleSubmit}>
         {
           formErr && (
             <div className="alert alert-danger" role="alert">
@@ -198,6 +283,45 @@ export const CreateANewVendor = ({
             </div>
           )
         }
+
+        <FormGroup>
+          <InputGroup>
+            <InputGroupAddon addonType="prepend">
+              <InputGroupText>Vendor Name</InputGroupText>
+            </InputGroupAddon>
+            <Input
+              placeholder="This is the vendor's name"
+              type="text"
+              value={name}
+              onChange={(e) => {
+                setSuccessMessage('');
+                setFormErr('');
+                setName(e.target.value);
+              }}
+              required
+            />
+          </InputGroup>
+        </FormGroup>
+
+        <FormGroup>
+          <InputGroup>
+            <InputGroupAddon addonType="prepend">
+              <InputGroupText>Vendor&apos;s email</InputGroupText>
+            </InputGroupAddon>
+            <Input
+              placeholder="This is the vendor's email address"
+              type="text"
+              value={vendorEmail}
+              onChange={(e) => {
+                setSuccessMessage('');
+                setFormErr('');
+                setVendorEmail(e.target.value);
+              }}
+              required
+            />
+          </InputGroup>
+        </FormGroup>
+
         <FormGroup>
           <InputGroup>
             <InputGroupAddon addonType="prepend">
@@ -217,6 +341,76 @@ export const CreateANewVendor = ({
           </InputGroup>
         </FormGroup>
 
+        <FormGroup>
+          <InputGroup>
+            <InputGroupAddon addonType="prepend">
+              <InputGroupText>Vendor&apos;s TIN number</InputGroupText>
+            </InputGroupAddon>
+            <Input
+              placeholder="This is the vendor's tin number"
+              type="text"
+              value={vendorTin}
+              onChange={(e) => {
+                setSuccessMessage('');
+                setFormErr('');
+                setVendorTin(e.target.value);
+              }}
+              required
+            />
+          </InputGroup>
+        </FormGroup>
+
+        <FormGroup>
+          <InputGroup>
+            <InputGroupAddon addonType="prepend">
+              <InputGroupText>Exempt From Withholding Tax</InputGroupText>
+            </InputGroupAddon>
+            <div className="intSwitch">
+              <CustomInput
+                type="switch"
+                id="exemptFromWHTSwitch"
+                name="customSwitch"
+                checked={exemptFromWHT}
+                onChange={(e) => {
+                  setSuccessMessage('');
+                  setFormErr('');
+                  setExemptFromWHT(e.target.checked);
+                }}
+              />
+            </div>
+          </InputGroup>
+        </FormGroup>
+
+        <FormGroup>
+          <InputGroup>
+            <InputGroupAddon addonType="prepend">
+              <InputGroupText>On Prequalified List</InputGroupText>
+            </InputGroupAddon>
+            <div className="intSwitch">
+              <CustomInput
+                type="switch"
+                id="onPrequalifiedListSwitch"
+                name="customSwitch"
+                checked={onPrequalifiedList}
+                onChange={(e) => {
+                  setSuccessMessage('');
+                  setFormErr('');
+                  setOnPrequalifiedList(e.target.checked);
+                }}
+              />
+            </div>
+          </InputGroup>
+        </FormGroup>
+
+        <div className="mt-5 mb-2">
+          <h5 className="inlineItem mr-5">Vendor&apos;s Banking Details</h5>
+          <AddVendorBankingDetails
+            addBankingData={addBankingData}
+            edit={false}
+          />
+          {returnBankingDetailsTable()}
+        </div>
+
         {
           formErr && (
             <div className="alert alert-danger" role="alert">
@@ -232,6 +426,11 @@ export const CreateANewVendor = ({
           )
         }
 
+        {
+          submitSpinner
+            ? <button className="btn btn-outline-primary m-2"><Spinner /></button>
+            : <button type="submit" className="btn btn-outline-primary m-2">Add Vendor</button>
+        }
 
       </form>
     </div>
