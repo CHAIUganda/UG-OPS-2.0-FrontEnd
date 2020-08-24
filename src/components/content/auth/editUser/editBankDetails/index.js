@@ -27,7 +27,7 @@ export default function EditBankDetailsModal({ bankDetails, editAction, index })
   const [feedback, setFeedback] = useState('');
   const [status, setStatus] = useState(bankDetails.status);
   const [sendAction, setSendAction] = useState(false);
-
+  const [accountName, setAccountName] = useState('');
 
   const toggle = () => {
     if (sendAction) {
@@ -38,7 +38,8 @@ export default function EditBankDetailsModal({ bankDetails, editAction, index })
           bankName,
           accountNumber,
           Currency,
-          status
+          status,
+          accountName
         }
       );
     }
@@ -104,6 +105,23 @@ export default function EditBankDetailsModal({ bankDetails, editAction, index })
                     onChange={(e) => {
                       setFeedback('');
                       setBankName(e.target.value);
+                    }}
+                  />
+                </InputGroup>
+              </FormGroup>
+
+              <FormGroup>
+                <InputGroup>
+                  <InputGroupAddon addonType="prepend">
+                    <InputGroupText>Account Name</InputGroupText>
+                  </InputGroupAddon>
+                  <Input
+                    placeholder="Account Name"
+                    type="text"
+                    value={accountName}
+                    onChange={(e) => {
+                      setFeedback('');
+                      setAccountName(e.target.value);
                     }}
                   />
                 </InputGroup>
