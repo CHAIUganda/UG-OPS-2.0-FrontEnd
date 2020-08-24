@@ -83,6 +83,7 @@ function Register({
   const [bankAccounts, setBankAccounts] = useState([]);
   const [nssfNumber, setNssfNumber] = useState('');
   const [tinNumber, setTinNumber] = useState('');
+  const [accountName, setAccountName] = useState('');
 
   const { authState, authService } = useOktaAuth();
 
@@ -350,12 +351,15 @@ function Register({
       setError('Please enter a bank to add account');
     } else if (!accountNumber) {
       setError('Please enter an account number to add account');
+    } else if (!accountName) {
+      setError('Please enter an account name.');
     } else {
       setBankAccounts([...bankAccounts,
         {
           bankName,
           accountNumber,
           Currency,
+          accountName,
           status: 'ACTIVE'
         }
       ]);
@@ -482,6 +486,7 @@ function Register({
               <tr>
                 <th scope="col">#</th>
                 <th scope="col">Bank</th>
+                <th scope="col">Account Name</th>
                 <th scope="col">Account No_</th>
                 <th scope="col">Currency</th>
                 <th scope="col">Status</th>
@@ -493,6 +498,7 @@ function Register({
                   <tr key={index}>
                     <td>{index + 1}</td>
                     <td>{bankAccount.bankName}</td>
+                    <td>{bankAccount.accountName}</td>
                     <td>{bankAccount.accountNumber}</td>
                     <td>{bankAccount.Currency}</td>
                     <td className={
@@ -529,6 +535,24 @@ function Register({
                   setSuccessFeedback('');
                   setError('');
                   setBankName(e.target.value);
+                }}
+              />
+            </InputGroup>
+          </FormGroup>
+
+          <FormGroup>
+            <InputGroup>
+              <InputGroupAddon addonType="prepend">
+                <InputGroupText>Account Name</InputGroupText>
+              </InputGroupAddon>
+              <Input
+                placeholder="Account Name"
+                type="text"
+                value={accountName}
+                onChange={(e) => {
+                  setSuccessFeedback('');
+                  setError('');
+                  setAccountName(e.target.value);
                 }}
               />
             </InputGroup>
