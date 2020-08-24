@@ -157,7 +157,7 @@ const EditPidModal = ({
       {returnICon()}
       <Modal isOpen={modal} toggle={toggle}>
         <ModalHeader toggle={toggle}>
-          Edit PID
+          { newPid ? 'Create a New PID' : 'Edit PID' }
         </ModalHeader>
         <ModalBody>
           <form onSubmit={handleSubmit}>

@@ -157,7 +157,7 @@ const EditObjectiveCodeModal = ({
       {returnICon()}
       <Modal isOpen={modal} toggle={toggle}>
         <ModalHeader toggle={toggle}>
-          Edit Objective Code
+          { newObjectiveCode ? 'Create a New Objective Code' : 'Edit Objective Code' }
         </ModalHeader>
         <ModalBody>
           <form onSubmit={handleSubmit}>

@@ -157,7 +157,7 @@ const EditGidModal = ({
       {returnICon()}
       <Modal isOpen={modal} toggle={toggle}>
         <ModalHeader toggle={toggle}>
-          Edit GID
+          { newGid ? 'Create a New GID' : 'Edit GID' }
         </ModalHeader>
         <ModalBody>
           <form onSubmit={handleSubmit}>

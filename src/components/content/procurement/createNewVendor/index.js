@@ -202,24 +202,59 @@ export const CreateANewVendor = ({
   const handleSubmit = (event) => {
     event.preventDefault();
     setSubmitSpinner(true);
+    setFormErr('');
+    setSuccessMessage('');
 
     if (bankingDetails.length < 1) {
       setFormErr('Add banking details.');
       setSubmitSpinner(false);
       return;
     }
+
+    const vendorToAdd = {
+      name,
+      vendorTin,
+      vendorEmail,
+      onPrequalifiedList,
+      exemptFromWHT,
+      bankDetails: bankingDetails
+    };
+    axios.defaults.headers.common = { token };
+    const apiRoute = `${BASE_URL}procurementApi/registerVendor`;
+    axios.post(apiRoute, vendorToAdd)
+      . then((res) => {
+        setSuccessMessage(res.data.message);
+        setSubmitSpinner(false);
+      })
+      .catch((err) => {
+        setSubmitSpinner(false);
+
+        if (err && err.response && err.response.status && err.response.status === 401) {
+          authService.logout('/');
+        }
+
+        if (err && err.response && err.response.data && err.response.data.message) {
+          setFormErr(err.response.data.message);
+        } else {
+          setFormErr(err.message);
+        }
+      });
   };
 
   const addBankingData = (newData) => {
     const arr = [...bankingDetails];
     arr.push(newData);
     setBankingDetails(arr);
+    setFormErr('');
+    setSuccessMessage('');
   };
 
   const modifyBankingData = (modifiedData, index) => {
     const arr = [...bankingDetails];
     arr.splice(index, 1, modifiedData);
     setBankingDetails(arr);
+    setFormErr('');
+    setSuccessMessage('');
   };
 
   const returnBankingDetailsTable = () => {
