@@ -13,13 +13,13 @@ import {
   Spinner
 } from 'reactstrap';
 
-import CommonSpinner from '../../../common/spinner';
+import CommonSpinner from '../../../../common/spinner';
 import AddVendorBankingDetails from './addVendorBankingData';
 
-import { BASE_URL } from '../../../../config';
-import * as sideBarActions from '../../../../redux/actions/sideBarActions';
-import * as authActions from '../../../../redux/actions/authActions';
-import * as notificationActions from '../../../../redux/actions/notificationsActions';
+import { BASE_URL } from '../../../../../config';
+import * as sideBarActions from '../../../../../redux/actions/sideBarActions';
+import * as authActions from '../../../../../redux/actions/authActions';
+import * as notificationActions from '../../../../../redux/actions/notificationsActions';
 
 import './createVendor.css';
 
@@ -42,6 +42,7 @@ export const CreateANewVendor = ({
   changeActive,
   setInitialNotifications,
   logUserIn,
+  propx
 }) => {
   // Check for roles
 
@@ -57,15 +58,43 @@ export const CreateANewVendor = ({
 
   const [spinner, setSpinner] = useState(false);
   const [loadingPageErr, setLoadingPageErr] = useState('');
-  const [registeredAddress, setRegisteredAddress] = useState('');
+  const [registeredAddress, setRegisteredAddress] = useState(
+    propx
+      ? propx.registeredAddress
+      : ''
+  );
   const [formErr, setFormErr] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
-  const [name, setName] = useState('');
-  const [vendorEmail, setVendorEmail] = useState('');
-  const [vendorTin, setVendorTin] = useState('');
-  const [exemptFromWHT, setExemptFromWHT] = useState(false);
-  const [onPrequalifiedList, setOnPrequalifiedList] = useState(false);
-  const [bankingDetails, setBankingDetails] = useState([]);
+  const [name, setName] = useState(
+    propx
+      ? propx.name
+      : ''
+  );
+  const [vendorEmail, setVendorEmail] = useState(
+    propx
+      ? propx.vendorEmail
+      : ''
+  );
+  const [vendorTin, setVendorTin] = useState(
+    propx
+      ? propx.vendorTin
+      : ''
+  );
+  const [exemptFromWHT, setExemptFromWHT] = useState(
+    propx
+      ? propx.exemptFromWHT
+      : false
+  );
+  const [onPrequalifiedList, setOnPrequalifiedList] = useState(
+    propx
+      ? propx.onPrequalifiedList
+      : false
+  );
+  const [bankingDetails, setBankingDetails] = useState(
+    propx
+      ? propx.bankDetails
+      : []
+  );
   const [submitSpinner, setSubmitSpinner] = useState(false);
 
   const { authState, authService } = useOktaAuth();
@@ -211,34 +240,76 @@ export const CreateANewVendor = ({
       return;
     }
 
-    const vendorToAdd = {
-      name,
-      vendorTin,
-      vendorEmail,
-      onPrequalifiedList,
-      exemptFromWHT,
-      bankDetails: bankingDetails
+    const addNewVendorFunc = () => {
+      const vendorToAdd = {
+        name,
+        vendorTin,
+        vendorEmail,
+        onPrequalifiedList,
+        exemptFromWHT,
+        registeredAddress,
+        bankDetails: bankingDetails
+      };
+      axios.defaults.headers.common = { token };
+      const apiRoute = `${BASE_URL}procurementApi/registerVendor`;
+      axios.post(apiRoute, vendorToAdd)
+        . then((res) => {
+          setSuccessMessage(res.data.message);
+          setSubmitSpinner(false);
+        })
+        .catch((err) => {
+          setSubmitSpinner(false);
+
+          if (err && err.response && err.response.status && err.response.status === 401) {
+            authService.logout('/');
+          }
+
+          if (err && err.response && err.response.data && err.response.data.message) {
+            setFormErr(err.response.data.message);
+          } else {
+            setFormErr(err.message);
+          }
+        });
     };
-    axios.defaults.headers.common = { token };
-    const apiRoute = `${BASE_URL}procurementApi/registerVendor`;
-    axios.post(apiRoute, vendorToAdd)
-      . then((res) => {
-        setSuccessMessage(res.data.message);
-        setSubmitSpinner(false);
-      })
-      .catch((err) => {
-        setSubmitSpinner(false);
 
-        if (err && err.response && err.response.status && err.response.status === 401) {
-          authService.logout('/');
-        }
+    const editVendorFunc = () => {
+      const vendorToEdit = {
+        vendorId: propx._id,
+        name,
+        vendorTin,
+        vendorEmail,
+        onPrequalifiedList,
+        exemptFromWHT,
+        registeredAddress,
+        bankDetails: bankingDetails
+      };
+      axios.defaults.headers.common = { token };
+      const apiRoute = `${BASE_URL}procurementApi/editVendor`;
+      axios.post(apiRoute, vendorToEdit)
+        . then((res) => {
+          setSuccessMessage(res.data.message);
+          setSubmitSpinner(false);
+        })
+        .catch((err) => {
+          setSubmitSpinner(false);
 
-        if (err && err.response && err.response.data && err.response.data.message) {
-          setFormErr(err.response.data.message);
-        } else {
-          setFormErr(err.message);
-        }
-      });
+          if (err && err.response && err.response.status && err.response.status === 401) {
+            authService.logout('/');
+          }
+
+          if (err && err.response && err.response.data && err.response.data.message) {
+            setFormErr(err.response.data.message);
+          } else {
+            setFormErr(err.message);
+          }
+        });
+    };
+
+    if (propx) {
+      editVendorFunc();
+    } else {
+      addNewVendorFunc();
+    }
   };
 
   const addBankingData = (newData) => {
@@ -302,7 +373,13 @@ export const CreateANewVendor = ({
 
   return (
     <div>
-      <h2>Add A Vendor.</h2>
+      <h2>
+        {
+          propx
+            ? 'Edit Vendor'
+            : 'Add A Vendor.'
+        }
+      </h2>
       <form className="createVendorForm" onSubmit={handleSubmit}>
         {
           formErr && (
@@ -464,7 +541,13 @@ export const CreateANewVendor = ({
         {
           submitSpinner
             ? <button className="btn btn-outline-primary m-2"><Spinner /></button>
-            : <button type="submit" className="btn btn-outline-primary m-2">Add Vendor</button>
+            : <button type="submit" className="btn btn-outline-primary m-2">
+              {
+                propx
+                  ? 'Edit vendor'
+                  : 'Add Vendor'
+              }
+            </button>
         }
 
       </form>
@@ -479,6 +562,7 @@ CreateANewVendor.propTypes = {
   changeActive: PropTypes.func,
   setInitialNotifications: PropTypes.func,
   logUserIn: PropTypes.func,
+  propx: PropTypes.object
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(CreateANewVendor);

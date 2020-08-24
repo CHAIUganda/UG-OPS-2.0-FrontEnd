@@ -99,7 +99,7 @@ const AddVendorBankingDetails = ({
       <Modal isOpen={modal} toggle={toggle}>
         <ModalHeader toggle={toggle}>Add Vendor Banking Details</ModalHeader>
         <ModalBody>
-          <form onSubmit={handleSubmit}>
+          <form>
             {
               successMessage && (
                 <div className="alert alert-success m-3" role="alert">
@@ -171,7 +171,9 @@ const AddVendorBankingDetails = ({
               </InputGroup>
             </FormGroup>
 
-            <button type="submit" className="btn btn-outline-primary">Add</button>
+            <button type="button" className="btn btn-outline-primary" onClick={handleSubmit}>
+              { edit ? 'Edit' : 'Add' }
+            </button>
 
             {
               successMessage && (
