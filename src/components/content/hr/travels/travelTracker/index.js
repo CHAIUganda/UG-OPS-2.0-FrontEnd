@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { useOktaAuth } from '@okta/okta-react';
 import axios from 'axios';
+import Cookies from 'js-cookie';
 
 import CommonSpinner from '../../../../common/spinner';
 import NewTravel from './newTravel';
@@ -25,15 +25,15 @@ const mapDispatchToProps = {
   changeSection: sideBarActions.changeSection,
   changeActive: sideBarActions.changeActive,
   logUserIn: authActions.logUserIn,
-  setInitialNotifications: notificationActions.setInitialNotifications
+  setInitialNotifications: notificationActions.setInitialNotifications,
+  logUserOut: authActions.logUserOut
 };
 
 export const TravelTracker = ({
   token,
   changeSection,
   changeActive,
-  setInitialNotifications,
-  logUserIn,
+  logUserOut,
   email,
   firstName,
   lastName
@@ -42,66 +42,10 @@ export const TravelTracker = ({
   const [loadingPageErr, setLoadingPageErr] = useState('');
   const [myTravels, setMyTravels] = useState([]);
 
-  const { authState, authService } = useOktaAuth();
-
   changeSection('Human Resource');
   changeActive('PersonalTravelTracker');
 
-  const setUpUser = (tokenToSet) => {
-    axios.defaults.headers.common = { token: tokenToSet };
-    const apiRoute = `${BASE_URL}auth/getLoggedInUser`;
-    axios.get(apiRoute)
-      . then((res) => {
-        const {
-          department,
-          fName,
-          internationalStaff,
-          lName,
-          position,
-          _id,
-          supervisorDetails,
-          notifications
-        } = res.data;
-        const genderToSet = res.data.gender;
-        const emailToSet = res.data.email;
-        const leaveDetailsToSet = res.data.leaveDetails;
-
-        const userObject = {
-          ...res.data,
-          email: emailToSet,
-          token: tokenToSet,
-          gender: genderToSet,
-          internationalStaff,
-          department,
-          firstName: fName,
-          lastName: lName,
-          Position: position,
-          id: _id,
-          leaveDetails: leaveDetailsToSet,
-          supervisor: supervisorDetails
-        };
-        setInitialNotifications(notifications);
-        logUserIn(userObject);
-        setSpinner(false);
-      })
-      .catch((err) => {
-        setSpinner(false);
-
-        if (err && err.response && err.response.status && err.response.status === 401) {
-          authService.logout('/');
-        }
-
-        if (err && err.response && err.response.data && err.response.data.message) {
-          setLoadingPageErr(err.response.data.message);
-        } else {
-          setLoadingPageErr(err.message);
-        }
-      });
-  };
-
   const setUpThisPage = () => {
-    // set this page up. Do stuff like pick all users.
-
     const endPoint = `${BASE_URL}hrApi/getStaffTravels/${email}`;
     axios.defaults.headers.common = { token };
     axios.get(endPoint)
@@ -113,7 +57,8 @@ export const TravelTracker = ({
         setSpinner(false);
 
         if (err && err.response && err.response.status && err.response.status === 401) {
-          authService.logout('/');
+          Cookies.remove('token');
+          logUserOut();
         }
 
         if (err && err.response && err.response.data && err.response.data.message) {
@@ -130,16 +75,9 @@ export const TravelTracker = ({
 
     if (token) {
       setUpThisPage();
-    }
-
-    if (!token && authState.isAuthenticated) {
-      const { accessToken } = authState;
-      setUpUser(`Bearer ${accessToken}`);
-    }
-
-    if (!token && !authState.isAuthenticated) {
-      setSpinner(false);
-      authService.logout('/');
+    } else {
+      Cookies.remove('token');
+      logUserOut();
     }
   }, []);
 
@@ -212,6 +150,8 @@ export const TravelTracker = ({
         name={`${firstName} ${lastName}`}
         email={email}
         BASE_URL={BASE_URL}
+        Cookies={Cookies}
+        logUserOut={logUserOut}
       />
       {returnTable()}
     </div>
@@ -227,6 +167,7 @@ TravelTracker.propTypes = {
   email: PropTypes.string,
   firstName: PropTypes.string,
   lastName: PropTypes.string,
+  logUserOut: PropTypes.string
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(TravelTracker);

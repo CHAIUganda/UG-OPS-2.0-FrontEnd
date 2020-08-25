@@ -21,7 +21,9 @@ const NewTravel = ({
   BASE_URL,
   token,
   name,
-  email
+  email,
+  Cookies,
+  logUserOut,
 }) => {
   const [modal, setModal] = useState(false);
   const [formErr, setFormErr] = useState('');
@@ -75,7 +77,8 @@ const NewTravel = ({
         setSubmitSpinner(false);
 
         if (err && err.response && err.response.status && err.response.status === 401) {
-          // authService.logout('/');
+          Cookies.remove('token');
+          logUserOut();
         }
 
         if (err && err.response && err.response.data && err.response.data.message) {
@@ -228,7 +231,9 @@ NewTravel.propTypes = {
   token: PropTypes.string,
   name: PropTypes.string,
   email: PropTypes.string,
-  BASE_URL: PropTypes.string
+  BASE_URL: PropTypes.string,
+  Cookies: PropTypes.object,
+  logUserOut: PropTypes.func
 };
 
 export default NewTravel;
