@@ -17,7 +17,7 @@ import { IconContext } from 'react-icons';
 import PropTypes from 'prop-types';
 import axios from 'axios';
 import Calendar from 'react-calendar';
-import { useOktaAuth } from '@okta/okta-react';
+import Cookies from 'js-cookie';
 
 import { BASE_URL, returnStatusClass } from '../../../../../../config';
 import CommonSpinner from '../../../../../common/spinner';
@@ -29,7 +29,8 @@ export default function ManageLeaveModal({
   type,
   gender,
   indexOfLeave,
-  propToModifyArray
+  propToModifyArray,
+  logUserOut,
 }) {
   const [modal, setModal] = useState(false);
   const [applySpinner, setApplySpinner] = useState(false);
@@ -48,8 +49,6 @@ export default function ManageLeaveModal({
   const [leaveDates, setLeaveDate] = useState([new Date(leave.startDate), new Date(leave.endDate)]);
   const [modifyArray, setModifyArray] = useState(false);
   const [leaveObjFromServer, setLeaveObjectFromServer] = useState(false);
-
-  const { authService } = useOktaAuth();
 
   const toggle = () => {
     const bool = !modal;
@@ -105,7 +104,8 @@ export default function ManageLeaveModal({
         setApplySpinner(false);
 
         if (err && err.response && err.response.status && err.response.status === 401) {
-          authService.logout('/');
+          Cookies.remove('token');
+          logUserOut();
         }
 
         if (err && err.response && err.response.data && err.response.data.message) {
@@ -143,7 +143,8 @@ export default function ManageLeaveModal({
         setCancelSpinner(false);
 
         if (err && err.response && err.response.status && err.response.status === 401) {
-          authService.logout('/');
+          Cookies.remove('token');
+          logUserOut();
         }
 
         if (err && err.response && err.response.data && err.response.data.message) {
@@ -183,7 +184,8 @@ export default function ManageLeaveModal({
         setModifyLeaveSpinner(false);
 
         if (err && err.response && err.response.status && err.response.status === 401) {
-          authService.logout('/');
+          Cookies.remove('token');
+          logUserOut();
         }
 
         if (err && err.response && err.response.data && err.response.data.message) {
@@ -380,5 +382,6 @@ ManageLeaveModal.propTypes = {
   type: PropTypes.string,
   gender: PropTypes.string,
   indexOfLeave: PropTypes.number,
-  propToModifyArray: PropTypes.func
+  propToModifyArray: PropTypes.func,
+  logUserOut: PropTypes.func
 };

@@ -20,7 +20,7 @@ import Calendar from 'react-calendar';
 import { connect } from 'react-redux';
 import axios from 'axios';
 import moment from 'moment';
-import { useOktaAuth } from '@okta/okta-react';
+import Cookies from 'js-cookie';
 
 import getDatesInBetween from '../../../../../common/getDatesBetween';
 import { BASE_URL } from '../../../../../../config';
@@ -39,7 +39,8 @@ function Plan4LeaveModal({
   type,
   email,
   token,
-  addLeave
+  addLeave,
+  logUserOut
 }) {
   const [modal, setModal] = useState(false);
   const [spinner, setSpinner] = useState(false);
@@ -55,8 +56,6 @@ function Plan4LeaveModal({
   const [greenContraintsFeedback, setGreenContraintsFeedback] = useState('');
   const [redContraintsFeedback, setRedContraintsFeedback] = useState('');
   const [successFeedback, setSuccessFeedback] = useState('');
-
-  const { authService } = useOktaAuth();
 
   const reset = () => {
     setError('');
@@ -307,7 +306,8 @@ function Plan4LeaveModal({
         setSpinner(false);
 
         if (err && err.response && err.response.status && err.response.status === 401) {
-          authService.logout('/');
+          Cookies.remove('token');
+          logUserOut();
         }
 
         if (err && err.response && err.response.data && err.response.data.message) {
@@ -481,7 +481,8 @@ function Plan4LeaveModal({
       })
       .catch((err) => {
         if (err && err.response && err.response.status && err.response.status === 401) {
-          authService.logout('/');
+          Cookies.remove('token');
+          logUserOut();
         }
 
         if (err && err.response && err.response.data && err.response.data.message) {
@@ -524,7 +525,8 @@ Plan4LeaveModal.propTypes = {
   type: PropTypes.string,
   email: PropTypes.string,
   token: PropTypes.string,
-  addLeave: PropTypes.func
+  addLeave: PropTypes.func,
+  logUserOut: PropTypes.func
 };
 
 export default connect(mapStateToProps)(Plan4LeaveModal);
