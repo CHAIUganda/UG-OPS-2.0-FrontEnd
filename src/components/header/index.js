@@ -1,7 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import { useOktaAuth } from '@okta/okta-react';
 
 import HeaderLeft from './headerLeft';
 import HeaderMiddle from './headerMiddle';
@@ -13,8 +12,6 @@ const mapStateToProps = (state) => ({
 });
 
 function Header({ token }) {
-  const { authState } = useOktaAuth();
-
   if (token) {
     return (<div className="headerDiv pt-3">
       <div className="row">
@@ -31,32 +28,16 @@ function Header({ token }) {
     </div>);
   }
 
-  if (!authState.isAuthenticated && !authState.isPending) {
-    return (<div className="headerDiv pt-3">
-      <div className="row">
-        <div className="col-sm-1">
-          <HeaderLeft />
-        </div>
-        <div className="col-sm-6 text-right">
-          <HeaderMiddle loginButton={true} />
-        </div>
-        <div className="col-sm-5">
-          <HeaderRight loginButton={true} />
-        </div>
-      </div>
-    </div>);
-  }
-
   return (<div className="headerDiv pt-3">
     <div className="row">
       <div className="col-sm-1">
         <HeaderLeft />
       </div>
       <div className="col-sm-6 text-right invisible">
-        <HeaderMiddle loginButton={false} />
+        <HeaderMiddle />
       </div>
       <div className="col-sm-5 invisible">
-        <HeaderRight loginButton={false} />
+        <HeaderRight />
       </div>
     </div>
   </div>);

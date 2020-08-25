@@ -2,7 +2,7 @@ import React from 'react';
 // import { Link } from 'react-router-dom';
 import { IoIosPeople } from 'react-icons/io';
 import { GiTakeMyMoney } from 'react-icons/gi';
-// import { FaFileInvoiceDollar } from 'react-icons/fa';
+import { FaFileInvoiceDollar } from 'react-icons/fa';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
@@ -16,18 +16,10 @@ const matchDispatchToProps = {
 
 const mapStateToProps = () => ({ });
 
-function HeaderMiddle({ changeSection, loginButton }) {
+function HeaderMiddle({ changeSection }) {
   const handleClick = (section) => {
     changeSection(section);
   };
-
-  if (loginButton) {
-    return (
-      <div className="middleHeader">
-        Ug Ops
-      </div>
-    );
-  }
 
   return (
     <div className="middleHeader">
@@ -45,14 +37,14 @@ function HeaderMiddle({ changeSection, loginButton }) {
           textToSet="Procurement"
         />
       </span>
-      {/*
+
       <span onClick={() => handleClick('Finance')}>
         <SubItem
           link="/"
           IcontoSet={FaFileInvoiceDollar}
           textToSet="Finance"
         />
-      </span> */}
+      </span>
     </div>
   );
 }

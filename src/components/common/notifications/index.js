@@ -12,15 +12,17 @@ import PropTypes from 'prop-types';
 import { AiOutlineNotification } from 'react-icons/ai';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
-import { useOktaAuth } from '@okta/okta-react';
+import Cookies from 'js-cookie';
 
 import * as notificationActions from '../../../redux/actions/notificationsActions';
+import * as authActions from '../../../redux/actions/authActions';
 import { BASE_URL } from '../../../config';
 import Icon from '../icon';
 import './notifications.css';
 
 const matchDispatchToProps = {
-  removeNotification: notificationActions.removeNotification
+  removeNotification: notificationActions.removeNotification,
+  logUserOut: authActions.logUserOut
 };
 
 const mapStateToProps = (state) => ({
@@ -33,10 +35,10 @@ function Notifications({
   notifications,
   token,
   email,
-  removeNotification
+  removeNotification,
+  logUserOut
 }) {
   const [dropdownOpen, setDropdownOpen] = useState(false);
-  const { authService } = useOktaAuth();
 
   const toggle = () => setDropdownOpen((prevState) => !prevState);
 
@@ -54,7 +56,8 @@ function Notifications({
       })
       .catch((err) => {
         if (err && err.response && err.response.status && err.response.status === 401) {
-          authService.logout('/');
+          Cookies.remove('token');
+          logUserOut();
         }
       });
   };
@@ -119,7 +122,8 @@ Notifications.propTypes = {
   notifications: PropTypes.array,
   token: PropTypes.string,
   email: PropTypes.string,
-  removeNotification: PropTypes.func
+  removeNotification: PropTypes.func,
+  logUserOut: PropTypes.func
 };
 
 export default connect(mapStateToProps, matchDispatchToProps)(Notifications);

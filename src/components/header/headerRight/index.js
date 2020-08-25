@@ -1,13 +1,10 @@
 import React, { useState } from 'react';
-import { FaUserCircle, FaAngleDoubleRight } from 'react-icons/fa';
+import { FaUserCircle } from 'react-icons/fa';
 import { IconContext } from 'react-icons';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-// import Cookies from 'js-cookie';
+import Cookies from 'js-cookie';
 import { Link } from 'react-router-dom';
-import { useOktaAuth } from '@okta/okta-react';
-
-
 import {
   Dropdown,
   DropdownToggle,
@@ -31,23 +28,16 @@ const mapStateToProps = (state) => ({
 function HeaderRight({
   logUserOut,
   firstName,
-  lastName,
-  loginButton
+  lastName
 }) {
   const [dropdownOpen, setDropdownOpen] = useState(false);
-  const { authService } = useOktaAuth();
 
   const toggle = () => setDropdownOpen((prevState) => !prevState);
 
-  const login = async () => {
-    authService.login('/');
-  };
-
   const logOut = (event) => {
     event.preventDefault();
-    // Cookies.remove('token');
+    Cookies.remove('token');
     logUserOut();
-    authService.logout('/');
   };
 
   const returnIcon = () => (
@@ -63,27 +53,6 @@ function HeaderRight({
       </span>
     </IconContext.Provider>
   );
-
-  if (loginButton) {
-    return (
-      <div className="headerRight  float-right">
-        <button className="submitButton mr-4" type="submit" onClick={login}>
-          Login
-          <IconContext.Provider
-            value={{
-              color: '#003366',
-              size: '1em',
-              className: 'global-class-name'
-            }}
-          >
-            <span className="userIcon">
-              <FaAngleDoubleRight />
-            </span>
-          </IconContext.Provider>
-        </button>
-      </div>
-    );
-  }
 
   return (
     <div className="headerRight  float-right">

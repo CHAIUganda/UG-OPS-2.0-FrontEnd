@@ -3,8 +3,9 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import DayPicker from 'react-day-picker';
 import axios from 'axios';
-import { useOktaAuth } from '@okta/okta-react';
+import Cookies from 'js-cookie';
 
+import * as authActions from '../../redux/actions/authActions';
 import { BASE_URL } from '../../config';
 import HR from './hr';
 import Procurement from './procurement';
@@ -13,12 +14,15 @@ import 'react-day-picker/lib/style.css';
 
 const mapStateToProps = (state) => ({
   token: state.auth.token,
-  section: state.sideBar.section
+  section: state.sideBar.section,
 });
 
-function Sidebar({ token, section }) {
+const matchDispatchToProps = {
+  logUserOut: authActions.logUserOut
+};
+
+function Sidebar({ token, section, logUserOut }) {
   const [selectedDates, setSelectedDates] = useState([]);
-  const { authService } = useOktaAuth();
 
   const returnCalendar = () => {
     if (!section) {
@@ -53,7 +57,8 @@ function Sidebar({ token, section }) {
         })
         .catch((err) => {
           if (err && err.response && err.response.status && err.response.status === 401) {
-            authService.logout('/');
+            Cookies.remove('token');
+            logUserOut();
           }
         });
     }
@@ -85,7 +90,8 @@ function Sidebar({ token, section }) {
 
 Sidebar.propTypes = {
   token: PropTypes.string,
-  section: PropTypes.string
+  section: PropTypes.string,
+  logUserOut: PropTypes.func
 };
 
-export default connect(mapStateToProps)(Sidebar);
+export default connect(mapStateToProps, matchDispatchToProps)(Sidebar);
