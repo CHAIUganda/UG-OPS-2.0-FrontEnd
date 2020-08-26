@@ -149,7 +149,6 @@ function SignIn(props) {
               name="email"
               value={email}
               onChange={handleChange}
-              placeholder="email"
               required
             />
           </InputGroup>
@@ -157,10 +156,9 @@ function SignIn(props) {
         <FormGroup>
           <InputGroup>
             <InputGroupAddon addonType="prepend">
-              <InputGroupText>** Password</InputGroupText>
+              <InputGroupText>Password</InputGroupText>
             </InputGroupAddon>
             <Input
-              placeholder="password"
               type="password"
               value={password}
               onChange={handleChange}
