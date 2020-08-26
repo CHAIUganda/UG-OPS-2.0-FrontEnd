@@ -18,7 +18,7 @@ import axios from 'axios';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import Select from 'react-select';
-import { useOktaAuth } from '@okta/okta-react';
+import Cookies from 'js-cookie';
 
 import { BASE_URL } from '../../../../../../config';
 
@@ -26,7 +26,12 @@ const mapStateToProps = (state) => ({
   token: state.auth.token
 });
 
-const CreateNewProgramme = ({ onNewProgramme, token, allUsers }) => {
+const CreateNewProgramme = ({
+  onNewProgramme,
+  token,
+  allUsers,
+  logUserOut
+}) => {
   const [modal, setModal] = useState(false);
   const [formError, setFormError] = useState('');
   const [formSuccessMessage, setFormSuccessMessage] = useState('');
@@ -34,8 +39,6 @@ const CreateNewProgramme = ({ onNewProgramme, token, allUsers }) => {
   const [programmeName, setProgrammeName] = useState('');
   const [shortForm, setShortForm] = useState('');
   const [pm, setPm] = useState('');
-
-  const { authService } = useOktaAuth();
 
   const toggle = () => setModal(!modal);
 
@@ -71,7 +74,8 @@ const CreateNewProgramme = ({ onNewProgramme, token, allUsers }) => {
         setFormSpinner(false);
 
         if (err && err.response && err.response.status && err.response.status === 401) {
-          authService.logout('/');
+          Cookies.remove('token');
+          logUserOut();
         }
 
         if (err && err.response && err.response.data && err.response.data.message) {
@@ -182,7 +186,8 @@ const CreateNewProgramme = ({ onNewProgramme, token, allUsers }) => {
 
 CreateNewProgramme.propTypes = {
   token: PropTypes.string,
-  allUsers: PropTypes.array
+  allUsers: PropTypes.array,
+  logUserOut: PropTypes.func
 };
 
 export default connect(mapStateToProps)(CreateNewProgramme);

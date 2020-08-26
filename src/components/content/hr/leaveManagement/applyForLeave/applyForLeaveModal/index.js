@@ -20,8 +20,9 @@ import Calendar from 'react-calendar';
 import { connect } from 'react-redux';
 import axios from 'axios';
 import moment from 'moment';
-import { useOktaAuth } from '@okta/okta-react';
+import Cookies from 'js-cookie';
 
+import * as authActions from '../../../../../../redux/actions/authActions';
 import getDatesInBetween from '../../../../../common/getDatesBetween';
 import { BASE_URL } from '../../../../../../config';
 import './apply4LeaveModal.css';
@@ -32,6 +33,10 @@ const mapStateToProps = (state) => ({
   type: state.auth.type
 });
 
+const matchDispatchToProps = {
+  logUserOut: authActions.logUserOut
+};
+
 function Apply4LeaveModal({
   supervisor,
   gender,
@@ -39,7 +44,8 @@ function Apply4LeaveModal({
   email,
   addLeave,
   type,
-  token
+  token,
+  logUserOut
 }) {
   const [modal, setModal] = useState(false);
   const [spinner, setSpinner] = useState(false);
@@ -55,8 +61,6 @@ function Apply4LeaveModal({
   const [greenContraintsFeedback, setGreenContraintsFeedback] = useState('');
   const [redContraintsFeedback, setRedContraintsFeedback] = useState('');
   const [successFeedback, setSuccessFeedback] = useState('');
-
-  const { authService } = useOktaAuth();
 
   const reset = () => {
     setError('');
@@ -323,7 +327,8 @@ function Apply4LeaveModal({
         setSpinner(false);
 
         if (err && err.response && err.response.status && err.response.status === 401) {
-          authService.logout('/');
+          Cookies.remove('token');
+          logUserOut();
         }
 
         if (err && err.response && err.response.data && err.response.data.message) {
@@ -492,7 +497,8 @@ function Apply4LeaveModal({
       })
       .catch((err) => {
         if (err && err.response && err.response.status && err.response.status === 401) {
-          authService.logout('/');
+          Cookies.remove('token');
+          logUserOut();
         }
 
         if (err && err.response && err.response.data && err.response.data.message) {
@@ -536,7 +542,8 @@ Apply4LeaveModal.propTypes = {
   addLeave: PropTypes.func,
   roles: PropTypes.object,
   type: PropTypes.string,
-  token: PropTypes.string
+  token: PropTypes.string,
+  logUserOut: PropTypes.func,
 };
 
-export default connect(mapStateToProps)(Apply4LeaveModal);
+export default connect(mapStateToProps, matchDispatchToProps)(Apply4LeaveModal);

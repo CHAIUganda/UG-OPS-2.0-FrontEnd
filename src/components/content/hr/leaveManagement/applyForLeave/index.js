@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import axios from 'axios';
-import { useOktaAuth } from '@okta/okta-react';
+import Cookies from 'js-cookie';
 
 import * as sideBarActions from '../../../../../redux/actions/sideBarActions';
 import * as notificationActions from '../../../../../redux/actions/notificationsActions';
@@ -18,8 +18,7 @@ const matchDispatchToProps = {
   changeSection: sideBarActions.changeSection,
   changeActive: sideBarActions.changeActive,
   removeNotification: notificationActions.removeNotification,
-  logUserIn: authActions.logUserIn,
-  setInitialNotifications: notificationActions.setInitialNotifications
+  logUserOut: authActions.logUserOut
 };
 
 const mapStateToProps = (state) => ({
@@ -39,15 +38,12 @@ function Apply4Leave({
   changeSection,
   changeActive,
   removeNotification,
-  setInitialNotifications,
-  logUserIn
+  logUserOut
 }) {
   const [spinner, setSpinner] = useState(false);
   const [leaveDetails, setLeaveDetails] = useState(null);
   const [error, setError] = useState('');
   const [personsLeaves, setPersonsLeaves] = useState([]);
-
-  const { authState, authService } = useOktaAuth();
 
   changeSection('Human Resource');
   changeActive('Apply4Leave');
@@ -68,7 +64,8 @@ function Apply4Leave({
           })
           .catch((err) => {
             if (err && err.response && err.response.status && err.response.status === 401) {
-              authService.logout('/');
+              Cookies.remove('token');
+              logUserOut();
             }
 
             if (err && err.response && err.response.data && err.response.data.message) {
@@ -137,59 +134,8 @@ function Apply4Leave({
       })
       .catch((err) => {
         if (err && err.response && err.response.status && err.response.status === 401) {
-          authService.logout('/');
-        }
-
-        if (err && err.response && err.response.data && err.response.data.message) {
-          setError(err.response.data.message);
-        } else {
-          setError(err.message);
-        }
-      });
-  };
-
-  const setUpUser = (tokenToSet) => {
-    axios.defaults.headers.common = { token: tokenToSet };
-    const apiRoute = `${BASE_URL}auth/getLoggedInUser`;
-    axios.get(apiRoute)
-      . then((res) => {
-        const {
-          department,
-          fName,
-          internationalStaff,
-          lName,
-          position,
-          _id,
-          supervisorDetails,
-          notifications
-        } = res.data;
-        const genderToSet = res.data.gender;
-        const emailToSet = res.data.email;
-        const leaveDetailsToSet = res.data.leaveDetails;
-
-        const userObject = {
-          ...res.data,
-          email: emailToSet,
-          token: tokenToSet,
-          gender: genderToSet,
-          internationalStaff,
-          department,
-          firstName: fName,
-          lastName: lName,
-          Position: position,
-          id: _id,
-          leaveDetails: leaveDetailsToSet,
-          supervisor: supervisorDetails
-        };
-        setInitialNotifications(notifications);
-        logUserIn(userObject);
-        setSpinner(false);
-      })
-      .catch((err) => {
-        setSpinner(false);
-
-        if (err && err.response && err.response.status && err.response.status === 401) {
-          authService.logout('/');
+          Cookies.remove('token');
+          logUserOut();
         }
 
         if (err && err.response && err.response.data && err.response.data.message) {
@@ -211,7 +157,8 @@ function Apply4Leave({
         setSpinner(false);
 
         if (err && err.response && err.response.status && err.response.status === 401) {
-          authService.logout('/');
+          Cookies.remove('token');
+          logUserOut();
         }
 
         if (err && err.response && err.response.data && err.response.data.message) {
@@ -227,16 +174,9 @@ function Apply4Leave({
     setError(false);
     if (token) {
       setUpThisPage();
-    }
-
-    if (!token && authState.isAuthenticated) {
-      const { accessToken } = authState;
-      setUpUser(`Bearer ${accessToken}`);
-    }
-
-    if (!token && !authState.isAuthenticated) {
-      setSpinner(false);
-      authService.logout('/');
+    } else {
+      Cookies.remove('token');
+      logUserOut();
     }
   }, []);
 
@@ -315,6 +255,7 @@ function Apply4Leave({
                     gender={gender}
                     indexOfLeave={index}
                     propToModifyArray={modifyLeave}
+                    logUserOut={logUserOut}
                   />
                 </td>
               </tr>
@@ -353,8 +294,7 @@ Apply4Leave.propTypes = {
   changeSection: PropTypes.func,
   changeActive: PropTypes.func,
   removeNotification: PropTypes.func,
-  setInitialNotifications: PropTypes.func,
-  logUserIn: PropTypes.func,
+  logUserOut: PropTypes.func,
 };
 
 export default connect(mapStateToProps, matchDispatchToProps)(Apply4Leave);

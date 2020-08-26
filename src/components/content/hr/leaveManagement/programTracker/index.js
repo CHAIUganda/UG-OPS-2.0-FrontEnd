@@ -6,11 +6,10 @@ import html2canvas from 'html2canvas';
 import JSPDF from 'jspdf';
 import Select from 'react-select';
 import moment from 'moment';
-import { useOktaAuth } from '@okta/okta-react';
+import Cookies from 'js-cookie';
 
 import * as sideBarActions from '../../../../../redux/actions/sideBarActions';
 import * as authActions from '../../../../../redux/actions/authActions';
-import * as notificationActions from '../../../../../redux/actions/notificationsActions';
 
 import CommonSpinner from '../../../../common/spinner';
 import FilterNameButton from '../../../../common/filterNameButton';
@@ -20,8 +19,7 @@ import './programTracker.css';
 const matchDispatchToProps = {
   changeSection: sideBarActions.changeSection,
   changeActive: sideBarActions.changeActive,
-  logUserIn: authActions.logUserIn,
-  setInitialNotifications: notificationActions.setInitialNotifications
+  logUserOut: authActions.logUserOut
 };
 
 const mapStateToProps = (state) => ({
@@ -37,8 +35,7 @@ function ProgramLeaveTracker({
   program,
   changeSection,
   changeActive,
-  logUserIn,
-  setInitialNotifications
+  logUserOut
 }) {
   const [spinner, setSpinner] = useState(false);
   const [error, setError] = useState('');
@@ -57,7 +54,6 @@ function ProgramLeaveTracker({
       name: []
     }
   );
-  const { authState, authService } = useOktaAuth();
 
   changeSection('Human Resource');
   changeActive('ProgramLeaveTracker');
@@ -86,59 +82,8 @@ function ProgramLeaveTracker({
         setSpinner(false);
 
         if (err && err.response && err.response.status && err.response.status === 401) {
-          authService.logout('/');
-        }
-
-        if (err && err.response && err.response.data && err.response.data.message) {
-          setError(err.response.data.message);
-        } else {
-          setError(err.message);
-        }
-      });
-  };
-
-  const setUpUser = (tokenToSet) => {
-    axios.defaults.headers.common = { token: tokenToSet };
-    const apiRoute = `${BASE_URL}auth/getLoggedInUser`;
-    axios.get(apiRoute)
-      . then((res) => {
-        const {
-          department,
-          fName,
-          internationalStaff,
-          lName,
-          position,
-          _id,
-          supervisorDetails,
-          notifications
-        } = res.data;
-        const genderToSet = res.data.gender;
-        const emailToSet = res.data.email;
-        const leaveDetailsToSet = res.data.leaveDetails;
-
-        const userObject = {
-          ...res.data,
-          email: emailToSet,
-          token: tokenToSet,
-          gender: genderToSet,
-          internationalStaff,
-          department,
-          firstName: fName,
-          lastName: lName,
-          Position: position,
-          id: _id,
-          leaveDetails: leaveDetailsToSet,
-          supervisor: supervisorDetails
-        };
-        setInitialNotifications(notifications);
-        logUserIn(userObject);
-        setSpinner(false);
-      })
-      .catch((err) => {
-        setSpinner(false);
-
-        if (err && err.response && err.response.status && err.response.status === 401) {
-          authService.logout('/');
+          Cookies.remove('token');
+          logUserOut();
         }
 
         if (err && err.response && err.response.data && err.response.data.message) {
@@ -165,7 +110,8 @@ function ProgramLeaveTracker({
         setSpinner(false);
 
         if (err && err.response && err.response.status && err.response.status === 401) {
-          authService.logout('/');
+          Cookies.remove('token');
+          logUserOut();
         }
 
         if (err && err.response && err.response.data && err.response.data.message) {
@@ -182,16 +128,9 @@ function ProgramLeaveTracker({
 
     if (token) {
       setUpThisPage();
-    }
-
-    if (!token && authState.isAuthenticated) {
-      const { accessToken } = authState;
-      setUpUser(`Bearer ${accessToken}`);
-    }
-
-    if (!token && !authState.isAuthenticated) {
-      setSpinner(false);
-      authService.logout('/');
+    } else {
+      Cookies.remove('token');
+      logUserOut();
     }
   }, []);
 
@@ -495,8 +434,7 @@ ProgramLeaveTracker.propTypes = {
   program: PropTypes.string,
   changeSection: PropTypes.func,
   changeActive: PropTypes.func,
-  logUserIn: PropTypes.func,
-  setInitialNotifications: PropTypes.func,
+  logUserOut: PropTypes.func
 };
 
 export default connect(mapStateToProps, matchDispatchToProps)(ProgramLeaveTracker);

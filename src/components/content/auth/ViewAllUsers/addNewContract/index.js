@@ -18,12 +18,12 @@ import { IconContext } from 'react-icons';
 import { IoIosAdd } from 'react-icons/io';
 import Calendar from 'react-calendar';
 import axios from 'axios';
-import { useOktaAuth } from '@okta/okta-react';
+import Cookies from 'js-cookie';
 
 import { BASE_URL } from '../../../../../config';
 import CommonSpinner from '../../../../common/spinner';
 
-const AddNewContOrWP = ({ user }) => {
+const AddNewContOrWP = ({ user, logUserOut }) => {
   const [modal, setModal] = useState(false);
   const [content, setContent] = useState('');
   const [contractType, setContractType] = useState('Full-Time');
@@ -34,8 +34,6 @@ const AddNewContOrWP = ({ user }) => {
   const [wpStartDate, setWpStartDate] = useState();
   const [wpEndDate, setWpendDate] = useState();
   const [submitSpinner, setSubmitSpinner] = useState(false);
-
-  const { authService } = useOktaAuth();
 
   const toggle = () => setModal(!modal);
 
@@ -66,7 +64,8 @@ const AddNewContOrWP = ({ user }) => {
       })
       .catch((e) => {
         if (e && e.response && e.response.status && e.response.status === 401) {
-          authService.logout('/');
+          Cookies.remove('token');
+          logUserOut();
         }
 
         if (e && e.response && e.response.data && e.response.data.message) {
@@ -104,7 +103,8 @@ const AddNewContOrWP = ({ user }) => {
       })
       .catch((e) => {
         if (e && e.response && e.response.status && e.response.status === 401) {
-          authService.logout('/');
+          Cookies.remove('token');
+          logUserOut();
         }
 
         if (e && e.response && e.response.data && e.response.data.message) {
@@ -384,7 +384,8 @@ const AddNewContOrWP = ({ user }) => {
 };
 
 AddNewContOrWP.propTypes = {
-  user: PropTypes.object
+  user: PropTypes.object,
+  logUserOut: PropTypes.func,
 };
 
 export default AddNewContOrWP;

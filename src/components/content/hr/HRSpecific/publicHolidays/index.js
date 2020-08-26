@@ -3,11 +3,10 @@ import { Spinner } from 'reactstrap';
 import axios from 'axios';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import { useOktaAuth } from '@okta/okta-react';
+import Cookies from 'js-cookie';
 
 import * as sideBarActions from '../../../../../redux/actions/sideBarActions';
 import * as authActions from '../../../../../redux/actions/authActions';
-import * as notificationActions from '../../../../../redux/actions/notificationsActions';
 
 import { BASE_URL } from '../../../../../config';
 import CreateNewPublicHoliday from './createPublicHolidayModal';
@@ -16,8 +15,7 @@ import './publicHolidays.css';
 const matchDispatchToProps = {
   changeSection: sideBarActions.changeSection,
   changeActive: sideBarActions.changeActive,
-  logUserIn: authActions.logUserIn,
-  setInitialNotifications: notificationActions.setInitialNotifications
+  logUserOut: authActions.logUserOut
 };
 
 const mapStateToProps = (state) => ({
@@ -30,15 +28,12 @@ function ManagePublicHolidays({
   changeSection,
   changeActive,
   token,
-  logUserIn,
-  setInitialNotifications
+  logUserOut
 }) {
   const { hr, admin } = roles;
   const [publicHolidays, setPublicHolidays] = useState([]);
   const [tableSpinner, setTableSpinner] = useState(false);
   const [tableError, setTableError] = useState('');
-
-  const { authState, authService } = useOktaAuth();
 
   changeSection('Human Resource');
   changeActive('ManagePublicHolidays');
@@ -57,7 +52,8 @@ function ManagePublicHolidays({
       })
       .catch((err) => {
         if (err && err.response && err.response.status && err.response.status === 401) {
-          authService.logout('/');
+          Cookies.remove('token');
+          logUserOut();
         }
         if (err && err.response && err.response.data && err.response.data.message) {
           setTableError(err.response.data.message);
@@ -118,58 +114,6 @@ function ManagePublicHolidays({
     setPublicHolidays([...publicHolidays, newHoliday]);
   };
 
-  const setUpUser = (tokenToSet) => {
-    axios.defaults.headers.common = { token: tokenToSet };
-    const apiRoute = `${BASE_URL}auth/getLoggedInUser`;
-    axios.get(apiRoute)
-      . then((res) => {
-        const {
-          department,
-          fName,
-          internationalStaff,
-          lName,
-          position,
-          _id,
-          supervisorDetails,
-          notifications
-        } = res.data;
-        const genderToSet = res.data.gender;
-        const emailToSet = res.data.email;
-        const leaveDetailsToSet = res.data.leaveDetails;
-
-        const userObject = {
-          ...res.data,
-          email: emailToSet,
-          token: tokenToSet,
-          gender: genderToSet,
-          internationalStaff,
-          department,
-          firstName: fName,
-          lastName: lName,
-          Position: position,
-          id: _id,
-          leaveDetails: leaveDetailsToSet,
-          supervisor: supervisorDetails
-        };
-        setInitialNotifications(notifications);
-        logUserIn(userObject);
-        setTableSpinner(false);
-      })
-      .catch((err) => {
-        setTableSpinner(false);
-
-        if (err && err.response && err.response.status && err.response.status === 401) {
-          authService.logout('/');
-        }
-
-        if (err && err.response && err.response.data && err.response.data.message) {
-          setTableError(err.response.data.message);
-        } else {
-          setTableError(err.message);
-        }
-      });
-  };
-
   const setUpThisPage = () => {
     axios.defaults.headers.common = { token };
     const endPoint = `${BASE_URL}hrApi/getPublicHolidays`;
@@ -182,7 +126,8 @@ function ManagePublicHolidays({
         setTableSpinner(false);
 
         if (err && err.response && err.response.status && err.response.status === 401) {
-          authService.logout('/');
+          Cookies.remove('token');
+          logUserOut();
         }
 
         if (err && err.response && err.response.data && err.response.data.message) {
@@ -198,16 +143,9 @@ function ManagePublicHolidays({
 
     if (token) {
       setUpThisPage();
-    }
-
-    if (!token && authState.isAuthenticated) {
-      const { accessToken } = authState;
-      setUpUser(`Bearer ${accessToken}`);
-    }
-
-    if (!token && !authState.isAuthenticated) {
-      setTableSpinner(false);
-      authService.logout('/');
+    } else {
+      Cookies.remove('token');
+      logUserOut();
     }
   }, []);
 
@@ -216,7 +154,10 @@ function ManagePublicHolidays({
       <div>
         <h2 className="inlineItem">Public Holidays</h2>
         { (hr || admin)
-          && <CreateNewPublicHoliday onNewPHoliday={updatePHolidayArray} />
+          && <CreateNewPublicHoliday
+            onNewPHoliday={updatePHolidayArray}
+            logUserOut={logUserOut}
+          />
         }
       </div>
       {returnTable()}
@@ -230,8 +171,7 @@ ManagePublicHolidays.propTypes = {
   changeSection: PropTypes.func,
   changeActive: PropTypes.func,
   token: PropTypes.string,
-  logUserIn: PropTypes.func,
-  setInitialNotifications: PropTypes.func,
+  logUserOut: PropTypes.func,
 };
 
 export default connect(mapStateToProps, matchDispatchToProps)(ManagePublicHolidays);

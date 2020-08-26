@@ -11,7 +11,7 @@ import { IoMdSettings } from 'react-icons/io';
 import PropTypes from 'prop-types';
 import axios from 'axios';
 import { connect } from 'react-redux';
-import { useOktaAuth } from '@okta/okta-react';
+import Cookies from 'js-cookie';
 
 import * as notificationActions from '../../../../../../redux/actions/notificationsActions';
 import Spinner from '../../../../../common/spinner';
@@ -31,7 +31,8 @@ const SpecificContractModal = ({
   modifyContractsList,
   index,
   email,
-  removeNotification
+  removeNotification,
+  logUserOut
 }) => {
   const [modal, setModal] = useState(false);
   const [dismissSpinner, setDismissSpiner] = useState(false);
@@ -39,8 +40,6 @@ const SpecificContractModal = ({
   const [successMessage, setSuccessMessage] = useState('');
   const [error, setError] = useState('');
   const [removeFromList, setRemoveFromList] = useState(false);
-
-  const { authService } = useOktaAuth();
 
   const turnOffNotifications = () => {
     const handleSingleNotification = (c) => {
@@ -57,7 +56,8 @@ const SpecificContractModal = ({
         })
         .catch((err) => {
           if (err && err.response && err.response.status && err.response.status === 401) {
-            authService.logout('/');
+            Cookies.remove('token');
+            logUserOut();
           }
 
           if (err && err.response && err.response.data && err.response.data.message) {
@@ -103,7 +103,8 @@ const SpecificContractModal = ({
         setDismissSpiner(false);
 
         if (err && err.response && err.response.status && err.response.status === 401) {
-          authService.logout('/');
+          Cookies.remove('token');
+          logUserOut();
         }
 
         if (err && err.response && err.response.data && err.response.data.message) {
@@ -137,7 +138,8 @@ const SpecificContractModal = ({
         setSnoozeSpinner(false);
 
         if (err && err.response && err.response.status && err.response.status === 401) {
-          authService.logout('/');
+          Cookies.remove('token');
+          logUserOut();
         }
 
         if (err && err.response && err.response.data && err.response.data.message) {
@@ -233,7 +235,8 @@ SpecificContractModal.propTypes = {
   modifyContractsList: PropTypes.func,
   index: PropTypes.number,
   email: PropTypes.string,
-  removeNotification: PropTypes.func
+  removeNotification: PropTypes.func,
+  logUserOut: PropTypes.func
 };
 
 export default connect(mapStateToProps, matchDispatchToProps)(SpecificContractModal);

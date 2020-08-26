@@ -11,13 +11,15 @@ import { IoMdSettings } from 'react-icons/io';
 import PropTypes from 'prop-types';
 import axios from 'axios';
 import { connect } from 'react-redux';
-import { useOktaAuth } from '@okta/okta-react';
+import Cookies from 'js-cookie';
 
 import Spinner from '../../../../../common/spinner';
 import * as notificationActions from '../../../../../../redux/actions/notificationsActions';
+import * as authActions from '../../../../../../redux/actions/authActions';
 
 const matchDispatchToProps = {
-  removeNotification: notificationActions.removeNotification
+  removeNotification: notificationActions.removeNotification,
+  logUserOut: authActions.logUserOut
 };
 
 const mapStateToProps = (state) => ({
@@ -31,7 +33,8 @@ const SpecificWorkPermitModal = ({
   modifyWorkPermitList,
   index,
   email,
-  removeNotification
+  removeNotification,
+  logUserOut
 }) => {
   const [modal, setModal] = useState(false);
   const [dismissSpinner, setDismissSpiner] = useState(false);
@@ -39,8 +42,6 @@ const SpecificWorkPermitModal = ({
   const [successMessage, setSuccessMessage] = useState('');
   const [error, setError] = useState('');
   const [removeFromList, setRemoveFromList] = useState(false);
-
-  const { authService } = useOktaAuth();
 
   const toggle = () => {
     if (removeFromList) {
@@ -64,7 +65,8 @@ const SpecificWorkPermitModal = ({
         })
         .catch((err) => {
           if (err && err.response && err.response.status && err.response.status === 401) {
-            authService.logout('/');
+            Cookies.remove('token');
+            logUserOut();
           }
 
           if (err && err.response && err.response.data && err.response.data.message) {
@@ -103,7 +105,8 @@ const SpecificWorkPermitModal = ({
         setDismissSpiner(false);
 
         if (err && err.response && err.response.status && err.response.status === 401) {
-          authService.logout('/');
+          Cookies.remove('token');
+          logUserOut();
         }
 
         if (err && err.response && err.response.data && err.response.data.message) {
@@ -137,7 +140,8 @@ const SpecificWorkPermitModal = ({
         setSnoozeSpinner(false);
 
         if (err && err.response && err.response.status && err.response.status === 401) {
-          authService.logout('/');
+          Cookies.remove('token');
+          logUserOut();
         }
 
         if (err && err.response && err.response.data && err.response.data.message) {
@@ -238,7 +242,8 @@ SpecificWorkPermitModal.propTypes = {
   modifyWorkPermitList: PropTypes.func,
   index: PropTypes.number,
   email: PropTypes.string,
-  removeNotification: PropTypes.func
+  removeNotification: PropTypes.func,
+  logUserOut: PropTypes.func
 };
 
 export default connect(mapStateToProps, matchDispatchToProps)(SpecificWorkPermitModal);

@@ -15,14 +15,16 @@ import { IconContext } from 'react-icons';
 import PropTypes from 'prop-types';
 import axios from 'axios';
 import { connect } from 'react-redux';
-import { useOktaAuth } from '@okta/okta-react';
+import Cookies from 'js-cookie';
 
 import CommonSpinner from '../../../../../common/spinner';
 import * as notificationActions from '../../../../../../redux/actions/notificationsActions';
+import * as authActions from '../../../../../../redux/actions/authActions';
 import { BASE_URL, returnStatusClass } from '../../../../../../config';
 
 const matchDispatchToProps = {
-  removeNotification: notificationActions.removeNotification
+  removeNotification: notificationActions.removeNotification,
+  logUserOut: authActions.logUserOut
 };
 
 const mapStateToProps = (state) => ({
@@ -35,7 +37,8 @@ function ManageLeaveModal({
   token,
   email,
   removeLeaveFromList,
-  removeNotification
+  removeNotification,
+  logUserOut
 }) {
   const [modal, setModal] = useState(false);
   const [error, setError] = useState('');
@@ -46,8 +49,6 @@ function ManageLeaveModal({
   const [manageLeavePaneClass, setManageLeavePaneClass] = useState(true);
   const [leaveStatus, setLeaveStatus] = useState(leave.status);
   const [id2Remove, setId2Remove] = useState(false);
-
-  const { authService } = useOktaAuth();
 
   const toggle = () => {
     const bool = !modal;
@@ -74,7 +75,8 @@ function ManageLeaveModal({
         })
         .catch((err) => {
           if (err && err.response && err.response.status && err.response.status === 401) {
-            authService.logout('/');
+            Cookies.remove('token');
+            logUserOut();
           }
 
           if (err && err.response && err.response.data && err.response.data.message) {
@@ -134,7 +136,8 @@ function ManageLeaveModal({
         }
 
         if (err && err.response && err.response.status && err.response.status === 401) {
-          authService.logout('/');
+          Cookies.remove('token');
+          logUserOut();
         }
 
         if (err && err.response && err.response.data && err.response.data.message) {
@@ -256,7 +259,8 @@ ManageLeaveModal.propTypes = {
   token: PropTypes.string,
   email: PropTypes.string,
   removeLeaveFromList: PropTypes.func,
-  removeNotification: PropTypes.func
+  removeNotification: PropTypes.func,
+  logUserOut: PropTypes.func
 };
 
 export default connect(mapStateToProps, matchDispatchToProps)(ManageLeaveModal);
