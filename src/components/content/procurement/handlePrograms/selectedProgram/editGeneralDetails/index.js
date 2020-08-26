@@ -16,10 +16,18 @@ import {
   FormText,
 } from 'reactstrap';
 import Select from 'react-select';
-import { useOktaAuth } from '@okta/okta-react';
+import Cookies from 'js-cookie';
+import { connect } from 'react-redux';
 
 import CommonSpinner from '../../../../../common/spinner';
 import { BASE_URL } from '../../../../../../config';
+import * as authActions from '../../../../../../redux/actions/authActions';
+
+const matchDispatchToProps = {
+  logUserOut: authActions.logUserOut
+};
+
+const mapStateToProps = () => ({});
 
 const EditGeneralDetails = ({
   progName,
@@ -34,7 +42,8 @@ const EditGeneralDetails = ({
   token,
   progStatus,
   setProgStatus,
-  setOpsLead
+  setOpsLead,
+  logUserOut
 }) => {
   const [modal, setModal] = useState(false);
   const [formError, setFormError] = useState('');
@@ -45,8 +54,6 @@ const EditGeneralDetails = ({
   const [operationsLead, setOperationsLead] = useState(opsLead);
   const [submitSpinner, setSubmitSpinner] = useState(false);
   const [status, setStatus] = useState(progStatus);
-
-  const { authService } = useOktaAuth();
 
   const toggle = (event) => {
     event.preventDefault();
@@ -89,7 +96,8 @@ const EditGeneralDetails = ({
       .catch((err) => {
         setSubmitSpinner(false);
         if (err && err.response && err.response.status && err.response.status === 401) {
-          authService.logout('/');
+          Cookies.remove('token');
+          logUserOut();
         }
 
         if (err && err.response && err.response.data && err.response.data.message) {
@@ -268,7 +276,8 @@ EditGeneralDetails.propTypes = {
   setProgName: PropTypes.string,
   setShortFormName: PropTypes.func,
   setPm: PropTypes.func,
-  setOpsLead: PropTypes.func
+  setOpsLead: PropTypes.func,
+  logUserOut: PropTypes.func
 };
 
-export default EditGeneralDetails;
+export default connect(mapStateToProps, matchDispatchToProps)(EditGeneralDetails);

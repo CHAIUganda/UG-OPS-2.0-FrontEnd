@@ -2,18 +2,22 @@ import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import axios from 'axios';
-import { useOktaAuth } from '@okta/okta-react';
 import { IoIosArrowBack } from 'react-icons/io';
+import Cookies from 'js-cookie';
 
 import { BASE_URL } from '../../../../../../config';
 import CommonSpinner from '../../../../../common/spinner';
 import Icon from '../../../../../common/icon';
 
+import * as authActions from '../../../../../../redux/actions/authActions';
+
 const mapStateToProps = (state) => ({
   token: state.auth.token,
 });
 
-const mapDispatchToProps = {};
+const mapDispatchToProps = {
+  logUserOut: authActions.logUserOut
+};
 
 export const FinishComponent = ({
   initialProDetails,
@@ -26,12 +30,11 @@ export const FinishComponent = ({
   setNewObjectiveCodes,
   setInitialProDetails,
   setCurrentComponent,
+  logUserOut
 }) => {
   const [submitMessage, setSubmitMessage] = useState('');
   const [errMessage, setErrMessage] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
-
-  const { authService } = useOktaAuth();
 
   const reset = () => {
     setNewPids([]);
@@ -75,7 +78,8 @@ export const FinishComponent = ({
             setSubmitMessage('');
 
             if (err && err.response && err.response.status && err.response.status === 401) {
-              authService.logout('/');
+              Cookies.remove('token');
+              logUserOut();
             }
 
             if (err && err.response && err.response.data && err.response.data.message) {
@@ -106,7 +110,8 @@ export const FinishComponent = ({
             setSubmitMessage('');
 
             if (err && err.response && err.response.status && err.response.status === 401) {
-              authService.logout('/');
+              Cookies.remove('token');
+              logUserOut();
             }
 
             if (err && err.response && err.response.data && err.response.data.message) {
@@ -137,7 +142,8 @@ export const FinishComponent = ({
             setSubmitMessage('');
 
             if (err && err.response && err.response.status && err.response.status === 401) {
-              authService.logout('/');
+              Cookies.remove('token');
+              logUserOut();
             }
 
             if (err && err.response && err.response.data && err.response.data.message) {
@@ -168,7 +174,8 @@ export const FinishComponent = ({
           setSubmitMessage('');
 
           if (err && err.response && err.response.status && err.response.status === 401) {
-            authService.logout('/');
+            Cookies.remove('token');
+            logUserOut();
           }
 
           if (err && err.response && err.response.data && err.response.data.message) {
@@ -323,7 +330,8 @@ FinishComponent.propTypes = {
   setNewGids: PropTypes.func,
   setNewObjectiveCodes: PropTypes.func,
   setInitialProDetails: PropTypes.func,
-  setCurrentComponent: PropTypes.func
+  setCurrentComponent: PropTypes.func,
+  logUserOut: PropTypes.func
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(FinishComponent);

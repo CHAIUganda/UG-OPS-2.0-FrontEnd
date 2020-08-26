@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { useOktaAuth } from '@okta/okta-react';
+import Cookies from 'js-cookie';
 import axios from 'axios';
 import { FiPlus, FiMinus } from 'react-icons/fi';
 import { IconContext } from 'react-icons';
@@ -15,8 +15,6 @@ import EditObjectiveCodeModal from './EditObjectiveCodeModal';
 import { BASE_URL } from '../../../../../config';
 import * as sideBarActions from '../../../../../redux/actions/sideBarActions';
 import * as authActions from '../../../../../redux/actions/authActions';
-import * as notificationActions from '../../../../../redux/actions/notificationsActions';
-
 
 const mapStateToProps = (state) => ({
   token: state.auth.token,
@@ -26,8 +24,7 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = {
   changeSection: sideBarActions.changeSection,
   changeActive: sideBarActions.changeActive,
-  logUserIn: authActions.logUserIn,
-  setInitialNotifications: notificationActions.setInitialNotifications
+  logUserOut: authActions.logUserOut
 };
 
 export const SelectedProgram = ({
@@ -35,8 +32,7 @@ export const SelectedProgram = ({
   roles,
   changeSection,
   changeActive,
-  setInitialNotifications,
-  logUserIn,
+  logUserOut,
   propx
 }) => {
   // Check for roles
@@ -80,62 +76,8 @@ export const SelectedProgram = ({
     value: 'Not Set'
   });
 
-  const { authState, authService } = useOktaAuth();
-
   changeSection('Procurement');
   changeActive('ManagePrograms');
-
-  const setUpUser = (tokenToSet) => {
-    axios.defaults.headers.common = { token: tokenToSet };
-    const apiRoute = `${BASE_URL}auth/getLoggedInUser`;
-    axios.get(apiRoute)
-      . then((res) => {
-        const {
-          department,
-          fName,
-          internationalStaff,
-          lName,
-          position,
-          _id,
-          supervisorDetails,
-          notifications
-        } = res.data;
-        const genderToSet = res.data.gender;
-        const emailToSet = res.data.email;
-        const leaveDetailsToSet = res.data.leaveDetails;
-
-        const userObject = {
-          ...res.data,
-          email: emailToSet,
-          token: tokenToSet,
-          gender: genderToSet,
-          internationalStaff,
-          department,
-          firstName: fName,
-          lastName: lName,
-          Position: position,
-          id: _id,
-          leaveDetails: leaveDetailsToSet,
-          supervisor: supervisorDetails
-        };
-        setInitialNotifications(notifications);
-        logUserIn(userObject);
-        setSpinner(false);
-      })
-      .catch((err) => {
-        setSpinner(false);
-
-        if (err && err.response && err.response.status && err.response.status === 401) {
-          authService.logout('/');
-        }
-
-        if (err && err.response && err.response.data && err.response.data.message) {
-          setLoadingPageErr(err.response.data.message);
-        } else {
-          setLoadingPageErr(err.message);
-        }
-      });
-  };
 
   const setUpThisPage = () => {
     const pickObjectiveCodes = () => {
@@ -150,7 +92,8 @@ export const SelectedProgram = ({
           setSpinner(false);
 
           if (err && err.response && err.response.status && err.response.status === 401) {
-            authService.logout('/');
+            Cookies.remove('token');
+            logUserOut();
           }
 
           if (err && err.response && err.response.data && err.response.data.message) {
@@ -174,7 +117,8 @@ export const SelectedProgram = ({
           setSpinner(false);
 
           if (err && err.response && err.response.status && err.response.status === 401) {
-            authService.logout('/');
+            Cookies.remove('token');
+            logUserOut();
           }
 
           if (err && err.response && err.response.data && err.response.data.message) {
@@ -198,7 +142,8 @@ export const SelectedProgram = ({
           setSpinner(false);
 
           if (err && err.response && err.response.status && err.response.status === 401) {
-            authService.logout('/');
+            Cookies.remove('token');
+            logUserOut();
           }
 
           if (err && err.response && err.response.data && err.response.data.message) {
@@ -241,7 +186,8 @@ export const SelectedProgram = ({
           setSpinner(false);
 
           if (err && err.response && err.response.status && err.response.status === 401) {
-            authService.logout('/');
+            Cookies.remove('token');
+            logUserOut();
           }
 
           if (err && err.response && err.response.data && err.response.data.message) {
@@ -261,16 +207,9 @@ export const SelectedProgram = ({
 
     if (token) {
       setUpThisPage();
-    }
-
-    if (!token && authState.isAuthenticated) {
-      const { accessToken } = authState;
-      setUpUser(`Bearer ${accessToken}`);
-    }
-
-    if (!token && !authState.isAuthenticated) {
-      setSpinner(false);
-      authService.logout('/');
+    } else {
+      Cookies.remove('token');
+      logUserOut();
     }
   }, []);
 
@@ -661,8 +600,7 @@ SelectedProgram.propTypes = {
   roles: PropTypes.object,
   changeSection: PropTypes.func,
   changeActive: PropTypes.func,
-  setInitialNotifications: PropTypes.func,
-  logUserIn: PropTypes.func,
+  logUserOut: PropTypes.func,
   propx: PropTypes.object
 };
 

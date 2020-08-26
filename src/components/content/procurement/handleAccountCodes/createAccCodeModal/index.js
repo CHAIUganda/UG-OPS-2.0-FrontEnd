@@ -1,4 +1,3 @@
-/* eslint react/no-multi-comp: 0, react/prop-types: 0 */
 import React, { useState } from 'react';
 import {
   Button,
@@ -21,20 +20,26 @@ import { IconContext } from 'react-icons';
 import axios from 'axios';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import { useOktaAuth } from '@okta/okta-react';
+import Cookies from 'js-cookie';
 
 import { BASE_URL } from '../../../../../config';
+import * as authActions from '../../../../../redux/actions/authActions';
 
 const mapStateToProps = (state) => ({
   token: state.auth.token
 });
+
+const matchDispatchToProps = {
+  logUserOut: authActions.logUserOut
+};
 
 const CreateNewAccountCode = ({
   updateAccCodessArray, // on add
   editArrayOfAccs, // on edit
   token,
   edit,
-  accCode
+  accCode,
+  logUserOut
 }) => {
   const [modal, setModal] = useState(false);
   const [formError, setFormError] = useState('');
@@ -72,8 +77,6 @@ const CreateNewAccountCode = ({
   const [status, setStatus] = useState(
     edit ? accCode.status : ''
   );
-
-  const { authService } = useOktaAuth();
 
   const toggle = () => setModal(!modal);
 
@@ -138,7 +141,8 @@ const CreateNewAccountCode = ({
           setFormSpinner(false);
 
           if (err && err.response && err.response.status && err.response.status === 401) {
-            authService.logout('/');
+            Cookies.remove('token');
+            logUserOut();
           }
 
           if (err && err.response && err.response.data && err.response.data.message) {
@@ -180,7 +184,8 @@ const CreateNewAccountCode = ({
           setFormSpinner(false);
 
           if (err && err.response && err.response.status && err.response.status === 401) {
-            authService.logout('/');
+            Cookies.remove('token');
+            logUserOut();
           }
 
           if (err && err.response && err.response.data && err.response.data.message) {
@@ -439,7 +444,8 @@ CreateNewAccountCode.propTypes = {
   updateAccCodessArray: PropTypes.func,
   edit: PropTypes.bool,
   accCode: PropTypes.object,
-  editArrayOfAccs: PropTypes.func
+  editArrayOfAccs: PropTypes.func,
+  logUserOut: PropTypes.func
 };
 
-export default connect(mapStateToProps)(CreateNewAccountCode);
+export default connect(mapStateToProps, matchDispatchToProps)(CreateNewAccountCode);

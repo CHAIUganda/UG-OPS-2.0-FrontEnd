@@ -15,9 +15,17 @@ import { FiEdit } from 'react-icons/fi';
 import { IconContext } from 'react-icons';
 import PropTypes from 'prop-types';
 import axios from 'axios';
-import { useOktaAuth } from '@okta/okta-react';
+import Cookies from 'js-cookie';
+import { connect } from 'react-redux';
 
 import CommonSpinner from '../../../../../common/spinner';
+import * as authActions from '../../../../../../redux/actions/authActions';
+
+const matchDispatchToProps = {
+  logUserOut: authActions.logUserOut
+};
+
+const mapStateToProps = () => ({});
 
 const EditGidModal = ({
   gidToEdit,
@@ -27,7 +35,8 @@ const EditGidModal = ({
   index,
   newGid,
   programId,
-  insertNewGid
+  insertNewGid,
+  logUserOut
 }) => {
   const [modal, setModal] = useState(false);
   const [gid, setGid] = useState(
@@ -37,8 +46,6 @@ const EditGidModal = ({
   const [successMessage, setSuccessMessage] = useState('');
   const [errMessage, setErrMessage] = useState('');
   const [submitSpinner, setSubmitSpinner] = useState(false);
-
-  const { authService } = useOktaAuth();
 
   const toggle = (event) => {
     event.preventDefault();
@@ -88,7 +95,8 @@ const EditGidModal = ({
           setSubmitSpinner(false);
 
           if (err && err.response && err.response.status && err.response.status === 401) {
-            authService.logout('/');
+            Cookies.remove('token');
+            logUserOut();
           }
 
           if (err && err.response && err.response.data && err.response.data.message) {
@@ -117,7 +125,8 @@ const EditGidModal = ({
           setSubmitSpinner(false);
 
           if (err && err.response && err.response.status && err.response.status === 401) {
-            authService.logout('/');
+            Cookies.remove('token');
+            logUserOut();
           }
 
           if (err && err.response && err.response.data && err.response.data.message) {
@@ -247,7 +256,8 @@ EditGidModal.propTypes = {
   index: PropTypes.number,
   newGid: PropTypes.bool,
   programId: PropTypes.string,
-  insertNewGid: PropTypes.func
+  insertNewGid: PropTypes.func,
+  logUserOut: PropTypes.func
 };
 
-export default EditGidModal;
+export default connect(mapStateToProps, matchDispatchToProps)(EditGidModal);

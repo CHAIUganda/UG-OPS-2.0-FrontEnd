@@ -15,9 +15,17 @@ import { FiEdit } from 'react-icons/fi';
 import { IconContext } from 'react-icons';
 import PropTypes from 'prop-types';
 import axios from 'axios';
-import { useOktaAuth } from '@okta/okta-react';
+import Cookies from 'js-cookie';
+import { connect } from 'react-redux';
 
 import CommonSpinner from '../../../../../common/spinner';
+import * as authActions from '../../../../../../redux/actions/authActions';
+
+const matchDispatchToProps = {
+  logUserOut: authActions.logUserOut
+};
+
+const mapStateToProps = () => ({});
 
 const EditObjectiveCodeModal = ({
   objectiveCodeToEdit,
@@ -27,7 +35,8 @@ const EditObjectiveCodeModal = ({
   index,
   insertNewObjectiveCode,
   newObjectiveCode,
-  programId
+  programId,
+  logUserOut
 }) => {
   const [modal, setModal] = useState(false);
   const [objectiveCode, setObjectiveCode] = useState(
@@ -37,8 +46,6 @@ const EditObjectiveCodeModal = ({
   const [successMessage, setSuccessMessage] = useState('');
   const [errMessage, setErrMessage] = useState('');
   const [submitSpinner, setSubmitSpinner] = useState(false);
-
-  const { authService } = useOktaAuth();
 
   const toggle = (event) => {
     event.preventDefault();
@@ -88,7 +95,8 @@ const EditObjectiveCodeModal = ({
           setSubmitSpinner(false);
 
           if (err && err.response && err.response.status && err.response.status === 401) {
-            authService.logout('/');
+            Cookies.remove('token');
+            logUserOut();
           }
 
           if (err && err.response && err.response.data && err.response.data.message) {
@@ -117,7 +125,8 @@ const EditObjectiveCodeModal = ({
           setSubmitSpinner(false);
 
           if (err && err.response && err.response.status && err.response.status === 401) {
-            authService.logout('/');
+            Cookies.remove('token');
+            logUserOut();
           }
 
           if (err && err.response && err.response.data && err.response.data.message) {
@@ -247,7 +256,8 @@ EditObjectiveCodeModal.propTypes = {
   editObjectiveCode: PropTypes.func,
   insertNewObjectiveCode: PropTypes.func,
   newObjectiveCode: PropTypes.bool,
-  programId: PropTypes.string
+  programId: PropTypes.string,
+  logUserOut: PropTypes.func
 };
 
-export default EditObjectiveCodeModal;
+export default connect(mapStateToProps, matchDispatchToProps)(EditObjectiveCodeModal);
