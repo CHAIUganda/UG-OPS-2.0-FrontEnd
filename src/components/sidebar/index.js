@@ -70,7 +70,7 @@ function Sidebar({ token, section, logUserOut }) {
         <div className="col-12">
           <div className={`${token ? '' : 'sidebarContainer'}`}>
             { returnCalendar() }
-            <h3 className="text-center">{ section }</h3>
+            <h5 className="text-center">{ section }</h5>
             {section === 'Human Resource'
               && <div className="navContainer">
                 <HR />
